@@ -59,7 +59,7 @@ explicitly named.
 | Flash/calibration storage | No | No bootloader, dual-bank, or calibration flash layout |
 | CAN driver | No | No transceiver/driver; simulator `can_ok=true` |
 | KiCad schematic | Yes — selected baseline native; legacy custom **UNREVIEWED** | `hardware/prototype-v1/*.kicad_sch` (upstream v0.4.4d, native KiCad 9, 7 sheets); legacy `hardware/kicad/evo8-bench-ecu/` 7 sheets, unreviewed |
-| KiCad PCB | Selected baseline routed; legacy custom **NOT USABLE** | `hardware/prototype-v1/v0.4.4d.kicad_pcb`: 297 footprints, 0 unconnected, 609 DRC (238 errors). Legacy custom: 305 footprints, 499 unconnected, 14 DRC |
+| KiCad PCB | Selected baseline routed; legacy custom **NOT USABLE** | `hardware/prototype-v1/v0.4.4d.kicad_pcb`: 297 footprints (147 components + 150 proto pads), 0 unconnected, 609 DRC (238 errors). Legacy custom: 305 footprints, 499 unconnected, 14 DRC |
 | KiCad project | Yes — selected baseline converted | `hardware/prototype-v1/v0.4.4d.kicad_pro` (KiCad 9); legacy `.kicad_pro` unreviewed |
 | BOM | Yes — baseline BOM has gaps | `prototype-v1/manufacturing/assembly/v0.4.4d-bom.csv`: 47 grouped rows, 11 without MPN. Legacy custom 305 lines, unreviewed |
 | ERC report | Yes — baseline exceptions open | `prototype-v1/verification/erc.rpt`: 101 violations (44 errors). Legacy custom `reports/erc.json` 0 violations, unreviewed |

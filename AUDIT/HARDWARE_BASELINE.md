@@ -49,7 +49,7 @@ selected board's report is committed under
 | Shorting-item violations | 12, all solder jumpers JP6–JP11 | 12, all solder jumpers | 0 | Not measurable |
 | Board size | 100.05 × 100.05 mm | 100.05 × 100.05 mm | 116.13 × 98.05 mm | n/a |
 | Copper layers | 2 | 2 | 2 | n/a |
-| Footprints | 297 | 134 | 201 | n/a |
+| Footprints | 297 (147 components + 150 proto-area pads) | 134 | 201 | n/a |
 | Nets | 185 | 163 | 248 | n/a |
 | MCU platform | Arduino Mega 2560 shield | Arduino Mega 2560 shield | **Teensy 4.1** | Arduino Mega 2560 shield |
 | Injector / ignition channels | 4 / 4 | 4 / 4 | 4 / 4 | 4 / 4 |

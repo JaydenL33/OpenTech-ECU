@@ -52,7 +52,8 @@ violations. Counts must be read from the reports.
 | Board outline | Closed single outline, 100.05 × 100.05 mm |
 | Mounting holes | **None** — no NPTH/M3 standoff holes; see `HW-MECH-02` |
 | Copper layers | 2 (F.Cu, B.Cu) |
-| Footprints | 297 |
+| Footprints | 297 (147 component footprints + 150 unannotated proto-area pads `REF**`, no net) |
+| Footprint assignment | 147/147 schematic components have a non-empty footprint; 0 unassigned |
 | Tracks/vias | 1233 track objects including 178 vias |
 | Zones | 4 (GND/PGND pours) |
 | Nets | 185 on PCB; 190 in schematic (difference is auto-named/unused pins) |
