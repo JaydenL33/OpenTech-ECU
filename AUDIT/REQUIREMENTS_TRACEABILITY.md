@@ -206,18 +206,18 @@
 
 | ID | Requirement | Source | Implementation / evidence | Status | Notes / blocker |
 |---|---|---|---|---|---|
-| HW-001 | MCU trade study (STM32H7 vs S32K) | Brief §3H | Unreviewed schematic uses STM32H743VIT6; no validated selection | Planned / Partial | See AUD-03; exact HAL/timer proof still required |
-| HW-002 | KiCad schematic/PCB/BOM/gerbers | Brief §3H | Unreviewed 7-sheet schematic, BOM, netlist, unrouted PCB draft | Partial / Blocked | `hardware/kicad/evo8-bench-ecu/`; PCB fails DRC; no manufacturing package |
-| HW-003 | ERC/DRC with issue log | Brief §3H | ERC 0 (rerun with isolated toolchain); DRC 14 violations + 499 unconnected | Partial / Blocked | Unreviewed; PCB not routable/manufacturable |
-| HW-004 | Power input protection/transients | Brief §3H | Requirements only | Blocked | See AUD-03 |
-| HW-005 | Injector low-side drivers/flyback | Brief §3H | Requirements only | Blocked | Injector data unverified |
-| HW-006 | Ignition outputs/igniter compatibility | Brief §3H | Requirements only | Blocked | Coil topology unverified |
-| HW-007 | Knock interface | Brief §3H | Requirements only | Blocked | Sensor type unverified |
-| HW-008 | CAN physical layer | Brief §3H | Requirements only | Blocked | No transceiver/termination |
-| HW-009 | Connector/adapter harness | Brief §3H | Requirements only | Blocked | Exact ECU connector unknown |
-| HW-010 | Watchdog/safe state | Brief §3H | Requirements only; skeleton accepts a watchdog flag | Blocked | No hardware watchdog/HAL |
-| HW-011 | Thermal/EMC/mechanical | Brief §3H | Requirements only | Blocked | No test data |
-| HW-012 | Bench fixture/E-stop | Brief §3H | Plan only (AUD-09) | Planned | Not built/executed |
+| HW-001 | MCU trade study (STM32H7 vs S32K) | Brief §3H | **v1 baseline decision:** Arduino Mega 2560 shield (Speeduino v0.4.4d) for firmware compatibility. Long-term STM32H7/S32K trade study remains open | Partial | v1 uses the proven AVR platform; future MCU selection still needs a dev-board proof (`AUDIT/HARDWARE_BASELINE.md` §3) |
+| HW-002 | KiCad schematic/PCB/BOM/gerbers | Brief §3H | Native KiCad 9 review copy of Speeduino v0.4.4d: 7 sheets, routed PCB (0 unconnected), gerbers/drill/BOM/position/IPC-D-356 generated | Partial | `hardware/prototype-v1/`; H2 exceptions, BOM MPNs and assembly drawing remain open |
+| HW-003 | ERC/DRC with issue log | Brief §3H | ERC 101 (44 errors); DRC 609 (238 errors) after zone refill; 0 unconnected; connectivity PASS 514/514 | Partial / Blocked | `AUDIT/PCB_CHECK_RESULTS.md`; exceptions must be resolved/accepted before H2 |
+| HW-004 | Power input protection/transients | Brief §3H | Upstream v0.4.4d input protection circuit present; not independently reviewed or tested | Partial | No load-dump/transient test; vehicle use blocked |
+| HW-005 | Injector low-side drivers/flyback | Brief §3H | Upstream 4-channel injector drivers present; Evo injector impedance/current unverified | Partial | Bench dummy-load test required; see `AUDIT/PCB_CHECK_RESULTS.md` |
+| HW-006 | Ignition outputs/igniter compatibility | Brief §3H | Upstream 4 logic-level ignition outputs present; Evo coil/igniter topology unverified | Partial | Do not connect coils; external verified igniter only |
+| HW-007 | Knock interface | Brief §3H | **Not present on v0.4.4d** | Blocked | Requires future hardware expansion (`HW-EXP-01`) |
+| HW-008 | CAN physical layer | Brief §3H | **Not present on v0.4.4d** | Blocked | Requires future hardware expansion; serial/USB only on v1 |
+| HW-009 | Connector/adapter harness | Brief §3H | IDC40 + screw terminals present; Evo connector unknown | Blocked | Bench breakout `HW-BENCH-01`; vehicle harness blocked |
+| HW-010 | Watchdog/safe state | Brief §3H | AVR watchdog available in firmware; no external hardware watchdog or validated safe-state circuit | Partial | Bench fault injection required |
+| HW-011 | Thermal/EMC/mechanical | Brief §3H | No thermal/EMC test; no assembly/enclosure drawing | Blocked | `HW-MECH-01`; H3 package incomplete |
+| HW-012 | Bench fixture/E-stop | Brief §3H | Plan only (AUD-09); no IDC40 breakout | Planned | `HW-BENCH-01` |
 | HW-013 | Automotive qualification | Brief §3H | None | Blocked | No AEC-Q/ISO tests |
 | HW-014 | Functional safety case | Brief §3H | Qualitative draft (AUD-01) | Partial | Not ISO 26262/IEC 61508 |
 
@@ -250,7 +250,7 @@ The following are **not** requirements satisfied by code. They are evidence item
 | Gate | Definition | Current status | Blocking evidence |
 |---|---|---|---|
 | Gate 0 | Software simulation | **PASS, scoped** | 130/130 tests; fmt/clippy pass; firmware skeleton target check; UI build; copilot typecheck. Not a certification |
-| Gate 1 | Unpowered hardware verification | **Blocked** | Unreviewed schematic/BOM and PCB draft; DRC fails; no gerbers/assembly/review |
+| Gate 1 | Unpowered hardware verification | **Blocked (partial evidence)** | Routed v0.4.4d baseline + native KiCad + exports exist, 0 unconnected; ERC/DRC exceptions, BOM gaps, assembly drawing and independent review still open |
 | Gate 2 | Powered bench verification | **Blocked** | No HAL/timer/driver firmware image, bench fixture, dummy loads, E-stop |
 | Gate 3 | Vehicle electrical compatibility | **Blocked / Unverified** | No Evo pinout/connector/trigger/harness evidence |
 | Gate 4 | Controlled engine testing | **Blocked** | No bench engine, timing light, knock instrumentation, supervision |

@@ -11,6 +11,30 @@
 
 > **Independence requirement.** A reviewer who designed or wrote the code, owns the vehicle, or has a commercial interest in approval is not independent for a release gate. Record conflicts of interest. No self-approval. A review that only reads this document is not a review; re-run the commands and inspect the source.
 
+> **Hardware baseline change (2026-11-13).** The hardware path is now the
+> upstream-derived **Speeduino v0.4.4d SMD** baseline in
+> `hardware/upstream-speeduino/` and `hardware/prototype-v1/`, not the older
+> custom STM32 draft. Before using the older hardware reading order below, read:
+>
+> 1. `AUDIT/UPSTREAM_PROVENANCE.md` — exact commit, licence, hashes.
+> 2. `AUDIT/HARDWARE_BASELINE.md` — v0.3/v0.4/DropBear comparison and decision.
+> 3. `AUDIT/PCB_CHECK_RESULTS.md` — ERC/DRC evidence and exception disposition.
+> 4. `AUDIT/HARDWARE_DIFF.md` — format-only changes and zone re-fill.
+> 5. `AUDIT/BOM_REVIEW.md` — BOM gaps and sourcing rules.
+> 6. `HARDWARE_BLOCKERS.md` — current H0–H3 blockers.
+>
+> Reproduce hardware checks from the repository root:
+>
+> ```bash
+> hardware/tools/verify_upstream_baseline.sh
+> hardware/tools/check_prototype_v1.sh
+> ```
+>
+> A reviewer must confirm the 0-unconnected claim, inspect the 12 intentional
+> solder-jumper shorts, resolve/accept the 199 courtyard overlaps and 4 starved
+> thermals, and check the 11 BOM rows without MPNs. ERC/DRC success is not
+> automotive approval.
+
 ## 1. Reading order
 
 | Order | Document / path | Why read it | Approx. time |
@@ -143,7 +167,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | Headless Chromium passed; Electron launch not tested |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
-| "Hardware exists" | Inspect `hardware/kicad`; read ERC/DRC; `find` for gerbers | A reviewed package with clean DRC/gerbers exists | Unreviewed schematic/BOM; PCB draft has 14 DRC violations, 499 unconnected; no gerbers |
+| "Hardware exists" | Inspect `hardware/prototype-v1`; run `hardware/tools/check_prototype_v1.sh`; read ERC/DRC; `find` for gerbers | A reviewed package with clean ERC/DRC and complete BOM exists | Routed v0.4.4d baseline with gerbers exists; H2 exceptions (ERC 101/DRC 609), BOM gaps and no independent review |
 
 ## 5. Missing evidence checklist
 

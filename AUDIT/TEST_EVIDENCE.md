@@ -13,6 +13,13 @@
 | Test result | **130 tests (128 unit + 2 integration): 130 passed, 0 failed**; 0 doc-tests |
 | Formatting | `cargo fmt --all -- --check` passed |
 | Linting | `cargo clippy --workspace --all-targets -- -D warnings` passed |
+
+> **Hardware evidence superseded (2026-11-13).** The hardware rows below describe
+> the legacy custom `hardware/kicad/evo8-bench-ecu/` draft. The selected
+> baseline is now Speeduino v0.4.4d SMD; its reproducible ERC/DRC/export evidence
+> is in `AUDIT/PCB_CHECK_RESULTS.md` and
+> `hardware/prototype-v1/verification/`. Do not use the legacy hardware rows to
+> describe the current baseline.
 | Firmware target check | `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` passed |
 | Gate status | **Gate 0 host software evidence: PASS for implemented behaviour; not a certification, not Gate 1+** |
 | Overall limitation | No physical hardware, no reviewed PCB, no MCU timing capture, no vehicle evidence; several UI/copilot/runtime behaviours remain untested |
@@ -32,7 +39,7 @@
 | npm | `11.11.0` |
 | `rustfmt` | Available and passing |
 | `clippy` | Available and passing with `-D warnings` |
-| KiCad / `kicad-cli` | Not installed on the host PATH; an isolated Codex toolchain produced ERC (0) and DRC (14 violations (13 dangling vias + 1 clearance), 499 unconnected) on the unreviewed schematic/PCB draft. Not independently reviewed. |
+| KiCad / `kicad-cli` | Not on host PATH; **KiCad 9.0.9 was run from pinned Docker image `kicad/kicad@sha256:e638b79b…7729` on 2026-11-13** for the selected v0.4.4d baseline. Legacy custom draft: ERC 0, DRC 14 + 499 unconnected, not independently reviewed. |
 | Electron | Dependency present; **application launch not exercised** in this headless audit |
 | WebKit/Tauri | Not used by the current Electron shell; no Tauri validation; Electron launch untested |
 | Physical hardware | **None**; no assembled board/PCB, harness, sensors, injectors, coils, or vehicle; unreviewed schematic only |
@@ -55,7 +62,7 @@
 | 11 | `npm run build` in `apps/tuning-studio` | 0 | Vite build; black/yellow support-style shell and Harness page included |
 | 12 | `npm run build` in `apps/tuning-copilot` (`tsc --noEmit`) | 0 | Pass |
 | 13 | Local `studio-service` smoke test | 0 | Health/preflight/status; physical outputs false |
-| 14 | KiCad schematic ERC + PCB DRC on `hardware/kicad/evo8-bench-ecu` | 0 / 5 | Unreviewed 7-sheet schematic, 0 ERC; PCB draft 14 DRC violations + 499 unconnected; no gerbers |
+| 14 | KiCad schematic ERC + PCB DRC on `hardware/kicad/evo8-bench-ecu` | 0 / 5 | Legacy custom draft: 0 ERC; PCB draft 14 DRC violations + 499 unconnected; no gerbers. Selected v0.4.4d baseline evidence: `AUDIT/PCB_CHECK_RESULTS.md` (ERC 101, DRC 609, 0 unconnected) |
 
 ## 3. Rust test results
 
@@ -327,8 +334,8 @@ The workflow was **not observed running** in this audit. The local commands abov
 | Copilot tool approval boundary | Untrusted output must not write | Not tested |
 | WebSocket lag/reconnect | Operator may see stale data | Not tested |
 | Full core `no_std` | All core crates and firmware skeleton pass | Pass |
-| KiCad ERC/DRC | Unreviewed: ERC 0 violations; DRC 14 violations + 499 unconnected items | Not independently reviewed; no gerbers |
-| Hardware/bench | Unrouted PCB draft only; no fixture or built ECU | Not run |
+| KiCad ERC/DRC | Legacy custom: ERC 0, DRC 14 + 499 unconnected. Selected v0.4.4d: ERC 101 (44 errors), DRC 609 (238 errors), 0 unconnected | Not independently reviewed; H2 open |
+| Hardware/bench | Routed v0.4.4d review copy only; no assembled ECU or fixture | Not run |
 | Scope timing | No firmware/timer | Not run |
 | Evo pinout/trigger/harness | Unverified | Not run |
 | EMC/thermal/power | No hardware | Not run |

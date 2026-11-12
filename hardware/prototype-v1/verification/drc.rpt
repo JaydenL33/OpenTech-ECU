@@ -1,0 +1,2449 @@
+** Drc report for v0.4.4d.kicad_pcb **
+** Created on 2026-11-12T23:01:02+0000 **
+** Report includes: Errors, Warnings **
+
+** Found 609 DRC violations **
+[annular_width]: Annular width (board setup constraints min annular width 0.0500 mm; actual -0.0044 mm)
+    Rule: board setup constraints; error
+    @(113.5000 mm, 72.1720 mm): PTH pad ~ [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.0500 mm; actual -0.0044 mm)
+    Rule: board setup constraints; error
+    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[shorting_items]: Items shorting two nets (nets  and MAP-EXT)
+    Local override; error
+    @(157.0880 mm, 116.0320 mm): Polygon [<no net>] of JP11 on F.Cu
+    @(156.6880 mm, 116.3320 mm): Pad 1 [MAP-EXT] of JP11 on F.Cu
+[shorting_items]: Items shorting two nets (nets  and Net-(JP11-Pad2))
+    Local override; error
+    @(157.0880 mm, 116.0320 mm): Polygon [<no net>] of JP11 on F.Cu
+    @(157.9880 mm, 116.3320 mm): Pad 2 [Net-(JP11-Pad2)] of JP11 on F.Cu
+[shorting_items]: Items shorting two nets (nets FUELPUMP-OUT and )
+    Local override; error
+    @(140.6500 mm, 116.4000 mm): Pad 1 [FUELPUMP-OUT] of JP8 on B.Cu
+    @(140.2500 mm, 116.1000 mm): Polygon [<no net>] of JP8 on B.Cu
+[shorting_items]: Items shorting two nets (nets  and PROTO-3)
+    Local override; error
+    @(140.2500 mm, 116.1000 mm): Polygon [<no net>] of JP8 on B.Cu
+    @(139.3500 mm, 116.4000 mm): Pad 2 [PROTO-3] of JP8 on B.Cu
+[shorting_items]: Items shorting two nets (nets ADC-Clamp-10 and )
+    Local override; error
+    @(140.6500 mm, 111.2000 mm): Pad 1 [ADC-Clamp-10] of JP6 on B.Cu
+    @(140.2500 mm, 110.9000 mm): Polygon [<no net>] of JP6 on B.Cu
+[shorting_items]: Items shorting two nets (nets PROTO-1 and )
+    Local override; error
+    @(139.3500 mm, 111.2000 mm): Pad 2 [PROTO-1] of JP6 on B.Cu
+    @(140.2500 mm, 110.9000 mm): Polygon [<no net>] of JP6 on B.Cu
+[shorting_items]: Items shorting two nets (nets  and FAN-OUT)
+    Local override; error
+    @(140.2500 mm, 113.5000 mm): Polygon [<no net>] of JP7 on B.Cu
+    @(140.6500 mm, 113.8000 mm): Pad 1 [FAN-OUT] of JP7 on B.Cu
+[shorting_items]: Items shorting two nets (nets PROTO-2 and )
+    Local override; error
+    @(139.3500 mm, 113.8000 mm): Pad 2 [PROTO-2] of JP7 on B.Cu
+    @(140.2500 mm, 113.5000 mm): Polygon [<no net>] of JP7 on B.Cu
+[shorting_items]: Items shorting two nets (nets TACHO-OUT and )
+    Local override; error
+    @(140.6500 mm, 119.0000 mm): Pad 1 [TACHO-OUT] of JP9 on B.Cu
+    @(140.2500 mm, 118.7000 mm): Polygon [<no net>] of JP9 on B.Cu
+[shorting_items]: Items shorting two nets (nets PROTO-4 and )
+    Local override; error
+    @(139.3500 mm, 119.0000 mm): Pad 2 [PROTO-4] of JP9 on B.Cu
+    @(140.2500 mm, 118.7000 mm): Polygon [<no net>] of JP9 on B.Cu
+[shorting_items]: Items shorting two nets (nets Clutch_in and )
+    Local override; error
+    @(140.6500 mm, 121.6000 mm): Pad 1 [Clutch_in] of JP10 on B.Cu
+    @(140.2500 mm, 121.3000 mm): Polygon [<no net>] of JP10 on B.Cu
+[shorting_items]: Items shorting two nets (nets PROTO-5 and )
+    Local override; error
+    @(139.3500 mm, 121.6000 mm): Pad 2 [PROTO-5] of JP10 on B.Cu
+    @(140.2500 mm, 121.3000 mm): Polygon [<no net>] of JP10 on B.Cu
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 81.4000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(195.7150 mm, 83.9400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(175.3950 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(177.9350 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(180.4750 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(183.0150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(185.5550 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+    @(195.7150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+    @(195.7150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+    @(195.7150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+    @(195.7150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(183.0150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(185.5550 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(188.0950 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(190.6350 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(193.1750 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(195.7150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 63.6200 mm): Footprint REF**
+    @(162.6950 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 63.6200 mm): Footprint REF**
+    @(160.1550 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 63.6200 mm): Footprint REF**
+    @(165.2350 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 63.6200 mm): Footprint REF**
+    @(162.6950 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 63.6200 mm): Footprint REF**
+    @(167.7750 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 63.6200 mm): Footprint REF**
+    @(165.2350 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 63.6200 mm): Footprint REF**
+    @(170.3150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 63.6200 mm): Footprint REF**
+    @(167.7750 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 63.6200 mm): Footprint REF**
+    @(172.8550 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 63.6200 mm): Footprint REF**
+    @(170.3150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 63.6200 mm): Footprint REF**
+    @(175.3950 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 63.6200 mm): Footprint REF**
+    @(172.8550 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 63.6200 mm): Footprint REF**
+    @(177.9350 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 63.6200 mm): Footprint REF**
+    @(175.3950 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 63.6200 mm): Footprint REF**
+    @(180.4750 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 63.6200 mm): Footprint REF**
+    @(177.9350 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 63.6200 mm): Footprint REF**
+    @(183.0150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 63.6200 mm): Footprint REF**
+    @(180.4750 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 63.6200 mm): Footprint REF**
+    @(185.5550 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 63.6200 mm): Footprint REF**
+    @(183.0150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 63.6200 mm): Footprint REF**
+    @(188.0950 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 63.6200 mm): Footprint REF**
+    @(185.5550 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 63.6200 mm): Footprint REF**
+    @(190.6350 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 63.6200 mm): Footprint REF**
+    @(188.0950 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 63.6200 mm): Footprint REF**
+    @(193.1750 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 63.6200 mm): Footprint REF**
+    @(190.6350 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 63.6200 mm): Footprint REF**
+    @(195.7150 mm, 63.6200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 63.6200 mm): Footprint REF**
+    @(193.1750 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(195.7150 mm, 63.6200 mm): Footprint REF**
+    @(195.7150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 66.1600 mm): Footprint REF**
+    @(162.6950 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 66.1600 mm): Footprint REF**
+    @(160.1550 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 66.1600 mm): Footprint REF**
+    @(165.2350 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 66.1600 mm): Footprint REF**
+    @(162.6950 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 66.1600 mm): Footprint REF**
+    @(167.7750 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 66.1600 mm): Footprint REF**
+    @(165.2350 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 66.1600 mm): Footprint REF**
+    @(170.3150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 66.1600 mm): Footprint REF**
+    @(167.7750 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 66.1600 mm): Footprint REF**
+    @(172.8550 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 66.1600 mm): Footprint REF**
+    @(170.3150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 66.1600 mm): Footprint REF**
+    @(175.3950 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 66.1600 mm): Footprint REF**
+    @(172.8550 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 66.1600 mm): Footprint REF**
+    @(177.9350 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 66.1600 mm): Footprint REF**
+    @(175.3950 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 66.1600 mm): Footprint REF**
+    @(180.4750 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 66.1600 mm): Footprint REF**
+    @(177.9350 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 66.1600 mm): Footprint REF**
+    @(183.0150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 66.1600 mm): Footprint REF**
+    @(180.4750 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 66.1600 mm): Footprint REF**
+    @(185.5550 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 66.1600 mm): Footprint REF**
+    @(183.0150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 66.1600 mm): Footprint REF**
+    @(188.0950 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 66.1600 mm): Footprint REF**
+    @(185.5550 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 66.1600 mm): Footprint REF**
+    @(190.6350 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 66.1600 mm): Footprint REF**
+    @(188.0950 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 66.1600 mm): Footprint REF**
+    @(193.1750 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 66.1600 mm): Footprint REF**
+    @(190.6350 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 66.1600 mm): Footprint REF**
+    @(195.7150 mm, 66.1600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 66.1600 mm): Footprint REF**
+    @(193.1750 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(195.7150 mm, 66.1600 mm): Footprint REF**
+    @(195.7150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 68.7000 mm): Footprint REF**
+    @(162.6950 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 68.7000 mm): Footprint REF**
+    @(160.1550 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 68.7000 mm): Footprint REF**
+    @(165.2350 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 68.7000 mm): Footprint REF**
+    @(162.6950 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 68.7000 mm): Footprint REF**
+    @(167.7750 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 68.7000 mm): Footprint REF**
+    @(165.2350 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 68.7000 mm): Footprint REF**
+    @(170.3150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 68.7000 mm): Footprint REF**
+    @(167.7750 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 68.7000 mm): Footprint REF**
+    @(172.8550 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 68.7000 mm): Footprint REF**
+    @(170.3150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 68.7000 mm): Footprint REF**
+    @(175.3950 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 68.7000 mm): Footprint REF**
+    @(172.8550 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 68.7000 mm): Footprint REF**
+    @(177.9350 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 68.7000 mm): Footprint REF**
+    @(175.3950 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 68.7000 mm): Footprint REF**
+    @(180.4750 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 68.7000 mm): Footprint REF**
+    @(177.9350 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 68.7000 mm): Footprint REF**
+    @(183.0150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 68.7000 mm): Footprint REF**
+    @(180.4750 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 68.7000 mm): Footprint REF**
+    @(185.5550 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 68.7000 mm): Footprint REF**
+    @(183.0150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 68.7000 mm): Footprint REF**
+    @(188.0950 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 68.7000 mm): Footprint REF**
+    @(185.5550 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 68.7000 mm): Footprint REF**
+    @(190.6350 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 68.7000 mm): Footprint REF**
+    @(188.0950 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 68.7000 mm): Footprint REF**
+    @(193.1750 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 68.7000 mm): Footprint REF**
+    @(190.6350 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 68.7000 mm): Footprint REF**
+    @(195.7150 mm, 68.7000 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 68.7000 mm): Footprint REF**
+    @(193.1750 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(195.7150 mm, 68.7000 mm): Footprint REF**
+    @(195.7150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 71.2400 mm): Footprint REF**
+    @(162.6950 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 71.2400 mm): Footprint REF**
+    @(160.1550 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 71.2400 mm): Footprint REF**
+    @(165.2350 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 71.2400 mm): Footprint REF**
+    @(162.6950 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 71.2400 mm): Footprint REF**
+    @(167.7750 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 71.2400 mm): Footprint REF**
+    @(165.2350 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 71.2400 mm): Footprint REF**
+    @(170.3150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 71.2400 mm): Footprint REF**
+    @(167.7750 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 71.2400 mm): Footprint REF**
+    @(172.8550 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 71.2400 mm): Footprint REF**
+    @(170.3150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 71.2400 mm): Footprint REF**
+    @(175.3950 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 71.2400 mm): Footprint REF**
+    @(172.8550 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 71.2400 mm): Footprint REF**
+    @(177.9350 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 71.2400 mm): Footprint REF**
+    @(175.3950 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 71.2400 mm): Footprint REF**
+    @(180.4750 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 71.2400 mm): Footprint REF**
+    @(177.9350 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 71.2400 mm): Footprint REF**
+    @(183.0150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 71.2400 mm): Footprint REF**
+    @(180.4750 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 71.2400 mm): Footprint REF**
+    @(185.5550 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 71.2400 mm): Footprint REF**
+    @(183.0150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 71.2400 mm): Footprint REF**
+    @(188.0950 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 71.2400 mm): Footprint REF**
+    @(185.5550 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 71.2400 mm): Footprint REF**
+    @(190.6350 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 71.2400 mm): Footprint REF**
+    @(188.0950 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 71.2400 mm): Footprint REF**
+    @(193.1750 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 71.2400 mm): Footprint REF**
+    @(190.6350 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 71.2400 mm): Footprint REF**
+    @(195.7150 mm, 71.2400 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 71.2400 mm): Footprint REF**
+    @(193.1750 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(195.7150 mm, 71.2400 mm): Footprint REF**
+    @(195.7150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 73.7800 mm): Footprint REF**
+    @(162.6950 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 73.7800 mm): Footprint REF**
+    @(160.1550 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 73.7800 mm): Footprint REF**
+    @(165.2350 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 73.7800 mm): Footprint REF**
+    @(162.6950 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 73.7800 mm): Footprint REF**
+    @(167.7750 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 73.7800 mm): Footprint REF**
+    @(165.2350 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 73.7800 mm): Footprint REF**
+    @(170.3150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 73.7800 mm): Footprint REF**
+    @(167.7750 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 73.7800 mm): Footprint REF**
+    @(172.8550 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 73.7800 mm): Footprint REF**
+    @(170.3150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 73.7800 mm): Footprint REF**
+    @(175.3950 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 73.7800 mm): Footprint REF**
+    @(172.8550 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 73.7800 mm): Footprint REF**
+    @(177.9350 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 73.7800 mm): Footprint REF**
+    @(175.3950 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 73.7800 mm): Footprint REF**
+    @(180.4750 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 73.7800 mm): Footprint REF**
+    @(177.9350 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 73.7800 mm): Footprint REF**
+    @(183.0150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 73.7800 mm): Footprint REF**
+    @(180.4750 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 73.7800 mm): Footprint REF**
+    @(185.5550 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 73.7800 mm): Footprint REF**
+    @(183.0150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 73.7800 mm): Footprint REF**
+    @(188.0950 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 73.7800 mm): Footprint REF**
+    @(185.5550 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 73.7800 mm): Footprint REF**
+    @(190.6350 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 73.7800 mm): Footprint REF**
+    @(188.0950 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 73.7800 mm): Footprint REF**
+    @(193.1750 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 73.7800 mm): Footprint REF**
+    @(190.6350 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 73.7800 mm): Footprint REF**
+    @(195.7150 mm, 73.7800 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 73.7800 mm): Footprint REF**
+    @(193.1750 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(195.7150 mm, 73.7800 mm): Footprint REF**
+    @(195.7150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 76.3200 mm): Footprint REF**
+    @(162.6950 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(160.1550 mm, 76.3200 mm): Footprint REF**
+    @(160.1550 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 76.3200 mm): Footprint REF**
+    @(165.2350 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(162.6950 mm, 76.3200 mm): Footprint REF**
+    @(162.6950 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 76.3200 mm): Footprint REF**
+    @(167.7750 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(165.2350 mm, 76.3200 mm): Footprint REF**
+    @(165.2350 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 76.3200 mm): Footprint REF**
+    @(170.3150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(167.7750 mm, 76.3200 mm): Footprint REF**
+    @(167.7750 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 76.3200 mm): Footprint REF**
+    @(172.8550 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(170.3150 mm, 76.3200 mm): Footprint REF**
+    @(170.3150 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 76.3200 mm): Footprint REF**
+    @(175.3950 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(172.8550 mm, 76.3200 mm): Footprint REF**
+    @(172.8550 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 76.3200 mm): Footprint REF**
+    @(177.9350 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(175.3950 mm, 76.3200 mm): Footprint REF**
+    @(175.3950 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 76.3200 mm): Footprint REF**
+    @(180.4750 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(177.9350 mm, 76.3200 mm): Footprint REF**
+    @(177.9350 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 76.3200 mm): Footprint REF**
+    @(183.0150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(180.4750 mm, 76.3200 mm): Footprint REF**
+    @(180.4750 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 76.3200 mm): Footprint REF**
+    @(185.5550 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(183.0150 mm, 76.3200 mm): Footprint REF**
+    @(183.0150 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 76.3200 mm): Footprint REF**
+    @(188.0950 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(185.5550 mm, 76.3200 mm): Footprint REF**
+    @(185.5550 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 76.3200 mm): Footprint REF**
+    @(190.6350 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(188.0950 mm, 76.3200 mm): Footprint REF**
+    @(188.0950 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 76.3200 mm): Footprint REF**
+    @(193.1750 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(190.6350 mm, 76.3200 mm): Footprint REF**
+    @(190.6350 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 76.3200 mm): Footprint REF**
+    @(195.7150 mm, 76.3200 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(193.1750 mm, 76.3200 mm): Footprint REF**
+    @(193.1750 mm, 78.8600 mm): Footprint REF**
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(195.7150 mm, 76.3200 mm): Footprint REF**
+    @(195.7150 mm, 78.8600 mm): Footprint REF**
+[padstack]: Padstack is questionable (PTH pad hole leaves no copper)
+    Local override; error
+    @(113.5000 mm, 72.1720 mm): PTH pad ~ [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[padstack]: Padstack is questionable (PTH pad hole leaves no copper)
+    Local override; error
+    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
+    @(146.5375 mm, 116.6000 mm): Pad 2 [GND] of C5 on F.Cu
+[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
+    @(142.1375 mm, 129.1500 mm): Pad 2 [GND] of C10 on F.Cu
+[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
+    @(142.1375 mm, 124.6500 mm): Pad 2 [GND] of C11 on F.Cu
+[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
+    Local override; error
+    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
+    @(156.7500 mm, 98.6650 mm): Pad 3 [GND] of U4 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(156.6880 mm, 116.3320 mm): Pad 1 [MAP-EXT] of JP11 on F.Cu
+    @(157.9880 mm, 116.3320 mm): Pad 2 [Net-(JP11-Pad2)] of JP11 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(157.9880 mm, 116.3320 mm): Pad 2 [Net-(JP11-Pad2)] of JP11 on F.Cu
+    @(159.2880 mm, 116.3320 mm): Pad 3 [Net-(JP11-Pad3)] of JP11 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(157.0880 mm, 116.0320 mm): Polygon [<no net>] of JP11 on F.Cu
+    @(156.6880 mm, 116.3320 mm): Pad 1 [MAP-EXT] of JP11 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(157.0880 mm, 116.0320 mm): Polygon [<no net>] of JP11 on F.Cu
+    @(157.9880 mm, 116.3320 mm): Pad 2 [Net-(JP11-Pad2)] of JP11 on F.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.6500 mm, 116.4000 mm): Pad 1 [FUELPUMP-OUT] of JP8 on B.Cu
+    @(139.3500 mm, 116.4000 mm): Pad 2 [PROTO-3] of JP8 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 116.1000 mm): Polygon [<no net>] of JP8 on B.Cu
+    @(140.6500 mm, 116.4000 mm): Pad 1 [FUELPUMP-OUT] of JP8 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 116.1000 mm): Polygon [<no net>] of JP8 on B.Cu
+    @(139.3500 mm, 116.4000 mm): Pad 2 [PROTO-3] of JP8 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.6500 mm, 111.2000 mm): Pad 1 [ADC-Clamp-10] of JP6 on B.Cu
+    @(139.3500 mm, 111.2000 mm): Pad 2 [PROTO-1] of JP6 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 110.9000 mm): Polygon [<no net>] of JP6 on B.Cu
+    @(140.6500 mm, 111.2000 mm): Pad 1 [ADC-Clamp-10] of JP6 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 110.9000 mm): Polygon [<no net>] of JP6 on B.Cu
+    @(139.3500 mm, 111.2000 mm): Pad 2 [PROTO-1] of JP6 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.6500 mm, 113.8000 mm): Pad 1 [FAN-OUT] of JP7 on B.Cu
+    @(139.3500 mm, 113.8000 mm): Pad 2 [PROTO-2] of JP7 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 113.5000 mm): Polygon [<no net>] of JP7 on B.Cu
+    @(140.6500 mm, 113.8000 mm): Pad 1 [FAN-OUT] of JP7 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 113.5000 mm): Polygon [<no net>] of JP7 on B.Cu
+    @(139.3500 mm, 113.8000 mm): Pad 2 [PROTO-2] of JP7 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.6500 mm, 119.0000 mm): Pad 1 [TACHO-OUT] of JP9 on B.Cu
+    @(139.3500 mm, 119.0000 mm): Pad 2 [PROTO-4] of JP9 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 118.7000 mm): Polygon [<no net>] of JP9 on B.Cu
+    @(140.6500 mm, 119.0000 mm): Pad 1 [TACHO-OUT] of JP9 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 118.7000 mm): Polygon [<no net>] of JP9 on B.Cu
+    @(139.3500 mm, 119.0000 mm): Pad 2 [PROTO-4] of JP9 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.6500 mm, 121.6000 mm): Pad 1 [Clutch_in] of JP10 on B.Cu
+    @(139.3500 mm, 121.6000 mm): Pad 2 [PROTO-5] of JP10 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 121.3000 mm): Polygon [<no net>] of JP10 on B.Cu
+    @(140.6500 mm, 121.6000 mm): Pad 1 [Clutch_in] of JP10 on B.Cu
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(140.2500 mm, 121.3000 mm): Polygon [<no net>] of JP10 on B.Cu
+    @(139.3500 mm, 121.6000 mm): Pad 2 [PROTO-5] of JP10 on B.Cu
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(162.1570 mm, 132.9910 mm): Track [VDDA] on F.Cu, length 0.5520 mm
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(110.5000 mm, 137.0000 mm): Segment on Edge.Cuts
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(110.5000 mm, 137.0000 mm): Segment on Edge.Cuts
+    @(110.0000 mm, 107.8000 mm): Segment of XA1 on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(210.5000 mm, 37.0000 mm): Segment on Edge.Cuts
+    @(209.0600 mm, 106.5300 mm): Segment of XA1 on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(210.5000 mm, 37.0000 mm): Segment on Edge.Cuts
+    @(211.6000 mm, 69.7000 mm): Segment of XA1 on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(110.5000 mm, 137.0000 mm): Segment on Edge.Cuts
+    @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(141.2000 mm, 131.4000 mm): Footprint C3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(145.6000 mm, 116.6000 mm): Footprint C5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(141.2000 mm, 126.9000 mm): Footprint C9
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(141.2000 mm, 129.1500 mm): Footprint C10
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(141.2000 mm, 124.6500 mm): Footprint C11
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(154.3000 mm, 126.9000 mm): Footprint C12
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(154.3000 mm, 129.1500 mm): Footprint C13
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(154.3000 mm, 124.6500 mm): Footprint C14
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(196.9000 mm, 112.9000 mm): Footprint C16
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'CP_EIA-7343-31_Kemet-D' does not match copy in library 'Capacitor_Tantalum_SMD'.
+    Local override; warning
+    @(193.5480 mm, 45.5930 mm): Footprint C17
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(147.4000 mm, 94.2000 mm): Footprint D1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(147.4000 mm, 91.7000 mm): Footprint D2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(120.7000 mm, 93.7000 mm): Footprint D3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(120.7000 mm, 101.5000 mm): Footprint D4
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(120.7000 mm, 83.7000 mm): Footprint D7
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(120.7000 mm, 91.5000 mm): Footprint D8
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-323' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(124.2000 mm, 83.7000 mm): Footprint D11
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(137.3625 mm, 43.6000 mm): Footprint R1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(117.2000 mm, 93.7000 mm): Footprint R9
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(117.2000 mm, 101.5000 mm): Footprint R10
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(143.9000 mm, 94.2000 mm): Footprint R11
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(139.3500 mm, 94.0500 mm): Footprint R13
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(139.3500 mm, 91.7000 mm): Footprint R14
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(137.4000 mm, 45.7000 mm): Footprint R16
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(179.8000 mm, 96.7000 mm): Footprint R20
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(163.6500 mm, 101.0000 mm): Footprint R21
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(163.6500 mm, 99.0000 mm): Footprint R22
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(120.7000 mm, 81.5000 mm): Footprint R23
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(117.2000 mm, 91.5000 mm): Footprint R24
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(143.9000 mm, 99.2000 mm): Footprint R25
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(139.3500 mm, 99.2000 mm): Footprint R27
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(139.3500 mm, 96.8500 mm): Footprint R28
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(164.9000 mm, 110.9000 mm): Footprint R29
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(168.4000 mm, 108.9000 mm): Footprint R32
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(154.0510 mm, 70.0000 mm): Footprint R47
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(156.2100 mm, 70.0000 mm): Footprint R48
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(155.7000 mm, 52.6000 mm): Footprint R49
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(157.8000 mm, 52.6000 mm): Footprint R50
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(155.9000 mm, 110.3000 mm): Footprint R51
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(151.4000 mm, 48.8000 mm): Footprint R52
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(155.0000 mm, 48.8000 mm): Footprint R53
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-323' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(124.2000 mm, 93.7000 mm): Footprint D5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-323' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(124.2000 mm, 101.5000 mm): Footprint D6
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(148.2000 mm, 126.9000 mm): Footprint R38
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(172.1000 mm, 115.0000 mm): Footprint R37
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(144.7000 mm, 124.6500 mm): Footprint R36
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(144.7000 mm, 129.1500 mm): Footprint R35
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(148.2000 mm, 122.4000 mm): Footprint R34
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(174.2000 mm, 125.0000 mm): Footprint R42
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(148.2000 mm, 129.1500 mm): Footprint R39
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(148.2000 mm, 124.6500 mm): Footprint R40
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_issues]: The footprint library 'Shields' was not found at '/work/lib/Shields/Shields.pretty'.
+    Local override; warning
+    @(110.0000 mm, 107.8000 mm): Footprint XA1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(154.3000 mm, 131.4000 mm): Footprint C6
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(145.4150 mm, 69.9770 mm): Footprint C1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(147.5740 mm, 69.9770 mm): Footprint C2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-16_3.9x9.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(166.0000 mm, 124.1000 mm): Footprint U6
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-123F' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(139.4000 mm, 82.5500 mm): Footprint D18
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-123F' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(144.2750 mm, 82.5500 mm): Footprint D17
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(154.3000 mm, 122.4000 mm): Footprint C8
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(143.9000 mm, 96.7000 mm): Footprint R26
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x06_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(148.4800 mm, 45.9000 mm): Footprint J2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(188.3000 mm, 101.5000 mm): Footprint R62
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-123F' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(139.4000 mm, 79.6000 mm): Footprint D19
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(188.3000 mm, 109.9000 mm): Footprint C22
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(186.2000 mm, 109.9000 mm): Footprint C23
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(147.4000 mm, 99.2000 mm): Footprint D9
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'LED_0805_2012Metric' does not match copy in library 'LED_SMD'.
+    Local override; warning
+    @(147.4000 mm, 96.7000 mm): Footprint D10
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-323' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(124.2000 mm, 91.5000 mm): Footprint D12
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-323' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(191.9000 mm, 109.0000 mm): Footprint D13
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(185.8000 mm, 116.8000 mm): Footprint R43
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(185.8000 mm, 125.1000 mm): Footprint R44
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(168.9000 mm, 100.1000 mm): Footprint R45
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(172.3375 mm, 100.1000 mm): Footprint R46
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(151.8920 mm, 70.0000 mm): Footprint R56
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(149.7330 mm, 70.0000 mm): Footprint R57
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(159.9000 mm, 52.6000 mm): Footprint R60
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(162.0000 mm, 52.6000 mm): Footprint R61
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(186.2000 mm, 101.5000 mm): Footprint R63
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-8_3.9x4.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(122.2000 mm, 97.6000 mm): Footprint U1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-8_3.9x4.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(122.2000 mm, 87.6000 mm): Footprint U3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-8_3.9x4.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(154.0500 mm, 99.3000 mm): Footprint U4
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-8_3.9x4.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(141.5000 mm, 87.0000 mm): Footprint U7
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SMA' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(198.1200 mm, 46.4820 mm): Footprint D14
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_issues]: The footprint library 'Misc' was not found at '/work/lib/Misc/Misc.pretty'.
+    Local override; warning
+    @(171.8000 mm, 94.0000 mm): Footprint S1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'TO-263-3_TabPin2' does not match copy in library 'Package_TO_SOT_SMD'.
+    Local override; warning
+    @(174.0000 mm, 46.7500 mm): Footprint U8
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(152.0500 mm, 95.5000 mm): Footprint C24
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(155.5500 mm, 95.5000 mm): Footprint C25
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(152.0500 mm, 87.0000 mm): Footprint C26
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(155.5500 mm, 87.0000 mm): Footprint C27
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-123F' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(144.2750 mm, 79.6000 mm): Footprint D16
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'DIP-8_W7.62mm_Socket' does not match copy in library 'Package_DIP'.
+    Local override; warning
+    @(193.0000 mm, 123.5000 mm): Footprint IC3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal' does not match copy in library 'TerminalBlock_Phoenix'.
+    Local override; warning
+    @(205.0000 mm, 49.0000 mm): Footprint J3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'.
+    Local override; warning
+    @(153.1000 mm, 110.3000 mm): Footprint Q1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'.
+    Local override; warning
+    @(145.9000 mm, 110.3000 mm): Footprint Q2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'.
+    Local override; warning
+    @(149.5000 mm, 110.3000 mm): Footprint Q3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_issues]: The footprint library 'Misc' was not found at '/work/lib/Misc/Misc.pretty'.
+    Local override; warning
+    @(125.8200 mm, 66.9220 mm): Footprint U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x05_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(198.2550 mm, 81.4000 mm): Footprint J1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(179.8000 mm, 94.0000 mm): Footprint R4
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(179.8000 mm, 91.2000 mm): Footprint R3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'CP_EIA-3528-21_Kemet-B' does not match copy in library 'Capacitor_Tantalum_SMD'.
+    Local override; warning
+    @(184.4040 mm, 44.9580 mm): Footprint C21
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(184.4040 mm, 50.2920 mm): Footprint C18
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(163.5760 mm, 42.6720 mm): Footprint C20
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x03_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(159.8500 mm, 97.6000 mm): Footprint JP1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x03_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(180.9000 mm, 113.4000 mm): Footprint JP2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(177.2000 mm, 113.4000 mm): Footprint JP4
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(177.2000 mm, 123.4000 mm): Footprint JP5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(174.2000 mm, 115.0000 mm): Footprint R41
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(137.4000 mm, 47.8000 mm): Footprint R15
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(148.2000 mm, 131.4000 mm): Footprint R31
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'IDC-Header_2x20_P2.54mm_Vertical' does not match copy in library 'Connector_IDC'.
+    Local override; warning
+    @(130.5000 mm, 79.7400 mm): Footprint J4
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x03_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(180.9000 mm, 123.4000 mm): Footprint JP3
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-8_3.9x4.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(154.0500 mm, 90.8000 mm): Footprint U2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(163.6500 mm, 90.5000 mm): Footprint R8
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(163.6500 mm, 92.5000 mm): Footprint R7
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(137.4000 mm, 41.5000 mm): Footprint R2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(145.6000 mm, 118.7000 mm): Footprint R33
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(143.9000 mm, 91.7000 mm): Footprint R12
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(164.9000 mm, 108.9000 mm): Footprint C4
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(133.7000 mm, 47.8000 mm): Footprint R17
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(133.7000 mm, 45.7000 mm): Footprint R18
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(133.7000 mm, 41.5000 mm): Footprint R6
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(133.7000 mm, 43.6000 mm): Footprint R5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'Pololu_Breakout-16_15.2x20.3mm' does not match copy in library 'Module'.
+    Local override; warning
+    @(129.9000 mm, 64.4000 mm): Footprint A1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(157.9000 mm, 110.3000 mm): Footprint R30
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(193.3000 mm, 112.9000 mm): Footprint C15
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(187.6625 mm, 94.0000 mm): Footprint R19
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_issues]: Footprint 'C_0805_2012Metric_Pad1.15x1.40mm_HandSolder' not found in library 'Capacitor_SMD'.
+    Local override; warning
+    @(175.9250 mm, 100.1000 mm): Footprint C19
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x05_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(121.4120 mm, 112.7760 mm): Footprint J7
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x03_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(177.9350 mm, 61.0800 mm): Footprint J8
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x04_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(198.2550 mm, 68.7000 mm): Footprint J5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'PinHeader_1x05_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'.
+    Local override; warning
+    @(185.5550 mm, 61.0800 mm): Footprint J6
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(173.1375 mm, 108.9000 mm): Footprint C7
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'Fuse_1812_4532Metric' does not match copy in library 'Fuse'.
+    Local override; warning
+    @(151.8920 mm, 115.5700 mm): Footprint F1
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'Fuse_1812_4532Metric' does not match copy in library 'Fuse'.
+    Local override; warning
+    @(187.7060 mm, 90.1700 mm): Footprint F2
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SOD-323' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(168.0000 mm, 117.5000 mm): Footprint D20
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(199.8980 mm, 89.9160 mm): Footprint C28
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(195.8340 mm, 90.6780 mm): Footprint R54
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'C_0805_2012Metric' does not match copy in library 'Capacitor_SMD'.
+    Local override; warning
+    @(154.3000 mm, 120.1420 mm): Footprint C29
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm' does not match copy in library 'Jumper'.
+    Local override; warning
+    @(157.9880 mm, 116.3320 mm): Footprint JP11
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'R_0805_2012Metric' does not match copy in library 'Resistor_SMD'.
+    Local override; warning
+    @(158.2420 mm, 120.1420 mm): Footprint R55
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SOIC-8_3.9x4.9mm_P1.27mm' does not match copy in library 'Package_SO'.
+    Local override; warning
+    @(141.5000 mm, 75.1750 mm): Footprint U9
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'D_SMB' does not match copy in library 'Diode_SMD'.
+    Local override; warning
+    @(188.4680 mm, 46.2280 mm): Footprint D15
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm' does not match copy in library 'Jumper'.
+    Local override; warning
+    @(140.0000 mm, 116.4000 mm): Footprint JP8
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm' does not match copy in library 'Jumper'.
+    Local override; warning
+    @(140.0000 mm, 111.2000 mm): Footprint JP6
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm' does not match copy in library 'Jumper'.
+    Local override; warning
+    @(140.0000 mm, 113.8000 mm): Footprint JP7
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm' does not match copy in library 'Jumper'.
+    Local override; warning
+    @(140.0000 mm, 119.0000 mm): Footprint JP9
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[lib_footprint_mismatch]: Footprint 'SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm' does not match copy in library 'Jumper'.
+    Local override; warning
+    @(140.0000 mm, 121.6000 mm): Footprint JP10
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(131.9000 mm, 54.0000 mm): Polygon on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(124.5000 mm, 53.8000 mm): Segment on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(110.0000 mm, 107.8000 mm): Segment of XA1 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(203.3460 mm, 42.6120 mm): Segment of J3 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(203.6120 mm, 42.3460 mm): Segment of J3 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(205.9920 mm, 45.2580 mm): Segment of J3 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(206.2740 mm, 45.0070 mm): Segment of J3 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(125.8200 mm, 66.9220 mm): PTH pad 1 [Net-(JP11-Pad2)] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(125.8200 mm, 64.3820 mm): PTH pad 2 [GND] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(125.8200 mm, 61.8420 mm): PTH pad 3 [VDD] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(125.8200 mm, 59.3020 mm): PTH pad 4 [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(125.8200 mm, 56.7620 mm): PTH pad 5 [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(125.8200 mm, 54.2220 mm): PTH pad 6 [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(113.5000 mm, 72.1720 mm): PTH pad ~ [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(128.5000 mm, 50.3000 mm): Segment of A1 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(149.0800 mm, 65.8000 mm): Segment of A1 on F.Silkscreen
+    @(210.5000 mm, 137.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(127.0950 mm, 133.3500 mm): Segment of J4 on F.Silkscreen
+    @(126.6000 mm, 102.5000 mm): Segment on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(127.0950 mm, 133.3500 mm): Segment of J4 on F.Silkscreen
+    @(126.6000 mm, 105.2000 mm): Segment on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(127.0950 mm, 133.3500 mm): Segment of J4 on F.Silkscreen
+    @(127.0000 mm, 102.5000 mm): Segment on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(127.0000 mm, 105.2000 mm): Segment on F.Silkscreen
+    @(127.0950 mm, 133.3500 mm): Segment of J4 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(127.0950 mm, 133.3500 mm): Segment of J4 on F.Silkscreen
+    @(110.0000 mm, 107.8000 mm): Segment of XA1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(136.4450 mm, 74.3900 mm): Segment of J4 on F.Silkscreen
+    @(110.0000 mm, 107.8000 mm): Segment of XA1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+    @(131.9000 mm, 54.0000 mm): Polygon on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(186.8250 mm, 59.7500 mm): Segment of J6 on F.Silkscreen
+    @(199.5850 mm, 59.7500 mm): Segment of J5 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(199.5850 mm, 59.7500 mm): Segment of J5 on F.Silkscreen
+    @(197.0450 mm, 62.4100 mm): Segment of J6 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(186.8250 mm, 59.7500 mm): Segment of J6 on F.Silkscreen
+    @(196.9250 mm, 67.4300 mm): Segment of J5 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(128.0000 mm, 49.1000 mm): PCB text 'MODULE
+CHIP
+THIS END' on F.Silkscreen
+    @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(127.5000 mm, 53.8000 mm): Segment on F.Silkscreen
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+    @(128.5000 mm, 50.3000 mm): Segment of A1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(124.5000 mm, 53.8000 mm): Segment on F.Silkscreen
+    @(125.8200 mm, 54.2220 mm): PTH pad 6 [<no net>] of U5
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+    @(125.8200 mm, 54.2220 mm): PTH pad 6 [<no net>] of U5
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
+    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+    @(149.0800 mm, 65.8000 mm): Segment of A1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
+    @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(199.5850 mm, 68.7000 mm): Segment of J5 on F.Silkscreen
+    @(199.5850 mm, 69.9100 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(199.5850 mm, 68.7000 mm): Segment of J5 on F.Silkscreen
+    @(199.5850 mm, 80.1300 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(199.5850 mm, 70.0300 mm): Segment of J5 on F.Silkscreen
+    @(199.5850 mm, 80.1300 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(196.9250 mm, 80.1300 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(196.9250 mm, 80.1300 mm): Segment of J1 on F.Silkscreen
+    @(195.7150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(196.9250 mm, 80.1300 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(196.9250 mm, 80.1300 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(196.9250 mm, 67.4300 mm): Segment of J5 on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(195.7150 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(195.7150 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(170.3150 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(172.8550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(170.3150 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(170.3150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(172.8550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(175.3950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(183.0150 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 63.6200 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 66.1600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 68.7000 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 71.2400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(185.5550 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(185.5550 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 73.7800 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 76.3200 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 78.8600 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(188.0950 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 81.4000 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(188.0950 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(190.6350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(193.1750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(190.6350 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(193.1750 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(175.3950 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(177.9350 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(180.4750 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 83.9400 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(177.9350 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(183.0150 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+    @(180.4750 mm, 86.4800 mm): Circle of REF** on F.Silkscreen
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

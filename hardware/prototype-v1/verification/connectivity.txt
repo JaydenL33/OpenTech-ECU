@@ -1,0 +1,19 @@
+Schematic-to-PCB connectivity comparison
+=======================================
+schematic nodes: 520
+pcb nodes:       514
+common nodes:    514
+schematic nets split on pcb: 0
+pcb nets split on schematic: 0
+nodes only in schematic: 6
+nodes only in pcb:       0
+
+Schematic-only nodes (expected: unpopulated Arduino ICSP header pins):
+  XA1.5V2
+  XA1.GND4
+  XA1.MISO
+  XA1.MOSI
+  XA1.RST2
+  XA1.SCK
+
+RESULT: PASS
