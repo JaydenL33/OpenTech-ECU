@@ -7,8 +7,8 @@
 | Audit date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:35Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `5d217bf4471fa1391a5acd0aa341848ec43f5431` is the upstream Speeduino parent; the OpenTech Rust workspace is committed in the OpenTech commits recorded by Git |
-| Rust source manifest | SHA-256 `f9fb7b792d87d39c0eb7dbb3a240d406f8556ea99dad327c04bf3aef6d278d7e` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Git HEAD | `c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909` (OpenTech source commit; later commits are documentation only) |
+| Rust source manifest | SHA-256 `e9bb90a63184b4834bf793ed6fea89342aef6ddea917e68e4207d32256027971` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test status at cut-off | 128 tests: 128 passed, 0 failed; `cargo fmt` and clippy pass; firmware no_std skeleton target check passes. See AUD-05. Gate 0 host software evidence is **PASS, scoped**; not a certification |
 | Related documents | AUD-02 through AUD-10; `docs/SAFETY-CASE.md`; `docs/FORMULAS.md`; `ECU_MASTER_BRIEF.md` |
