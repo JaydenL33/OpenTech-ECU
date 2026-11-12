@@ -1,0 +1,11 @@
+[package]
+name = "ecu-lambda"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+ecu-types = { path = "../ecu-types" }
+ecu-calibration = { path = "../ecu-calibration" }
+serde = { workspace = true, features = ["std"] }
+serde_json = { workspace = true }

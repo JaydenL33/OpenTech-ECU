@@ -32,3 +32,10 @@ test/output_export.cpp
 misra/.results
 ~$*
 local.ini
+# OpenTech-ECU additions
+ecu/target/
+ecu/runs/
+ecu/apps/tuning-studio/dist/
+ecu/apps/tuning-studio/node_modules/
+ecu/apps/tuning-copilot/node_modules/
+ecu/apps/tuning-studio/*.tsbuildinfo

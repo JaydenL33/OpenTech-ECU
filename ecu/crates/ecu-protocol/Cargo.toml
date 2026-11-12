@@ -1,0 +1,10 @@
+[package]
+name = "ecu-protocol"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+ecu-types = { path = "../ecu-types" }
+serde = { workspace = true, features = ["std"] }
+serde_json = { workspace = true }
