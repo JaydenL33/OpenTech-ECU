@@ -30,7 +30,10 @@ use ecu_protection::ActiveFault;
 use ecu_protocol::{negotiate, Hello, HelloAck, JsonEnvelope, ServerEvent, PROTOCOL_VERSION};
 use ecu_simulator::scenario::{builtin_scenarios, by_id, Scenario};
 use ecu_simulator::SimEngine;
-use ecu_types::{Aspiration, EngineConfig, FuelConfig, InjectorConfig, LogFile};
+use ecu_types::{
+    default_firing_order, Aspiration, EngineConfig, FuelConfig, InjectorConfig, LogFile,
+    MAX_SEQUENTIAL_CYLINDERS,
+};
 
 #[derive(Parser, Debug)]
 #[command(
@@ -882,6 +885,7 @@ struct SetupForm {
     pub engine_name: String,
     pub displacement_cc: f32,
     pub cylinders: u8,
+    #[serde(default)]
     pub firing_order: Vec<u8>,
     pub compression_ratio: f32,
     pub aspiration: String,
@@ -959,20 +963,21 @@ async fn evo_simulation(
     })))
 }
 
-async fn setup_generate(
-    State(state): State<AppState>,
-    Json(form): Json<SetupForm>,
-) -> Result<Json<serde_json::Value>, ApiError> {
-    if form.cylinders == 0 || form.firing_order.is_empty() {
-        return Err(ApiError::bad(
-            "cylinder count and firing order are required",
-        ));
+fn wizard_request_from_form(form: SetupForm) -> Result<WizardRequest, ApiError> {
+    if !(1..=MAX_SEQUENTIAL_CYLINDERS).contains(&form.cylinders) {
+        return Err(ApiError::bad("cylinder count must be 1..=8"));
     }
+    let firing_order = if form.firing_order.is_empty() {
+        default_firing_order(form.cylinders)
+            .ok_or_else(|| ApiError::bad("no default firing order for this cylinder count"))?
+    } else {
+        form.firing_order
+    };
     let mut engine = EngineConfig::default_inline4();
     engine.name = form.engine_name;
     engine.displacement_cc = form.displacement_cc;
     engine.cylinders = form.cylinders;
-    engine.firing_order = form.firing_order;
+    engine.firing_order = firing_order;
     engine.cylinder_banks = vec![1; form.cylinders as usize];
     engine.compression_ratio = form.compression_ratio;
     engine.rev_limit = form.rev_limit;
@@ -1009,6 +1014,14 @@ async fn setup_generate(
     req.engine = engine;
     req.fuel = fuel;
     req.vehicle_name = form.vehicle_name;
+    Ok(req)
+}
+
+async fn setup_generate(
+    State(state): State<AppState>,
+    Json(form): Json<SetupForm>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let req = wizard_request_from_form(form)?;
     let result = generate_starter(&req, 1).map_err(|e| ApiError::bad(e.to_string()))?;
     let pre = preflight(&result);
     let mut session = state
@@ -1090,5 +1103,56 @@ async fn ws_loop(mut socket: WebSocket, state: AppState, name: String) {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn omitted_firing_order_uses_default_for_one_to_eight() {
+        for n in 1..=8 {
+            let req = wizard_request_from_form(SetupForm {
+                cylinders: n,
+                firing_order: vec![],
+                ..SetupForm::default()
+            })
+            .unwrap();
+            assert_eq!(req.engine.firing_order, default_firing_order(n).unwrap());
+            assert!(generate_starter(&req, 1).is_ok(), "n={n}");
+        }
+    }
+
+    #[test]
+    fn cylinder_count_outside_one_to_eight_is_rejected() {
+        for n in [0, 9, 12] {
+            let error = wizard_request_from_form(SetupForm {
+                cylinders: n,
+                ..SetupForm::default()
+            })
+            .unwrap_err();
+            assert_eq!(error.code, "bad_request", "n={n}");
+        }
+    }
+
+    #[test]
+    fn invalid_explicit_firing_order_fails_generation() {
+        let req = wizard_request_from_form(SetupForm {
+            cylinders: 3,
+            firing_order: vec![1, 2, 2],
+            ..SetupForm::default()
+        })
+        .unwrap();
+        let error = generate_starter(&req, 1).unwrap_err();
+        assert!(error.to_string().contains("ENG_FIRING_INVALID"));
+    }
+
+    #[test]
+    fn default_form_still_generates_inline4() {
+        let req = wizard_request_from_form(SetupForm::default()).unwrap();
+        assert_eq!(req.engine.cylinders, 4);
+        assert_eq!(req.engine.firing_order, vec![1, 3, 4, 2]);
+        assert!(generate_starter(&req, 1).is_ok());
     }
 }
