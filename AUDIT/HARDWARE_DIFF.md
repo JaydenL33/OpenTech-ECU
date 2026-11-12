@@ -18,6 +18,7 @@
 | D-03 | Re-fill copper zones with KiCad 9 filler | Copper fill only | Same nets; updated clearances; removed 155 legacy clearance violations; starved thermals 6→4 | DRC before 766 / after 609; connectivity PASS |
 | D-04 | Enable bundled `v0.4.4c-rescue.lib` in `sym-lib-table` | Project library config | None | ERC library warnings 111→101 |
 | D-05 | Copy `fp-lib-table` for reference | Project library config | None | Custom libraries still missing; ERC warning recorded |
+| D-06 | Mark 150 unannotated proto-area pads `exclude from position files` / `exclude from BOM` | Assembly metadata | None | Position file now 141 real placements, 0 `REF**`; DRC unchanged 609 |
 
 **No component value, net assignment, footprint assignment, track, via, board
 outline or mounting-hole edit was made.**

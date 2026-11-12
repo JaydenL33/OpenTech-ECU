@@ -154,7 +154,7 @@ Generated from the native PCB/schematic by
 |---|---|---|
 | Gerbers | 9 files: F/B copper, F/B paste, F/B silkscreen, F/B mask, Edge.Cuts | Generated; `.gbrjob` written |
 | Drill | `v0.4.4d.drl` (Excellon, mm) + drill map PDF | Generated |
-| Position | `v0.4.4d-pos.csv` (mm, drill origin) | 291 rows: 141 real placements + 150 `REF**` proto pads; **not assembly-ready** (`HW-MECH-03`) |
+| Position | `v0.4.4d-pos.csv` (mm, drill origin) | 141 real placements, 0 `REF**`; JP6–JP11 are hand-solder/config features and are not machine placements |
 | Bare-board net test | `v0.4.4d-ipc-d-356.net` | Generated |
 | BOM | `v0.4.4d-bom.csv` | 47 grouped rows; 11 rows lack MPN (blocker HW-BOM-01) |
 | Schematic PDF | `v0.4.4d-schematic.pdf` | Generated from native `.kicad_sch` |

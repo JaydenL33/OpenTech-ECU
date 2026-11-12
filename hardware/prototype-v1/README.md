@@ -52,7 +52,7 @@ Outputs are written to `verification/` and `manufacturing/`.
 |---|---|
 | `manufacturing/gerbers/` | 9 Gerber layers + `.gbrjob` |
 | `manufacturing/drill/` | Excellon drill file + drill map PDF |
-| `manufacturing/assembly/` | BOM CSV, position CSV, IPC-D-356 net test, KiCad netlist, schematic PDF |
+| `manufacturing/assembly/` | BOM CSV, position CSV (141 real placements, no proto pads), IPC-D-356 net test, KiCad netlist, schematic PDF |
 
 These are **review artefacts**. They have not been DFM-checked by a board house
 or manufactured. The BOM has 11 rows without MPNs; see `HW-BOM-01`.
@@ -65,6 +65,9 @@ or manufactured. The BOM has 11 rows without MPNs; see `HW-BOM-01`.
    removed 155 legacy clearance violations; netlist unchanged).
 4. Bundled rescue symbol library enabled via `sym-lib-table` and `fp-lib-table`
    copied for reference.
+5. The 150 unannotated proto-area pads are marked exclude-from-BOM and
+   exclude-from-position-files. This is assembly metadata only; no copper
+   change.
 
 No component value, net, footprint, track, via, outline or mounting-hole edit was
 made. Full provenance: `../../AUDIT/UPSTREAM_PROVENANCE.md`. Full check

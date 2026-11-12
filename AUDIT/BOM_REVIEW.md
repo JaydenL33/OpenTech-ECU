@@ -90,9 +90,10 @@ These are review rules, not final substitutions:
 4. **Derating/thermal review** for power, driver and clamp parts.
 5. **Assembly method and risk class** per row (SMT, hand-solder, module,
    connector, PCB feature).
-6. **Pick-and-place cleanup**: the current position file contains 150
-   unannotated `REF**` proto pads and omits JP6–JP11; an assembly house cannot
-   use it as-is (`HW-MECH-03`).
+6. **JP6–JP11 assembly intent**: the position file now contains 141 real
+   placements and no `REF**` proto pads; the six solder jumpers are config
+   features and are not machine placements. Confirm whether they should be
+   bridged at assembly or left for the builder.
 7. **Purchase-vs-build comparison** (assembled v0.4.4d board vs bare PCB +
    parts), under the A$250 target if credible.
 

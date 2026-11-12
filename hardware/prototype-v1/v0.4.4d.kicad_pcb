@@ -30374,7 +30374,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -30505,7 +30505,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -30636,7 +30636,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -30767,7 +30767,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -30898,7 +30898,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31029,7 +31029,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31160,7 +31160,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31291,7 +31291,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31422,7 +31422,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31553,7 +31553,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31684,7 +31684,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31815,7 +31815,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -31946,7 +31946,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32077,7 +32077,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32208,7 +32208,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32339,7 +32339,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32470,7 +32470,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32601,7 +32601,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32732,7 +32732,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32863,7 +32863,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -32994,7 +32994,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33125,7 +33125,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33256,7 +33256,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33387,7 +33387,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33518,7 +33518,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33649,7 +33649,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33780,7 +33780,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -33911,7 +33911,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34042,7 +34042,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34173,7 +34173,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34304,7 +34304,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34435,7 +34435,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34566,7 +34566,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34697,7 +34697,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34828,7 +34828,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -34959,7 +34959,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35090,7 +35090,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35221,7 +35221,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35352,7 +35352,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35483,7 +35483,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35614,7 +35614,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35745,7 +35745,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -35876,7 +35876,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36007,7 +36007,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36138,7 +36138,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36269,7 +36269,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36400,7 +36400,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36531,7 +36531,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36662,7 +36662,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36793,7 +36793,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -36924,7 +36924,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37055,7 +37055,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37186,7 +37186,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37317,7 +37317,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37448,7 +37448,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37579,7 +37579,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37710,7 +37710,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37841,7 +37841,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -37972,7 +37972,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38103,7 +38103,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38234,7 +38234,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38365,7 +38365,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38496,7 +38496,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38627,7 +38627,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38758,7 +38758,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -38889,7 +38889,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39020,7 +39020,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39151,7 +39151,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39282,7 +39282,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39413,7 +39413,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39544,7 +39544,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39675,7 +39675,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39806,7 +39806,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -39937,7 +39937,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40068,7 +40068,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40199,7 +40199,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40330,7 +40330,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40461,7 +40461,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40592,7 +40592,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40723,7 +40723,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40854,7 +40854,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -40985,7 +40985,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41116,7 +41116,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41247,7 +41247,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41378,7 +41378,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41509,7 +41509,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41640,7 +41640,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41771,7 +41771,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -41902,7 +41902,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42033,7 +42033,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42164,7 +42164,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42295,7 +42295,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42426,7 +42426,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42557,7 +42557,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42688,7 +42688,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42819,7 +42819,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -42950,7 +42950,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43081,7 +43081,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43212,7 +43212,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43343,7 +43343,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43474,7 +43474,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43605,7 +43605,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43736,7 +43736,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43867,7 +43867,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -43998,7 +43998,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44129,7 +44129,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44260,7 +44260,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44391,7 +44391,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44522,7 +44522,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44653,7 +44653,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44784,7 +44784,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -44915,7 +44915,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45046,7 +45046,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45177,7 +45177,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45308,7 +45308,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45439,7 +45439,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45570,7 +45570,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45701,7 +45701,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45832,7 +45832,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -45963,7 +45963,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46094,7 +46094,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46225,7 +46225,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46356,7 +46356,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46487,7 +46487,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46618,7 +46618,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46749,7 +46749,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -46880,7 +46880,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47011,7 +47011,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47142,7 +47142,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47273,7 +47273,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47404,7 +47404,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47535,7 +47535,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47666,7 +47666,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47797,7 +47797,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -47928,7 +47928,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48059,7 +48059,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48190,7 +48190,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48321,7 +48321,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48452,7 +48452,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48583,7 +48583,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48714,7 +48714,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48845,7 +48845,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -48976,7 +48976,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49107,7 +49107,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49238,7 +49238,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49369,7 +49369,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49500,7 +49500,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49631,7 +49631,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49762,7 +49762,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -49893,7 +49893,7 @@
 				)
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
 			(end 1.25 0.05)
@@ -71465,7 +71465,7 @@
 		)
 		(polygon
 			(pts
-				(xy 210.5 37) (xy 210.5 39.5) (xy 110.5 39.5) (xy 110.5 37)
+				(xy 210.5 137) (xy 210.5 134.5) (xy 110.5 134.5) (xy 110.5 137)
 			)
 		)
 	)
@@ -71497,7 +71497,7 @@
 		)
 		(polygon
 			(pts
-				(xy 210.5 137) (xy 210.5 134.5) (xy 110.5 134.5) (xy 110.5 137)
+				(xy 210.5 37) (xy 210.5 39.5) (xy 110.5 39.5) (xy 110.5 37)
 			)
 		)
 	)
