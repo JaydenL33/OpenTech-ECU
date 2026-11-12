@@ -84,6 +84,26 @@ holes. The netlist partition is unchanged.
 | Tests performed | DRC `padstack` 2 → 0, `annular_width` 2 → 0. Excellon drill file now declares `T9C4.100` as `NonPlated,NPTH,ComponentDrill` (file function `MixedPlating`). |
 | Remaining review | Mechanical reviewer to confirm the U5 mounting method and screw/tab stack. |
 
+### 2.4 Structural check: only the intended objects changed
+
+Board statistics were produced with `pcbnew` for the preserved upstream KiCad 5
+board and the revised native board:
+
+| Object | Upstream v0.4.4d | Revised prototype-v1 | Expected difference |
+|---|---:|---:|---|
+| Footprints | 297 | 297 | none |
+| Pads | 677 | 677 | none |
+| Nets | 185 | 185 | none |
+| Zones | 4 | 4 | none |
+| Track/via objects | 1233 | 1232 | −1 (R-02 stub) |
+| Track segments | 1055 | 1054 | −1 |
+| Vias | 178 | 178 | none |
+| NPTH pads | 0 | 2 | +2 (R-03 U5 tabs) |
+
+This confirms that R-01 changed only zone-connection attributes, R-02 removed
+exactly one track object, and R-03 changed exactly two pad attributes. No
+footprint, pad count, net count or zone outline changed.
+
 ## 3. Why the zone re-fill is not a circuit change
 
 KiCad 8+ cannot use the legacy zone-fill strategy. Opening and saving the
