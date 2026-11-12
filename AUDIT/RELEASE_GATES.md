@@ -88,14 +88,14 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 - Schematic, PCB, BOM, gerbers, drill, assembly drawing, build notes.
 - ERC/DRC report with rule set, exceptions and reviewer rationale.
 - Board revision/serial number; assembly inspection record.
-- A routed, native KiCad review copy of Speeduino v0.4.4d exists at `hardware/prototype-v1/` (0 unconnected items, gerbers/drill/BOM/position generated). ERC 101 and DRC 609 violations remain; the BOM has 11 rows without MPN and no assembly drawing. It is **not** a Gate 1 pass and no board has been assembled. The older `hardware/kicad/evo8-bench-ecu/` draft remains unrouted (499 unconnected, 14 violations) and is not the baseline.
+- A routed, native KiCad review copy of Speeduino v0.4.4d exists at `hardware/prototype-v1/` (0 unconnected items, gerbers/drill/BOM/position generated). ERC 101 and DRC 600 violations remain; the BOM has 11 rows without MPN and no assembly drawing. It is **not** a Gate 1 pass and no board has been assembled. The older `hardware/kicad/evo8-bench-ecu/` draft remains unrouted (499 unconnected, 14 violations) and is not the baseline.
 
 ### 3.3 Exit criteria
 
 | # | Criterion | Required evidence | Current status |
 |---:|---|---|---|
 | 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **PARTIAL**: native KiCad + gerbers/drill/BOM/position exist; no assembly drawing, no independent review, BOM gaps. No physical board |
-| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC 101 (44 errors), DRC 609 (238 errors, 0 unconnected); exceptions classified but not independently accepted |
+| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC 101 (44 errors), DRC 600 (230 errors, 0 unconnected); exceptions classified but not independently accepted |
 | 1.3 | BOM derating/lifecycle review | BOM review | **BLOCKED** |
 | 1.4 | Visual inspection | Photos/checklist | **BLOCKED** |
 | 1.5 | Continuity/rails/no shorts | Measurement record | **BLOCKED** |

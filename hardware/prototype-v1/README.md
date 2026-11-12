@@ -1,8 +1,9 @@
 # Prototype v1 — Speeduino v0.4.4d SMD review copy
 
 This is the **native KiCad 9 review copy** of the selected Speeduino v0.4.4d SMD
-design. The electrical design is upstream; OpenTech-ECU only saved it to KiCad 9
-format and re-filled the copper zones. It is **not fabrication-approved**.
+design. The electrical design is upstream; OpenTech-ECU saved it to KiCad 9
+format, re-filled the copper zones and applied three documented PCB fixes
+(R-01…R-03). It is **not fabrication-approved**.
 
 | Field | Value |
 |---|---|
@@ -13,7 +14,7 @@ format and re-filled the copper zones. It is **not fabrication-approved**.
 | Board | 100.05 × 100.05 mm, 2-layer, 4 injector / 4 ignition, Arduino Mega 2560 shield, IDC40 |
 | Routing | Complete: 0 unconnected items |
 | ERC | 101 violations (44 errors, 57 warnings) — see `verification/erc.rpt` |
-| DRC | 609 violations (238 errors, 371 warnings), 0 unconnected — see `verification/drc.rpt` |
+| DRC | 600 violations (230 errors, 370 warnings), 0 unconnected — see `verification/drc.rpt` |
 | Connectivity | PASS, 514/514 common nodes |
 | Status | **H2 not passed; not fabrication-approved** |
 
@@ -68,10 +69,17 @@ or manufactured. The BOM has 11 rows without MPNs; see `HW-BOM-01`.
 5. The 150 unannotated proto-area pads are marked exclude-from-BOM and
    exclude-from-position-files. This is assembly metadata only; no copper
    change.
+6. R-01: four starved-thermal GND pads (C5.2, C10.2, C11.2, U4.3) set to a
+   solid zone connection.
+7. R-02: duplicate 0.552 mm VDDA track segment removed.
+8. R-03: two U5 MAP-sensor mechanical tabs converted from PTH to NPTH.
 
-No component value, net, footprint, track, via, outline or mounting-hole edit was
-made. Full provenance: `../../AUDIT/UPSTREAM_PROVENANCE.md`. Full check
-disposition: `../../AUDIT/PCB_CHECK_RESULTS.md`.
+No component value, net, footprint assignment, routing topology, outline or
+mounting-hole edit was made. R-01…R-03 are reproducible with
+`../tools/apply_v1_minimal_revision.py` and recorded in
+`../../AUDIT/HARDWARE_DIFF.md` §2. Full provenance:
+`../../AUDIT/UPSTREAM_PROVENANCE.md`. Full check disposition:
+`../../AUDIT/PCB_CHECK_RESULTS.md`.
 
 ## Do not
 

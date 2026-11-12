@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | HW-BLOCKERS |
-| Status | Living register; H0 complete, H1 partial, H2/H3 open |
+| Status | Living register; H0 complete, H1 partial, H2/H3 open (R-01…R-03 cleared 9 DRC violations) |
 | Date | 2026-11-13 |
 | Workstream | Hardware |
 | Baseline | Speeduino v0.4.4d SMD, upstream commit `ee6a9242834891877744ff2137663b6ca8d79ed6` |
@@ -20,8 +20,8 @@
 | Gate | Status | Evidence / reason |
 |---|---|---|
 | **H0 — Verified upstream reference** | **PASS (hardware + build)** | Exact Speeduino Hardware commit, path, licence and hash manifest selected (`AUDIT/UPSTREAM_PROVENANCE.md`). Firmware tree commit `5d217bf4…` builds for `megaatmega2560` with PlatformIO 6.2.0; artifact hashes recorded (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`). Caveat: firmware is an in-tree snapshot, not a tagged upstream release; pin a tag in the review package. |
-| **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB, all 147 components have footprints, 0 unconnected items, closed outline, gerbers/drill/BOM/position generated; position file filtered to 141 real placements. Missing: mounting holes, mechanical/assembly drawing, complete BOM MPNs, library-link cleanup. |
-| **H2 — Engineering checks completed** | **NOT PASSED** | ERC 101 violations, DRC 609 (238 errors), connectivity PASS. Exceptions are classified in `AUDIT/PCB_CHECK_RESULTS.md`; several remain open. |
+| **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB, all 147 components have footprints, 0 unconnected items, closed outline, gerbers/drill/BOM/position generated; position file filtered to 141 real placements; R-01…R-03 PCB fixes applied. Missing: mounting holes, mechanical/assembly drawing, complete BOM MPNs, library-link cleanup. |
+| **H2 — Engineering checks completed** | **NOT PASSED** | ERC 101 violations (unchanged); DRC **600** (230 errors, 370 warnings), 0 unconnected; connectivity PASS. R-01…R-03 cleared all four starved thermals, the VDDA dangling stub and the two U5 padstack/annular pairs. Remaining errors: 199 courtyard overlaps + 31 intentional jumper bridges. Classified in `AUDIT/PCB_CHECK_RESULTS.md`. |
 | **H3 — Independent fabrication review candidate** | **NOT READY** | Review package exists but H2 exceptions, BOM and mechanical package are incomplete. |
 | **H4 — Fabrication approved** | **BLOCKED — human only** | Requires independent engineering review and explicit human approval. AI cannot grant. |
 | **H5 — Assembled hardware** | **NOT STARTED** | No board fabricated or populated. |
@@ -129,7 +129,8 @@
 | Owner | Hardware workstream |
 | Autonomous | Yes |
 | Verification | Re-run DRC; 0 `starved_thermal` |
-| Status | **OPEN** |
+| Status | **CLOSED** |
+| Resolved by | `cc2ed0fd`; R-01 in `AUDIT/HARDWARE_DIFF.md` §2.1 sets C5.2/C10.2/C11.2/U4.3 to a solid GND zone connection; DRC `starved_thermal` 4 → 0, connectivity PASS |
 
 ### HW-DRC-03 — VDDA track stub
 
@@ -143,7 +144,8 @@
 | Owner | Hardware workstream |
 | Autonomous | Yes |
 | Verification | Re-run DRC; 0 `track_dangling`; connectivity PASS |
-| Status | **OPEN** |
+| Status | **CLOSED** |
+| Resolved by | `cc2ed0fd`; R-02 in `AUDIT/HARDWARE_DIFF.md` §2.2 removed the 0.552 mm segment that duplicated the through VDDA track; `track_dangling` 1 → 0, 0 unconnected, connectivity unchanged |
 
 ### HW-DRC-04 — Intentional solder-jumper shorts and mask bridges
 
@@ -171,7 +173,8 @@
 | Owner | Hardware workstream |
 | Autonomous | Yes (footprint cleanup) |
 | Verification | Visual review + DRC after NPTH conversion |
-| Status | **ACCEPTED EXCEPTION — cleanup deferred** |
+| Status | **CLOSED** |
+| Resolved by | `cc2ed0fd`; R-03 in `AUDIT/HARDWARE_DIFF.md` §2.3 converts both tabs to NPTH; `padstack` 2 → 0 and `annular_width` 2 → 0; drill file declares `T9C4.100` NonPlated/NPTH. Mechanical screw/tab stack still needs review under HW-DRC-01. |
 
 ### HW-MECH-02 — No dedicated board mounting holes on v0.4.4d
 
@@ -336,8 +339,10 @@ blocker.
 ## Order of work
 
 1. **HW-BOM-01 / HW-BOM-02** — make the purchasing case real and costed.
-2. **HW-DRC-02 / HW-DRC-03 / HW-ERC-01/02** — reduce H2 exceptions with
-   reproducible re-checks.
+2. **HW-ERC-01/02 and HW-DRC-01** — reduce the remaining H2 exceptions with
+   reproducible re-checks. The non-jumper DRC errors (starved thermals, VDDA
+   stub, U5 padstack) are now closed by `cc2ed0fd`; the open DRC error class is
+   199 courtyard overlaps plus the accepted JP6–JP11 bridges.
 3. **HW-BENCH-01 / HW-MECH-01 / HW-MECH-02** — complete the H3 review package,
    including the IDC40 breakout, assembly drawing and mounting-hole decision.
 4. **HW-FW-02 (new, low priority)** — pin an official Speeduino firmware tag

@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Document ID | AUD-HW-CHK-01 |
-| Status | **H2 NOT PASSED.** Checks executed; exceptions open. Not fabrication-approved. |
-| Date | 2026-11-13 |
+| Status | **H2 NOT PASSED.** Checks re-run after the R-01…R-03 minimal revision; remaining exceptions open. Not fabrication-approved. |
+| Date | 2026-11-13 (revision run) |
 | Workstream | Hardware |
 | Design under test | `hardware/prototype-v1/` (electrically Speeduino v0.4.4d SMD) |
 | Upstream source | `hardware/upstream-speeduino/v0.4.4d/`, commit `ee6a9242834891877744ff2137663b6ca8d79ed6` |
@@ -18,6 +18,14 @@
 > Several violations below are inherited from upstream and are intentional
 > solder-jumper bridges or unused-pin annotations. Others are genuine open items.
 > No rule was globally disabled and no DRC exclusion was added.
+>
+> **Revision note.** After the initial conversion, the prototype-v1 PCB received
+> three documented fixes (`AUDIT/HARDWARE_DIFF.md` R-01…R-03): four starved
+> thermal pads made solid, a duplicate VDDA track stub removed, and two U5
+> mounting tabs converted to NPTH. DRC dropped from **609 (238 errors)** to
+> **600 (230 errors)** with no new violation category and connectivity still
+> PASS. ERC is unchanged at 101 because none of the changes touches the
+> schematic.
 
 ## 1. Tool and command evidence
 
@@ -47,7 +55,7 @@ violations. Counts must be read from the reports.
 | Check | Result |
 |---|---|
 | Schematic ERC | **101 violations** (44 errors, 57 warnings), 0 unparsed crashes |
-| PCB DRC | **609 violations** (238 errors, 371 warnings), **0 unconnected items** |
+| PCB DRC | **600 violations** (230 errors, 370 warnings), **0 unconnected items** |
 | Schematic ↔ PCB connectivity | **PASS** — 514/514 common nodes identical, 0 split nets |
 | Board outline | Closed single outline, 100.05 × 100.05 mm |
 | Mounting holes | **None** — no NPTH/M3 standoff holes; see `HW-MECH-02` |
@@ -58,7 +66,7 @@ violations. Counts must be read from the reports.
 | Zones | 4 (GND/PGND pours) |
 | Nets | 185 on PCB; 190 in schematic (difference is auto-named/unused pins) |
 | Gerber outputs | 9 layer files + `.gbrjob`, generated successfully |
-| Drill outputs | 1 Excellon file + drill map PDF |
+| Drill outputs | 1 Excellon file + drill map PDF; `MixedPlating` file function with a declared NonPlated/NPTH tool |
 | Assembly outputs | position CSV, IPC-D-356 netlist, BOM CSV, schematic PDF, KiCad netlist |
 | Unrouted nets | **0** (KiCad DRC "unconnected items") |
 
@@ -110,19 +118,25 @@ expected and consistent with the unused-pin ERC findings.
 
 Raw evidence: `hardware/prototype-v1/verification/connectivity.txt`.
 
-## 5. DRC — 609 violations and disposition
+Re-run after R-01…R-03: identical 514/514 common nodes, 0 splits, RESULT: PASS.
+Neither the solid zone connections nor the removed duplicate track changed the
+net partition.
+
+## 5. DRC — 600 violations and disposition
 
 Raw report: `hardware/prototype-v1/verification/drc.rpt`.
 
 The zones were re-filled with the KiCad 9 filler because legacy fills cannot be
 used by KiCad 8+. This removed 155 legacy `clearance` violations (zone fill
 0.2488–0.2494 mm vs a 0.25 mm rule) and reduced starved thermals from 6 to 4.
-The netlist partition did not change. The resulting DRC uses the upstream
-project's `v0.4.4d.kicad_pro` board settings (for example
-`min_via_annular_width = 0.05 mm`); the legacy board-local setup used 0.10 mm.
-This is a **rule-set migration to the upstream project file**, not a rule
-suppression. It is recorded here so a reviewer can reproduce both numbers:
-766 before refill, 609 after.
+After the R-01…R-03 revision, the remaining four starved thermals, the VDDA track
+stub and the two U5 padstack/annular pairs are also cleared, taking the total to
+600 (230 errors, 370 warnings). The netlist partition did not change. The
+resulting DRC uses the upstream project's `v0.4.4d.kicad_pro` board settings (for
+example `min_via_annular_width = 0.05 mm`); the legacy board-local setup used
+0.10 mm. This is a **rule-set migration to the upstream project file**, not a
+rule suppression. It is recorded here so a reviewer can reproduce both numbers:
+766 before refill, 609 after refill, 600 after R-01…R-03.
 
 | Category | Count | Severity | Disposition |
 |---|---:|---|---|
@@ -133,17 +147,24 @@ suppression. It is recorded here so a reviewer can reproduce both numbers:
 | `silk_over_copper` | 19 | warning | **Open (cosmetic).** Silkscreen clipped by mask/copper, mostly U5 and the shield outline. No copper effect. |
 | `shorting_items` | 12 | error | **Accepted (intentional jumpers).** All 12 are the copper bridge polygons of `SolderJumper_2_Bridged` / `Jumper_3_Bridged12` on JP6–JP11. The bridge is the intended default configuration. This is a footprint-vs-DRC modelling issue, not an accidental short. |
 | `silk_edge_clearance` | 5 | warning | **Open (cosmetic).** Silkscreen clipped by the 100 mm board edge, mostly the Arduino shield outline. |
-| `starved_thermal` | 4 | error | **Open (assembly/thermal).** GND pads C5.2, C10.2, C11.2 and U4.3 have only one thermal spoke to the GND pour (rule minimum 2). They are still connected, but solderability/current sharing is not ideal. Re-fill with adjusted thermal settings or add spokes; re-check. |
 | `lib_footprint_issues` | 4 | warning | **Open (library packaging).** Missing `Misc`/`Shields` library tables and one hand-solder footprint variant. Embedded footprints are intact. |
-| `padstack` | 2 | error | **Accepted (mechanical).** U5 (MPX4250) has two 4.1 mm mechanical mounting tabs modelled as 4.1 mm PTH pads, i.e. zero annular copper. They are screw holes, not electrical pads. A future footprint cleanup should make them NPTH. |
-| `annular_width` | 2 | error | **Same U5 mechanical tabs.** `actual -0.0044 mm` annular width is the consequence of pad size = drill size. No electrical function. |
-| `track_dangling` | 1 | warning | **Open (review).** A 0.552 mm VDDA track stub at `(162.157, 132.991)` mm has an unconnected end. DRC still reports 0 unconnected *items*, so this is likely a redundant stub; confirm and remove or terminate. |
+
+Violations cleared by the R-01…R-03 revision (previously open above):
+
+| Category | Before | After | Fix |
+|---|---:|---:|---|
+| `starved_thermal` | 4 | 0 | R-01: C5.2, C10.2, C11.2, U4.3 set to solid GND zone connection |
+| `track_dangling` | 1 | 0 | R-02: duplicate 0.552 mm VDDA segment removed |
+| `padstack` | 2 | 0 | R-03: U5 mechanical tabs converted to NPTH |
+| `annular_width` | 2 | 0 | R-03: same U5 tabs; no plated zero-annulus hole remains |
 
 **DRC conclusion:** the board has **no unrouted nets**. The only "shorting"
-violations are intentional solder-jumper bridges. The remaining errors are
-mechanical/courtyard, thermal-spoke and two mechanical mounting-tab issues.
-H2 is **not** passed until the courtyard overlaps, starved thermals, VDDA stub
-and library-link warnings are resolved or formally reviewed.
+violations are intentional solder-jumper bridges. Of the 230 remaining errors,
+**199 are `courtyards_overlap`** requiring mechanical review and **31 are the
+intentional solder-jumper `solder_mask_bridge`/`shorting_items`** (19 + 12). No
+thermal, padstack or dangling-track error remains. H2 is **not** passed until the
+courtyard overlaps, ERC exceptions and library-link warnings are resolved or
+formally reviewed.
 
 ## 6. Manufacturing export verification
 
@@ -153,7 +174,7 @@ Generated from the native PCB/schematic by
 | Output | File(s) | Result |
 |---|---|---|
 | Gerbers | 9 files: F/B copper, F/B paste, F/B silkscreen, F/B mask, Edge.Cuts | Generated; `.gbrjob` written |
-| Drill | `v0.4.4d.drl` (Excellon, mm) + drill map PDF | Generated |
+| Drill | `v0.4.4d.drl` (Excellon, mm) + drill map PDF | Generated; `MixedPlating` with `T9C4.100` declared NonPlated/NPTH (U5 tabs) |
 | Position | `v0.4.4d-pos.csv` (mm, drill origin) | 141 real placements, 0 `REF**`; JP6–JP11 are hand-solder/config features and are not machine placements |
 | Bare-board net test | `v0.4.4d-ipc-d-356.net` | Generated |
 | BOM | `v0.4.4d-bom.csv` | 47 grouped rows; 11 rows lack MPN (blocker HW-BOM-01) |
@@ -167,10 +188,10 @@ a fabricator, DFM-checked by a board house, or manufactured.
 
 1. Fix or formally document the 199 courtyard overlaps with a mechanical
    assembly drawing; do not assume they are harmless.
-2. Resolve the 4 starved thermals and the VDDA track stub.
-3. Add proper no-connect flags/PWR_FLAGs, or explicitly accept each unused-pin
-   ERC error in a reviewed exception list.
-4. Repair the 4 missing library links and the 2 `Device:CP1` symbol links.
-5. Re-run this script and attach the new raw reports.
-6. Independent hardware review (H3/H4). This document cannot approve
+2. Add proper no-connect flags/PWR_FLAGs, or explicitly accept each unused-pin
+   ERC error in a reviewed exception list (ERC is unchanged at 101 because
+   R-01…R-03 were PCB-only).
+3. Repair the 4 missing library links and the 2 `Device:CP1` symbol links.
+4. Re-run this script and attach the new raw reports.
+5. Independent hardware review (H3/H4). This document cannot approve
    fabrication.

@@ -14,7 +14,7 @@
 | Upstream path | `v0.4/SMD/Latest/` |
 | Preserved copy | `hardware/upstream-speeduino/v0.4.4d/` |
 | Hash manifest | `hardware/upstream-speeduino/SHA256SUMS` |
-| Native conversion | `hardware/prototype-v1/` (KiCad 9.0.9 format; no electrical edits) |
+| Native conversion | `hardware/prototype-v1/` (KiCad 9.0.9 format; Option B minimal PCB revision R-01…R-03, commit `cc2ed0fd`; no net/topology edit) |
 | Related | `AUDIT/HARDWARE_BASELINE.md`, `AUDIT/PCB_CHECK_RESULTS.md`, `HARDWARE_BLOCKERS.md` |
 
 > **Scope statement.** **H0 is satisfied** for the hardware and firmware build:
@@ -133,6 +133,22 @@ Evidence that the conversion did not change connectivity:
 The conversion procedure is recorded because it requires a GUI action; the
 check/export pipeline itself is fully scripted in
 `hardware/tools/check_prototype_v1.sh`.
+
+### 4.1 Later minimal revision (post-conversion)
+
+After the format conversion, prototype-v1 received three documented
+PCB/manufacturing fixes (commit `cc2ed0fd`, reproducible via
+`hardware/tools/apply_v1_minimal_revision.py`):
+
+- R-01 — four starved-thermal GND pads set to a solid zone connection;
+- R-02 — one duplicate 0.552 mm VDDA track segment removed;
+- R-03 — two U5 mechanical tabs converted from PTH to NPTH.
+
+No net, component value, footprint assignment or routing topology was changed.
+The preserved upstream tree under `hardware/upstream-speeduino/` is untouched.
+Full change record with electrical effect, ratings, failure behaviour and tests:
+`AUDIT/HARDWARE_DIFF.md` §2. DRC 609 → 600 (238 → 230 errors); ERC unchanged at
+101; connectivity PASS 514/514.
 
 ## 5. Reproducible checks
 

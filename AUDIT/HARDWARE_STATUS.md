@@ -11,12 +11,13 @@
 
 > **Plain statement (updated 2026-11-13).** No manufacturing-approved PCB,
 > gerber release, assembly drawing, enclosure or harness exists. The current
-> **prototype-v1 baseline** is an unmodified Speeduino **v0.4.4d SMD** design
+> **prototype-v1 baseline** is a Speeduino **v0.4.4d SMD** design with a
+> documented minimal PCB revision (R-01…R-03, `cc2ed0fd`)
 > (upstream commit `ee6a9242834891877744ff2137663b6ca8d79ed6`) with a native
 > KiCad 9 review copy at `hardware/prototype-v1/`. It is **fully routed**
 > (KiCad 9 DRC: 0 unconnected items) and has fresh gerber/drill/BOM/position
 > exports, but **H2 is not passed**: ERC reports 101 violations and DRC reports
-> 609 (238 errors), with documented exceptions and open items. The older
+> 600 (230 errors), with documented exceptions and open items. The older
 > `hardware/kicad/evo8-bench-ecu/` custom STM32 package remains an **unrouted
 > placement draft** (499 unconnected items, 14 violations) and is **not** the
 > baseline. Neither design is fabrication-approved or vehicle-safe.
@@ -31,7 +32,7 @@
 | Electrical source | Speeduino v0.4.4d SMD, upstream commit pinned | OpenTech-ECU custom STM32H743 draft |
 | KiCad format | Native KiCad 9 `.kicad_sch`/`.kicad_pcb` (converted from upstream KiCad 5) | Native KiCad 9 |
 | Routing | **Complete — 0 unconnected items** | **Unrouted — 499 unconnected items** |
-| DRC | 609 violations (238 errors, 371 warnings); 0 unconnected | 14 violations; 499 unconnected |
+| DRC | 600 violations (230 errors, 370 warnings); 0 unconnected | 14 violations; 499 unconnected |
 | ERC | 101 violations (44 errors, 57 warnings) | 0 reported, unreviewed |
 | BOM | 47 grouped rows; 11 rows lack MPN | 305 lines, unreviewed |
 | Manufacturing exports | 9 gerbers + drill + IPC-D-356 + BOM + schematic PDF; position file 141 real placements, no proto pads | None |
@@ -59,7 +60,7 @@ explicitly named.
 | Flash/calibration storage | No | No bootloader, dual-bank, or calibration flash layout |
 | CAN driver | No | No transceiver/driver; simulator `can_ok=true` |
 | KiCad schematic | Yes — selected baseline native; legacy custom **UNREVIEWED** | `hardware/prototype-v1/*.kicad_sch` (upstream v0.4.4d, native KiCad 9, 7 sheets); legacy `hardware/kicad/evo8-bench-ecu/` 7 sheets, unreviewed |
-| KiCad PCB | Selected baseline routed; legacy custom **NOT USABLE** | `hardware/prototype-v1/v0.4.4d.kicad_pcb`: 297 footprints (147 components + 150 proto pads), 0 unconnected, 609 DRC (238 errors). Legacy custom: 305 footprints, 499 unconnected, 14 DRC |
+| KiCad PCB | Selected baseline routed; legacy custom **NOT USABLE** | `hardware/prototype-v1/v0.4.4d.kicad_pcb`: 297 footprints (147 components + 150 proto pads), 0 unconnected, 600 DRC (230 errors). Legacy custom: 305 footprints, 499 unconnected, 14 DRC |
 | KiCad project | Yes — selected baseline converted | `hardware/prototype-v1/v0.4.4d.kicad_pro` (KiCad 9); legacy `.kicad_pro` unreviewed |
 | BOM | Yes — baseline BOM has gaps | `prototype-v1/manufacturing/assembly/v0.4.4d-bom.csv`: 47 grouped rows, 11 without MPN. Legacy custom 305 lines, unreviewed |
 | ERC report | Yes — baseline exceptions open | `prototype-v1/verification/erc.rpt`: 101 violations (44 errors). Legacy custom `reports/erc.json` 0 violations, unreviewed |
@@ -160,7 +161,7 @@ Until then: **requirements only, no manufacturing claim, no vehicle connection.*
 
 ## 7. Explicit non-claims
 
-- No manufacturing-approved PCB, gerber release or assembly drawing exists. The selected v0.4.4d baseline has native KiCad 9 files, review gerbers/drill and a generated BOM, but ERC 101 / DRC 609 exceptions, 11 BOM rows without MPN, no assembly drawing and no independent review remain.
+- No manufacturing-approved PCB, gerber release or assembly drawing exists. The selected v0.4.4d baseline has native KiCad 9 files, review gerbers/drill and a generated BOM, but ERC 101 / DRC 600 exceptions, 11 BOM rows without MPN, no assembly drawing and no independent review remain.
 - The legacy custom `evo8-bench-ecu` schematic/BOM is unreviewed; its PCB has 499 unconnected items and 14 DRC violations and is not manufacturable.
 - No MCU/HAL/timer/driver/watchdog firmware implementation exists for the custom STM32 path. The selected v0.4.4d baseline targets upstream Speeduino on Arduino Mega 2560, and a reproducible firmware build now passes (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`), but no firmware has been flashed and no hardware has been powered.
 - No electrical safety, EMC, thermal, vibration, IP or automotive qualification is claimed.

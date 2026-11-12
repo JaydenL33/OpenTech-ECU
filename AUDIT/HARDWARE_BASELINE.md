@@ -6,7 +6,7 @@
 | Status | Candidate baseline selected (H0 pass; H1 partial; H2 open); **not fabrication-approved** |
 | Date | 2026-11-13 |
 | Workstream | Hardware |
-| Decision | Adopt **Speeduino v0.4.4d SMD** as prototype-v1 electrical baseline, unmodified except KiCad 9 format save |
+| Decision | Adopt **Speeduino v0.4.4d SMD** as prototype-v1 electrical baseline; Option B minimal revision (format save + 3 PCB/manufacturing fixes, no net or topology change) |
 | Upstream commit | `ee6a9242834891877744ff2137663b6ca8d79ed6` |
 | Preserved source | `hardware/upstream-speeduino/v0.4.4d/` |
 | Native review copy | `hardware/prototype-v1/` |
@@ -45,7 +45,7 @@ selected board's report is committed under
 | Schematic source | 7 legacy `.sch` sheets | 7 legacy `.sch` sheets | Native `.kicad_sch` sheets | Fritzing |
 | Routed PCB | Yes, 1233 track/via objects (178 vias) | Yes, 1113 track/via objects (124 vias) | Yes, 2273 track/via objects (400 vias) | Gerbers only; no editable KiCad PCB |
 | Unconnected items (KiCad 9 DRC) | **0** | **0** | **0** | Not measurable (no KiCad PCB) |
-| DRC violations (KiCad 9, default rules) | 766 raw; **609 after KiCad 9 zone refill** (same netlist) | 274 | 268 | Not measurable |
+| DRC violations (KiCad 9, default rules) | 766 raw; **609 after KiCad 9 zone refill**, **600 after R-01…R-03** (same netlist) | 274 | 268 | Not measurable |
 | Shorting-item violations | 12, all solder jumpers JP6–JP11 | 12, all solder jumpers | 0 | Not measurable |
 | Board size | 100.05 × 100.05 mm | 100.05 × 100.05 mm | 116.13 × 98.05 mm | n/a |
 | Copper layers | 2 | 2 | 2 | n/a |
@@ -63,13 +63,14 @@ selected board's report is committed under
 
 ## 3. Decision and rationale
 
-**Selected: Speeduino v0.4.4d SMD, reused unchanged (Option A).**
+**Selected: Speeduino v0.4.4d SMD, reused with a minimal PCB revision (Option A + B).**
 
 Reasons, in priority order:
 
 1. **It is the latest v0.4 revision and is fully routed.** KiCad 9 reports
-   0 unconnected items. This directly satisfies the directive's requirement not
-   to end with another unrouted board.
+   0 unconnected items both before and after the R-01…R-03 revision. This
+   directly satisfies the directive's requirement not to end with another
+   unrouted board.
 2. **It matches the proven Speeduino firmware platform.** The design is an
    Arduino Mega 2560 shield, the primary upstream Speeduino target. Choosing a
    Teensy 4.1 board would add an unvalidated MCU/toolchain port before the first
@@ -102,10 +103,11 @@ v0.3.7 is disqualified for this milestone because it has **no editable KiCad
 PCB or schematic source** in the upstream tree. Only Fritzing files and gerbers
 exist; the directive requires native KiCad source and validated routing.
 
-## 4. What "unmodified" means here
+## 4. What "reused" means here
 
-The electrical design is upstream v0.4.4d. OpenTech-ECU made **format-only**
-changes to produce the review copy:
+The electrical design is upstream v0.4.4d. OpenTech-ECU first made **format-only**
+changes to produce the review copy, then a documented **Option B minimal
+revision** to clear non-jumper DRC errors:
 
 - legacy `.sch` → native `.kicad_sch` (KiCad 9 save);
 - legacy `.kicad_pcb` → native `.kicad_pcb` (KiCad 9 save);
@@ -116,9 +118,14 @@ changes to produce the review copy:
   starved thermals from 6 to 4. The netlist partition is unchanged;
 - added project library table entries and the upstream rescue library so the
   schematic opens without missing-library errors;
-- no value, net, footprint, track, via, outline or mounting-hole edits.
+- **R-01…R-03 (Option B, `cc2ed0fd`)** — four starved-thermal GND pads set to
+  solid connection; one duplicate 0.552 mm VDDA track segment removed; two U5
+  mechanical mounting tabs converted from PTH to NPTH. No net, component value,
+  footprint assignment or routing topology changed. DRC 609 → 600 (238 → 230
+  errors); detail and per-change review in `AUDIT/HARDWARE_DIFF.md` §2;
+- no value, net, footprint or outline edit; no mounting holes added yet.
 
-Connectivity equivalence was verified independently: 514 of 514 common
+Connectivity equivalence was re-verified after the revision: 514 of 514 common
 `(ref, pin)` nodes have identical net partitions; 0 splits in either direction.
 See `hardware/prototype-v1/verification/connectivity.txt`.
 

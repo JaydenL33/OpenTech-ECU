@@ -167,7 +167,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | Headless Chromium passed; Electron launch not tested |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
-| "Hardware exists" | Inspect `hardware/prototype-v1`; run `hardware/tools/check_prototype_v1.sh`; read ERC/DRC; `find` for gerbers | A reviewed package with clean ERC/DRC and complete BOM exists | Routed v0.4.4d baseline with gerbers exists; H2 exceptions (ERC 101/DRC 609), BOM gaps and no independent review |
+| "Hardware exists" | Inspect `hardware/prototype-v1`; run `hardware/tools/check_prototype_v1.sh`; read ERC/DRC; `find` for gerbers | A reviewed package with clean ERC/DRC and complete BOM exists | Routed v0.4.4d baseline with gerbers exists; H2 exceptions (ERC 101/DRC 600), BOM gaps and no independent review |
 
 ## 5. Missing evidence checklist
 
