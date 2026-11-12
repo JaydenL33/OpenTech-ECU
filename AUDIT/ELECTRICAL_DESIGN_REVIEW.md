@@ -2,7 +2,7 @@
 
 > ## STATUS: DESIGN REQUIREMENTS, NOT A VALIDATED SCHEMATIC
 >
-> No manufacturing-ready KiCad schematic, PCB, BOM, gerbers, drill file or assembly drawing exists in the audited repository. `find` over the repository returned no `.kicad_sch`, `.kicad_pcb`, `.kicad_pro`, `.gbr` or `.drl` files, and `kicad-cli` is not installed in the audit environment. A separate Codex attempt at a bench-prototype KiCad package is reportedly underway and is **UNREVIEWED**; it is not evidence of a valid design. No ERC or DRC has been run. Nothing in this document is a manufacturable design, an electrical safety approval, an EMC claim, or a vehicle-installation instruction.
+> No manufacturing-ready KiCad PCB, gerber, drill file or assembly drawing exists. An **UNREVIEWED bench-prototype schematic package** exists at `hardware/kicad/evo8-bench-ecu/` (7 hierarchical sheets, BOM, netlist, pin map, test points, ERC JSON reporting 0 violations from the generator). It has **no PCB layout, no DRC, no gerbers, no thermal/EMC validation and no independent review**. `kicad-cli` is not installed in the audit environment, so the ERC report was not independently reproduced. Nothing in this document is a manufacturable design, an electrical safety approval, an EMC claim, or a vehicle-installation instruction.
 
 | Field | Value |
 |---|---|
@@ -37,11 +37,12 @@ It is **not** a plug-in replacement for the Evo VIII ECU. The OEM connector/pino
 |---|---|---|
 | Rust host control code | Yes | `ecu/crates/*`; tests; see AUD-05 |
 | Virtual ECU / simulator | Yes | `ecu-simulator`; six scenarios |
-| Tuning service/UI | Yes, host-only | `studio-service`; React/Vite UI; no Tauri shell validated |
+| Tuning service/UI | Yes, host-only | `studio-service`; React/Vite + Electron main; Electron launch not validated |
 | MCU firmware | Skeleton only | `ecu/firmware/stm32` no_std skeleton; no HAL, timer capture/compare, driver, watchdog integration or flash image |
-| KiCad schematic | No | No `.kicad_sch` found |
-| KiCad PCB | No | No `.kicad_pcb` found |
-| BOM | No | No ECU BOM found |
+| KiCad schematic | Yes, **UNREVIEWED** | `hardware/kicad/evo8-bench-ecu/`; 7 sheets; bench prototype only |
+| KiCad PCB | No | No `.kicad_pcb`; no placement/routing/DRC |
+| BOM | Yes, **UNREVIEWED** | 305 lines; MPNs/sourcing/derating not reviewed |
+| ERC report | Yes, **UNREVIEWED** | `reports/erc.json`; 0 violations reported by generator's KiCad 9.0.9; not independently reproduced |
 | Gerbers/drill | No | No `.gbr`/`.drl` found |
 | Connector/pinout definition | No | `vehicle.rs` marks pinout/connector unverified; `ecu_part_number: None` |
 | Harness drawing | No | Not present |
@@ -336,13 +337,13 @@ A design can pass ERC/DRC and still:
 - leave an output enabled on reset;
 - be impossible to assemble or service.
 
-No ERC/DRC has been run because no design exists. Any future report must state the KiCad version, rule set, exclusions, and unresolved violations; a green status alone is not evidence.
+The unreviewed package has an ERC JSON reporting 0 violations from the generator's KiCad 9.0.9, but it was not independently reproduced in this audit. No DRC exists because there is no PCB. Any future report must state the KiCad version, rule set, exclusions, and unresolved violations; a green status alone is not evidence.
 
 ## 8. Open electrical issues / blockers
 
 | ID | Issue | Impact | Required action |
 |---|---|---|---|
-| ELEC-01 | No reviewed manufacturing-ready schematic/PCB/BOM/gerbers | Cannot build or review hardware | A separate unreviewed Codex bench-prototype attempt does not satisfy Gate 1; create/review a KiCad project after requirements and MCU selection |
+| ELEC-01 | Unreviewed schematic; no PCB/DRC/gerbers | Cannot build or review hardware | Review schematic/nets; create PCB; DRC; DFM. The unreviewed Codex package does not satisfy Gate 1 |
 | ELEC-02 | Exact Evo ECU part number unknown | Connector and pinout cannot be selected | Photograph label/connectors; obtain service data |
 | ELEC-03 | Pinout/connector unverified | Wrong wiring can destroy ECU/vehicle | Key-off continuity and second-person check; no forum guesses |
 | ELEC-04 | Trigger pattern unverified | Wrong decoder/conditioning | Scope crank/cam at cranking; record pattern |
@@ -357,8 +358,8 @@ No ERC/DRC has been run because no design exists. Any future report must state t
 
 ## 9. Explicit non-claims
 
-- This is not a schematic, PCB, BOM, gerber set, assembly drawing, or manufacturing package.
-- No KiCad ERC/DRC has been run; no electrical rule compliance is claimed.
+- This is not a reviewed schematic, PCB, BOM, gerber set, assembly drawing, or manufacturing package.
+- The unreviewed schematic's ERC report (0 violations) has not been independently reproduced; no DRC exists; no electrical rule compliance is claimed.
 - No component values, current ratings, fusing, thermal margins, creepage/clearance or EMC performance are validated.
 - No connector pinout, ECU part number, harness drawing or plug-and-play compatibility is claimed.
 - No automotive qualification (AEC-Q, ISO 16750, ISO 7637, ISO 11452, CISPR 25, etc.) is claimed.

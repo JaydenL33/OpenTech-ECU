@@ -108,3 +108,7 @@ Git HEAD: c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909
 
 Final source manifest SHA-256: ca8440bf733ce2c8506c194865fdd982d1701648e4b65dab6f0bfea449785fe7
 Cargo.lock SHA-256: 71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e
+
+KiCad bench schematic package: hardware/kicad/evo8-bench-ecu
+- 7 hierarchical sheets, 305 BOM lines/parts, 198 nets, 0 ERC violations (ERC re-run with the isolated KiCad 9 toolchain used to generate the package).
+- No .kicad_pcb, no DRC, no gerbers, no manufacturing outputs, no independent review. NOT Gate 1 evidence.

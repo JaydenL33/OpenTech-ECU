@@ -5,8 +5,8 @@
 | Document ID | AUD-08 |
 | Status | Gate definitions and current status; not a release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:37Z, working tree |
-| Source manifest | `ca8440bf733ce2c8506c194865fdd982d1701648e4b65dab6f0bfea449785fe7` |
+| Evidence cut-off | 2026-11-12T05:40Z, working tree |
+| Source manifest | `b78751a95244e59abbf5683c76b291c1eaff3d8fefa6302e54fb1fc1b594a237` |
 | Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
 | Related | AUD-01 through AUD-10 |
 
@@ -63,9 +63,9 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 | 0.17 | Invariants INV-01..INV-20 reviewed | Review record | Partial; see AUD-07 |
 | 0.18 | Known gaps/limitations documented | AUD set | Present |
 | 0.19 | Independent software review | Signed record | **MISSING** |
-| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: source committed; manifest hash recorded in AUD-05 |
+| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: source commit `041be84f`; Rust tree clean; tested manifest hash recorded in AUD-05 |
 
-**Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 128 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: no browser/Electron runtime test, no live LLM test, no independent review, source committed. It does **not** authorise Gate 1+.
+**Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 128 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: no browser/Electron runtime test, no live LLM test, and no independent review. It does **not** authorise Gate 1+.
 
 ### 2.4 Conditions for maintaining Gate 0
 
@@ -235,7 +235,7 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 | Evidence | Available? | Location / note |
 |---|---|---|
-| Rust unit tests | Yes, green | 128 tests; AUD-05 |
+| Rust tests | Yes, green | 128 tests; AUD-05 |
 | Formatting | Yes | `cargo fmt --check` pass |
 | Clippy | Yes | `-D warnings` pass |
 | Firmware skeleton target check | Yes | `thumbv7em-none-eabihf` pass; skeleton only |

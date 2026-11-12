@@ -5,19 +5,21 @@
 | Document ID | AUD-05 |
 | Status | Evidence record for the audited host snapshot; not a certification, not a physical-safety approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:37Z, working tree |
+| Evidence cut-off | 2026-11-12T05:40Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909` |
-| Rust source manifest | SHA-256 `ca8440bf733ce2c8506c194865fdd982d1701648e4b65dab6f0bfea449785fe7` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Git HEAD | `041be84f665d9aefa551df81792df8acb5ac7873` |
+| Rust source manifest | SHA-256 `b78751a95244e59abbf5683c76b291c1eaff3d8fefa6302e54fb1fc1b594a237` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
 | Formatting | `cargo fmt --all -- --check` passed |
 | Linting | `cargo clippy --workspace --all-targets -- -D warnings` passed |
 | Firmware target check | `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` passed |
 | Gate status | **Gate 0 host software evidence: PASS for implemented behaviour; not a certification, not Gate 1+** |
-| Overall limitation | No physical hardware, no KiCad, no MCU timing capture, no vehicle evidence; several UI/copilot/runtime behaviours remain untested |
+| Overall limitation | No physical hardware, no reviewed PCB, no MCU timing capture, no vehicle evidence; several UI/copilot/runtime behaviours remain untested |
 
 > **Scope.** This evidence supports host-side software behaviour only. It does not establish engine safety, timing accuracy, EMC, electrical safety, or Evo VIII compatibility. Gate 0 pass means "the implemented host behaviour has reproducible evidence", not "the ECU is safe or ready".
+
+> **Source-control note.** HEAD `041be84f` contains the source commit used for this evidence; the Rust source tree was clean at cut-off (`git status --short ecu` empty). The manifest hash above matches the committed tree. Documentation/audit files may have later working-tree edits; re-hash the source after any source change.
 
 ## 1. Environment
 
@@ -30,9 +32,9 @@
 | npm | `11.11.0` |
 | `rustfmt` | Available and passing |
 | `clippy` | Available and passing with `-D warnings` |
-| KiCad / `kicad-cli` | **Not installed / not found** |
+| KiCad / `kicad-cli` | Not installed on the host PATH; an isolated Codex toolchain produced and re-ran ERC on the unreviewed schematic (0 violations). No PCB/DRC. |
 | Electron | Dependency present; **application launch not exercised** in this headless audit |
-| WebKit/Tauri | Not installed/validated |
+| WebKit/Tauri | Not used by the current Electron shell; no Tauri validation; Electron launch untested |
 | Physical hardware | **None**; no MCU, PCB, harness, sensors, injectors, coils, or vehicle |
 | Network/service | Local smoke test on `127.0.0.1:18768`; no external exposure |
 
@@ -53,7 +55,7 @@
 | 11 | `npm run build` in `apps/tuning-studio` | 0 | Vite build, 44 modules, `dist/` produced |
 | 12 | `npm run build` in `apps/tuning-copilot` (`tsc --noEmit`) | 0 | Pass |
 | 13 | Local `studio-service` smoke test | 0 | Health/preflight/status; physical outputs false |
-| 14 | `find` for KiCad/gerbers; `command -v kicad-cli` | 0 / 1 | No KiCad files; CLI not found |
+| 14 | `hardware/kicad/evo8-bench-ecu` + KiCad `sch erc` | 0 | Unreviewed 7-sheet schematic/netlist/BOM; 0 ERC violations; **no PCB/DRC/gerbers** |
 
 ## 3. Rust test results
 
@@ -216,7 +218,7 @@ Observations:
 With `--approve`:
 
 ```text
-applied 3 cells; revision 1 -> 2; checksum a746366def1e1dfc
+applied 3 cells; revision 1 -> 2; checksum b91cda78fe065037
 diff: 3 cells, max |delta| 3.31 VE points
 undo snapshot is the input calibration: .../calibration.json
 ```
@@ -246,9 +248,9 @@ npm run build
 vite v6.4.6 building for production...
 ✓ 44 modules transformed.
 dist/index.html                   0.78 kB
-dist/assets/index-57yVnSom.css   16.85 kB
-dist/assets/index-D3VuMen8.js   283.52 kB
-✓ built in 1.07s
+dist/assets/index-CL8twMhr.css   17.30 kB
+dist/assets/index-BbCp81ft.js   285.32 kB
+✓ built in 1.15s
 BUILD_EXIT=0
 ```
 
@@ -293,7 +295,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 
 | Requirement / claim | Evidence | Result | Caveat |
 |---|---|---|---|
-| ECS-SR-001: no physical output path | No hardware driver; firmware skeleton `PHYSICAL_OUTPUTS_AUTHORISED=false`; tests | Pass (host/skeleton) | Host/skeleton evidence; source committed |
+| ECS-SR-001: no physical output path | No hardware driver; firmware skeleton `PHYSICAL_OUTPUTS_AUTHORISED=false`; tests | Pass (host/skeleton) | Host/skeleton evidence; working tree changed after source commit |
 | ECS-SR-002: interlock reported | `physical_interlock_constant_is_false`; `/api/health`; preflight | Pass | Compile-time constant |
 | ECS-SR-003: lambda never ignition | `ecu-ignition` API; 7 tests | Pass | Review invariant; future edits |
 | ECS-SR-006: shared learning gate | `every_invalidity_is_explained`, `nan_lambda_rejected` | Pass | Inputs partially caller-supplied |
@@ -310,7 +312,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 | ECS-SR-021: timing light/knock | None | **Blocked** | Gate 4 |
 | ECS-SR-022: Evo data | `vehicle.rs`; `/api/vehicles` | **Unverified** | Gate 3 |
 | Gate 0 host software | 128 tests, fmt, clippy, UI build, copilot typecheck, firmware target check, two narrow Speeduino formula-parity tests | **Pass, scoped** | Not a certification; not physical; no full Speeduino oracle build |
-| Gate 1 | Hardware package | **Blocked** | No PCB/BOM/gerbers |
+| Gate 1 | Hardware package | **Blocked** | Unreviewed schematic/netlist/BOM only; no PCB/DRC/gerbers/review |
 | Gate 2 | Powered bench | **Blocked** | No firmware image/timing/fixture |
 | Gate 3-5 | Vehicle/engine/road | **Blocked** | No Evo evidence/engine/legal |
 
@@ -319,12 +321,12 @@ The workflow was **not observed running** in this audit. The local commands abov
 | Item | Why it matters | Status |
 |---|---|---|
 | Electron launch | The desktop shell may fail even if Vite builds | Not run |
-| Browser interaction / replay UI | UI may be unusable or show stale data | Not run |
+| Browser interaction / replay UI | UI may be unusable or show stale data | Headless Chromium smoke test: dashboard, map, setup, Mixture Map apply, replay start; visual review limited |
 | Live Mastra/LLM call | Copilot may fail, leak, or exceed authority | Not run |
 | Copilot tool approval boundary | Untrusted output must not write | Not tested |
 | WebSocket lag/reconnect | Operator may see stale data | Not tested |
 | Full core `no_std` | All core crates and firmware skeleton pass | Pass |
-| KiCad ERC/DRC | No design exists | Not run |
+| KiCad ERC/DRC | ERC passed; no PCB exists for DRC | ERC 0 violations; DRC not run |
 | Hardware/bench | No PCB/fixture | Not run |
 | Scope timing | No firmware/timer | Not run |
 | Evo pinout/trigger/harness | Unverified | Not run |
@@ -367,8 +369,9 @@ Expected: all listed commands pass at this snapshot, including the core `no_std`
 
 ## 13. Raw evidence locations
 
-- `/tmp/opencode/cargo-test-latest.log` — 128-test run.
-- `/tmp/opencode/audit-final/` — log, CSV, summary, calibration, report, applied calibration.
+- `/tmp/opencode/test-final2.log` — 128-test run.
+- `/home/jlee/OpenTech-ECU/evidence/VERIFICATION.txt` — companion verification record with the same final counts; re-check hashes before relying on it.
+- `/tmp/opencode/audit-current/` — log, CSV, summary, calibration, report, applied calibration.
 - `/tmp/opencode/studio3.log` — local service smoke log.
 - `/tmp/opencode/cli3-run.log`, `/tmp/opencode/cli3-analyze.log` — CLI output.
 

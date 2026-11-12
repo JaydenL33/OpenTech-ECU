@@ -5,7 +5,7 @@
 | Document ID | AUD-07 |
 | Status | Reviewer instructions; not itself an independent review |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:37Z, working tree; source manifest `984aa392...` |
+| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `b78751a9...` |
 | Audience | Automotive controls engineer, embedded Rust reviewer, PCB reviewer, functional-safety reviewer, project owner |
 | Related | AUD-01 through AUD-10 |
 
@@ -143,7 +143,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | No Electron/browser runtime test |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
-| "Hardware exists" | `find` for KiCad/gerbers/BOM; `command -v kicad-cli` | Files found and reviewed | No files at snapshot |
+| "Hardware exists" | `find` for KiCad/gerbers/BOM; `command -v kicad-cli` | A reviewed design package exists; `hardware/README.md` alone is not one | No KiCad/BOM/gerbers at snapshot |
 
 ## 5. Missing evidence checklist
 
@@ -163,7 +163,7 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 - [x] Fresh-generation determinism (starter calibration timestamp is zero; repeat checksums match).
 - [ ] Service auth/CSRF or explicit "local-only development" restriction (missing).
 - [ ] CI run attestation (workflow defined; not observed running).
-- [x] Source committed with a reproducible hash (see Git HEAD and TEST_EVIDENCE manifest).
+- [x] Source committed with a reproducible hash (Git HEAD `041be84f`; Rust tree clean).
 - [ ] Independent software review (missing).
 
 ### Gate 1 — unpowered hardware

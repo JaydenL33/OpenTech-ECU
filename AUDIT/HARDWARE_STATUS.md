@@ -5,16 +5,17 @@
 | Document ID | AUD-10 |
 | Status | Hardware status and requirements only; **no manufacturing-ready hardware exists** |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:37Z, working tree |
-| Source manifest | `984aa392bcb457bfd60a14cff7d505959e3534fe3afe4cf9428ea542ec649aad` |
+| Evidence cut-off | 2026-11-12T05:40Z, working tree |
+| Source manifest | `b78751a95244e59abbf5683c76b291c1eaff3d8fefa6302e54fb1fc1b594a237` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
-> **Plain statement.** No manufacturing-ready KiCad schematic, PCB, BOM, gerber, drill file, assembly drawing, enclosure or harness exists in this repository. A separate Codex attempt at a bench-prototype KiCad package is reportedly underway and is **UNREVIEWED**. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until ERC/DRC, BOM/derating, thermal, EMC and independent engineering review are complete.
+> **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It has **no PCB layout, no DRC, no gerbers, no thermal/EMC validation and no independent engineering review**. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.
 
 ## 1. Hardware artefacts: exists vs absent
 
 | Artefact | Exists in audited repo? | Evidence / note |
 |---|---|---|
+| Hardware status README | Yes | `hardware/README.md`; explicitly states no manufacturing-ready board and bench-prototype boundaries |
 | Rust host control code | Yes | `ecu/crates/*`; 128 tests pass |
 | Virtual ECU / simulator | Yes | `ecu-simulator`; six scenarios |
 | `no_std` firmware skeleton | Yes | `ecu/firmware/stm32`; target check passes; no HAL/timer/driver |
@@ -24,10 +25,11 @@
 | Watchdog integration | No | Skeleton accepts a watchdog flag; no hardware watchdog |
 | Flash/calibration storage | No | No bootloader, dual-bank, or calibration flash layout |
 | CAN driver | No | No transceiver/driver; simulator `can_ok=true` |
-| KiCad schematic | No | No `.kicad_sch` found |
-| KiCad PCB | No | No `.kicad_pcb` found |
-| KiCad project | No | No `.kicad_pro` found |
-| BOM | No | No ECU BOM found |
+| KiCad schematic | Yes, **UNREVIEWED** | `hardware/kicad/evo8-bench-ecu/`; 7 hierarchical sheets; bench-prototype only |
+| KiCad PCB | No | No `.kicad_pcb`; no placement/routing/DRC |
+| KiCad project | Yes, **UNREVIEWED** | `.kicad_pro` present; not independently opened/reviewed in this audit |
+| BOM | Yes, **UNREVIEWED** | 305 lines; real MPNs but sourcing/derating/thermal not reviewed |
+| ERC report | Yes, **UNREVIEWED** | `reports/erc.json`; 0 violations reported by generator's KiCad 9.0.9; not independently reproduced |
 | Gerbers/drill | No | No `.gbr`/`.drl` found |
 | Assembly drawing | No | Not present |
 | Enclosure/mechanical | No | Not present |
@@ -37,7 +39,7 @@
 | Evo ECU part number/connector/pinout | No | `vehicle.rs`: `None`/`false`; all unverified |
 | Evo trigger/injector/coil data | No | Unverified |
 
-**Not a manufacturing package.** A folder of KiCad files, even if it appears later, is not a manufacturable product. Manufacturing readiness requires a reviewed schematic/PCB, ERC/DRC with a documented rule set, BOM with derating/lifecycle, stack-up, assembly drawings, test coverage, and a build house DFM review. None exists.
+**Not a manufacturing package.** The schematic package is an unreviewed hypothesis, not a product. Manufacturing readiness requires a reviewed schematic, PCB layout, DRC with a documented rule set, BOM derating/lifecycle, stack-up, assembly drawings, test coverage, and a build-house DFM review. None exists. The ERC report's "0 violations" is a KiCad rule result only; it does not prove electrical safety or Evo compatibility.
 
 ## 2. Candidate architecture (not a selection)
 
@@ -52,7 +54,7 @@
    |-> CAN transceiver -> external wideband / PC / dash
 ```
 
-The architecture is deliberately generic. No pin, timer channel, connector cavity, driver part number or current rating is assigned.
+The architecture is deliberately generic. No pin, timer channel, connector cavity, driver part number or current rating is assigned. `hardware/README.md` states the first target is a bench prototype with an STM32H7-class MCU; that is a project intent, not a verified part selection or HAL support claim.
 
 ## 3. MCU trade study inputs (no selection)
 
@@ -90,16 +92,16 @@ No connector is selected. Do not order an adapter or publish a pinout from a for
 
 | ID | Item | Impact | Required action |
 |---|---|---|---|
-| HW-01 | No reviewed schematic/PCB/BOM/gerbers | Cannot build or review | Produce/review a KiCad package; ERC/DRC; DFM |
-| HW-02 | Separate Codex KiCad attempt unreviewed | Could be mistaken for a valid design | Treat as draft only; independent review; do not manufacture |
-| HW-03 | MCU/HAL not selected/proven | Firmware plan may be infeasible | Dev-board proof for exact part/peripherals |
+| HW-01 | Unreviewed schematic; no PCB, no DRC, no gerbers | Cannot build or review manufacturing | Review schematic/nets; create PCB; DRC; DFM |
+| HW-02 | Codex KiCad attempt unreviewed | Could be mistaken for a valid design | Treat as draft only; independent review; do not manufacture |
+| HW-03 | MCU/HAL not selected/proven (schematic uses STM32H743VIT6, unreviewed) | Firmware plan may be infeasible | Dev-board proof for exact part/peripherals |
 | HW-04 | No timer capture/compare implementation | No timing evidence | Implement and measure; AUD-04 |
-| HW-05 | No injector driver/flyback design | Driver/coil damage risk | Injector characterization; driver SOA; scope |
-| HW-06 | No ignition interface | Coil/igniter damage/no spark | Verify Evo topology; design interface |
+| HW-05 | Unreviewed injector sink/flyback design | Driver/coil damage risk | Injector characterization; driver SOA; scope |
+| HW-06 | Unreviewed ignition interface | Coil/igniter damage/no spark | Verify Evo topology; design interface |
 | HW-07 | No knock interface | No knock protection | Sensor/filter/gain/window design; validation |
-| HW-08 | No CAN physical layer | Wideband/PC/dash unavailable | Transceiver/termination/protection |
-| HW-09 | No watchdog/safe-state hardware | Hang can leave outputs active | External watchdog; default-off; fault injection |
-| HW-10 | No power/transient design | Brownout/load-dump damage | Input protection; UVLO; test plan |
+| HW-08 | Unreviewed CAN physical layer | Wideband/PC/dash unavailable | Transceiver/termination/protection review |
+| HW-09 | Unreviewed watchdog/safe-state hardware | Hang can leave outputs active | External watchdog; default-off; fault injection |
+| HW-10 | Unreviewed power/transient design | Brownout/load-dump damage | Input protection; UVLO; test plan |
 | HW-11 | No thermal/EMC/mechanical design | Reliability/compliance unknown | Calculations; chamber; pre-compliance; enclosure |
 | HW-12 | No bench fixture/E-stop | Unsafe bring-up | Build AUD-09 fixture |
 | HW-13 | Evo pinout/connector/trigger/harness unverified | Wrong wiring/trigger | Complete Gate 3 evidence |
@@ -112,9 +114,9 @@ A hardware status change requires all of the following, in order:
 
 1. Requirements in AUD-03 assigned values and traced to schematic nets/components.
 2. MCU selected after a dev-board proof of timers/ADC/CAN/watchdog/Rust build.
-3. Schematic/PCB/BOM/gerbers produced and reviewed; ERC/DRC run with documented rules and exceptions.
+3. Reviewed schematic; PCB/BOM/gerbers produced and reviewed; ERC/DRC run with documented rules and exceptions.
 4. BOM derating/lifecycle, thermal, EMC plan, connector/pinout evidence.
-5. A separate Codex/KiCad attempt, if used, reviewed line-by-line and not assumed correct.
+5. The unreviewed Codex/KiCad schematic reviewed line-by-line; every component value, net and protection choice checked; not assumed correct.
 6. Bench fixture, current-limited supply, fuses, dummy loads, E-stop (AUD-09).
 7. Gate 1 unpowered inspection passed; Gate 2 powered bench evidence produced.
 8. Independent electrical review signed.
@@ -123,10 +125,10 @@ Until then: **requirements only, no manufacturing claim, no vehicle connection.*
 
 ## 7. Explicit non-claims
 
-- No manufacturing-ready PCB, BOM, gerbers or assembly exists.
-- No KiCad ERC/DRC has been run on a reviewed design.
-- No separate Codex KiCad attempt has been validated; it is unreviewed.
-- No MCU/HAL/timer/driver/watchdog implementation exists.
+- No manufacturing-ready PCB, gerbers or assembly exists; the schematic/BOM are unreviewed drafts.
+- An ERC report exists (0 violations reported by the generator), but it has not been independently reproduced or reviewed; no DRC exists because there is no PCB.
+- The Codex KiCad attempt has not been validated; every value/net/protection choice is unreviewed.
+- No MCU/HAL/timer/driver/watchdog firmware implementation exists.
 - No electrical safety, EMC, thermal, vibration, IP or automotive qualification is claimed.
 - No connector pinout, ECU part number or plug-and-play compatibility is claimed.
 - No engine or vehicle readiness is claimed. Gate 1+ remains blocked.
