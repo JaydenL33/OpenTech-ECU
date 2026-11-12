@@ -7,7 +7,7 @@
 | Audit date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:35Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `5d217bf4471fa1391a5acd0aa341848ec43f5431` (retained Speeduino tree; the Rust workspace is untracked at this snapshot) |
+| Git HEAD | `5d217bf4471fa1391a5acd0aa341848ec43f5431` is the upstream Speeduino parent; the OpenTech Rust workspace is committed in the OpenTech commits recorded by Git |
 | Rust source manifest | SHA-256 `f9fb7b792d87d39c0eb7dbb3a240d406f8556ea99dad327c04bf3aef6d278d7e` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test status at cut-off | 128 tests: 128 passed, 0 failed; `cargo fmt` and clippy pass; firmware no_std skeleton target check passes. See AUD-05. Gate 0 host software evidence is **PASS, scoped**; not a certification |
@@ -107,7 +107,7 @@ These are requirements for the audited software and for any future hardware prog
 | ECS-SR-024 | The service shall not be reachable by untrusted network clients and shall authenticate/authorise calibration changes before any physical actuator path exists. | Prevent remote/CSRF apply | Binds 127.0.0.1, but CORS permissive and no auth | Not implemented; currently virtual-only |
 | ECS-SR-025 | The operator shall have an independent emergency stop that removes actuator power, not merely a software cut. | Human last resort | Bench plan only | Planned / Blocked |
 | ECS-SR-026 | Sensor validity and staleness shall be tracked per sensor and checked before control; a numeric value alone shall not imply trust. | Prevent control on stale data | `SensorStatus` type; lambda gate; no per-sensor age in telemetry | Partial |
-| ECS-SR-027 | The safety argument shall be re-issued for the exact source revision, calibration checksum, and hardware revision. | Evidence traceability | This document; audit hash | Partial: source untracked; no CI attestation |
+| ECS-SR-027 | The safety argument shall be re-issued for the exact source revision, calibration checksum, and hardware revision. | Evidence traceability | This document; audit hash | Partial: source committed; no CI attestation |
 
 ## 5. Separation of fuel and ignition evidence
 

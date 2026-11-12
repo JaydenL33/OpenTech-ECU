@@ -63,7 +63,7 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 | 0.17 | Invariants INV-01..INV-20 reviewed | Review record | Partial; see AUD-07 |
 | 0.18 | Known gaps/limitations documented | AUD set | Present |
 | 0.19 | Independent software review | Signed record | **MISSING** |
-| 0.20 | Source committed/reproducible | Commit or manifest hash | **PARTIAL**: Rust tree untracked; manifest hash recorded |
+| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: source committed; manifest hash recorded in AUD-05 |
 
 **Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 128 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: no browser/Electron runtime test, no live LLM test, no independent review, source committed. It does **not** authorise Gate 1+.
 

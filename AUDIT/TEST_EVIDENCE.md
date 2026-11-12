@@ -293,7 +293,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 
 | Requirement / claim | Evidence | Result | Caveat |
 |---|---|---|---|
-| ECS-SR-001: no physical output path | No hardware driver; firmware skeleton `PHYSICAL_OUTPUTS_AUTHORISED=false`; tests | Pass (host/skeleton) | Not permanent; source untracked |
+| ECS-SR-001: no physical output path | No hardware driver; firmware skeleton `PHYSICAL_OUTPUTS_AUTHORISED=false`; tests | Pass (host/skeleton) | Host/skeleton evidence; source committed |
 | ECS-SR-002: interlock reported | `physical_interlock_constant_is_false`; `/api/health`; preflight | Pass | Compile-time constant |
 | ECS-SR-003: lambda never ignition | `ecu-ignition` API; 7 tests | Pass | Review invariant; future edits |
 | ECS-SR-006: shared learning gate | `every_invalidity_is_explained`, `nan_lambda_rejected` | Pass | Inputs partially caller-supplied |

@@ -30,12 +30,12 @@
 |---|---|---|---|---|---|
 | SYS-001 | Rust-first Cargo workspace with separate core crates | Brief §4 | `ecu/Cargo.toml`; 13 crates/apps | Implemented | Host-only; `apps/tuning-studio/src-tauri` excluded/absent |
 | SYS-002 | Deterministic host virtual ECU with fixed-step engine model | Brief §1, §5 | `ecu-simulator`; `step_once` 1 ms; CLI determinism PASS | Simulated | Deterministic per fixed calibration; fresh starter calibration uses wall-clock timestamp |
-| SYS-003 | No physical output path in v0.1 | Project context | No hardware driver/PCB; firmware skeleton forces outputs off; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED=true` | Implemented (snapshot) | Source untracked; one edit could remove interlock |
+| SYS-003 | No physical output path in v0.1 | Project context | No hardware driver/PCB; firmware skeleton forces outputs off; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED=true` | Implemented (snapshot) | Source committed; interlock enforcement still needs independent review |
 | SYS-004 | Versioned protocol with CRC and explicit negotiation | Brief §4 | `ecu-protocol`; 7 tests | Implemented | Binary CRC covers payload, not header; no auth |
 | SYS-005 | Real tuning UI, not mock controls | Brief §1, §7 | `apps/tuning-studio` React/Vite + Electron main; typecheck/build PASS | Partial | Electron launch/browser interaction not tested; no visual/accessibility tests; brief requested Tauri |
 | SYS-006 | Bounded memory, no heap allocation in hard real-time paths | Brief §4 | Core control crates use fixed arrays; skeleton has no heap | Partial | Simulator uses `Vec`; no ISR/timer exists to assess |
 | SYS-007 | Embedded-relevant crates compile under `no_std` | Brief §4 | All six core control crates pass no-default-features; firmware skeleton target check passes | Implemented | `ecu-protocol`/`ecu-lambda` remain std-only; no HAL/drivers yet |
-| SYS-008 | `cargo fmt`, clippy, tests, CI | Brief §4 | fmt/clippy/test pass locally; CI workflow defined | Partial | CI not observed running; source untracked |
+| SYS-008 | `cargo fmt`, clippy, tests, CI | Brief §4 | fmt/clippy/test pass locally; CI workflow defined | Partial | CI not observed running; source committed |
 | SYS-009 | Preserve GPL/CERN-OHL-S licences and provenance | Brief §2 | GPL-2.0-or-later workspace; Speeduino tree retained | Partial | No per-module provenance registry; no hardware design yet |
 | SYS-010 | Independent engineering review before physical use | Brief §7 | None | Planned | Gate 0-5 process; no reviewer sign-off exists |
 | SYS-011 | Numeric parity pin against Speeduino fuel arithmetic | Brief §2, §4 | `ecu/crates/ecu-fuel/tests/speeduino_parity.rs`; 2 tests | Implemented (narrow) | Formula comparison only; not a full C++ binary/oracle build |
@@ -261,7 +261,7 @@ A numeric percentage would be misleading because requirements differ in scope, e
 
 | Area | Strongest current evidence | Dominant gap |
 |---|---|---|
-| System/platform | Cargo workspace, protocol, UI build, CI workflow, all core no_std checks pass | CI not observed running; protocol/lambda std-only; source untracked |
+| System/platform | Cargo workspace, protocol, UI build, CI workflow, all core no_std checks pass | CI not observed running; protocol/lambda std-only; source committed |
 | Simulation | Deterministic fixed-calibration runs; six scenarios | Idle/transient realism; fresh-calibration determinism; no hardware |
 | Fuel | Unit-tested air mass, pulse width, dead time, duty inhibition | No flow bench; no transient/wall-wetting; no per-cylinder |
 | Ignition | API excludes lambda; bounded advance/dwell; evidence policy | No authenticated evidence; no knock validation; apparent double retard |

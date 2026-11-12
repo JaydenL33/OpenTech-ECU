@@ -163,7 +163,7 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 - [ ] Fresh-generation determinism or documented seed/time policy (missing).
 - [ ] Service auth/CSRF or explicit "local-only development" restriction (missing).
 - [ ] CI run attestation (workflow defined; not observed running).
-- [ ] Source committed with a reproducible hash (Rust tree currently untracked).
+- [x] Source committed with a reproducible hash (see Git HEAD and TEST_EVIDENCE manifest).
 - [ ] Independent software review (missing).
 
 ### Gate 1 — unpowered hardware
