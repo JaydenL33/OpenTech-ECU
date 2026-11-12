@@ -43,7 +43,7 @@
 | Autonomous | Yes |
 | Verification | `hardware/tools/verify_upstream_baseline.sh` → all files `OK`, exit 0 |
 | Status | **CLOSED** |
-| Resolved by | This round; see `AUDIT/UPSTREAM_PROVENANCE.md` and `hardware/upstream-speeduino/SHA256SUMS` |
+| Resolved by | `219aa0855f94f0a02765e1b32e08f85d4591877a`; see `AUDIT/UPSTREAM_PROVENANCE.md` and `hardware/upstream-speeduino/SHA256SUMS` |
 
 ### HW-BASE-02 — Baseline revision not selected against alternatives
 
@@ -58,7 +58,7 @@
 | Autonomous | Yes |
 | Verification | Review `AUDIT/HARDWARE_BASELINE.md` §2–3 against the upstream tree |
 | Status | **CLOSED** (selection is a candidate, not fabrication approval) |
-| Resolved by | This round; `AUDIT/HARDWARE_BASELINE.md` |
+| Resolved by | `219aa0855f94f0a02765e1b32e08f85d4591877a`; `AUDIT/HARDWARE_BASELINE.md` |
 
 ### HW-FMT-01 — No native KiCad schematic/PCB for the selected board
 
@@ -73,7 +73,7 @@
 | Autonomous | Yes |
 | Verification | `hardware/tools/check_prototype_v1.sh`; connectivity `RESULT: PASS`; DRC `0 unconnected items` |
 | Status | **CLOSED (format-only change; review required)** |
-| Resolved by | This round; see `AUDIT/UPSTREAM_PROVENANCE.md` §4 and `AUDIT/PCB_CHECK_RESULTS.md` §4 |
+| Resolved by | `219aa0855f94f0a02765e1b32e08f85d4591877a`; see `AUDIT/UPSTREAM_PROVENANCE.md` §4 and `AUDIT/PCB_CHECK_RESULTS.md` §4 |
 
 ### HW-ERC-01 — 101 ERC violations remain
 
@@ -256,7 +256,7 @@
 | Autonomous | Yes (build only; no hardware flashing) |
 | Verification | `pio run -e megaatmega2560` → SUCCESS; clean rebuild produced identical hex/ELF hashes |
 | Status | **CLOSED (build only; not flashed)** |
-| Resolved by | This round; `AUDIT/FIRMWARE_TEST_EVIDENCE.md`, `evidence/hardware/firmware-build-megaatmega2560.log` |
+| Resolved by | `219aa0855f94f0a02765e1b32e08f85d4591877a`; `AUDIT/FIRMWARE_TEST_EVIDENCE.md`, `evidence/hardware/firmware-build-megaatmega2560.log` |
 
 A residual review action remains: pin an official Speeduino firmware tag/commit
 for the release package instead of the in-tree snapshot. This is not a build
