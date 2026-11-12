@@ -22,7 +22,8 @@ complete. See [`AUDIT/HARDWARE_STATUS.md`](../AUDIT/HARDWARE_STATUS.md),
 [`AUDIT/EVO8_BENCH_TEST_PLAN.md`](../AUDIT/EVO8_BENCH_TEST_PLAN.md) and
 [`AUDIT/ELECTRICAL_DESIGN_REVIEW.md`](../AUDIT/ELECTRICAL_DESIGN_REVIEW.md).
 
-A separate, time-boxed KiCad attempt was delegated to an agent in an isolated
-workspace. If any KiCad files from that attempt are added here, they must be
-marked **UNREVIEWED** until ERC/DRC, netlist review, component sourcing and
-independent electrical review are recorded. A KiCad file is not a safe circuit.
+`hardware/kicad/evo8-bench-ecu/` now contains an **UNREVIEWED** hierarchical
+KiCad bench schematic, netlist, BOM, pin map, test-point list and ERC report from
+a time-boxed independent Codex pass. It has **no PCB layout, no DRC, no
+manufacturing outputs and no independent review**. ERC passing is not electrical
+or functional safety. See its README before touching it.

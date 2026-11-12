@@ -1,0 +1,6585 @@
+(kicad_sch
+  (version 20250114)
+  (generator "eeschema")
+  (uuid "d9f8d247-36f1-584d-a8ef-ca3f15c1723c")
+  (paper "A1")
+  (title_block
+    (title "OpenTech-ECU / Analog and Hall trigger conditioning")
+    (date "2026-11-12")
+    (rev "A-UNREVIEWED")
+    (company "BENCH PROTOTYPE - NOT AUTOMOTIVE QUALIFIED")
+    (comment 1 "NOT a factory-Evo replacement. NO vehicle or real fuel/spark connection."))
+  (lib_symbols
+    (symbol "Comparator:LM2903"
+      (pin_names
+        (offset 0.127))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 3.81 3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Value" "LM2903"
+        (at 6.35 -3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm393.pdf"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Description" "Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/SOP-8/TSSOP-8/VSSOP-8"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_locked" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "ki_keywords" "cmp open collector"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "SOIC*3.9x4.9mm*P1.27mm* DIP*W7.62mm* SOP*5.28x5.23mm*P1.27mm* VSSOP*3x3mm*P0.65mm* TSSOP*4.4x3mm*P0.65mm*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (symbol "LM2903_1_1"
+        (polyline
+          (pts
+            (xy -5.08 5.08)
+            (xy 5.08 0)
+            (xy -5.08 -5.08)
+            (xy -5.08 5.08))
+          (stroke
+            (width 0.254)
+            (type default))
+          (fill
+            (type background)))
+        (polyline
+          (pts
+            (xy 3.302 -0.508)
+            (xy 2.794 -0.508)
+            (xy 3.302 0)
+            (xy 2.794 0.508)
+            (xy 2.286 0)
+            (xy 2.794 -0.508)
+            (xy 2.286 -0.508))
+          (stroke
+            (width 0.127)
+            (type default))
+          (fill
+            (type none)))
+        (pin input line
+          (at -7.62 2.54 0)
+          (length 2.54)
+          (name "+"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin input line
+          (at -7.62 -2.54 0)
+          (length 2.54)
+          (name "-"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin open_collector line
+          (at 7.62 0 180)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (symbol "LM2903_2_1"
+        (polyline
+          (pts
+            (xy -5.08 5.08)
+            (xy 5.08 0)
+            (xy -5.08 -5.08)
+            (xy -5.08 5.08))
+          (stroke
+            (width 0.254)
+            (type default))
+          (fill
+            (type background)))
+        (polyline
+          (pts
+            (xy 3.302 -0.508)
+            (xy 2.794 -0.508)
+            (xy 3.302 0)
+            (xy 2.794 0.508)
+            (xy 2.286 0)
+            (xy 2.794 -0.508)
+            (xy 2.286 -0.508))
+          (stroke
+            (width 0.127)
+            (type default))
+          (fill
+            (type none)))
+        (pin input line
+          (at -7.62 2.54 0)
+          (length 2.54)
+          (name "+"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "5"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin input line
+          (at -7.62 -2.54 0)
+          (length 2.54)
+          (name "-"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "6"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin open_collector line
+          (at 7.62 0 180)
+          (length 2.54)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "7"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (symbol "LM2903_3_1"
+        (pin power_in line
+          (at -2.54 7.62 270)
+          (length 3.81)
+          (name "V+"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "8"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin power_in line
+          (at -2.54 -7.62 90)
+          (length 3.81)
+          (name "V-"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "4"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no))
+    (symbol "Connector:TestPoint"
+      (pin_numbers
+        (hide yes))
+      (pin_names
+        (offset 0.762)
+        (hide yes))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "TP"
+        (at 0 6.858 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Value" "TestPoint"
+        (at 0 5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Footprint" ""
+        (at 5.08 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Datasheet" "~"
+        (at 5.08 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Description" "test point"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_keywords" "test point tp"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "Pin* Test*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (symbol "TestPoint_0_1"
+        (circle
+          (center 0 3.302)
+          (radius 0.762)
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none))))
+      (symbol "TestPoint_1_1"
+        (pin passive line
+          (at 0 0 90)
+          (length 2.54)
+          (name "1"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no))
+    (symbol "Connector_Generic:Conn_01x02"
+      (pin_names
+        (offset 1.016)
+        (hide yes))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "J"
+        (at 0 2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Value" "Conn_01x02"
+        (at 0 -5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_keywords" "connector"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "Connector*:*_1x??_*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (symbol "Conn_01x02_1_1"
+        (rectangle
+          (start -1.27 1.27)
+          (end 1.27 -3.81)
+          (stroke
+            (width 0.254)
+            (type default))
+          (fill
+            (type background)))
+        (rectangle
+          (start -1.27 0.127)
+          (end 0 -0.127)
+          (stroke
+            (width 0.1524)
+            (type default))
+          (fill
+            (type none)))
+        (rectangle
+          (start -1.27 -2.413)
+          (end 0 -2.667)
+          (stroke
+            (width 0.1524)
+            (type default))
+          (fill
+            (type none)))
+        (pin passive line
+          (at -5.08 0 0)
+          (length 3.81)
+          (name "Pin_1"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin passive line
+          (at -5.08 -2.54 0)
+          (length 3.81)
+          (name "Pin_2"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no))
+    (symbol "Device:C"
+      (pin_numbers
+        (hide yes))
+      (pin_names
+        (offset 0.254))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "C"
+        (at 0.635 2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (justify left)))
+      (property "Value" "C"
+        (at 0.635 -2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (justify left)))
+      (property "Footprint" ""
+        (at 0.9652 -3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Description" "Unpolarized capacitor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_keywords" "cap capacitor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "C_*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (symbol "C_0_1"
+        (polyline
+          (pts
+            (xy -2.032 0.762)
+            (xy 2.032 0.762))
+          (stroke
+            (width 0.508)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -2.032 -0.762)
+            (xy 2.032 -0.762))
+          (stroke
+            (width 0.508)
+            (type default))
+          (fill
+            (type none))))
+      (symbol "C_1_1"
+        (pin passive line
+          (at 0 3.81 270)
+          (length 2.794)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin passive line
+          (at 0 -3.81 90)
+          (length 2.794)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no))
+    (symbol "Device:R"
+      (pin_numbers
+        (hide yes))
+      (pin_names
+        (offset 0))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 2.032 0 90)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Value" "R"
+        (at 0 0 90)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Footprint" ""
+        (at -1.778 0 90)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Description" "Resistor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_keywords" "R res resistor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "R_*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 -2.54)
+          (end 1.016 2.54)
+          (stroke
+            (width 0.254)
+            (type default))
+          (fill
+            (type none))))
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 3.81 270)
+          (length 1.27)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin passive line
+          (at 0 -3.81 90)
+          (length 1.27)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no))
+    (symbol "Diode:BAT54S"
+      (pin_names
+        (offset 0))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "D"
+        (at 2.54 -5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (justify left)))
+      (property "Value" "BAT54S"
+        (at -6.35 3.175 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (justify left)))
+      (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+        (at 1.905 3.175 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (justify left)
+          (hide yes)))
+      (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+        (at -3.048 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "Description" "Vr 30V, If 200mA, Dual schottky barrier diode, in series, SOT-323"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_keywords" "schottky diode"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "SOT?23*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (symbol "BAT54S_0_1"
+        (polyline
+          (pts
+            (xy -4.445 1.27)
+            (xy -4.445 -1.27)
+            (xy -2.54 0)
+            (xy -4.445 1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -3.81 0)
+            (xy -1.27 0))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -3.175 -1.27)
+            (xy -3.175 -1.016))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -2.54 1.27)
+            (xy -1.905 1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -2.54 -1.27)
+            (xy -3.175 -1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -2.54 -1.27)
+            (xy -2.54 1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -1.905 1.27)
+            (xy -1.905 1.016))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -1.905 0)
+            (xy 1.905 0))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (circle
+          (center 0 0)
+          (radius 0.254)
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type outline)))
+        (polyline
+          (pts
+            (xy 1.27 0)
+            (xy 3.81 0))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 1.905 1.27)
+            (xy 1.905 -1.27)
+            (xy 3.81 0)
+            (xy 1.905 1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 3.175 -1.27)
+            (xy 3.175 -1.016))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 3.81 1.27)
+            (xy 4.445 1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 3.81 -1.27)
+            (xy 3.175 -1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 3.81 -1.27)
+            (xy 3.81 1.27))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 4.445 1.27)
+            (xy 4.445 1.016))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none))))
+      (symbol "BAT54S_1_1"
+        (pin passive line
+          (at -7.62 0 0)
+          (length 3.81)
+          (name "A"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 5.08)
+          (name "COM"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin passive line
+          (at 7.62 0 180)
+          (length 3.81)
+          (name "K"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no))
+    (symbol "Reference_Voltage:LM4040DBZ-3"
+      (pin_names
+        (offset 0.0254)
+        (hide yes))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (symbol "LM4040DBZ-3_0_1"
+        (polyline
+          (pts
+            (xy -1.27 0)
+            (xy 0 0)
+            (xy 1.27 0))
+          (stroke
+            (width 0)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy -1.27 -1.27)
+            (xy 0.635 0)
+            (xy -1.27 1.27)
+            (xy -1.27 -1.27))
+          (stroke
+            (width 0.2032)
+            (type default))
+          (fill
+            (type none)))
+        (polyline
+          (pts
+            (xy 0 -1.27)
+            (xy 0.635 -1.27)
+            (xy 0.635 1.27)
+            (xy 1.27 1.27))
+          (stroke
+            (width 0.2032)
+            (type default))
+          (fill
+            (type none))))
+      (symbol "LM4040DBZ-3_1_1"
+        (pin passive line
+          (at -3.81 0 0)
+          (length 2.54)
+          (name "A"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin no_connect line
+          (at -1.27 0 0)
+          (length 2.54)
+          (hide yes)
+          (name "NC"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)))))
+        (pin passive line
+          (at 3.81 0 180)
+          (length 2.54)
+          (name "K"
+            (effects
+              (font
+                (size 1.27 1.27))))
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27))))))
+      (embedded_fonts no)
+      (property "Reference" "U"
+        (at 0 2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Value" "LM4040DBZ-3"
+        (at 0 -3.175 0)
+        (effects
+          (font
+            (size 1.27 1.27))))
+      (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+        (at 0 -5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+            (italic yes))
+          (hide yes)))
+      (property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm4040-n.pdf"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+            (italic yes))
+          (hide yes)))
+      (property "Description" "3.000V Precision Micropower Shunt Voltage Reference, SOT-23"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_keywords" "diode device voltage reference shunt"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))
+      (property "ki_fp_filters" "SOT?23*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27))
+          (hide yes)))))
+  (text "Analog divider22k/33k: gain0.600; ADC0-3.0V for input0-5V. ADC source14.2kohm requires long sampling time."
+    (at 20 17 0)
+    (effects
+      (font
+        (size 1.2 1.2))
+      (justify left))
+    (uuid "816417ef-c10a-5dae-bc6c-29d663c25906"))
+  (text "BAT54S clamps to AGND and dedicated absorbing LM4040 3.0V shunt. No phantom powering of MCU rail."
+    (at 20 21 0)
+    (effects
+      (font
+        (size 1.2 1.2))
+      (justify left))
+    (uuid "87e423c3-57d7-5140-9f1c-d2fb853a6734"))
+  (text "Continuous accidental +/-12.6V inputs are resistor-limited design cases, NOT tested survival ratings."
+    (at 20 25 0)
+    (effects
+      (font
+        (size 1.2 1.2))
+      (justify left))
+    (uuid "09591d2f-2b9c-5c3d-b426-ef4fe6fb30be"))
+  (text "Trigger inputs: single-ended push-pull0-5V Hall/function generator only. No onboard Hall pullup, no VR interface."
+    (at 20 29 0)
+    (effects
+      (font
+        (size 1.2 1.2))
+      (justify left))
+    (uuid "bd99e604-aef8-551f-9528-8403722aac14"))
+  (text "Positive comparator feedback1M gives approx72mV input hysteresis; input RC approx13us; measure edge delay."
+    (at 20 33 0)
+    (effects
+      (font
+        (size 1.2 1.2))
+      (justify left))
+    (uuid "86f90405-57d1-5805-8935-201b919cbe28"))
+  (text "Signal sources and USB must be disconnected while board is unpowered. Sensor rail shares logic buck current limit."
+    (at 20 37 0)
+    (effects
+      (font
+        (size 1.2 1.2))
+      (justify left))
+    (uuid "aef7a63d-4275-5bba-a807-6eec935d355b"))
+  (symbol
+    (lib_id "Device:R")
+    (at 50.8 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "96b49a21-b011-51db-b136-c29daed9f078")
+    (property "Reference" "R500"
+      (at 50.8 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "2.2k"
+      (at 50.8 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-072K2L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R500")
+          (unit 1))))
+    (pin "1"
+      (uuid "86146d13-d518-57eb-b58b-033dbb8ddc81"))
+    (pin "2"
+      (uuid "43d1931b-fde7-5236-8d55-b56da86aa134")))
+  (wire
+    (pts
+      (xy 50.8 72.39)
+      (xy 50.8 67.31))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "b1f6c766-65f7-5e55-b08e-882cd9ae39b5"))
+  (global_label "+5V"
+    (shape passive)
+    (at 50.8 67.31 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "6c5339b2-3b23-5fe4-adf4-ef04cc21b58f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 50.8 67.31 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 50.8 80.01)
+      (xy 50.8 85.09))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "40ec1bb2-e6f6-5730-abc9-8c6042ce15f0"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 50.8 85.09 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "6e3f88d0-6dd8-5cef-9cca-ea885155ad16")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 50.8 85.09 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Reference_Voltage:LM4040DBZ-3")
+    (at 124.46 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "52502ab8-c7fb-51bf-a2e5-d71a1119eba3")
+    (property "Reference" "U500"
+      (at 124.46 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "LM4040D30IDBZR"
+      (at 124.46 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm4040-n.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "LM4040D30IDBZR"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Texas Instruments"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "3.0V shunt absorbs positive fault clamp current; not ADC VREF"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "U500")
+          (unit 1))))
+    (pin "2"
+      (uuid "b3b87d5b-0b19-5566-abb0-4516b83cc6d2"))
+    (pin "3"
+      (uuid "bd17b861-8a96-5e95-a8a3-8fbb664ef4d4"))
+    (pin "1"
+      (uuid "93c344f6-4ad0-524c-9414-dec163024b37")))
+  (wire
+    (pts
+      (xy 120.65 76.2)
+      (xy 115.57 76.2))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "c8f8659e-7432-5040-9b91-da2fc642fe22"))
+  (global_label "AGND"
+    (shape passive)
+    (at 115.57 76.2 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "19a437fc-1500-5dcb-997c-fef318c7448d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 115.57 76.2 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (no_connect
+    (at 123.19 76.2)
+    (uuid "2e8cd533-5e97-580b-b54a-a32351514ddb"))
+  (wire
+    (pts
+      (xy 128.27 76.2)
+      (xy 133.35 76.2))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f629b4b4-a59f-595e-935f-9d38887911b0"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 133.35 76.2 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "331037ee-84bf-56ae-99e5-62015265917d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 133.35 76.2 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 198.12 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "de10ea3d-3a2d-569d-8bd2-ed230876f36b")
+    (property "Reference" "C500"
+      (at 198.12 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "100n"
+      (at 198.12 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H104KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C500")
+          (unit 1))))
+    (pin "1"
+      (uuid "161df38b-9f89-5236-997a-f58e2d894cc4"))
+    (pin "2"
+      (uuid "04978e11-c6f4-5af7-8e47-3da1c2061abc")))
+  (wire
+    (pts
+      (xy 198.12 72.39)
+      (xy 198.12 67.31))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "bb9f644e-b51f-52fb-8f40-78f4fa4a4b46"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 198.12 67.31 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "2e04d446-6caa-5f17-9eb5-27a7bc559602")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 67.31 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 198.12 80.01)
+      (xy 198.12 85.09))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "d4977647-9b3d-56c3-bb54-ac021aa32b5d"))
+  (global_label "AGND"
+    (shape passive)
+    (at 198.12 85.09 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "37789b1b-322d-5caf-b192-71f07da25cf7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 85.09 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 271.78 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "a226bf06-fced-5f11-8b6b-d0aa30c8aa6c")
+    (property "Reference" "J500"
+      (at 271.78 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "AN1 0-5V BENCH"
+      (at 271.78 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J500")
+          (unit 1))))
+    (pin "1"
+      (uuid "c433be8b-6cb6-587c-8bba-a824d524e398"))
+    (pin "2"
+      (uuid "62803ac8-2a1a-5ec9-b50c-bb119dea49da")))
+  (wire
+    (pts
+      (xy 266.7 76.2)
+      (xy 261.62 76.2))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "61ea4633-cf24-5bf0-b538-e287d03a4e6f"))
+  (global_label "AN1_INPUT"
+    (shape passive)
+    (at 261.62 76.2 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "ce7c32e3-b8fb-5211-9c8c-420ad5882624")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 261.62 76.2 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 266.7 78.74)
+      (xy 261.62 78.74))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "09f70e3e-3292-539a-9a05-f6245f25dbba"))
+  (global_label "AGND"
+    (shape passive)
+    (at 261.62 78.74 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "d37e597f-4e79-5131-8e98-f9bb3e5e22b8")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 261.62 78.74 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 345.44 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "55eba17f-ef0b-5b6e-9693-dad4350d1009")
+    (property "Reference" "R501"
+      (at 345.44 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "22k"
+      (at 345.44 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0722KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R501")
+          (unit 1))))
+    (pin "1"
+      (uuid "3aa575a7-c5b1-5581-9520-7ad38e246a0e"))
+    (pin "2"
+      (uuid "a001249b-36f5-5e00-b32a-f4429479e43d")))
+  (wire
+    (pts
+      (xy 345.44 72.39)
+      (xy 345.44 67.31))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "b5dcfd05-bdfd-5e47-bacc-274cb76e7d1c"))
+  (global_label "AN1_INPUT"
+    (shape passive)
+    (at 345.44 67.31 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "8f276534-0eb1-5cf2-ad63-5925f694527d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 67.31 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 345.44 80.01)
+      (xy 345.44 85.09))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "aa4b1776-fc22-5c37-be87-8b6a0a5192ce"))
+  (global_label "AN1_DIV"
+    (shape passive)
+    (at 345.44 85.09 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "02fe094c-6a1c-584e-818f-7a8bd0416210")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 85.09 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 419.09999999999997 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "99589e13-650c-5b32-b06f-8e30d6c4485c")
+    (property "Reference" "R502"
+      (at 419.09999999999997 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 419.09999999999997 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R502")
+          (unit 1))))
+    (pin "1"
+      (uuid "692e5c52-a3f2-579c-b4aa-69dbeb7264dd"))
+    (pin "2"
+      (uuid "aabfc388-a7a5-5903-8f7b-22a2709c246c")))
+  (wire
+    (pts
+      (xy 419.1 72.39)
+      (xy 419.1 67.31))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "7a894437-353f-55ab-b189-f3be4076e910"))
+  (global_label "AN1_DIV"
+    (shape passive)
+    (at 419.1 67.31 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "4327d539-4b62-5567-9965-eb71961199dc")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 67.31 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 419.1 80.01)
+      (xy 419.1 85.09))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "0917603b-9ae5-5f6d-907c-8acbccf3e98d"))
+  (global_label "AGND"
+    (shape passive)
+    (at 419.1 85.09 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "435d0b9f-5c9b-5897-88ee-1eb9c6d66f13")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 85.09 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Diode:BAT54S")
+    (at 492.76 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "50d3a622-0aa0-5561-bb2c-4444fd478918")
+    (property "Reference" "D500"
+      (at 492.76 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "BAT54S-7-F"
+      (at 492.76 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "BAT54S-7-F"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Diodes Incorporated"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Lower clamp to AGND, upper to absorbing3.0V shunt"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "D500")
+          (unit 1))))
+    (pin "1"
+      (uuid "5f3159f8-f9b6-5b93-a312-727f39825586"))
+    (pin "3"
+      (uuid "2970b4b5-ad98-5d36-a68a-a5f9044948b0"))
+    (pin "2"
+      (uuid "a0bd19af-6107-5402-beab-c0d822e8728d")))
+  (wire
+    (pts
+      (xy 485.14 76.2)
+      (xy 480.06 76.2))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f06ddee8-4add-5cf8-8e47-53aec0c6f04b"))
+  (global_label "AGND"
+    (shape passive)
+    (at 480.06 76.2 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "50b4a598-947b-5795-89f9-5fb3574c6139")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 480.06 76.2 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 492.76 81.28)
+      (xy 492.76 86.36))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "8ba8a502-1c15-5d2f-85c5-8e9e17e29fe4"))
+  (global_label "AN1_DIV"
+    (shape passive)
+    (at 492.76 86.36 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "f2cf1ecc-dfa6-588e-9f61-b9f1d6df5545")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 86.36 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 500.38 76.2)
+      (xy 505.46 76.2))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "253cf80a-951f-575b-a170-bd14cf57a226"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 505.46 76.2 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "72e73fe9-800b-58c3-8ceb-09d882634172")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 505.46 76.2 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 566.42 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5dfe8697-7b03-5d1b-9019-d731e3dd043f")
+    (property "Reference" "R503"
+      (at 566.42 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1k"
+      (at 566.42 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-071KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R503")
+          (unit 1))))
+    (pin "1"
+      (uuid "c3198ddd-60ac-5004-beba-294068eeecbe"))
+    (pin "2"
+      (uuid "1824cc05-20d5-58e0-a1fd-26e18d04ffd0")))
+  (wire
+    (pts
+      (xy 566.42 72.39)
+      (xy 566.42 67.31))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "610127cb-4874-55c1-9b74-ba451b2fff9f"))
+  (global_label "AN1_DIV"
+    (shape passive)
+    (at 566.42 67.31 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "67de1ae5-b637-5eb8-adad-7a91961b2cad")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 566.42 67.31 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 566.42 80.01)
+      (xy 566.42 85.09))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "98d5f084-6666-5dd8-804e-f51ecfbf90fb"))
+  (global_label "ADC_AN1"
+    (shape passive)
+    (at 566.42 85.09 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "de5d41f3-4870-5262-9c1b-bc9e8360bde8")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 566.42 85.09 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 640.0799999999999 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ebeae756-c697-5a3f-8895-d6dcf2688854")
+    (property "Reference" "C501"
+      (at 640.0799999999999 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "10n"
+      (at 640.0799999999999 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H103KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C501")
+          (unit 1))))
+    (pin "1"
+      (uuid "50f5dc9b-6b21-5416-bfc2-54b916ab0dd2"))
+    (pin "2"
+      (uuid "c35279bf-46ba-5e40-b093-6459c50da6fe")))
+  (wire
+    (pts
+      (xy 640.08 72.39)
+      (xy 640.08 67.31))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "d98c2597-246a-5f81-b158-32142826a776"))
+  (global_label "ADC_AN1"
+    (shape passive)
+    (at 640.08 67.31 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7577923d-2309-519b-8723-c5747f9265ba")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 67.31 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 640.08 80.01)
+      (xy 640.08 85.09))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "a4fad2d8-e013-5573-8e87-52f51e870e6e"))
+  (global_label "AGND"
+    (shape passive)
+    (at 640.08 85.09 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "a3c3ecc0-872f-5809-9c70-a55a96729a28")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 85.09 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 713.7399999999999 76.2 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "dad35b26-6e47-51d7-b3e7-64d40b2cbfdc")
+    (property "Reference" "TP500"
+      (at 713.7399999999999 63.5 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "ADC_AN1"
+      (at 713.7399999999999 66.04 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP500")
+          (unit 1))))
+    (pin "1"
+      (uuid "2bb66c90-e380-5a90-a258-ccf7498d02d6")))
+  (wire
+    (pts
+      (xy 713.74 76.2)
+      (xy 713.74 81.28))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "e92d25c9-dd13-53ee-b436-08520199ac96"))
+  (global_label "ADC_AN1"
+    (shape passive)
+    (at 713.74 81.28 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7580a815-9f32-5f5a-b319-676b29d9425d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 81.28 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 50.8 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "b7c3d5e1-2e38-59e7-90db-c5addf6b5818")
+    (property "Reference" "J501"
+      (at 50.8 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "AN2 0-5V BENCH"
+      (at 50.8 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J501")
+          (unit 1))))
+    (pin "1"
+      (uuid "fc986639-a52e-5e8d-81e0-8b7a325d6387"))
+    (pin "2"
+      (uuid "baf9f08d-7c36-546b-99ba-f4f85ce708f0")))
+  (wire
+    (pts
+      (xy 45.72 119.38)
+      (xy 40.64 119.38))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "83ba8c4f-126e-5a71-a83e-6b159fb6459b"))
+  (global_label "AN2_INPUT"
+    (shape passive)
+    (at 40.64 119.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "0a7046ee-c7b0-54b9-be21-10956514de61")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 40.64 119.38 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 45.72 121.92)
+      (xy 40.64 121.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "d7ee14cf-13bb-5e0a-8f23-0caaa6d9eee7"))
+  (global_label "AGND"
+    (shape passive)
+    (at 40.64 121.92 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "f1958780-868a-506f-8af2-333b90f5182e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 40.64 121.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 124.46 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2d6d8438-8df7-5a96-b3ea-41a984095ee4")
+    (property "Reference" "R504"
+      (at 124.46 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "22k"
+      (at 124.46 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0722KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R504")
+          (unit 1))))
+    (pin "1"
+      (uuid "8d3899fc-eaf7-5c7e-afeb-90e0159f8e8a"))
+    (pin "2"
+      (uuid "f8cffb58-7595-5a9c-98dc-e7bcf94277d4")))
+  (wire
+    (pts
+      (xy 124.46 115.57)
+      (xy 124.46 110.49))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "372cc11c-25e9-5838-adf2-03ad9160ca8e"))
+  (global_label "AN2_INPUT"
+    (shape passive)
+    (at 124.46 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "d9cd0135-60ad-5e0a-a0b1-41726bdbfce2")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 110.49 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 124.46 123.19)
+      (xy 124.46 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "e770c897-0dd6-5ba8-a34c-900de1dbc9bc"))
+  (global_label "AN2_DIV"
+    (shape passive)
+    (at 124.46 128.27 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "57db5102-6a29-5928-b0d5-277125ff20ef")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 128.27 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 198.12 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "7bd27ef9-202d-5dc5-a908-f0f865f10331")
+    (property "Reference" "R505"
+      (at 198.12 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 198.12 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R505")
+          (unit 1))))
+    (pin "1"
+      (uuid "842ce631-d36d-5680-84a4-46ab25324a84"))
+    (pin "2"
+      (uuid "e888a611-122b-5a26-8570-60f1d254b25a")))
+  (wire
+    (pts
+      (xy 198.12 115.57)
+      (xy 198.12 110.49))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "c593a9bf-00d6-58e3-979e-b6cab34002c2"))
+  (global_label "AN2_DIV"
+    (shape passive)
+    (at 198.12 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "a30083e1-d128-5299-bda8-d73e5b0294a2")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 110.49 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 198.12 123.19)
+      (xy 198.12 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "539eded3-0fa4-5104-9fd5-76de40f8b8ba"))
+  (global_label "AGND"
+    (shape passive)
+    (at 198.12 128.27 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "4bfed838-b85a-50fd-a8b7-5e1b9e7586a3")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 128.27 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Diode:BAT54S")
+    (at 271.78 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "32c1d3a3-f845-539a-ad23-590bcaa05e49")
+    (property "Reference" "D501"
+      (at 271.78 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "BAT54S-7-F"
+      (at 271.78 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "BAT54S-7-F"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Diodes Incorporated"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Lower clamp to AGND, upper to absorbing3.0V shunt"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "D501")
+          (unit 1))))
+    (pin "1"
+      (uuid "33081bfd-1e3f-50fc-baa3-08fdff29a66d"))
+    (pin "3"
+      (uuid "79e660a7-ecf6-5968-ab7c-d85c8ca5c180"))
+    (pin "2"
+      (uuid "995f24ce-2de8-5a13-81b3-dead4d11b0bd")))
+  (wire
+    (pts
+      (xy 264.16 119.38)
+      (xy 259.08 119.38))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "6b9b889d-54e4-5b96-a3f6-9e50346f9b9d"))
+  (global_label "AGND"
+    (shape passive)
+    (at 259.08 119.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7b6bd064-7f87-5f16-9dad-9274d6e14f0c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 259.08 119.38 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 271.78 124.46)
+      (xy 271.78 129.54))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f0136a57-bc28-5333-946e-2f0e0257d56a"))
+  (global_label "AN2_DIV"
+    (shape passive)
+    (at 271.78 129.54 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "5dfbe1ef-4da1-5a99-bc5c-d3fb97ed1427")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 271.78 129.54 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 279.4 119.38)
+      (xy 284.48 119.38))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "28a5ed3d-036b-5b6a-88cc-fe1fc098bf93"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 284.48 119.38 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "b037fbc9-868f-5338-ba34-e98d0c2b6761")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 284.48 119.38 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 345.44 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "4cd56048-bc10-5717-8bab-61fe785dd576")
+    (property "Reference" "R506"
+      (at 345.44 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1k"
+      (at 345.44 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-071KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R506")
+          (unit 1))))
+    (pin "1"
+      (uuid "8e76bd4f-d420-5f40-b6d3-10725864103b"))
+    (pin "2"
+      (uuid "e08feebe-de36-57e4-8db5-5f53569d79bb")))
+  (wire
+    (pts
+      (xy 345.44 115.57)
+      (xy 345.44 110.49))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f71166a7-cfe4-5821-91d4-673205e59bfe"))
+  (global_label "AN2_DIV"
+    (shape passive)
+    (at 345.44 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "5e61a4e2-6593-50fa-b4c0-83a442763388")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 110.49 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 345.44 123.19)
+      (xy 345.44 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "2b112d2a-99e8-5d4e-8a30-4a6e3839d6f5"))
+  (global_label "ADC_AN2"
+    (shape passive)
+    (at 345.44 128.27 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "17f8285f-c8c1-55a3-8bdb-bb545f564a29")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 128.27 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 419.09999999999997 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "a2e7fa80-f8c7-595e-90ae-cd2d49bc2005")
+    (property "Reference" "C502"
+      (at 419.09999999999997 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "10n"
+      (at 419.09999999999997 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H103KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C502")
+          (unit 1))))
+    (pin "1"
+      (uuid "5b1698c3-e2c2-59bf-b1b0-492640a176ef"))
+    (pin "2"
+      (uuid "8657615b-d70c-506a-8d41-558d2febbe2b")))
+  (wire
+    (pts
+      (xy 419.1 115.57)
+      (xy 419.1 110.49))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f642ac64-5c51-552c-8181-e7cb33deaa95"))
+  (global_label "ADC_AN2"
+    (shape passive)
+    (at 419.1 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "8e019297-19c0-5be4-8d07-68f79ec29245")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 110.49 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 419.1 123.19)
+      (xy 419.1 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "c3a166ea-a58f-5836-b62a-4fa9137c6315"))
+  (global_label "AGND"
+    (shape passive)
+    (at 419.1 128.27 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "4f919ddd-1ae2-5b28-97ab-c65499dde01f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 128.27 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 492.76 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "17dbb3c5-ec9a-5380-8ef0-15a70e8c365b")
+    (property "Reference" "TP501"
+      (at 492.76 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "ADC_AN2"
+      (at 492.76 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP501")
+          (unit 1))))
+    (pin "1"
+      (uuid "6678d0e7-3c3c-5596-8e34-a5a9e740108f")))
+  (wire
+    (pts
+      (xy 492.76 119.38)
+      (xy 492.76 124.46))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "6bbde203-84ff-5d89-bafb-996e1e2c8e7d"))
+  (global_label "ADC_AN2"
+    (shape passive)
+    (at 492.76 124.46 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "0a378570-13c1-59d7-ba34-71906a0d55f5")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 124.46 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 566.42 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5d7d5cd8-0403-5827-89ad-810d908088f0")
+    (property "Reference" "J502"
+      (at 566.42 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "AN3 0-5V BENCH"
+      (at 566.42 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J502")
+          (unit 1))))
+    (pin "1"
+      (uuid "1c7c7b8d-0adc-5ef5-adcb-0323230b3a49"))
+    (pin "2"
+      (uuid "f5b39960-4ba2-52eb-8c81-902d57577319")))
+  (wire
+    (pts
+      (xy 561.34 119.38)
+      (xy 556.26 119.38))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "758e8ea6-56fc-5b1a-89fb-3a6c05c2f7b6"))
+  (global_label "AN3_INPUT"
+    (shape passive)
+    (at 556.26 119.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "77222656-26c9-5dac-b72e-bdc50e10b517")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 556.26 119.38 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 561.34 121.92)
+      (xy 556.26 121.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "da56de29-bbc6-5758-bc81-61a0c488498f"))
+  (global_label "AGND"
+    (shape passive)
+    (at 556.26 121.92 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "17b2d688-d572-5845-a92c-2d062467b8df")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 556.26 121.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 640.0799999999999 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "4b7c92a3-309c-5f4c-8c32-71ca826a99f6")
+    (property "Reference" "R507"
+      (at 640.0799999999999 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "22k"
+      (at 640.0799999999999 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0722KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R507")
+          (unit 1))))
+    (pin "1"
+      (uuid "8b0b1713-429a-5975-8e9a-2bbb886f4431"))
+    (pin "2"
+      (uuid "b31ada57-5857-5315-bb13-0ffe3ac50a0e")))
+  (wire
+    (pts
+      (xy 640.08 115.57)
+      (xy 640.08 110.49))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "d154af0d-703a-5f81-92e8-59b91cfdfd8a"))
+  (global_label "AN3_INPUT"
+    (shape passive)
+    (at 640.08 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "01e6a799-2704-59bf-b22f-405b43c6c20b")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 110.49 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 640.08 123.19)
+      (xy 640.08 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "17e5f8bc-aa27-5420-88d0-834f12eee528"))
+  (global_label "AN3_DIV"
+    (shape passive)
+    (at 640.08 128.27 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "730cf1bf-734a-5ac5-a53c-2a4429f8dbc7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 128.27 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 713.7399999999999 119.38 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "f5d7801a-f88d-54f1-af89-84fd9bd1bdcc")
+    (property "Reference" "R508"
+      (at 713.7399999999999 106.67999999999999 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 713.7399999999999 109.22 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R508")
+          (unit 1))))
+    (pin "1"
+      (uuid "92013061-0608-5b4e-badc-014c6e659d03"))
+    (pin "2"
+      (uuid "e5d46d70-2d8f-5601-b5f4-51a1d73f0a00")))
+  (wire
+    (pts
+      (xy 713.74 115.57)
+      (xy 713.74 110.49))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "52cc3124-5791-5157-ab7f-182fc5c45d84"))
+  (global_label "AN3_DIV"
+    (shape passive)
+    (at 713.74 110.49 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "b19be100-db61-5f5e-b8db-dd52ac1cb4cb")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 110.49 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 713.74 123.19)
+      (xy 713.74 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "8716dc80-4f7c-54fe-befa-708b49e4ff6e"))
+  (global_label "AGND"
+    (shape passive)
+    (at 713.74 128.27 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "af207971-8eef-563d-b09f-cccf85756f29")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 128.27 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Diode:BAT54S")
+    (at 50.8 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "770a6559-23e4-544d-b9a3-9962226472a2")
+    (property "Reference" "D502"
+      (at 50.8 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "BAT54S-7-F"
+      (at 50.8 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "BAT54S-7-F"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Diodes Incorporated"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Lower clamp to AGND, upper to absorbing3.0V shunt"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "D502")
+          (unit 1))))
+    (pin "1"
+      (uuid "c7f404ea-4c5a-53c5-8b97-3048d4759562"))
+    (pin "3"
+      (uuid "f7d35b77-b3db-525a-9790-fadbbd01ffc5"))
+    (pin "2"
+      (uuid "79bd4367-9b1a-5fdd-a56f-6a4d00d30feb")))
+  (wire
+    (pts
+      (xy 43.18 162.56)
+      (xy 38.1 162.56))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "5c23c7f4-9101-5132-bb9e-c4dbd363d044"))
+  (global_label "AGND"
+    (shape passive)
+    (at 38.1 162.56 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "054f1af7-ecee-554d-9f92-376ac1bc6c87")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 38.1 162.56 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 50.8 167.64)
+      (xy 50.8 172.72))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "3f244dd9-2b1f-5bd0-be43-6b30128a848b"))
+  (global_label "AN3_DIV"
+    (shape passive)
+    (at 50.8 172.72 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "751c3acd-88c7-5741-b03f-0dd16fe61b34")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 50.8 172.72 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 58.42 162.56)
+      (xy 63.5 162.56))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "3c7f0a20-bb6c-5c2c-a76f-1a780006a76c"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 63.5 162.56 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "ef220f3e-f56c-550a-9163-7df7b6296841")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 63.5 162.56 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 124.46 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ee25e39f-be96-5e2c-a467-dcf1479ef77c")
+    (property "Reference" "R509"
+      (at 124.46 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1k"
+      (at 124.46 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-071KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R509")
+          (unit 1))))
+    (pin "1"
+      (uuid "1af8c50c-8a78-5c2d-8f85-a98eed0b1926"))
+    (pin "2"
+      (uuid "182e9435-ff05-5ea9-8908-735474c651a3")))
+  (wire
+    (pts
+      (xy 124.46 158.75)
+      (xy 124.46 153.67))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "5d777bfd-cf7c-50e3-bacb-3b650f63c251"))
+  (global_label "AN3_DIV"
+    (shape passive)
+    (at 124.46 153.67 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "ff55c58f-953b-595e-8691-40c544811958")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 153.67 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 124.46 166.37)
+      (xy 124.46 171.45))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "4dd9de5e-e192-50af-a53b-160dc322443e"))
+  (global_label "ADC_AN3"
+    (shape passive)
+    (at 124.46 171.45 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "49ae65b8-b1ab-594e-805f-45177eb5691e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 171.45 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 198.12 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "37bf7962-3488-538f-808e-df4ec7103e10")
+    (property "Reference" "C503"
+      (at 198.12 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "10n"
+      (at 198.12 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H103KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C503")
+          (unit 1))))
+    (pin "1"
+      (uuid "6816622f-1fd3-5a84-ada0-a6b90c783c03"))
+    (pin "2"
+      (uuid "69711ff2-67c9-58d1-8d66-8b341eeb62e1")))
+  (wire
+    (pts
+      (xy 198.12 158.75)
+      (xy 198.12 153.67))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "5373a13d-6afe-53dc-acd3-09777f7da324"))
+  (global_label "ADC_AN3"
+    (shape passive)
+    (at 198.12 153.67 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "b5e50710-584d-5b15-978a-55032f8b6e84")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 153.67 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 198.12 166.37)
+      (xy 198.12 171.45))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "4cb14bec-3471-5e94-836a-2726534c35d6"))
+  (global_label "AGND"
+    (shape passive)
+    (at 198.12 171.45 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "c468ede9-f7ad-50ac-980b-fdf95bab87c5")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 171.45 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 271.78 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "997e3bf1-49c0-520f-aa63-e666c100ffa6")
+    (property "Reference" "TP502"
+      (at 271.78 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "ADC_AN3"
+      (at 271.78 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP502")
+          (unit 1))))
+    (pin "1"
+      (uuid "d82f6efd-776c-58f7-81fb-9fe26408da87")))
+  (wire
+    (pts
+      (xy 271.78 162.56)
+      (xy 271.78 167.64))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f44c3a7e-ff53-5625-8c98-a5e26e6cb574"))
+  (global_label "ADC_AN3"
+    (shape passive)
+    (at 271.78 167.64 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "d00ce838-d0ba-5aac-b863-4a8030f9be0a")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 271.78 167.64 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 345.44 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "1c1ab03c-2c75-58cc-bc75-3ded367e014d")
+    (property "Reference" "J503"
+      (at 345.44 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "AN4 0-5V BENCH"
+      (at 345.44 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J503")
+          (unit 1))))
+    (pin "1"
+      (uuid "20a8bb57-0c2b-5dea-b415-86457128cc51"))
+    (pin "2"
+      (uuid "5975c928-b99a-55e8-b8ff-e28a11b1d4be")))
+  (wire
+    (pts
+      (xy 340.36 162.56)
+      (xy 335.28 162.56))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "8a0b36a8-3cef-55cf-9b3c-4fabdf86fc44"))
+  (global_label "AN4_INPUT"
+    (shape passive)
+    (at 335.28 162.56 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "cd0018ec-0470-57d5-9508-9b8899b013e6")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 335.28 162.56 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 340.36 165.1)
+      (xy 335.28 165.1))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "2eb5a509-b3d0-52ce-81eb-5be556969cd5"))
+  (global_label "AGND"
+    (shape passive)
+    (at 335.28 165.1 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "e1e5b669-673a-5b80-8dde-55964c32245c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 335.28 165.1 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 419.09999999999997 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "926ed415-4f78-58c6-9bbd-9a0aa075d179")
+    (property "Reference" "R510"
+      (at 419.09999999999997 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "22k"
+      (at 419.09999999999997 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0722KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R510")
+          (unit 1))))
+    (pin "1"
+      (uuid "7890e6dc-8c51-55f4-9f92-7e32aed19be5"))
+    (pin "2"
+      (uuid "5c52fbde-6585-5958-9dd6-b70c7fd36066")))
+  (wire
+    (pts
+      (xy 419.1 158.75)
+      (xy 419.1 153.67))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "9c261174-38ec-5378-8b24-a58188f599af"))
+  (global_label "AN4_INPUT"
+    (shape passive)
+    (at 419.1 153.67 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "9b4c82a9-661c-54cf-b97f-204e654071e1")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 153.67 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 419.1 166.37)
+      (xy 419.1 171.45))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "8bfa37ac-66b0-5da6-ab1e-aef6f0ed605b"))
+  (global_label "AN4_DIV"
+    (shape passive)
+    (at 419.1 171.45 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "b9e82df2-d092-56dc-8ed5-a409a2a1026f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 171.45 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 492.76 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "08e861ac-5b92-5e9d-ad06-2bbab2af9eb2")
+    (property "Reference" "R511"
+      (at 492.76 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 492.76 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R511")
+          (unit 1))))
+    (pin "1"
+      (uuid "68f47e04-0120-5242-a227-cff40915f8f2"))
+    (pin "2"
+      (uuid "d7ee7069-b9ac-5fec-92c5-43ebbdbba7f4")))
+  (wire
+    (pts
+      (xy 492.76 158.75)
+      (xy 492.76 153.67))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "4e47caf6-8e28-5025-8376-69474b34e962"))
+  (global_label "AN4_DIV"
+    (shape passive)
+    (at 492.76 153.67 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "b303fbc9-686c-58b5-8dee-5f26304a9fd7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 153.67 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 492.76 166.37)
+      (xy 492.76 171.45))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "22ef1134-dfca-5fca-ad24-d46f4eba0a04"))
+  (global_label "AGND"
+    (shape passive)
+    (at 492.76 171.45 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "24dfdbf3-c60b-5d71-882a-663f98500cb4")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 171.45 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Diode:BAT54S")
+    (at 566.42 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "0257d58b-7137-5618-b83c-7be60a100ec7")
+    (property "Reference" "D503"
+      (at 566.42 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "BAT54S-7-F"
+      (at 566.42 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "BAT54S-7-F"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Diodes Incorporated"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Lower clamp to AGND, upper to absorbing3.0V shunt"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "D503")
+          (unit 1))))
+    (pin "1"
+      (uuid "d778d27f-a406-5b5b-a42e-0080d16dcb89"))
+    (pin "3"
+      (uuid "b7d8ea72-097b-5045-90f4-4786adcbd34c"))
+    (pin "2"
+      (uuid "a3390d85-e24c-5f4e-ad68-69978b268e56")))
+  (wire
+    (pts
+      (xy 558.8 162.56)
+      (xy 553.72 162.56))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "eca9bbad-e6ec-5685-bb20-89bcf1ddd709"))
+  (global_label "AGND"
+    (shape passive)
+    (at 553.72 162.56 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "9fc4b93e-8f8c-557b-aa8d-df541ac6ba80")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 553.72 162.56 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 566.42 167.64)
+      (xy 566.42 172.72))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "3001bf9d-9035-5647-a6fe-147c6f4d5979"))
+  (global_label "AN4_DIV"
+    (shape passive)
+    (at 566.42 172.72 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "677fddc4-582d-54b2-ba37-c3b16323c111")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 566.42 172.72 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 574.04 162.56)
+      (xy 579.12 162.56))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "ba51969a-93db-505c-9dad-5ed1306f3abe"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 579.12 162.56 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "8e1c4d66-7254-5c95-856e-2c114e05c32f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 579.12 162.56 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 640.0799999999999 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "f5429b1d-cf6e-5e72-aa96-0a759da791b1")
+    (property "Reference" "R512"
+      (at 640.0799999999999 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1k"
+      (at 640.0799999999999 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-071KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R512")
+          (unit 1))))
+    (pin "1"
+      (uuid "0e2ffe82-83a5-5217-8e94-852889c968cc"))
+    (pin "2"
+      (uuid "78f81e0b-ad7a-55c5-9bf3-51fed63074fb")))
+  (wire
+    (pts
+      (xy 640.08 158.75)
+      (xy 640.08 153.67))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "5ab25522-c597-515a-8e7e-9f5d8ea17b5d"))
+  (global_label "AN4_DIV"
+    (shape passive)
+    (at 640.08 153.67 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "36510006-162a-559c-88f1-80ac3356bfd1")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 153.67 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 640.08 166.37)
+      (xy 640.08 171.45))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "83b8b222-08fd-576f-a3cc-0688bd37373f"))
+  (global_label "ADC_AN4"
+    (shape passive)
+    (at 640.08 171.45 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "15ed5c27-d11e-5262-8614-6fb4eb579ae8")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 171.45 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 713.7399999999999 162.56 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "96f8340c-0310-5f05-9206-f59df6516e85")
+    (property "Reference" "C504"
+      (at 713.7399999999999 149.86 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "10n"
+      (at 713.7399999999999 152.4 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H103KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C504")
+          (unit 1))))
+    (pin "1"
+      (uuid "6da88b80-781f-5232-a113-2d38d8fe1533"))
+    (pin "2"
+      (uuid "8260d459-d852-5501-96b5-2b5082096554")))
+  (wire
+    (pts
+      (xy 713.74 158.75)
+      (xy 713.74 153.67))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "daaf285f-c8fd-53d9-82fe-2cac81d1d0e2"))
+  (global_label "ADC_AN4"
+    (shape passive)
+    (at 713.74 153.67 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "d1382a4d-4484-59f2-826b-261ce17bce47")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 153.67 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 713.74 166.37)
+      (xy 713.74 171.45))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "e3e5570c-0050-5ab1-9c50-d1c8de22646d"))
+  (global_label "AGND"
+    (shape passive)
+    (at 713.74 171.45 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "d03870f5-74a4-5cdd-9b1d-d2b112dfb774")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 171.45 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 50.8 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "74f4f0d8-ba3b-5c9b-b00b-29abe160cd1e")
+    (property "Reference" "TP503"
+      (at 50.8 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "ADC_AN4"
+      (at 50.8 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP503")
+          (unit 1))))
+    (pin "1"
+      (uuid "91f1a27d-6913-59e4-90f1-3d92695ae432")))
+  (wire
+    (pts
+      (xy 50.8 205.74)
+      (xy 50.8 210.82))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "1e4df503-1384-5827-a1a5-a63eb89293da"))
+  (global_label "ADC_AN4"
+    (shape passive)
+    (at 50.8 210.82 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "0ec90240-bc3f-5b2d-9257-52af0732c10d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 50.8 210.82 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 124.46 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2b7dc5c1-2019-512d-a75b-46047fd931e8")
+    (property "Reference" "R513"
+      (at 124.46 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 124.46 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R513")
+          (unit 1))))
+    (pin "1"
+      (uuid "6a2fa0e9-7eaa-56a2-b429-3fdce9a47d75"))
+    (pin "2"
+      (uuid "e991eda9-9296-5e57-93c2-2138c4249b2d")))
+  (wire
+    (pts
+      (xy 124.46 201.93)
+      (xy 124.46 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "41da1622-979b-59d6-b2c8-73adb040d877"))
+  (global_label "+5V"
+    (shape passive)
+    (at 124.46 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "ba00bcfe-6be3-560f-8824-1d3c90968418")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 124.46 209.55)
+      (xy 124.46 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "17eab3b2-d552-557d-8bbb-d2114f0ccf02"))
+  (global_label "TRIG_REF"
+    (shape passive)
+    (at 124.46 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "1c095de1-2cec-50e9-82f9-53bd784a6ae0")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 198.12 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "d35d4478-8d7e-576d-a71a-9e2b49d046bb")
+    (property "Reference" "R514"
+      (at 198.12 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "10k"
+      (at 198.12 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0710KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R514")
+          (unit 1))))
+    (pin "1"
+      (uuid "0b934e45-a230-5013-bf79-4183d5480fe8"))
+    (pin "2"
+      (uuid "2dc3ad16-a12d-5d67-8da9-f62c90713375")))
+  (wire
+    (pts
+      (xy 198.12 201.93)
+      (xy 198.12 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "5bde59f4-5bcb-5d19-812a-d04832bf9f2e"))
+  (global_label "TRIG_REF"
+    (shape passive)
+    (at 198.12 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "93535f10-6440-59ba-b6c6-77e9afff21c9")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 198.12 209.55)
+      (xy 198.12 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "2bca00f4-24ab-55b5-b19c-35cda6c04007"))
+  (global_label "AGND"
+    (shape passive)
+    (at 198.12 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "8d939b5a-fdae-5636-9a3e-f83c80de1bbe")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 271.78 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "08a94c38-db90-5f70-85ac-aabedbdf55c4")
+    (property "Reference" "C505"
+      (at 271.78 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "100n"
+      (at 271.78 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H104KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C505")
+          (unit 1))))
+    (pin "1"
+      (uuid "f0e3d335-c71d-56ec-9803-cbcb7ae4bce3"))
+    (pin "2"
+      (uuid "78486e4c-fd6b-5873-9f23-c8eb8dcbbf8a")))
+  (wire
+    (pts
+      (xy 271.78 201.93)
+      (xy 271.78 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "92a91a21-bf66-55eb-b2de-0a7c3d55ddc3"))
+  (global_label "TRIG_REF"
+    (shape passive)
+    (at 271.78 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7d8157b3-4892-580e-9e36-77b7eafb3e3a")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 271.78 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 271.78 209.55)
+      (xy 271.78 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "affabc85-6530-50f2-8c39-976e73d1e153"))
+  (global_label "AGND"
+    (shape passive)
+    (at 271.78 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "96087e61-ee7b-5dab-bce3-dd41e12e57b8")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 271.78 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 345.44 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "72c3b998-ce3a-5647-85f3-2c64ef4fa5f3")
+    (property "Reference" "J504"
+      (at 345.44 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "CRANK 0-5V HALL ONLY"
+      (at 345.44 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J504")
+          (unit 1))))
+    (pin "1"
+      (uuid "00c19597-4fb8-5846-96de-eaecf535f3ad"))
+    (pin "2"
+      (uuid "485dc95c-eee8-57e3-aa76-a96d5ec998b2")))
+  (wire
+    (pts
+      (xy 340.36 205.74)
+      (xy 335.28 205.74))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "7d721c37-01c9-5d18-9135-b54b2809a1c8"))
+  (global_label "CRANK_INPUT"
+    (shape passive)
+    (at 335.28 205.74 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "85170e6c-25dc-51c9-897e-5a2bf2f7c898")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 335.28 205.74 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 340.36 208.28)
+      (xy 335.28 208.28))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "7005412e-224e-5ea9-aa8f-a2d7be4c8e9b"))
+  (global_label "AGND"
+    (shape passive)
+    (at 335.28 208.28 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "a8afd614-20c6-5c90-97d3-a4a69e45bd0d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 335.28 208.28 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 419.09999999999997 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "4dddef24-1140-5b0d-90e4-b1af74694df6")
+    (property "Reference" "R515"
+      (at 419.09999999999997 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "22k"
+      (at 419.09999999999997 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0722KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R515")
+          (unit 1))))
+    (pin "1"
+      (uuid "21d94c08-9d85-54f8-a854-7633929757f1"))
+    (pin "2"
+      (uuid "4ceaf3bb-1cf0-50c8-aa27-d61400ff6733")))
+  (wire
+    (pts
+      (xy 419.1 201.93)
+      (xy 419.1 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "fab63b7b-25a6-5bfb-b742-3f2592d91d55"))
+  (global_label "CRANK_INPUT"
+    (shape passive)
+    (at 419.1 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "c664166b-02e9-5ae7-af3a-aee8b27aa8ee")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 419.1 209.55)
+      (xy 419.1 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "ece7ec57-cb3e-5bae-99b6-96c2df7f5e52"))
+  (global_label "CRANK_DIV"
+    (shape passive)
+    (at 419.1 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "27e05281-8ec9-58fb-8186-278b1ae5720b")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 492.76 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "fad6ded2-568e-54d8-bd74-6b0e1691fbdb")
+    (property "Reference" "R516"
+      (at 492.76 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 492.76 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R516")
+          (unit 1))))
+    (pin "1"
+      (uuid "702d84e3-2a35-5b24-b8a9-ab97b1b87541"))
+    (pin "2"
+      (uuid "d507e3bd-3109-5739-9e0d-3e9fa0849bc1")))
+  (wire
+    (pts
+      (xy 492.76 201.93)
+      (xy 492.76 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "57d0dbba-eb1b-5547-92e1-5a48f12a6c0d"))
+  (global_label "CRANK_DIV"
+    (shape passive)
+    (at 492.76 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "d5131927-e22f-5b9b-8ee4-b5cf3741545c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 492.76 209.55)
+      (xy 492.76 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "49b9c3d5-eef7-54b2-85fd-dc0cd86d7028"))
+  (global_label "AGND"
+    (shape passive)
+    (at 492.76 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "c5306f9e-ee59-53ba-b4bd-1fee6b652a87")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Diode:BAT54S")
+    (at 566.42 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "d2916c38-3f31-5f8d-9f35-45ab20268433")
+    (property "Reference" "D504"
+      (at 566.42 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "BAT54S-7-F"
+      (at 566.42 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "BAT54S-7-F"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Diodes Incorporated"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "D504")
+          (unit 1))))
+    (pin "1"
+      (uuid "f8cecd56-cc0f-5b7e-b963-b91a6f71482f"))
+    (pin "3"
+      (uuid "764e4129-764f-5298-9ab1-58f9284c2898"))
+    (pin "2"
+      (uuid "cf9e2e4d-8d57-549c-a25a-0ce61bec83fc")))
+  (wire
+    (pts
+      (xy 558.8 205.74)
+      (xy 553.72 205.74))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "41850c96-411f-51f7-8abb-db4e6fb75db1"))
+  (global_label "AGND"
+    (shape passive)
+    (at 553.72 205.74 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "4c6caca6-ce2a-5277-b180-c60e4733ccc6")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 553.72 205.74 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 566.42 210.82)
+      (xy 566.42 215.9))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "e26c10af-4193-5cdf-a065-8c337d5ad10f"))
+  (global_label "CRANK_DIV"
+    (shape passive)
+    (at 566.42 215.9 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "8904f227-80ed-5c4a-a8c0-f5c5f5ce5226")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 566.42 215.9 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 574.04 205.74)
+      (xy 579.12 205.74))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "0cf4f50b-ee47-5505-a9e5-1050651a6f32"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 579.12 205.74 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "334704fe-9c0a-5a8c-abb3-fd022f62e12d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 579.12 205.74 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 640.0799999999999 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "9473186a-f3fb-509f-adc7-2a8633b714c0")
+    (property "Reference" "C506"
+      (at 640.0799999999999 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1n"
+      (at 640.0799999999999 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21B5C1H102JA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C506")
+          (unit 1))))
+    (pin "1"
+      (uuid "b70ff429-ba56-5c9c-8613-0d47772f0cf1"))
+    (pin "2"
+      (uuid "cc345dcf-0be3-5ea9-9a13-aef707703f32")))
+  (wire
+    (pts
+      (xy 640.08 201.93)
+      (xy 640.08 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "67e0c6ee-6e98-5035-a767-2f12a86896a0"))
+  (global_label "CRANK_DIV"
+    (shape passive)
+    (at 640.08 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "2eba95f7-0c3b-5dfc-9947-86312e112306")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 640.08 209.55)
+      (xy 640.08 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "b3151aa2-0e6f-54c6-a0dd-cd599d0a3858"))
+  (global_label "AGND"
+    (shape passive)
+    (at 640.08 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "ff34ca02-ea1d-5404-8b44-0b38c762b73c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 713.7399999999999 205.74 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5e6028d7-0212-5616-8ee8-10db6cb1f8d8")
+    (property "Reference" "R517"
+      (at 713.7399999999999 193.04000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1M"
+      (at 713.7399999999999 195.58 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-071ML"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R517")
+          (unit 1))))
+    (pin "1"
+      (uuid "e5fe67cf-82ac-54d1-a04e-2f11c1603038"))
+    (pin "2"
+      (uuid "ecaaf896-2255-5870-b992-4c41f3a9425c")))
+  (wire
+    (pts
+      (xy 713.74 201.93)
+      (xy 713.74 196.85))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "76823b3e-8fec-5425-9e95-6714ff5f8d00"))
+  (global_label "CRANK_DIG"
+    (shape passive)
+    (at 713.74 196.85 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "8bc4af11-8f82-5d51-a345-81036f05bf67")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 196.85 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 713.74 209.55)
+      (xy 713.74 214.63))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f4862d8a-1a51-5a88-880d-f073b2c6433d"))
+  (global_label "CRANK_DIV"
+    (shape passive)
+    (at 713.74 214.63 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "c54b4f40-6002-5e31-8062-305a66d10960")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 713.74 214.63 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Comparator:LM2903")
+    (at 50.8 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "3ac8da3c-290a-58ab-9eae-b7ebd60a5e18")
+    (property "Reference" "U501"
+      (at 50.8 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "LM2903BDR"
+      (at 50.8 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm393.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "LM2903BDR"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Texas Instruments"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Open-collector output with3.3V pullup; single-ended Hall/function generator only"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "U501")
+          (unit 1))))
+    (pin "3"
+      (uuid "dda6f9d4-1a1b-53a3-9e56-b2d774858ea6"))
+    (pin "2"
+      (uuid "ca501708-0e04-5b8d-b3b2-aebcf17c431c"))
+    (pin "1"
+      (uuid "43209e32-fda0-563f-b903-6063e27b5f2d")))
+  (wire
+    (pts
+      (xy 43.18 246.38)
+      (xy 38.1 246.38))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "64090a31-cb11-56be-aebc-172685565227"))
+  (global_label "CRANK_DIV"
+    (shape passive)
+    (at 38.1 246.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "a9533d87-bbe9-5f37-a2a6-1f0dbb641778")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 38.1 246.38 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 43.18 251.46)
+      (xy 38.1 251.46))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "0d3440b5-98be-5e1b-8cb5-543cf5160273"))
+  (global_label "TRIG_REF"
+    (shape passive)
+    (at 38.1 251.46 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "fe61afa9-f019-5fa7-8bd4-83cd6642ff60")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 38.1 251.46 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 58.42 248.92)
+      (xy 63.5 248.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "cc86c752-8440-59a9-8ef3-1a511db3f1fa"))
+  (global_label "CRANK_DIG"
+    (shape passive)
+    (at 63.5 248.92 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7a3cde7f-5520-539d-9828-0a97c42c7659")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 63.5 248.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 124.46 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c963f731-e8cb-5d15-b5d2-e7918ee64c16")
+    (property "Reference" "R518"
+      (at 124.46 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "4.7k"
+      (at 124.46 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-074K7L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R518")
+          (unit 1))))
+    (pin "1"
+      (uuid "f2eb16dd-2bef-54ba-9042-7d105ca53f8b"))
+    (pin "2"
+      (uuid "ab02f552-7318-5dd9-8c9d-0e5e465502e8")))
+  (wire
+    (pts
+      (xy 124.46 245.11)
+      (xy 124.46 240.03))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "6e771082-db7d-5fdb-8921-a38fd33ae9ef"))
+  (global_label "CRANK_DIG"
+    (shape passive)
+    (at 124.46 240.03 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "cbe4aea7-e09b-5086-ba05-c2cf3f8261eb")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 240.03 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 124.46 252.73)
+      (xy 124.46 257.81))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "d571c5ce-cd0c-5377-848e-c207828e3438"))
+  (global_label "+3V3"
+    (shape passive)
+    (at 124.46 257.81 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "c69a2f14-e4da-5b8a-a29a-574af78947c2")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 257.81 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 198.12 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8fd32d1e-a156-52b4-8627-c3dbf3e590ad")
+    (property "Reference" "TP504"
+      (at 198.12 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "CRANK_DIG"
+      (at 198.12 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "3.3V comparator-conditioned timer capture"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP504")
+          (unit 1))))
+    (pin "1"
+      (uuid "7a398286-3cfa-59b1-abf1-59727232896c")))
+  (wire
+    (pts
+      (xy 198.12 248.92)
+      (xy 198.12 254.0))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f86d7da2-546f-5d10-b2dd-44a96e1fabcf"))
+  (global_label "CRANK_DIG"
+    (shape passive)
+    (at 198.12 254.0 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7076e18f-a39b-5f69-917a-ca232204e322")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 198.12 254.0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 271.78 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "47ebc6bb-f4e7-5350-bd62-ce3586775907")
+    (property "Reference" "J505"
+      (at 271.78 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "CAM 0-5V HALL ONLY"
+      (at 271.78 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J505")
+          (unit 1))))
+    (pin "1"
+      (uuid "0498362d-9e3a-555b-b083-9edef005683f"))
+    (pin "2"
+      (uuid "fdcb3e15-f01e-598e-87de-f1d775a5539e")))
+  (wire
+    (pts
+      (xy 266.7 248.92)
+      (xy 261.62 248.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "401db79f-12de-5a2e-a415-63ce610e6273"))
+  (global_label "CAM_INPUT"
+    (shape passive)
+    (at 261.62 248.92 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "cf80676c-df3f-597c-8bd4-60739428063c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 261.62 248.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 266.7 251.46)
+      (xy 261.62 251.46))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f68e80a8-45c1-5d08-8fc4-cd987a7d3105"))
+  (global_label "AGND"
+    (shape passive)
+    (at 261.62 251.46 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "1c9f7a92-463b-5451-a78b-eed99f9f7deb")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 261.62 251.46 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 345.44 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "47448558-c857-544a-a63b-f3bdbd1de799")
+    (property "Reference" "R519"
+      (at 345.44 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "22k"
+      (at 345.44 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0722KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R519")
+          (unit 1))))
+    (pin "1"
+      (uuid "e8e69e01-6f88-5e9f-9842-b86a9817b22e"))
+    (pin "2"
+      (uuid "50e760e7-0d6c-5b09-8b6b-7aead1f64be9")))
+  (wire
+    (pts
+      (xy 345.44 245.11)
+      (xy 345.44 240.03))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "890be0b9-f609-50e9-bf51-7bda379932a2"))
+  (global_label "CAM_INPUT"
+    (shape passive)
+    (at 345.44 240.03 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "bba51b78-f1f4-5052-92d6-e22e056871c6")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 240.03 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 345.44 252.73)
+      (xy 345.44 257.81))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "35c179d4-2556-50f0-ab27-24dc8d4859bf"))
+  (global_label "CAM_DIV"
+    (shape passive)
+    (at 345.44 257.81 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "44609e20-7c7b-5f14-a92e-a523d9348139")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 257.81 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 419.09999999999997 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "dbd40bca-300a-5ab5-85c4-49a91ff741a2")
+    (property "Reference" "R520"
+      (at 419.09999999999997 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "33k"
+      (at 419.09999999999997 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-0733KL"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R520")
+          (unit 1))))
+    (pin "1"
+      (uuid "a01517ae-45ec-52e5-94f2-cb54b1770916"))
+    (pin "2"
+      (uuid "74a1b881-172a-5682-80a3-9372b6615634")))
+  (wire
+    (pts
+      (xy 419.1 245.11)
+      (xy 419.1 240.03))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "372dc3ac-89ce-5a95-845a-6b2ac2856360"))
+  (global_label "CAM_DIV"
+    (shape passive)
+    (at 419.1 240.03 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "04011152-f28f-500e-8720-b4d18958f5b8")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 240.03 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 419.1 252.73)
+      (xy 419.1 257.81))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "b3839064-3485-5918-aa52-ad450dc19774"))
+  (global_label "AGND"
+    (shape passive)
+    (at 419.1 257.81 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "ac663a71-1c53-5a84-bd9d-ddbdecc4c800")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 257.81 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Diode:BAT54S")
+    (at 492.76 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ec684601-c796-513c-b182-7d455b80efbb")
+    (property "Reference" "D505"
+      (at 492.76 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "BAT54S-7-F"
+      (at 492.76 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "BAT54S-7-F"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Diodes Incorporated"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "D505")
+          (unit 1))))
+    (pin "1"
+      (uuid "82675ddf-010a-5509-a0c4-c4426d094631"))
+    (pin "3"
+      (uuid "9420620f-9be9-5d21-a316-35e43f915ca9"))
+    (pin "2"
+      (uuid "92285b01-6025-5e8b-b949-b44d056e68ca")))
+  (wire
+    (pts
+      (xy 485.14 248.92)
+      (xy 480.06 248.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "6b55a31f-6a33-56b8-a860-04245a200ea8"))
+  (global_label "AGND"
+    (shape passive)
+    (at 480.06 248.92 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "e202e000-faf9-5ad8-ba84-cf38b1b2943b")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 480.06 248.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 492.76 254.0)
+      (xy 492.76 259.08))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "050700df-3eb8-5c59-b648-b9bda12f897d"))
+  (global_label "CAM_DIV"
+    (shape passive)
+    (at 492.76 259.08 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "6f6b19a7-0b94-5087-ac10-17523e1e0802")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 492.76 259.08 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 500.38 248.92)
+      (xy 505.46 248.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "4ce80c6d-bb50-5b8d-b16a-b118b031a5b9"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 505.46 248.92 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "5436808a-7e22-5d59-9e74-f71e64858239")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 505.46 248.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 566.42 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "124cdb14-5c32-5978-bd33-6c6becc1f7bd")
+    (property "Reference" "C507"
+      (at 566.42 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1n"
+      (at 566.42 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21B5C1H102JA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C507")
+          (unit 1))))
+    (pin "1"
+      (uuid "577b79ac-fe15-514c-b374-580d18c456fe"))
+    (pin "2"
+      (uuid "53039b71-d7b4-5f4e-8fcb-3f63fe9ea27c")))
+  (wire
+    (pts
+      (xy 566.42 245.11)
+      (xy 566.42 240.03))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "9da43fa1-b7c9-56d4-912a-4d6d1905dc57"))
+  (global_label "CAM_DIV"
+    (shape passive)
+    (at 566.42 240.03 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "f4f477a0-840e-5773-9a4a-366908eb1eb3")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 566.42 240.03 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 566.42 252.73)
+      (xy 566.42 257.81))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "67fb5652-26f8-59d6-a038-7bedfe650cc2"))
+  (global_label "AGND"
+    (shape passive)
+    (at 566.42 257.81 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "de44c22a-3952-5cc2-8b50-4438833fe61f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 566.42 257.81 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 640.0799999999999 248.92000000000002 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2a3e7ceb-d38a-5f98-8418-56db778ccf4b")
+    (property "Reference" "R521"
+      (at 640.0799999999999 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "1M"
+      (at 640.0799999999999 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-071ML"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R521")
+          (unit 1))))
+    (pin "1"
+      (uuid "04375e58-e1c9-5928-8510-abf7cbe02518"))
+    (pin "2"
+      (uuid "b06836a5-2ca2-5673-947f-22c90532ce7e")))
+  (wire
+    (pts
+      (xy 640.08 245.11)
+      (xy 640.08 240.03))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f97c00c1-46ab-5c60-855d-15f0c4377ed2"))
+  (global_label "CAM_DIG"
+    (shape passive)
+    (at 640.08 240.03 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "bdf2176d-1aff-5555-ab93-6dd38529f1b5")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 240.03 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 640.08 252.73)
+      (xy 640.08 257.81))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "e987553e-ac1b-5a11-a539-832de7b641c1"))
+  (global_label "CAM_DIV"
+    (shape passive)
+    (at 640.08 257.81 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "bf553b38-149c-5339-8d9d-dcc7455ee188")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 640.08 257.81 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Comparator:LM2903")
+    (at 713.7399999999999 248.92000000000002 0)
+    (unit 2)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "0423eb02-1bd4-5538-abe9-ebafc734fd56")
+    (property "Reference" "U501"
+      (at 713.7399999999999 236.22000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "LM2903BDR"
+      (at 713.7399999999999 238.76000000000002 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm393.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "LM2903BDR"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Texas Instruments"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Open-collector output with3.3V pullup; single-ended Hall/function generator only"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "U501")
+          (unit 2))))
+    (pin "5"
+      (uuid "95706a46-1c4d-5d7f-857b-47486c89d324"))
+    (pin "6"
+      (uuid "539d8bc3-1e72-5737-aef7-f5f9300476e3"))
+    (pin "7"
+      (uuid "e07d8eaf-1017-50a3-9fda-82880fcab284")))
+  (wire
+    (pts
+      (xy 706.12 246.38)
+      (xy 701.04 246.38))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "0f53f004-5f6c-5819-a149-aa9aefeb550b"))
+  (global_label "CAM_DIV"
+    (shape passive)
+    (at 701.04 246.38 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "dbbbf8a7-dc54-5dab-9266-96972ba8b16e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 701.04 246.38 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 706.12 251.46)
+      (xy 701.04 251.46))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "f46da07a-4f35-54a7-829b-5ddd56dd8b97"))
+  (global_label "TRIG_REF"
+    (shape passive)
+    (at 701.04 251.46 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "0a8e1395-afeb-5ce0-8e69-9ecc910807bf")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 701.04 251.46 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 721.36 248.92)
+      (xy 726.44 248.92))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "3e6156e4-e572-5dfd-94bf-05d1080c1abe"))
+  (global_label "CAM_DIG"
+    (shape passive)
+    (at 726.44 248.92 180)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "61900ece-4027-54dd-a8d5-d9246e185abd")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 726.44 248.92 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 50.8 292.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "69000a16-1d8a-5338-9571-435fd423fafe")
+    (property "Reference" "R522"
+      (at 50.8 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "4.7k"
+      (at 50.8 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "RC0805FR-074K7L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "R522")
+          (unit 1))))
+    (pin "1"
+      (uuid "37d9839a-9c57-584d-ac5a-d0d89f4fa6d2"))
+    (pin "2"
+      (uuid "bab29004-f992-593c-8f93-988a81da18ec")))
+  (wire
+    (pts
+      (xy 50.8 288.29)
+      (xy 50.8 283.21))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "b1369cbf-2347-594a-8947-254cb1cb213e"))
+  (global_label "CAM_DIG"
+    (shape passive)
+    (at 50.8 283.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "3665dfac-0fe6-5422-bea7-ee36d1392ae1")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 50.8 283.21 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 50.8 295.91)
+      (xy 50.8 300.99))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "521e3a13-9176-5775-9be0-f91bbe7431a6"))
+  (global_label "+3V3"
+    (shape passive)
+    (at 50.8 300.99 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "25e56d2b-83b3-51c7-a810-9837b305ed5f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 50.8 300.99 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 124.46 292.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c0c1d832-6b85-56a3-9d70-0f81c0e86479")
+    (property "Reference" "TP505"
+      (at 124.46 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "CAM_DIG"
+      (at 124.46 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "3.3V comparator-conditioned timer capture"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP505")
+          (unit 1))))
+    (pin "1"
+      (uuid "f77fc1ff-0f96-51e6-af79-99bfdc255eed")))
+  (wire
+    (pts
+      (xy 124.46 292.1)
+      (xy 124.46 297.18))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "7137c0de-6fe7-5dd1-ad74-8eaec3b648cd"))
+  (global_label "CAM_DIG"
+    (shape passive)
+    (at 124.46 297.18 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "59cca7c1-7f4c-5a92-9609-d3441e567282")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 124.46 297.18 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Comparator:LM2903")
+    (at 198.12 292.1 0)
+    (unit 3)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "bdbedded-a222-56b2-bac6-f9f2baca8c8f")
+    (property "Reference" "U501"
+      (at 198.12 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "LM2903BDR"
+      (at 198.12 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm393.pdf"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "LM2903BDR"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Texas Instruments"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Open-collector output with3.3V pullup; single-ended Hall/function generator only"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "U501")
+          (unit 3))))
+    (pin "8"
+      (uuid "cf7ed60b-7e95-5648-aa12-8e44d67b552f"))
+    (pin "4"
+      (uuid "befe2b1a-f682-50d4-9248-09f98196ebbd")))
+  (wire
+    (pts
+      (xy 195.58 284.48)
+      (xy 195.58 279.4))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "7922f0cb-d7d2-5bba-a277-44886e1a0952"))
+  (global_label "+5V"
+    (shape passive)
+    (at 195.58 279.4 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "93eb16a2-9e6f-5d03-8970-8a6bf9b2ccda")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 195.58 279.4 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 195.58 299.72)
+      (xy 195.58 304.8))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "e2172a6d-8dd1-5d58-82ac-28ff7f11086c"))
+  (global_label "AGND"
+    (shape passive)
+    (at 195.58 304.8 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "003e83cc-4403-5057-832e-0b63b97eec2d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 195.58 304.8 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:C")
+    (at 271.78 292.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ed0f3ce7-ad79-535a-a38e-6740ddb99482")
+    (property "Reference" "C508"
+      (at 271.78 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "100n"
+      (at 271.78 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "GRM21BR71H104KA01L"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Murata"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "C508")
+          (unit 1))))
+    (pin "1"
+      (uuid "16cc232c-086e-56b2-a360-031d09661f1e"))
+    (pin "2"
+      (uuid "f9e1e1d6-d7c5-5d79-a561-5623fff2c3f0")))
+  (wire
+    (pts
+      (xy 271.78 288.29)
+      (xy 271.78 283.21))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "71d674c1-d6b0-5343-8c07-1488e9f63624"))
+  (global_label "+5V"
+    (shape passive)
+    (at 271.78 283.21 90)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "1532c84f-3842-52a8-8a9e-3a043fbd7d32")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 271.78 283.21 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 271.78 295.91)
+      (xy 271.78 300.99))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "5fabc8d7-7b6f-5c45-b772-3d415d4be1ea"))
+  (global_label "AGND"
+    (shape passive)
+    (at 271.78 300.99 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "2c5b1ebc-9d3f-5dee-aaec-80259ac0207e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 271.78 300.99 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 345.44 292.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5cbd8594-64f3-518b-b508-c43edafdca83")
+    (property "Reference" "TP506"
+      (at 345.44 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "CLAMP_3V0"
+      (at 345.44 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Measure CLAMP_3V0 relative to GND"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP506")
+          (unit 1))))
+    (pin "1"
+      (uuid "f87d5d0b-4691-5045-9ae4-6bdfa1910440")))
+  (wire
+    (pts
+      (xy 345.44 292.1)
+      (xy 345.44 297.18))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "41976476-4c34-5e26-b649-7292159dedca"))
+  (global_label "CLAMP_3V0"
+    (shape passive)
+    (at 345.44 297.18 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "6d728ae0-5990-5cb8-8370-cad4070373bd")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 345.44 297.18 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector:TestPoint")
+    (at 419.09999999999997 292.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ca30dcbe-e5e6-5571-9e6a-b1cb5073a883")
+    (property "Reference" "TP507"
+      (at 419.09999999999997 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "TRIG_REF"
+      (at 419.09999999999997 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "5010"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Keystone"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Measure TRIG_REF relative to GND"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "TP507")
+          (unit 1))))
+    (pin "1"
+      (uuid "f4b006d5-8fc8-5d0e-ab8a-c65d2a835c7c")))
+  (wire
+    (pts
+      (xy 419.1 292.1)
+      (xy 419.1 297.18))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "07cc4b6e-9634-5b61-9b70-dfade8140922"))
+  (global_label "TRIG_REF"
+    (shape passive)
+    (at 419.1 297.18 270)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "7e781da9-875c-5f62-9745-d1fdce8c1ba7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 419.1 297.18 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x02")
+    (at 492.76 292.1 0)
+    (unit 1)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "9611bba2-b160-5920-a2e3-a8b6c0896b63")
+    (property "Reference" "J506"
+      (at 492.76 279.40000000000003 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Value" "SENSOR 5V BENCH"
+      (at 492.76 281.94 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "MPN" "1715721"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Manufacturer" "Phoenix Contact"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (property "Design_Note" "Board-local bench connector; pin numbers are NOT OEM cavities"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d/d9f8d247-36f1-584d-a8ef-ca3f15c1723c"
+          (reference "J506")
+          (unit 1))))
+    (pin "1"
+      (uuid "559ac365-be1e-529a-9db1-e4a4fa6d2cf1"))
+    (pin "2"
+      (uuid "a9db6ff4-7217-55a1-9af7-c0557a8759c1")))
+  (wire
+    (pts
+      (xy 487.68 292.1)
+      (xy 482.6 292.1))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "9023454b-2472-56b8-bf4c-f7c158aaf265"))
+  (global_label "+5V"
+    (shape passive)
+    (at 482.6 292.1 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "298eb5a6-e28b-5a5d-8be7-eea7e2bb5719")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 482.6 292.1 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 487.68 294.64)
+      (xy 482.6 294.64))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "d03e39bc-d25f-5c07-a21b-79abeee212c6"))
+  (global_label "AGND"
+    (shape passive)
+    (at 482.6 294.64 0)
+    (effects
+      (font
+        (size 0.9 0.9)))
+    (uuid "124c2720-e5c1-55ad-8169-acc83f10a93b")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 482.6 294.64 0)
+      (effects
+        (font
+          (size 1 1))
+        (hide yes)))))

@@ -1,0 +1,306 @@
+Reference,Quantity,Value,Manufacturer,MPN,Footprint,Sheet,Assembly,Design note
+J100,1,J_PWR 12V BENCH ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",power_protection,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+F100,1,2A,Littelfuse,0467002.NR,Fuse:Fuse_1206_3216Metric,power_protection,FIT,Fast fuse; verify interrupt rating and coordination
+Q100,1,IRF4905PBF,Infineon,IRF4905PBF,Package_TO_SOT_THT:TO-220-3_Vertical,power_protection,FIT,Reverse protection: D=input S=protected; not ideal-diode backfeed blocking
+R100,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+D100,1,BZT52C12,Littelfuse,BZT52C12-7-F,Diode_SMD:D_SOD-123,power_protection,FIT,12V gate-source clamp
+D101,1,SMBJ12A,Littelfuse,SMBJ12A,Diode_SMD:D_SMB,power_protection,FIT,Bench transient clamp only; no load-dump qualification
+C100,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+U100,1,TPS259260DRCR,Texas Instruments,TPS259260DRCR,Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm_ThermalVias,power_protection,FIT,"12V variant, latched thermal shutdown; nominal 2.1A limit"
+R101,1,45.3k,Yageo,RC0805FR-0745K3L,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+C101,1,1n,Murata,GRM21B5C1H102JA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+R102,1,47k,Yageo,RC0805FR-0747KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+R103,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+C102,1,1u,Murata,GRM21BR71H105KA12L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+C103,1,220u 35V,Nichicon,UHE1V221MPD,Capacitor_THT:CP_Radial_D8.0mm_P3.50mm,power_protection,FIT,Input ripple/temperature review required
+U101,1,LM2596S-5.0/NOPB,Texas Instruments,LM2596S-5.0/NOPB,Package_TO_SOT_SMD:TO-263-5_TabPin3,power_protection,FIT,
+D102,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,power_protection,FIT,
+L100,1,33uH,Bourns,SRR1260-330M,Inductor_SMD:L_Bourns_SRR1260,power_protection,FIT,Check saturation and ripple at bench load
+C104,1,330u 25V,Nichicon,UHE1E331MPD,Capacitor_THT:CP_Radial_D8.0mm_P3.50mm,power_protection,FIT,Buck stability/ESR requires scope validation
+C105,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+C106,1,10u,Murata,GRM21BR61A106KE19L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+U102,1,LD1117S33TR,STMicroelectronics,LD1117S33TR,Package_TO_SOT_SMD:SOT-223-3_TabPin2,power_protection,FIT,Budget <=350mA; thermal copper still incomplete
+C107,1,10u,Murata,GRM21BR61A106KE19L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+C108,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+R104,1,0,Yageo,RC2512JK-070RL,Resistor_SMD:R_2512_6332Metric,power_protection,FIT,Single logic/power return star; never route injector current through it
+R105,1,0,Yageo,RC0805FR-070RL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,Analog star beside MCU VSSA; no actuator return
+R106,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+J101,1,J_ESTOP EXTERNAL NC CONTACTS,Phoenix Contact,1715747,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-4-5.08_1x04_P5.08mm_Horizontal",power_protection,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R107,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+Q101,1,IRF4905PBF,Infineon,IRF4905PBF,Package_TO_SOT_THT:TO-220-3_Vertical,power_protection,FIT,Actuator high-side switch; NC E-stop precedes source
+R108,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+D103,1,BZT52C12,Littelfuse,BZT52C12-7-F,Diode_SMD:D_SOD-123,power_protection,FIT,
+R109,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+Q102,1,MMBT3904LT1G,onsemi,MMBT3904LT1G,Package_TO_SOT_SMD:SOT-23,power_protection,FIT,
+R110,1,4.7k,Yageo,RC0805FR-074K7L,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+R111,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+C109,1,1u,Murata,GRM21BR71H105KA12L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+R112,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,Actuator rail discharge; 0.16W at12.6V
+U103,1,TPS3808G33DBVR,Texas Instruments,TPS3808G33DBVR,Package_TO_SOT_SMD:SOT-23-6,power_protection,FIT,3.07V threshold; CT open gives20ms nominal reset release
+R113,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+D104,1,BAT54WS,Diodes Incorporated,BAT54WS-7-F,Diode_SMD:D_SOD-323,power_protection,FIT,"Reset isolation: anode NRST, cathode supervisor; verify low level after diode drop"
+C110,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+U104,1,TPS3430WDRCR,Texas Instruments,TPS3430WDRCR,Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm,power_protection,FIT,CWD/CRST open; SET0=SET1=0; service falling edge every35ms
+C111,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+R114,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+R115,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+U105,1,SN74HC08DR,Texas Instruments,SN74HC08DR,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,power_protection,FIT,Standard quad AND pinout; fit the specified logic family
+C112,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,Local bypass for U105
+U106,1,SN74HC74DR,Texas Instruments,SN74HC74DR,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,power_protection,FIT,
+C113,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,power_protection,FIT,
+SW100,1,ARM BENCH,Omron,B3F-1000,Button_Switch_THT:SW_PUSH_6mm,power_protection,FIT,Press after valid watchdog service; contact bounce cannot defeat asynchronous clear
+R116,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+R117,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+R118,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,power_protection,FIT,
+TP100,1,VIN_BENCH,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure VIN_BENCH relative to GND
+TP101,1,+12V_PROTECTED,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure +12V_PROTECTED relative to GND
+TP102,1,+12V_ACT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure +12V_ACT relative to GND
+TP103,1,+5V,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure +5V relative to GND
+TP104,1,+3V3,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure +3V3 relative to GND
+TP105,1,NRST,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure NRST relative to GND
+TP106,1,ARMED,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure ARMED relative to GND
+TP107,1,ACT_EN,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure ACT_EN relative to GND
+TP108,1,PGND,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure PGND relative to GND
+TP109,1,GND,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure GND relative to GND
+TP110,1,ESTOP_OK,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,power_protection,FIT,Measure ESTOP_OK relative to GND
+U200,1,STM32H743VIT6,STMicroelectronics,STM32H743VIT6,Package_QFP:LQFP-100_14x14mm_P0.5mm,mcu,FIT,
+C200,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,Place beside U200 VDD pin11
+C201,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,Place beside U200 VDD pin27
+C202,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,Place beside U200 VDD pin50
+C203,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,Place beside U200 VDD pin75
+C204,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,Place beside U200 VDD pin100
+C205,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,VBAT local bypass
+C206,1,10u,Murata,GRM21BR61A106KE19L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,MCU bulk
+C207,1,2.2u,Murata,GRM21BR71C225KA12L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,U200 pin48 core LDO output; no other load
+C208,1,2.2u,Murata,GRM21BR71C225KA12L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,U200 pin73 core LDO output; no other load
+R200,1,10,Yageo,RC0805FR-0710RL,Resistor_SMD:R_0805_2012Metric,mcu,FIT,Analog rail RC isolator; verify drop at ADC load
+C209,1,1u,Murata,GRM21BR71H105KA12L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,
+C210,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,
+R201,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,mcu,FIT,
+JP200,1,BOOT ROM,Wurth Elektronik,61300211121,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,mcu,FIT,Normally open; bootloader is not authenticated
+SW200,1,RESET,Omron,B3F-1000,Button_Switch_THT:SW_PUSH_6mm,mcu,FIT,
+C211,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,
+Y200,1,8MHz CL18pF,Abracon,ABM8-8.000MHZ-B2-T,Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm,mcu,FIT,Load caps27p assume4.5pF stray; oscillator gain/startup untested
+C212,1,27p,Murata,GRM21A5C1H270JA01D,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,
+C213,1,27p,Murata,GRM21A5C1H270JA01D,Capacitor_SMD:C_0805_2012Metric,mcu,FIT,
+TP200,1,VCAP48,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,mcu,FIT,Measure VCAP48 relative to GND
+TP201,1,VCAP73,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,mcu,FIT,Measure VCAP73 relative to GND
+TP202,1,VDDA,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,mcu,FIT,Measure VDDA relative to GND
+TP203,1,BOOT0,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,mcu,FIT,Measure BOOT0 relative to GND
+TP204,1,WD_KICK,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,mcu,FIT,Measure WD_KICK relative to GND
+H1,1,M3 NPTH,,,MountingHole:MountingHole_3.2mm_M3,mcu,MECHANICAL / PCB FEATURE,Nonconductive mounting hardware
+H2,1,M3 NPTH,,,MountingHole:MountingHole_3.2mm_M3,mcu,MECHANICAL / PCB FEATURE,Nonconductive mounting hardware
+H3,1,M3 NPTH,,,MountingHole:MountingHole_3.2mm_M3,mcu,MECHANICAL / PCB FEATURE,Nonconductive mounting hardware
+H4,1,M3 NPTH,,,MountingHole:MountingHole_3.2mm_M3,mcu,MECHANICAL / PCB FEATURE,Nonconductive mounting hardware
+U300,1,SN74AHCT08DR,Texas Instruments,SN74AHCT08DR,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,injector_drivers,FIT,Standard quad AND pinout; fit the specified logic family
+C300,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,injector_drivers,FIT,Local bypass for U300
+R300,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R301,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R302,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+Q300,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,injector_drivers,FIT,Bench saturated sink only; no peak/hold or fast overcurrent comparator
+R303,1,0.22,Yageo,WSL2512R2200FEA,Resistor_SMD:R_2512_6332Metric,injector_drivers,FIT,Kelvin test pads; 0.22ohm1%1W bench shunt
+F300,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,injector_drivers,FIT,Fast fuse; verify interrupt rating and coordination
+D300,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,injector_drivers,FIT,Slow recirculating flyback; not calibrated injector closing
+D301,1,SMBJ24A,Littelfuse,SMBJ24A,Diode_SMD:D_SMB,injector_drivers,FIT,Secondary drain overshoot clamp; scope validation required
+R304,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+C301,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,injector_drivers,FIT,
+J300,1,INJ1 DUMMY LOAD ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",injector_drivers,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP300,1,INJ1_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,"Drain transient, PGND reference; do not use a logic probe"
+TP301,1,INJ1_SHUNT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP302,1,PGND,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,INJ1 Kelvin low for shunt measurement
+TP303,1,INJ1_GATE,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Gate referenced to local source/shunt
+R305,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R306,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R307,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+Q301,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,injector_drivers,FIT,Bench saturated sink only; no peak/hold or fast overcurrent comparator
+R308,1,0.22,Yageo,WSL2512R2200FEA,Resistor_SMD:R_2512_6332Metric,injector_drivers,FIT,Kelvin test pads; 0.22ohm1%1W bench shunt
+F301,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,injector_drivers,FIT,Fast fuse; verify interrupt rating and coordination
+D302,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,injector_drivers,FIT,Slow recirculating flyback; not calibrated injector closing
+D303,1,SMBJ24A,Littelfuse,SMBJ24A,Diode_SMD:D_SMB,injector_drivers,FIT,Secondary drain overshoot clamp; scope validation required
+R309,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+C302,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,injector_drivers,FIT,
+J301,1,INJ2 DUMMY LOAD ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",injector_drivers,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP304,1,INJ2_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,"Drain transient, PGND reference; do not use a logic probe"
+TP305,1,INJ2_SHUNT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP306,1,PGND,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,INJ2 Kelvin low for shunt measurement
+TP307,1,INJ2_GATE,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Gate referenced to local source/shunt
+R310,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R311,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R312,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+Q302,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,injector_drivers,FIT,Bench saturated sink only; no peak/hold or fast overcurrent comparator
+R313,1,0.22,Yageo,WSL2512R2200FEA,Resistor_SMD:R_2512_6332Metric,injector_drivers,FIT,Kelvin test pads; 0.22ohm1%1W bench shunt
+F302,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,injector_drivers,FIT,Fast fuse; verify interrupt rating and coordination
+D304,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,injector_drivers,FIT,Slow recirculating flyback; not calibrated injector closing
+D305,1,SMBJ24A,Littelfuse,SMBJ24A,Diode_SMD:D_SMB,injector_drivers,FIT,Secondary drain overshoot clamp; scope validation required
+R314,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+C303,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,injector_drivers,FIT,
+J302,1,INJ3 DUMMY LOAD ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",injector_drivers,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP308,1,INJ3_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,"Drain transient, PGND reference; do not use a logic probe"
+TP309,1,INJ3_SHUNT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP310,1,PGND,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,INJ3 Kelvin low for shunt measurement
+TP311,1,INJ3_GATE,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Gate referenced to local source/shunt
+R315,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R316,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+R317,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+Q303,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,injector_drivers,FIT,Bench saturated sink only; no peak/hold or fast overcurrent comparator
+R318,1,0.22,Yageo,WSL2512R2200FEA,Resistor_SMD:R_2512_6332Metric,injector_drivers,FIT,Kelvin test pads; 0.22ohm1%1W bench shunt
+F303,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,injector_drivers,FIT,Fast fuse; verify interrupt rating and coordination
+D306,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,injector_drivers,FIT,Slow recirculating flyback; not calibrated injector closing
+D307,1,SMBJ24A,Littelfuse,SMBJ24A,Diode_SMD:D_SMB,injector_drivers,FIT,Secondary drain overshoot clamp; scope validation required
+R319,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,injector_drivers,FIT,
+C304,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,injector_drivers,FIT,
+J303,1,INJ4 DUMMY LOAD ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",injector_drivers,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP312,1,INJ4_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,"Drain transient, PGND reference; do not use a logic probe"
+TP313,1,INJ4_SHUNT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP314,1,PGND,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,INJ4 Kelvin low for shunt measurement
+TP315,1,INJ4_GATE,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,injector_drivers,FIT,Gate referenced to local source/shunt
+U400,1,SN74AHCT08DR,Texas Instruments,SN74AHCT08DR,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,ignition_outputs,FIT,Standard quad AND pinout; fit the specified logic family
+C400,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,ignition_outputs,FIT,Local bypass for U400
+R400,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R401,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R402,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+D400,1,BZT52C5V1,Littelfuse,BZT52C5V1-7-F,Diode_SMD:D_SOD-123,ignition_outputs,FIT,"Logic connector clamp, not a coil flyback clamp"
+J400,1,IGN1 EXTERNAL IGNITER,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",ignition_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP400,1,IGN1_LOGIC,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,ignition_outputs,FIT,0/5V active-high external-igniter command; <=2mA load
+R403,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R404,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R405,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+D401,1,BZT52C5V1,Littelfuse,BZT52C5V1-7-F,Diode_SMD:D_SOD-123,ignition_outputs,FIT,"Logic connector clamp, not a coil flyback clamp"
+J401,1,IGN2 EXTERNAL IGNITER,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",ignition_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP401,1,IGN2_LOGIC,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,ignition_outputs,FIT,0/5V active-high external-igniter command; <=2mA load
+R406,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R407,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R408,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+D402,1,BZT52C5V1,Littelfuse,BZT52C5V1-7-F,Diode_SMD:D_SOD-123,ignition_outputs,FIT,"Logic connector clamp, not a coil flyback clamp"
+J402,1,IGN3 EXTERNAL IGNITER,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",ignition_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP402,1,IGN3_LOGIC,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,ignition_outputs,FIT,0/5V active-high external-igniter command; <=2mA load
+R409,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R410,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+R411,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,ignition_outputs,FIT,
+D403,1,BZT52C5V1,Littelfuse,BZT52C5V1-7-F,Diode_SMD:D_SOD-123,ignition_outputs,FIT,"Logic connector clamp, not a coil flyback clamp"
+J403,1,IGN4 EXTERNAL IGNITER,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",ignition_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP403,1,IGN4_LOGIC,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,ignition_outputs,FIT,0/5V active-high external-igniter command; <=2mA load
+J404,1,IGNITER BENCH POWER,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",ignition_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R500,1,2.2k,Yageo,RC0805FR-072K2L,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+U500,1,LM4040D30IDBZR,Texas Instruments,LM4040D30IDBZR,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,3.0V shunt absorbs positive fault clamp current; not ADC VREF
+C500,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+J500,1,AN1 0-5V BENCH,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R501,1,22k,Yageo,RC0805FR-0722KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R502,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+D500,1,BAT54S-7-F,Diodes Incorporated,BAT54S-7-F,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,"Lower clamp to AGND, upper to absorbing3.0V shunt"
+R503,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+C501,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+TP500,1,ADC_AN1,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,0-3.0V nominal for0-5V input; source impedance14.2kohm
+J501,1,AN2 0-5V BENCH,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R504,1,22k,Yageo,RC0805FR-0722KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R505,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+D501,1,BAT54S-7-F,Diodes Incorporated,BAT54S-7-F,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,"Lower clamp to AGND, upper to absorbing3.0V shunt"
+R506,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+C502,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+TP501,1,ADC_AN2,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,0-3.0V nominal for0-5V input; source impedance14.2kohm
+J502,1,AN3 0-5V BENCH,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R507,1,22k,Yageo,RC0805FR-0722KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R508,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+D502,1,BAT54S-7-F,Diodes Incorporated,BAT54S-7-F,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,"Lower clamp to AGND, upper to absorbing3.0V shunt"
+R509,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+C503,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+TP502,1,ADC_AN3,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,0-3.0V nominal for0-5V input; source impedance14.2kohm
+J503,1,AN4 0-5V BENCH,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R510,1,22k,Yageo,RC0805FR-0722KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R511,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+D503,1,BAT54S-7-F,Diodes Incorporated,BAT54S-7-F,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,"Lower clamp to AGND, upper to absorbing3.0V shunt"
+R512,1,1k,Yageo,RC0805FR-071KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+C504,1,10n,Murata,GRM21BR71H103KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+TP503,1,ADC_AN4,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,0-3.0V nominal for0-5V input; source impedance14.2kohm
+R513,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R514,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+C505,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+J504,1,CRANK 0-5V HALL ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R515,1,22k,Yageo,RC0805FR-0722KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R516,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+D504,1,BAT54S-7-F,Diodes Incorporated,BAT54S-7-F,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,
+C506,1,1n,Murata,GRM21B5C1H102JA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+R517,1,1M,Yageo,RC0805FR-071ML,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+U501,1,LM2903BDR,Texas Instruments,LM2903BDR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,sensor_trigger,FIT,Open-collector output with3.3V pullup; single-ended Hall/function generator only
+R518,1,4.7k,Yageo,RC0805FR-074K7L,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+TP504,1,CRANK_DIG,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,3.3V comparator-conditioned timer capture
+J505,1,CAM 0-5V HALL ONLY,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R519,1,22k,Yageo,RC0805FR-0722KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R520,1,33k,Yageo,RC0805FR-0733KL,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+D505,1,BAT54S-7-F,Diodes Incorporated,BAT54S-7-F,Package_TO_SOT_SMD:SOT-23,sensor_trigger,FIT,
+C507,1,1n,Murata,GRM21B5C1H102JA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+R521,1,1M,Yageo,RC0805FR-071ML,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+R522,1,4.7k,Yageo,RC0805FR-074K7L,Resistor_SMD:R_0805_2012Metric,sensor_trigger,FIT,
+TP505,1,CAM_DIG,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,3.3V comparator-conditioned timer capture
+C508,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,sensor_trigger,FIT,
+TP506,1,CLAMP_3V0,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,Measure CLAMP_3V0 relative to GND
+TP507,1,TRIG_REF,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,sensor_trigger,FIT,Measure TRIG_REF relative to GND
+J506,1,SENSOR 5V BENCH,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",sensor_trigger,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+U600,1,TCAN332DR,Texas Instruments,TCAN332DR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,can_debug,FIT,3.3V classic CAN; not an Evo OEM bus interface
+C600,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,can_debug,FIT,
+R600,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,Recessive TX during MCU reset
+D600,1,NUP2105LT1G,onsemi,NUP2105LT1G,Package_TO_SOT_SMD:SOT-23,can_debug,FIT,
+R601,1,120,Yageo,RC0805FR-07120RL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+JP600,1,CAN TERMINATION,Wurth Elektronik,61300211121,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,can_debug,FIT,Fit shunt only at bus endpoint
+J600,1,CAN BENCH,Phoenix Contact,1715734,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal",can_debug,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+J601,1,USB DEVICE SELF POWERED,Amphenol,10118194-0001LF,Connector_USB:USB_Micro-B_Amphenol_10118194-0001LF_Horizontal,can_debug,FIT,VBUS does not power board; do not attach USB until board powered
+U601,1,USBLC6-2SC6,STMicroelectronics,USBLC6-2SC6,Package_TO_SOT_SMD:SOT-23-6,can_debug,FIT,
+R602,1,22,Yageo,RC0805FR-0722RL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+R603,1,22,Yageo,RC0805FR-0722RL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+R604,1,68k,Yageo,RC0805FR-0768KL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+R605,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+C601,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,can_debug,FIT,
+TP600,1,USB_VBUS_SENSE,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,can_debug,FIT,Measure USB_VBUS_SENSE relative to GND
+J602,1,CORTEX SWD 10PIN,Amphenol,20021121-00010T4LF,Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical,can_debug,FIT,"Pin1 target VREF output, not power input; pin7 key, pin8 NC"
+R606,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+R607,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+J603,1,UART 3V3,Phoenix Contact,1715734,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal",can_debug,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+R608,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,can_debug,FIT,
+TP601,1,CAN_TX,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,can_debug,FIT,Measure CAN_TX relative to GND
+TP602,1,CAN_RX,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,can_debug,FIT,Measure CAN_RX relative to GND
+TP603,1,SWDIO,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,can_debug,FIT,Measure SWDIO relative to GND
+TP604,1,SWCLK,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,can_debug,FIT,Measure SWCLK relative to GND
+U700,1,SN74AHCT08DR,Texas Instruments,SN74AHCT08DR,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,aux_outputs,FIT,Standard quad AND pinout; fit the specified logic family
+C700,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,aux_outputs,FIT,Local bypass for U700
+U701,1,SN74AHCT08DR,Texas Instruments,SN74AHCT08DR,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,aux_outputs,FIT,Standard quad AND pinout; fit the specified logic family
+C701,1,100n,Murata,GRM21BR71H104KA01L,Capacitor_SMD:C_0805_2012Metric,aux_outputs,FIT,Local bypass for U701
+R700,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R701,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R702,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+Q700,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,aux_outputs,FIT,Bench sink <=100mA; no per-channel electronic current protection
+F700,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,aux_outputs,FIT,Fast fuse; verify interrupt rating and coordination
+D700,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,aux_outputs,FIT,
+J700,1,AUX1 BENCH LOAD,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",aux_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP700,1,AUX1_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,aux_outputs,FIT,Measure AUX1_OUT relative to PGND
+R703,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R704,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R705,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+Q701,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,aux_outputs,FIT,Bench sink <=100mA; no per-channel electronic current protection
+F701,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,aux_outputs,FIT,Fast fuse; verify interrupt rating and coordination
+D701,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,aux_outputs,FIT,
+J701,1,AUX2 BENCH LOAD,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",aux_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP701,1,AUX2_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,aux_outputs,FIT,Measure AUX2_OUT relative to PGND
+R706,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R707,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R708,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+Q702,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,aux_outputs,FIT,Bench sink <=100mA; no per-channel electronic current protection
+F702,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,aux_outputs,FIT,Fast fuse; verify interrupt rating and coordination
+D702,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,aux_outputs,FIT,
+J702,1,AUX3 BENCH LOAD,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",aux_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP702,1,AUX3_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,aux_outputs,FIT,Measure AUX3_OUT relative to PGND
+R709,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R710,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R711,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+Q703,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,aux_outputs,FIT,Bench sink <=100mA; no per-channel electronic current protection
+F703,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,aux_outputs,FIT,Fast fuse; verify interrupt rating and coordination
+D703,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,aux_outputs,FIT,
+J703,1,AUX4 BENCH LOAD,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",aux_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP703,1,AUX4_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,aux_outputs,FIT,Measure AUX4_OUT relative to PGND
+R712,1,100k,Yageo,RC0805FR-07100KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R713,1,100,Yageo,RC0805FR-07100RL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+R714,1,10k,Yageo,RC0805FR-0710KL,Resistor_SMD:R_0805_2012Metric,aux_outputs,FIT,
+Q704,1,IRLZ44NPBF,Infineon,IRLZ44NPBF,Package_TO_SOT_THT:TO-220-3_Vertical,aux_outputs,FIT,Bench sink <=100mA; no per-channel electronic current protection
+F704,1,500mA,Littelfuse,0467.500NR,Fuse:Fuse_1206_3216Metric,aux_outputs,FIT,Fast fuse; verify interrupt rating and coordination
+D704,1,SS34,Vishay,SS34,Diode_SMD:D_SMA,aux_outputs,FIT,
+J704,1,RELAY BENCH LOAD,Phoenix Contact,1715721,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",aux_outputs,FIT,Board-local bench connector; pin numbers are NOT OEM cavities
+TP704,1,RELAY_OUT,Keystone,5010,TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm,aux_outputs,FIT,Measure RELAY_OUT relative to PGND

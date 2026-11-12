@@ -44,6 +44,9 @@ Verification at the end of the milestone:
 - `npx tsc --noEmit` in the copilot pass.
 - Headless mixture sweep deterministic (2184 frames byte-identical); analysis
   produced bounded VE cells; apply produced a sealed revision 2.
+- Two Speeduino formula-parity tests pass: the paired 4-stroke required-fuel
+  vectors and the physical fuel model against the req-fuel form. A compiled
+  side-by-side C++ oracle is still pending.
 - Local service health reported `physical_outputs: false`; a browser smoke test
   showed live telemetry, map UI, setup/profile and Mixture Map apply.
 - Copilot offline mode returned tool audit entries and structured output.
@@ -73,8 +76,8 @@ Verification at the end of the milestone:
 - Calibration history is in memory, not durable or signed for provenance.
 - Replay UI start was exercised, but full visual playback was not independently
   audited.
-- No Speeduino C++ oracle test suite is yet compiled; parity remains planned and
-  must not be claimed as verified.
+- No compiled side-by-side Speeduino C++ oracle harness exists yet; only the two
+  formula-level parity tests are present. Full parity must not be claimed.
 - LLM mode was not called; offline tool mode was tested.
 - UI/service have no authentication or TLS and must remain local-only.
 

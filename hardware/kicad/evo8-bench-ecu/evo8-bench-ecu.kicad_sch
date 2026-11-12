@@ -1,0 +1,204 @@
+(kicad_sch
+  (version 20250114)
+  (generator "eeschema")
+  (uuid "167fcfc1-64f6-5ef6-97c3-45bf49a9859d")
+  (paper "A3")
+  (title_block
+    (title "OpenTech-ECU / Evo VIII future development / BENCH ONLY")
+    (date "2026-11-12")
+    (rev "A-UNREVIEWED")
+    (company "UNREVIEWED BENCH PROTOTYPE - NOT AUTOMOTIVE QUALIFIED")
+    (comment 1 "NOT a vehicle plug-in. No OEM connector or OEM cavity assignments."))
+  (lib_symbols)
+  (text "UNREVIEWED BENCH PROTOTYPE. Placed PCB is PARTIALLY ROUTED; DO NOT FABRICATE."
+    (at 25 20 0)
+    (effects
+      (font
+        (size 1.5 1.5))
+      (justify left))
+    (uuid "9dfd4a49-dd65-5486-b860-b6ff32f9f233"))
+  (text "12V regulated supply; dummy loads only. No firmware, no vehicle, no fuel or real ignition coils."
+    (at 25 26 0)
+    (effects
+      (font
+        (size 1.5 1.5))
+      (justify left))
+    (uuid "da245576-975b-562e-b008-bbc606904c46"))
+  (text "Global net labels connect the seven hierarchical sheets. References and connector pins are board-local."
+    (at 25 32 0)
+    (effects
+      (font
+        (size 1.5 1.5))
+      (justify left))
+    (uuid "266ed633-eb62-5ba6-bf90-965823309d64"))
+  (text "Read README.md, docs/DESIGN_REVIEW.md and reports before any assembly or powered work."
+    (at 25 38 0)
+    (effects
+      (font
+        (size 1.5 1.5))
+      (justify left))
+    (uuid "7e8237c2-58f5-5a45-9ab7-37467f0ba0dd"))
+  (sheet
+    (at 30 65)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "9c590948-1b9d-5a02-aec4-5f82d8588054")
+    (property "Sheetname" "Power protection and hardware inhibit"
+      (at 30 63 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "power_protection.kicad_sch"
+      (at 30 102 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "2")))))
+  (sheet
+    (at 155 65)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "aebd060c-8eae-5008-bbf4-d5f2884609ef")
+    (property "Sheetname" "STM32H743 MCU"
+      (at 155 63 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "mcu.kicad_sch"
+      (at 155 102 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "3")))))
+  (sheet
+    (at 280 65)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "e22a9596-5a05-512b-bfb9-2298b2d68bc3")
+    (property "Sheetname" "Four bench injector sinks"
+      (at 280 63 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "injector_drivers.kicad_sch"
+      (at 280 102 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "4")))))
+  (sheet
+    (at 30 125)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "855caba7-6fad-5f1f-a7c4-160a42e03625")
+    (property "Sheetname" "Logic ignition to external igniters"
+      (at 30 123 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "ignition_outputs.kicad_sch"
+      (at 30 162 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "5")))))
+  (sheet
+    (at 155 125)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "d9f8d247-36f1-584d-a8ef-ca3f15c1723c")
+    (property "Sheetname" "Analog and Hall trigger conditioning"
+      (at 155 123 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "sensor_trigger.kicad_sch"
+      (at 155 162 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "6")))))
+  (sheet
+    (at 280 125)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "66d15fd8-eca7-5648-ade0-80b747446dd2")
+    (property "Sheetname" "CAN USB and SWD"
+      (at 280 123 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "can_debug.kicad_sch"
+      (at 280 162 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "7")))))
+  (sheet
+    (at 30 185)
+    (size 110 35)
+    (stroke
+      (width 0.254)
+      (type default))
+    (fill
+      (color 0 0 0 0))
+    (uuid "98bfc055-6c9b-552c-a3ba-dd4e2306282c")
+    (property "Sheetname" "Auxiliary and relay sinks"
+      (at 30 183 0)
+      (effects
+        (font
+          (size 1 1))))
+    (property "Sheetfile" "aux_outputs.kicad_sch"
+      (at 30 222 0)
+      (effects
+        (font
+          (size 1 1))))
+    (instances
+      (project "evo8-bench-ecu"
+        (path "/167fcfc1-64f6-5ef6-97c3-45bf49a9859d"
+          (page "8")))))
+  (sheet_instances
+    (path "/"
+      (page "1"))))

@@ -1,0 +1,55 @@
+Reference,Net,Purpose / measurement
+TP100,VIN_BENCH,Measure VIN_BENCH relative to GND
+TP101,+12V_PROTECTED,Measure +12V_PROTECTED relative to GND
+TP102,+12V_ACT,Measure +12V_ACT relative to GND
+TP103,+5V,Measure +5V relative to GND
+TP104,+3V3,Measure +3V3 relative to GND
+TP105,NRST,Measure NRST relative to GND
+TP106,ARMED,Measure ARMED relative to GND
+TP107,ACT_EN,Measure ACT_EN relative to GND
+TP108,PGND,Measure PGND relative to GND
+TP109,GND,Measure GND relative to GND
+TP110,ESTOP_OK,Measure ESTOP_OK relative to GND
+TP200,VCAP48,Measure VCAP48 relative to GND
+TP201,VCAP73,Measure VCAP73 relative to GND
+TP202,VDDA,Measure VDDA relative to GND
+TP203,BOOT0,Measure BOOT0 relative to GND
+TP204,WD_KICK,Measure WD_KICK relative to GND
+TP300,INJ1_OUT,"Drain transient, PGND reference; do not use a logic probe"
+TP301,INJ1_SHUNT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP302,PGND,INJ1 Kelvin low for shunt measurement
+TP303,INJ1_GATE,Gate referenced to local source/shunt
+TP304,INJ2_OUT,"Drain transient, PGND reference; do not use a logic probe"
+TP305,INJ2_SHUNT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP306,PGND,INJ2 Kelvin low for shunt measurement
+TP307,INJ2_GATE,Gate referenced to local source/shunt
+TP308,INJ3_OUT,"Drain transient, PGND reference; do not use a logic probe"
+TP309,INJ3_SHUNT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP310,PGND,INJ3 Kelvin low for shunt measurement
+TP311,INJ3_GATE,Gate referenced to local source/shunt
+TP312,INJ4_OUT,"Drain transient, PGND reference; do not use a logic probe"
+TP313,INJ4_SHUNT,Kelvin high: I = V/0.22ohm; <=55mV at250mA
+TP314,PGND,INJ4 Kelvin low for shunt measurement
+TP315,INJ4_GATE,Gate referenced to local source/shunt
+TP400,IGN1_LOGIC,0/5V active-high external-igniter command; <=2mA load
+TP401,IGN2_LOGIC,0/5V active-high external-igniter command; <=2mA load
+TP402,IGN3_LOGIC,0/5V active-high external-igniter command; <=2mA load
+TP403,IGN4_LOGIC,0/5V active-high external-igniter command; <=2mA load
+TP500,ADC_AN1,0-3.0V nominal for0-5V input; source impedance14.2kohm
+TP501,ADC_AN2,0-3.0V nominal for0-5V input; source impedance14.2kohm
+TP502,ADC_AN3,0-3.0V nominal for0-5V input; source impedance14.2kohm
+TP503,ADC_AN4,0-3.0V nominal for0-5V input; source impedance14.2kohm
+TP504,CRANK_DIG,3.3V comparator-conditioned timer capture
+TP505,CAM_DIG,3.3V comparator-conditioned timer capture
+TP506,CLAMP_3V0,Measure CLAMP_3V0 relative to GND
+TP507,TRIG_REF,Measure TRIG_REF relative to GND
+TP600,USB_VBUS_SENSE,Measure USB_VBUS_SENSE relative to GND
+TP601,CAN_TX,Measure CAN_TX relative to GND
+TP602,CAN_RX,Measure CAN_RX relative to GND
+TP603,SWDIO,Measure SWDIO relative to GND
+TP604,SWCLK,Measure SWCLK relative to GND
+TP700,AUX1_OUT,Measure AUX1_OUT relative to PGND
+TP701,AUX2_OUT,Measure AUX2_OUT relative to PGND
+TP702,AUX3_OUT,Measure AUX3_OUT relative to PGND
+TP703,AUX4_OUT,Measure AUX4_OUT relative to PGND
+TP704,RELAY_OUT,Measure RELAY_OUT relative to PGND
