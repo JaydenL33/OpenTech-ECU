@@ -1,4 +1,4 @@
-"""Required route-3 pre-routes, in millimetres and P1–P12 table order."""
+"""Required route-3 pre-routes, in millimetres and P1–P13 table order."""
 
 PREROUTES = (
     dict(id='P1', net='GND', layer='F.Cu', start=(157.325, 117.5),
@@ -25,9 +25,12 @@ PREROUTES = (
          end=(25.175, 89.225), width=0.2),
     dict(id='P12', net='INJ4_OUT', layer='B.Cu', start=(150.0, 67.385),
          end=(156.8, 63.175), width=0.2),
+    dict(id='P13', net='GND', layer='F.Cu', start=(172.385, 149.925),
+         end=(174.585, 151.625), width=0.2),
 )
 
 SERVED_PADS = (
     ('U200', '10'), ('U200', '26'), ('U200', '49'),
     ('U200', '74'), ('U200', '99'), ('U104', '3'),
+    ('Y200', '4'),
 )

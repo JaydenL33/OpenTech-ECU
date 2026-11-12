@@ -108,7 +108,7 @@ def keep_preroutes(board):
         found = [item for item in board.GetTracks() if same_location(item, route)]
         assert len(found) == 1 and matches(found[0], route), f"pre-route missing or changed: {route['id']}"
         assert found[0].IsLocked(), f"pre-route unlocked: {route['id']}"
-    assert from_ses + added == 12, 'pre-route count'
+    assert from_ses + added == 13, 'pre-route count'
     return from_ses, added
 
 
