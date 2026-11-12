@@ -4,6 +4,7 @@ import { AppContext, type AppContextValue } from "./context";
 import { useLiveTelemetry } from "./hooks/useLiveTelemetry";
 import type { Calibration, PreflightReport, Scenario } from "./types";
 import { DashboardPage } from "./pages/Dashboard";
+import { DashboardDesignerPage } from "./pages/DashboardDesigner";
 import { MapPage } from "./pages/MapPage";
 import { MixturePage } from "./pages/Mixture";
 import { SetupPage } from "./pages/Setup";
@@ -15,6 +16,7 @@ import { Badge } from "./components/ui";
 
 type PageId =
   | "dashboard"
+  | "designer"
   | "fuel"
   | "target"
   | "ignition"
@@ -27,6 +29,7 @@ type PageId =
 
 const NAV: { id: PageId; label: string; group: string }[] = [
   { id: "dashboard", label: "Dashboard", group: "Live" },
+  { id: "designer", label: "Dashboard designer", group: "Live" },
   { id: "fuel", label: "Fuel / VE map", group: "Maps" },
   { id: "target", label: "Target lambda", group: "Maps" },
   { id: "ignition", label: "Ignition timing", group: "Maps" },
@@ -188,7 +191,8 @@ export default function App() {
           <header className="topbar">
             <div>
               <h1>{
-                page === "fuel" ? "Volumetric efficiency"
+                page === "designer" ? "Dashboard designer"
+                : page === "fuel" ? "Volumetric efficiency"
                 : page === "target" ? "Target lambda"
                 : page === "ignition" ? "Ignition timing"
                 : page === "mixture" ? "Automated fuel calibration"
@@ -204,6 +208,7 @@ export default function App() {
               </p>
             </div>
             <div className="topbar-status">
+              <Badge tone="warn">BENCH PROTOTYPE · SIMULATOR</Badge>
               <span className={`live-dot ${live.connected ? "on" : "off"}`} />
               {live.connected ? "connected" : "reconnecting"}
               <span className={`run-dot ${running ? "on" : "off"}`} />
@@ -213,6 +218,7 @@ export default function App() {
           </header>
           {error && <div className="global-error"><span>{error}</span><button onClick={() => setError(null)}>dismiss</button></div>}
           {page === "dashboard" && <DashboardPage />}
+          {page === "designer" && <DashboardDesignerPage />}
           {page === "fuel" && <MapPage tableId="ve" kind="fuel" title="Volumetric efficiency" subtitle="Load × RPM fuel table. Edit locally, then seal an auditable revision." />}
           {page === "target" && <MapPage tableId="target_lambda" kind="target" title="Target lambda" subtitle="Desired mixture by load and RPM. Fuel-specific only through explicit stoichiometric AFR." />}
           {page === "ignition" && <MapPage tableId="ignition" kind="ignition" title="Ignition timing" subtitle="Simulation-only surface. Lambda provides no evidence of safe spark advance." />}
