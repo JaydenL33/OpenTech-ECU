@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { useApp } from "../context";
 import { Panel, Gauge, Stat, Badge, SummaryCard, SummaryRow, MoreLink } from "../components/ui";
 import { TraceChart, MiniTrace } from "../components/charts";
+import { evaluateWarnings, useWarningLimits } from "../warnings";
 
 export function DashboardPage() {
   const app = useApp();
   const frame = app.live.frame;
   const history = app.live.history ?? [];
+  const warningLimits = useWarningLimits();
+  const activeWarnings = evaluateWarnings(frame, warningLimits);
+  const warningFor = (key: string) => activeWarnings.some((warning) => warning.key === key);
   const [scenarioId, setScenarioId] = useState("idle_warmup");
   const [busy, setBusy] = useState(false);
 
@@ -141,12 +145,12 @@ export function DashboardPage() {
       </Panel>
 
       <div className="gauge-row">
-        <Gauge label="Engine speed" value={frame?.rpm ?? null} min={0} max={8000} unit="rpm" decimals={0} color="#1d1d1d" />
-        <Gauge label="Manifold pressure" value={frame?.map_kpa ?? null} min={0} max={260} unit="kPa" color="#2f6f9f" decimals={0} />
-        <Gauge label="Measured lambda" value={frame?.lambda_ready ? frame.lambda_measured : null} min={0.6} max={1.3} unit="λ" color="#d19a00" decimals={2} warning={lambdaTone === "warn"} />
-        <Gauge label="Target lambda" value={frame?.lambda_target ?? null} min={0.6} max={1.3} unit="λ" color="#7a5aa6" decimals={2} />
-        <Gauge label="Spark advance" value={frame?.ignition_advance_deg ?? null} min={-10} max={45} unit="°" color="#c05a2a" decimals={1} />
-        <Gauge label="Injector duty" value={frame?.injector_duty_pct ?? null} min={0} max={100} unit="%" color="#4b7f52" decimals={0} warning={(frame?.injector_duty_pct ?? 0) > 90} />
+        <Gauge label="Engine speed" value={frame?.rpm ?? null} min={0} max={8000} unit="rpm" decimals={0} color="#1d1d1d" warning={warningFor("rpm")} />
+        <Gauge label="Manifold pressure" value={frame?.map_kpa ?? null} min={0} max={260} unit="kPa" color="#2f6f9f" decimals={0} warning={warningFor("map_kpa")} />
+        <Gauge label="Measured lambda" value={frame?.lambda_ready ? frame.lambda_measured : null} min={0.6} max={1.3} unit="λ" color="#d19a00" decimals={2} warning={warningFor("lambda_measured") || lambdaTone === "warn"} />
+        <Gauge label="Target lambda" value={frame?.lambda_target ?? null} min={0.6} max={1.3} unit="λ" color="#7a5aa6" decimals={2} warning={warningFor("lambda_target")} />
+        <Gauge label="Spark advance" value={frame?.ignition_advance_deg ?? null} min={-10} max={45} unit="°" color="#c05a2a" decimals={1} warning={warningFor("ignition_advance_deg")} />
+        <Gauge label="Injector duty" value={frame?.injector_duty_pct ?? null} min={0} max={100} unit="%" color="#4b7f52" decimals={0} warning={warningFor("injector_duty_pct") || (frame?.injector_duty_pct ?? 0) > 90} />
       </div>
 
       <div className="dashboard-grid">

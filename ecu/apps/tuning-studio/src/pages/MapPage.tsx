@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useApp } from "../context";
 import { Panel, Badge } from "../components/ui";
 import { MapEditor } from "../components/MapEditor";
+import { MapSetsBar } from "../components/MapSetsBar";
 import { Surface3D } from "../components/Surface3D";
+import { updateMapSetTable, useMapSets } from "../mapSets";
+
+const MAP_SET_TABLE_IDS = ["ve", "ignition"];
 
 export function MapPage({
   tableId,
@@ -18,14 +22,22 @@ export function MapPage({
   const app = useApp();
   const table = app.calibration?.tables[tableId];
   const [view, setView] = useState<"grid" | "surface" | "split">("split");
+  const mapSets = useMapSets();
+  const activeSet = mapSets.sets.find((set) => set.id === mapSets.activeId) ?? null;
+  const mapSetView = MAP_SET_TABLE_IDS.includes(tableId);
+  const viewValues = activeSet?.tables[tableId];
 
   if (!app.calibration) return <div className="page"><p className="muted">Loading calibration…</p></div>;
   if (!table) return <div className="page"><div className="alert danger">Required table “{tableId}” is missing. Run preflight.</div></div>;
 
   const estimated = table.provenance.source !== "verified_reference" || !table.provenance.engine_specific_verified;
+  const viewTable = activeSet && viewValues && viewValues.length === table.values.length
+    ? { ...table, values: viewValues }
+    : table;
 
   return (
     <div className="page">
+      {mapSetView && <MapSetsBar tableIds={MAP_SET_TABLE_IDS} />}
       <Panel
         title={title}
         subtitle={subtitle}
@@ -55,14 +67,29 @@ export function MapPage({
         )}
         <div className="table-meta">
           <Badge tone={estimated ? "warn" : "good"}>{table.provenance.source.replaceAll("_", " ")}</Badge>
+          {mapSetView && (
+            <Badge tone={activeSet ? "info" : "neutral"}>
+              {activeSet ? `set view · ${activeSet.name}` : "service calibration view"}
+            </Badge>
+          )}
           <span>{table.axes.length}D · {table.values.length} cells · rev {table.revision}</span>
           <span className="mono">{table.description}</span>
         </div>
         <div className={`map-layout ${view}`}>
           {view !== "surface" && (
-            <MapEditor table={table} kind={kind} onSaved={() => app.refreshStatus()} />
+            <MapEditor
+              key={`${table.id}-${mapSetView ? activeSet?.id ?? "service" : "service"}`}
+              table={viewTable}
+              kind={kind}
+              onValuesChange={
+                mapSetView && activeSet
+                  ? (values) => updateMapSetTable(activeSet.id, tableId, values)
+                  : undefined
+              }
+              onSaved={() => app.refreshStatus()}
+            />
           )}
-          {view !== "grid" && <Surface3D table={table} kind={kind} />}
+          {view !== "grid" && <Surface3D table={viewTable} kind={kind} />}
         </div>
         <div className="provenance">
           <div>

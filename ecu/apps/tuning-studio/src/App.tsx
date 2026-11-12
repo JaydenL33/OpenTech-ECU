@@ -4,18 +4,26 @@ import { AppContext, type AppContextValue } from "./context";
 import { useLiveTelemetry } from "./hooks/useLiveTelemetry";
 import type { Calibration, PreflightReport, Scenario } from "./types";
 import { DashboardPage } from "./pages/Dashboard";
+import { DashboardDesignerPage } from "./pages/DashboardDesigner";
+import { CylindersPage } from "./pages/Cylinders";
 import { MapPage } from "./pages/MapPage";
 import { MixturePage } from "./pages/Mixture";
 import { SetupPage } from "./pages/Setup";
 import { DiagnosticsPage } from "./pages/Diagnostics";
 import { CalibrationPage } from "./pages/Calibration";
 import { LogsPage } from "./pages/Logs";
+import { LogViewerPage } from "./pages/LogViewer";
 import { CopilotPage } from "./pages/Copilot";
 import { HarnessPage } from "./pages/Harness";
+import { WarningsPage } from "./pages/Warnings";
+import { ChannelsPage } from "./pages/Channels";
+import { WarningBanner } from "./components/WarningBanner";
 import { Badge } from "./components/ui";
 
 type PageId =
   | "dashboard"
+  | "designer"
+  | "cylinders"
   | "fuel"
   | "target"
   | "ignition"
@@ -25,10 +33,15 @@ type PageId =
   | "diagnostics"
   | "calibration"
   | "logs"
+  | "logviewer"
+  | "warnings"
+  | "channels"
   | "copilot";
 
 const NAV: { id: PageId; label: string; group: string }[] = [
   { id: "dashboard", label: "Dashboard", group: "Live" },
+  { id: "designer", label: "Dashboard designer", group: "Live" },
+  { id: "cylinders", label: "Per-cylinder", group: "Live" },
   { id: "fuel", label: "Fuel map", group: "Maps" },
   { id: "target", label: "Target λ", group: "Maps" },
   { id: "ignition", label: "Ignition", group: "Maps" },
@@ -38,11 +51,16 @@ const NAV: { id: PageId; label: string; group: string }[] = [
   { id: "diagnostics", label: "Diagnostics", group: "Service" },
   { id: "calibration", label: "Calibration", group: "Service" },
   { id: "logs", label: "Logs", group: "Service" },
+  { id: "logviewer", label: "Log viewer", group: "Service" },
+  { id: "warnings", label: "Warning limits", group: "Service" },
+  { id: "channels", label: "Channels & sensors", group: "Service" },
   { id: "copilot", label: "Copilot", group: "Assist" },
 ];
 
 const PAGE_META: Record<PageId, { title: string; subtitle: string }> = {
   dashboard: { title: "Live engine overview", subtitle: "Virtual ECU telemetry, protection state and deterministic simulation evidence." },
+  designer: { title: "Dashboard designer", subtitle: "Arrange gauges into a layout, then save or load it as JSON." },
+  cylinders: { title: "Per-cylinder view", subtitle: "Per-cylinder channels for 1 to 8 cylinders. Changing the count affects this view only." },
   fuel: { title: "Volumetric efficiency", subtitle: "Load × RPM fuel table. Edit locally, then seal an auditable revision." },
   target: { title: "Target lambda", subtitle: "Desired mixture by load and RPM, with explicit fuel stoichiometry." },
   ignition: { title: "Ignition timing", subtitle: "Simulation-only surface. Lambda provides no evidence of safe spark advance." },
@@ -52,6 +70,9 @@ const PAGE_META: Record<PageId, { title: string; subtitle: string }> = {
   diagnostics: { title: "Diagnostics", subtitle: "DTCs, freeze frames, latching and explicit clear actions." },
   calibration: { title: "Calibration audit", subtitle: "Immutable snapshots, checksums, preflight evidence and rollback." },
   logs: { title: "Evidence & logs", subtitle: "Recorded telemetry, event trail, CSV export and replay." },
+  logviewer: { title: "Log viewer", subtitle: "Load the current session, plot channels, read values at a cursor and export CSV." },
+  warnings: { title: "Channel warning limits", subtitle: "Per-channel display thresholds. Not a control loop; they do not change ECU protection." },
+  channels: { title: "Channels & sensors", subtitle: "Read-only list of channels and sensors, with missing sources made explicit." },
   copilot: { title: "Tuning Copilot", subtitle: "Read-only structured analysis with a hard human-approval boundary." },
 };
 
@@ -255,7 +276,11 @@ export default function App() {
               </div>
             )}
 
+            <WarningBanner />
+
             {page === "dashboard" && <DashboardPage />}
+            {page === "designer" && <DashboardDesignerPage />}
+            {page === "cylinders" && <CylindersPage />}
             {page === "fuel" && <MapPage tableId="ve" kind="fuel" title="Volumetric efficiency" subtitle="Load × RPM fuel table. Edit locally, then seal an auditable revision." />}
             {page === "target" && <MapPage tableId="target_lambda" kind="target" title="Target lambda" subtitle="Desired mixture by load and RPM. Fuel-specific only through explicit stoichiometric AFR." />}
             {page === "ignition" && <MapPage tableId="ignition" kind="ignition" title="Ignition timing" subtitle="Simulation-only surface. Lambda provides no evidence of safe spark advance." />}
@@ -265,11 +290,14 @@ export default function App() {
             {page === "diagnostics" && <DiagnosticsPage />}
             {page === "calibration" && <CalibrationPage />}
             {page === "logs" && <LogsPage />}
+            {page === "logviewer" && <LogViewerPage />}
+            {page === "warnings" && <WarningsPage />}
+            {page === "channels" && <ChannelsPage />}
             {page === "copilot" && <CopilotPage />}
 
             <footer className="app-footer">
               <strong>OpenTech-ECU</strong> is an independent Rust platform based on Speeduino. Speeduino C++ is
-              retained as the GPL-2.0 behavioural oracle. Not affiliated with Mitsubishi or any OEM. Bench data only;
+              retained as the GPL-2.0 behavioural oracle. Not affiliated with Mitsubishi, Haltech, Link or any OEM. Bench data only;
               no vehicle or engine validation. Not engine-safe.
             </footer>
           </div>
