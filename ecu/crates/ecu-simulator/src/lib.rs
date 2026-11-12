@@ -16,7 +16,9 @@ use ecu_protection::{
     Dtc, ProtectionController, ProtectionDecision, ProtectionInputs, ProtectionLimits,
     ProtectionState as CoreProtectionState, Reaction,
 };
-use ecu_scheduler::{build_schedule, EventKind, EventSchedule, ScheduleRequest};
+use ecu_scheduler::{
+    build_sequential_schedule, CylinderSlot, EventKind, EventSchedule, ScheduleRequest,
+};
 use ecu_trigger::{MissingToothConfig, MissingToothDecoder, SyncState as TriggerSync};
 use ecu_types::{
     EngineState, LogEvent, LogFile, LogMetadata, ProtectionState, SensorStatus, SyncState,
@@ -60,6 +62,24 @@ pub struct SimSnapshot {
     pub protection_state: String,
     pub calibration_revision: u32,
     pub sample_count: usize,
+}
+
+/// Maximum simulated output events retained; the oldest is dropped first.
+pub const SIMULATED_OUTPUT_EVENT_CAPACITY: usize = 4096;
+
+/// One simulated injector or coil event applied to the plant model.
+/// Simulation record only; nothing here drives hardware.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct SimulatedOutputEvent {
+    pub time_us: u64,
+    /// completed 720-degree plant cycles when the event fired
+    pub cycle: u64,
+    pub cylinder: u8,
+    /// InjectionStart or Spark; DwellStart is not recorded
+    pub kind: EventKind,
+    /// ScheduledEvent::output_channel
+    pub channel: u8,
+    pub angle_deg: f32,
 }
 
 pub struct SimEngine {
@@ -145,6 +165,9 @@ pub struct SimEngine {
     last_faults: Vec<SimFault>,
     schedule_error_logged: bool,
     cycle_wrapped: bool,
+    cylinder_slots: Vec<CylinderSlot>,
+    simulated_outputs: VecDeque<SimulatedOutputEvent>,
+    cycle_count: u64,
 }
 
 impl SimEngine {
@@ -195,6 +218,21 @@ impl SimEngine {
         decoder
             .set_cam_window(Some((320.0, 340.0)))
             .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
+
+        let cylinder_slots = calibration
+            .engine
+            .cylinder_layout()
+            .ok_or_else(|| {
+                SimError::CalibrationInvalid("ENG_LAYOUT: no sequential cylinder layout".into())
+            })?
+            .into_iter()
+            .map(|s| CylinderSlot {
+                cylinder: s.cylinder,
+                tdc_deg: s.tdc_deg,
+                injector_channel: s.injector_channel,
+                coil_channel: s.coil_channel,
+            })
+            .collect();
 
         let sample_hz = scenario.sample_hz.max(1) as u64;
         let auto_starter = scenario.id == "fault_recovery" || scenario.id == "trigger_loss";
@@ -266,6 +304,9 @@ impl SimEngine {
             last_faults: Vec::new(),
             schedule_error_logged: false,
             cycle_wrapped: false,
+            cylinder_slots,
+            simulated_outputs: VecDeque::new(),
+            cycle_count: 0,
             scenario,
             calibration,
             preflight,
@@ -316,6 +357,10 @@ impl SimEngine {
 
     pub fn duty_percent(&self) -> f32 {
         self.fuel.as_ref().map(|f| f.duty_percent).unwrap_or(0.0)
+    }
+
+    pub fn simulated_output_events(&self) -> Vec<SimulatedOutputEvent> {
+        self.simulated_outputs.iter().copied().collect()
     }
 
     pub fn snapshot(&self) -> SimSnapshot {
@@ -744,6 +789,7 @@ impl SimEngine {
         self.sparks_this_cycle = 0;
         self.misfire_this_cycle = false;
         self.exhaust_delayed = false;
+        self.cycle_count += 1;
     }
 
     fn update_wideband(&mut self, dt_s: f32) {
@@ -1030,7 +1076,7 @@ impl SimEngine {
             spark_cut: self.spark_cut,
             fuel_cut: self.fuel_cut,
         };
-        match build_schedule(&self.calibration.engine.firing_order, &req) {
+        match build_sequential_schedule(&self.cylinder_slots, &req) {
             Ok(s) => self.schedule = s,
             Err(e) => {
                 if !self.schedule_error_logged {
@@ -1081,12 +1127,30 @@ impl SimEngine {
                         self.fuel_cycle_kg += (mg * actual_blind * injector_factor) as f64 * 1e-6;
                         self.injections_this_cycle += 1;
                         self.last_injection_angle = e.angle_deg;
+                        let ev = SimulatedOutputEvent {
+                            time_us: self.time_us,
+                            cycle: self.cycle_count,
+                            cylinder: e.cylinder,
+                            kind: e.kind,
+                            channel: e.output_channel,
+                            angle_deg: e.angle_deg,
+                        };
+                        push_simulated_output(&mut self.simulated_outputs, ev);
                     }
                 }
                 EventKind::Spark => {
                     if !self.spark_cut {
                         self.sparks_this_cycle += 1;
                         self.last_spark_angle = e.angle_deg;
+                        let ev = SimulatedOutputEvent {
+                            time_us: self.time_us,
+                            cycle: self.cycle_count,
+                            cylinder: e.cylinder,
+                            kind: e.kind,
+                            channel: e.output_channel,
+                            angle_deg: e.angle_deg,
+                        };
+                        push_simulated_output(&mut self.simulated_outputs, ev);
                     }
                 }
                 EventKind::DwellStart => {}
@@ -1349,6 +1413,13 @@ impl SimEngine {
             .ok()
             .and_then(|t| t.interpolate(&[volts]).ok())
     }
+}
+
+fn push_simulated_output(buf: &mut VecDeque<SimulatedOutputEvent>, ev: SimulatedOutputEvent) {
+    if buf.len() == SIMULATED_OUTPUT_EVENT_CAPACITY {
+        buf.pop_front();
+    }
+    buf.push_back(ev);
 }
 
 fn crossed(old: f32, new: f32, event: f32) -> bool {
