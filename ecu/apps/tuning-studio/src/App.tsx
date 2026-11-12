@@ -5,6 +5,7 @@ import { useLiveTelemetry } from "./hooks/useLiveTelemetry";
 import type { Calibration, PreflightReport, Scenario } from "./types";
 import { DashboardPage } from "./pages/Dashboard";
 import { DashboardDesignerPage } from "./pages/DashboardDesigner";
+import { CylindersPage } from "./pages/Cylinders";
 import { MapPage } from "./pages/MapPage";
 import { MixturePage } from "./pages/Mixture";
 import { SetupPage } from "./pages/Setup";
@@ -18,6 +19,7 @@ import { Badge } from "./components/ui";
 type PageId =
   | "dashboard"
   | "designer"
+  | "cylinders"
   | "fuel"
   | "target"
   | "ignition"
@@ -32,6 +34,7 @@ type PageId =
 const NAV: { id: PageId; label: string; group: string }[] = [
   { id: "dashboard", label: "Dashboard", group: "Live" },
   { id: "designer", label: "Dashboard designer", group: "Live" },
+  { id: "cylinders", label: "Per-cylinder", group: "Live" },
   { id: "fuel", label: "Fuel / VE map", group: "Maps" },
   { id: "target", label: "Target lambda", group: "Maps" },
   { id: "ignition", label: "Ignition timing", group: "Maps" },
@@ -195,6 +198,7 @@ export default function App() {
             <div>
               <h1>{
                 page === "designer" ? "Dashboard designer"
+                : page === "cylinders" ? "Per-cylinder view"
                 : page === "fuel" ? "Volumetric efficiency"
                 : page === "target" ? "Target lambda"
                 : page === "ignition" ? "Ignition timing"
@@ -223,6 +227,7 @@ export default function App() {
           {error && <div className="global-error"><span>{error}</span><button onClick={() => setError(null)}>dismiss</button></div>}
           {page === "dashboard" && <DashboardPage />}
           {page === "designer" && <DashboardDesignerPage />}
+          {page === "cylinders" && <CylindersPage />}
           {page === "fuel" && <MapPage tableId="ve" kind="fuel" title="Volumetric efficiency" subtitle="Load × RPM fuel table. Edit locally, then seal an auditable revision." />}
           {page === "target" && <MapPage tableId="target_lambda" kind="target" title="Target lambda" subtitle="Desired mixture by load and RPM. Fuel-specific only through explicit stoichiometric AFR." />}
           {page === "ignition" && <MapPage tableId="ignition" kind="ignition" title="Ignition timing" subtitle="Simulation-only surface. Lambda provides no evidence of safe spark advance." />}

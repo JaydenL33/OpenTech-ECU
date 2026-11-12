@@ -183,6 +183,11 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 .data-table.compact td, .data-table.compact th { padding: 5px 6px; font-size: 0.65rem; }
 .data-table tr:hover td { background: rgba(255,255,255,0.02); }
 .empty-state { text-align: center; padding: 42px 20px; border: 1px dashed var(--line-strong); border-radius: 8px; }
+.cylinder-count { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--muted); }
+.cylinder-count select { padding: 6px 8px; }
+.cylinder-strip { margin-bottom: 12px; }
+.cylinder-table .cylinder-number { color: var(--text); font-weight: 650; }
+.missing-source { color: var(--warning); font-family: inherit; font-size: 0.68rem; }
 
 .setup-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 16px 0; }
 .setup-grid label { display: flex; flex-direction: column; gap: 5px; font-size: 0.7rem; color: var(--muted); }
