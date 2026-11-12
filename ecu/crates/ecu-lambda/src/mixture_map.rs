@@ -99,7 +99,14 @@ pub struct MixtureCellReport {
     pub dwell_ms: f32,
     pub mean_lambda: Option<f32>,
     pub mean_target_lambda: Option<f32>,
+    /// Spread of the raw measured lambda (display only).
     pub lambda_stddev: f32,
+    /// Spread of the trim-compensated estimate `lambda * (1 + trim)`. This, not
+    /// the raw spread, drives the variance gate and the confidence score, so a
+    /// cell visited in both closed and open loop is not penalised for the trim
+    /// itself.
+    #[serde(default)]
+    pub corrected_lambda_stddev: f32,
     pub mean_stft: f32,
     pub mean_ltft: f32,
     pub mean_total_trim: Option<f32>,
@@ -213,6 +220,11 @@ struct Acc {
     used: u32,
     sum_lambda: f64,
     sum_lambda_sq: f64,
+    /// Trim-compensated lambda estimate `lambda * (1 + stft + ltft)`: what the
+    /// mixture would read with no trim applied. Used for spread statistics so
+    /// samples from different loop states can be pooled in one cell.
+    sum_est: f64,
+    sum_est_sq: f64,
     sum_target: f64,
     sum_stft: f64,
     sum_ltft: f64,
@@ -538,6 +550,9 @@ pub fn analyze(
         acc[idx].used += 1;
         acc[idx].sum_lambda += f.lambda_measured as f64;
         acc[idx].sum_lambda_sq += (f.lambda_measured as f64).powi(2);
+        let est = f.lambda_measured as f64 * (1.0 + trim as f64);
+        acc[idx].sum_est += est;
+        acc[idx].sum_est_sq += est * est;
         acc[idx].sum_target += target_l as f64;
         acc[idx].sum_stft += a.stft as f64;
         acc[idx].sum_ltft += a.ltft as f64;
@@ -582,7 +597,8 @@ pub fn analyze(
             } else {
                 0.0
             };
-            let status = classify(a, stddev, confidence, options);
+            let corrected_sd = est_stddev(a);
+            let status = classify(a, corrected_sd, confidence, options);
             let mut proposed_ve = current_ve;
             if let (CellStatus::Proposed, Some(mean_lambda), Some(mean_target), Some(mean_trim)) =
                 (status, mean_lambda, mean_target, mean_trim)
@@ -627,6 +643,7 @@ pub fn analyze(
                 mean_lambda,
                 mean_target_lambda: mean_target,
                 lambda_stddev: stddev,
+                corrected_lambda_stddev: corrected_sd,
                 mean_stft: if a.used > 0 {
                     (a.sum_stft / a.used as f64) as f32
                 } else {
@@ -769,14 +786,21 @@ fn aligned_index(frames: &[TelemetryFrame], current: usize, delay_ms: u64) -> Op
     found
 }
 
+fn est_stddev(a: &Acc) -> f32 {
+    if a.used < 2 {
+        return 0.0;
+    }
+    let n = a.used as f64;
+    let mean = a.sum_est / n;
+    ((a.sum_est_sq / n - mean * mean).max(0.0)).sqrt() as f32
+}
+
 fn confidence(a: &Acc, options: &MixtureMapOptions) -> f32 {
     if a.used == 0 {
         return 0.0;
     }
     let sample = (a.used as f32 / options.min_samples_per_cell as f32).min(1.0);
-    let mean = a.sum_lambda / a.used as f64;
-    let var = (a.sum_lambda_sq / a.used as f64 - mean * mean).max(0.0);
-    let sd = var.sqrt() as f32;
+    let sd = est_stddev(a);
     let variance = (1.0 - (sd / options.max_lambda_stddev).min(1.0)).max(0.0);
     let dwell = (a.dwell_ms / options.min_dwell_ms.max(1.0)).min(1.0);
     let base = 0.45 * sample + 0.35 * variance + 0.20 * dwell;
@@ -1321,6 +1345,66 @@ mod tests {
         assert!(closed.closed_loop_samples_used > 0);
         assert_eq!(closed.open_loop_samples_used, 0);
         assert_eq!(closed.closed_loop_samples_used, closed.samples_used);
+    }
+
+    #[test]
+    fn cell_visited_in_both_loop_states_is_not_flagged_for_the_trim_itself() {
+        let c = cal();
+        // Same physical error (8 % lean pre-trim) seen twice: open loop reads
+        // 1.08 with no trim; closed loop holds 1.00 by carrying +8 % trim.
+        let mut frames = steady_log(3000.0, 60.0, 1.08, 0.0, 60);
+        let mut closed = steady_log(3000.0, 60.0, 1.00, 0.08, 60);
+        let offset = 60 * 20;
+        for f in closed.iter_mut() {
+            f.closed_loop = true;
+            f.timestamp_us += offset as u64 * 1000;
+            f.scenario_time_ms += offset as u64;
+        }
+        frames.extend(closed);
+        let opts = MixtureMapOptions {
+            max_lambda_stddev: 0.02,
+            max_cell_correction: 0.20,
+            ..window_opts()
+        };
+        let report = analyze(&c, &frames, &opts).unwrap();
+        let cell = report
+            .cells
+            .iter()
+            .find(|c| c.samples_used > 0)
+            .expect("one visited cell");
+        assert!(report.open_loop_samples_used > 0 && report.closed_loop_samples_used > 0);
+        // Raw spread is large (two different readings), corrected spread is not.
+        assert!(cell.lambda_stddev > 0.03, "raw sd {}", cell.lambda_stddev);
+        assert!(
+            cell.corrected_lambda_stddev < 0.005,
+            "corrected sd {}",
+            cell.corrected_lambda_stddev
+        );
+        assert_eq!(cell.status, CellStatus::Proposed, "{:?}", cell);
+        assert!((cell.correction_fraction - 0.08).abs() < 0.01);
+    }
+
+    #[test]
+    fn inconsistent_loop_states_are_still_flagged() {
+        let c = cal();
+        // Closed loop disagrees with open loop about the pre-trim error
+        // (+8 % vs +0 %): the cell must not be proposed.
+        let mut frames = steady_log(3000.0, 60.0, 1.08, 0.0, 60);
+        let mut closed = steady_log(3000.0, 60.0, 1.00, 0.0, 60);
+        for f in closed.iter_mut() {
+            f.closed_loop = true;
+            f.timestamp_us += 60 * 20 * 1000;
+            f.scenario_time_ms += 60 * 20;
+        }
+        frames.extend(closed);
+        let opts = MixtureMapOptions {
+            max_lambda_stddev: 0.02,
+            ..window_opts()
+        };
+        let report = analyze(&c, &frames, &opts).unwrap();
+        let cell = report.cells.iter().find(|c| c.samples_used > 0).unwrap();
+        assert_eq!(cell.status, CellStatus::HighVariance);
+        assert!(report.proposal.is_none());
     }
 
     #[test]

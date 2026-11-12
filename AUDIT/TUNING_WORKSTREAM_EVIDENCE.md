@@ -493,3 +493,101 @@ cd apps/tuning-studio && npm ci && npx tsc --noEmit && npx vite build
 7. Tauri vs Electron decision (human) — app is Electron + Vite; no `src-tauri` exists.
 8. Vehicle data: starter map remains a labelled non-operational template; no verified Evo VIII
    data (VE, ignition, injector) exists and none was invented.
+
+## Round 6 (2026-11-13) — long-dwell open/closed-loop scenario, truth-VE decoupling, trim-compensated variance
+
+Scope: host simulator crate (`ecu-simulator`), `ecu-lambda`, `studio-service`, UI type only. No KiCad,
+firmware real-time, or hardware file touched. Simulation/offline only.
+
+### Starting point (read from disk)
+Round-5 open items 2 (no scenario with open-loop / usable yield) and a latent one found while doing it.
+No earlier work repeated.
+
+### Two defects found by running the new scenario (not by reading)
+
+1. **Simulator: scenario VE error was relative to the loaded ECU table.** `update_sensors` computed
+   `true_ve = ECU_table(rpm,map) × error`, so raising the ECU table raised the "physical" engine's
+   air equally and a lambda correction could *never* converge. A first re-simulation after applying a
+   +5 % correction showed raw error 7.91 % → 7.83 % (no improvement). Fix: `SimEngine` has an optional
+   fixed truth VE table (`with_truth_ve_from(&Calibration)`); default `None` keeps the previous
+   behaviour for every existing caller. `studio-service` now keeps `Session.truth` (set on session
+   creation, `setup_generate`, and the Evo simulation loader; **not** changed by edits, apply or undo) and
+   builds every engine with `engine_for(&session.truth, …)`.
+2. **Analyser: variance gate/confidence used raw measured λ.** A cell visited in both closed loop
+   (λ≈target, trim carries the error) and open loop (λ biased, trim 0) looked like a ~0.02+ spread and
+   was rejected `HighVariance`, although both loop states imply the same pre-trim error. Four of five
+   dwell cells were lost this way (only 1 proposed). Now the gate and the confidence score use the spread
+   of `λ·(1+stft+ltft)` (`corrected_lambda_stddev`, new serde-default report field); the raw
+   `lambda_stddev` is kept for display. Behaviour change worth review: for closed-loop-only data the
+   statistic now also contains trim variation (bounded already by `max_trim_swing`). No threshold changed.
+
+### Changes
+- `scenario.rs`: `Scenario.open_loop_windows` (`#[serde(default)]`), `OpenLoopWindow`, `open_loop_forced`;
+  new builtin `mixture_dwell` (56 s, 7 s dyno dwells at 4 points, closed loop to 25 s then forced open
+  loop; same deliberate +8 % VE bias family as `mixture_sweep`). Dwell length was chosen to exceed the
+  analyser's exhaust-transport window; analyser options are the defaults.
+- `lib.rs` (sim): open-loop forcing feeds the closed-loop controller a blocked gate
+  (`OPEN_LOOP_SCENARIO`), so STFT freezes then decays exactly as for any other gate block.
+- `mixture_map.rs`: `corrected_lambda_stddev`, `est_stddev`; 2 new unit tests (consistent mixed-loop cell
+  is proposed with +8 %; inconsistent loop states are still `HighVariance` and give no proposal).
+- `studio-service`: truth session field + `engine_for`; new HTTP test below.
+
+### Observed results (this session; cargo 1.99.1, same lld shim as round 5, no system C linker)
+| Command (from `ecu/`) | Result |
+|---|---|
+| `cargo fmt --all -- --check` | rc 0 |
+| `cargo clippy --workspace --all-targets --locked --offline -- -D warnings` | rc 0, no output |
+| `cargo test --workspace --locked --offline` | **192 passed, 0 failed** (187 + 5 new) |
+| `npx tsc --noEmit` / `npx vite build` (apps/tuning-studio) | rc 0 / ok |
+
+New tests: `ecu-lambda` ×2 (above); `ecu-simulator`
+`mixture_dwell_yields_both_loop_states_and_resimulation_reduces_open_loop_error` and
+`repeated_review_apply_resimulate_passes_converge_on_the_biased_ve`; `studio-service`
+`dwell_scenario_passes_converge_over_http_and_full_rollback_restores_base`.
+
+Raw numbers (`cargo test … -- --nocapture`):
+```
+mixture_dwell, default analyser options:  frames=2912 used=941 (closed=385 open=556) cells=5   (mixture_sweep: 14 % yield, 2 cells; dwell: 32 %, 5 cells)
+sim pass-by-pass mean raw pre-trim error over the 5 tracked cells: [0.0782, 0.0437, 0.0170, 0.0052]
+HTTP (3 approved apply passes, per-application clamp 5 %):          [0.0781, 0.0438, 0.0143]
+HTTP undo ×3 -> checksum identical to the original
+```
+(`raw error = |mean λ / mean target × (1+mean trim) − 1|` per cell, unclamped, so the 5 % per-application
+clamp does not hide progress.)
+
+### What this does and does not show
+- **Shows (simulation):** open-loop and closed-loop samples are both accepted and counted; cells visited in
+  both loop states pool correctly; the review → approve → apply → re-measure loop reduces error each
+  pass over HTTP and rollback is exact.
+- **Does not show:** that the model is right. The simulator's air/fuel model and the ECU fuel model are the
+  same code family, so convergence demonstrates the plumbing and sign conventions, not accuracy against an
+  engine. Only 5 cells (mid-load, rpm 2100–4100) are visited; unvisited cells are untouched by design.
+  Wideband dynamics, real transport delay and sensor error are the simulator's own. 250 ms / 0.06 / 0.30
+  thresholds remain unvalidated guesses.
+- Not rendered in a browser; WebSocket ticker still untested.
+
+### Gate status
+Unchanged. No H4+ approval implied; AI cannot grant any.
+
+### Reproduction
+```bash
+cd ecu
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo test --workspace --locked
+cargo test -p ecu-simulator repeated_review -- --nocapture
+cargo test -p studio-service dwell_scenario -- --nocapture
+(cd apps/tuning-studio && npx tsc --noEmit && npx vite build)
+```
+
+### Remaining blockers / next tasks (tuning)
+1. Reproduce on a machine with a normal C toolchain (still the lld shim).
+2. UI: scenario picker lists `mixture_dwell` dynamically, but no browser render has been seen; a
+   "corrected σ" column is typed (`types.ts`) but not yet displayed.
+3. No accel-enrichment channel in `TelemetryFrame` (simulator + protocol change).
+4. Thresholds (250 ms, 0.06, 0.30, 5 % per pass) need real wideband logs.
+5. Ticker/WebSocket untested; concurrency untested.
+6. Tauri vs Electron (human decision); app is Electron + Vite, no `src-tauri`.
+7. No verified Evo VIII data; starter map stays a labelled non-operational template.
+8. Review request: the variance-statistic change (defect 2) alters gate semantics and needs an
+   independent look before it is treated as settled.

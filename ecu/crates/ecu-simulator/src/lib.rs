@@ -85,6 +85,12 @@ pub struct SimulatedOutputEvent {
 pub struct SimEngine {
     pub scenario: Scenario,
     pub calibration: Calibration,
+    /// VE table the *simulated engine* actually breathes by (before the
+    /// scenario's multiplicative error). `None` means "the loaded calibration's
+    /// own table", which makes the scenario error relative to whatever the ECU
+    /// uses and so can never be corrected. Set it with [`SimEngine::with_truth_ve_from`]
+    /// to model a fixed physical engine behind a changing ECU calibration.
+    truth_ve: Option<ecu_calibration::Table>,
     preflight: PreflightReport,
     rng: DeterministicRng,
     time_us: u64,
@@ -309,6 +315,7 @@ impl SimEngine {
             cycle_count: 0,
             scenario,
             calibration,
+            truth_ve: None,
             preflight,
         };
         engine.update_sensors();
@@ -540,7 +547,10 @@ impl SimEngine {
 
         // True VE differs from the ECU's table by the scenario bias.
         let base_ve = self
-            .lookup_ve(self.true_rpm, self.true_map_kpa)
+            .truth_ve
+            .as_ref()
+            .and_then(|t| t.interpolate(&[self.true_map_kpa, self.true_rpm]).ok())
+            .or_else(|| self.lookup_ve(self.true_rpm, self.true_map_kpa))
             .unwrap_or(60.0);
         let load_frac = (self.true_map_kpa / 100.0 - 0.5).clamp(-0.5, 1.5);
         let rpm_frac = (self.true_rpm / 6000.0 - 0.5).clamp(-0.5, 1.0);
@@ -924,7 +934,18 @@ impl SimEngine {
             self.last_stft_ms = self.time_ms();
             let dt_ms = 50.0;
             let _ = dt_ms;
-            if self.lambda_ready && rpm > 300.0 {
+            if self.scenario.open_loop_forced(self.time_ms()) {
+                let blocked = ecu_lambda::GateDecision::blocked(vec![ecu_lambda::GateReason {
+                    code: "OPEN_LOOP_SCENARIO".into(),
+                    message: "scenario forces open-loop fuelling".into(),
+                }]);
+                self.closed_loop.update(
+                    self.time_ms(),
+                    self.lambda_sensor,
+                    lambda_target,
+                    &blocked,
+                );
+            } else if self.lambda_ready && rpm > 300.0 {
                 let out = self.closed_loop.update(
                     self.time_ms(),
                     self.lambda_sensor,
@@ -1386,6 +1407,14 @@ impl SimEngine {
         self.seq += 1;
     }
 
+    /// Fix the simulated engine's breathing to `truth`'s VE table, independent
+    /// of later edits to the ECU calibration. If `truth` has no VE table the
+    /// engine keeps the default (calibration-relative) behaviour.
+    pub fn with_truth_ve_from(mut self, truth: &Calibration) -> Self {
+        self.truth_ve = truth.table("ve").ok().cloned();
+        self
+    }
+
     fn lookup_ve(&self, rpm: f32, map: f32) -> Option<f32> {
         self.calibration
             .table("ve")
@@ -1508,6 +1537,161 @@ mod tests {
         let applied = ecu_lambda::apply_proposal(&calibration, &proposal, None, 42).unwrap();
         assert!(applied.calibration.verify());
         assert!(applied.applied_cells >= 3);
+    }
+
+    #[test]
+    fn mixture_dwell_yields_both_loop_states_and_resimulation_reduces_open_loop_error() {
+        let calibration = cal();
+        let mut s = SimEngine::new(calibration.clone(), by_id("mixture_dwell").unwrap()).unwrap();
+        s.run_to_end();
+        let frames = s.frames().to_vec();
+        let n_total = frames.len();
+        assert!(frames.iter().any(|f| f.closed_loop));
+        assert!(frames
+            .iter()
+            .any(|f| !f.closed_loop && f.timestamp_us > 30_000_000));
+
+        // Default analyser options: nothing loosened for this scenario.
+        let opts = ecu_lambda::MixtureMapOptions::default();
+        let report = ecu_lambda::mixture_map::analyze(&calibration, &frames, &opts).unwrap();
+        assert!(report.hard_faults.is_empty(), "{:?}", report.hard_faults);
+        assert!(
+            report.closed_loop_samples_used > 0 && report.open_loop_samples_used > 0,
+            "closed={} open={} gates={:?}",
+            report.closed_loop_samples_used,
+            report.open_loop_samples_used,
+            report.gate_reason_counts
+        );
+        for c in report.cells.iter().filter(|c| c.samples_seen > 0) {
+            eprintln!(
+                "dwell-cell r{} c{} rpm={} map={} seen={} used={} dwell={:.0} conf={:.2} sd={:.4} ml={:?} status={:?} win={} excl={:?}",
+                c.row, c.col, c.rpm, c.map_kpa, c.samples_seen, c.samples_used, c.dwell_ms,
+                c.confidence, c.lambda_stddev, c.mean_lambda, c.status, c.window_rejected_samples, c.exclusion_reasons
+            );
+        }
+        let proposal = report.proposal.clone().expect("dwell must propose cells");
+        eprintln!(
+            "dwell-summary: frames={} used={} (closed={} open={}) cells={} gates={:?}",
+            n_total,
+            report.samples_used,
+            report.closed_loop_samples_used,
+            report.open_loop_samples_used,
+            proposal.cells.len(),
+            report.gate_reason_counts
+        );
+        assert!(proposal.cells.len() >= 3, "cells={}", proposal.cells.len());
+
+        // Apply the proposal to a *copy*, re-run the identical scenario/seed and
+        // re-analyse with the same default options. For every corrected cell the
+        // remaining pre-trim error must shrink.
+        let applied = ecu_lambda::apply_proposal(&calibration, &proposal, None, 42).unwrap();
+        assert!(applied.calibration.verify());
+        // The physical engine does not change because the ECU table did.
+        let mut s2 = SimEngine::new(applied.calibration.clone(), by_id("mixture_dwell").unwrap())
+            .unwrap()
+            .with_truth_ve_from(&calibration);
+        s2.run_to_end();
+        let report2 =
+            ecu_lambda::mixture_map::analyze(&applied.calibration, s2.frames(), &opts).unwrap();
+        let mut compared = 0;
+        for pc in &proposal.cells {
+            let after = report2
+                .cells
+                .iter()
+                .find(|c| c.row == pc.row && c.col == pc.col)
+                .unwrap();
+            // Unclamped pre-trim error estimate: per-application clamps would
+            // otherwise hide whether the applied change helped.
+            let raw = |lambda: f32, target: f32, trim: f32| {
+                ((lambda / target) * (1.0 + trim) - 1.0).abs()
+            };
+            let before_err = raw(pc.mean_lambda, pc.target_lambda, pc.mean_trim);
+            let after_err = match (
+                after.mean_lambda,
+                after.mean_target_lambda,
+                after.mean_total_trim,
+            ) {
+                (Some(l), Some(t), Some(tr)) => raw(l, t, tr),
+                _ => f32::NAN,
+            };
+            eprintln!(
+                "dwell-resim cell r{} c{}: raw_err before={:.4} after={:.4} ve {:.2}->{:.2} status_after={:?} used_after={}",
+                pc.row, pc.col, before_err, after_err, pc.current_ve, after.current_ve, after.status, after.samples_used
+            );
+            if after.samples_used > 0 {
+                compared += 1;
+                assert!(
+                    after_err < before_err,
+                    "cell ({},{}) did not improve: {before_err} -> {after_err}",
+                    pc.row,
+                    pc.col
+                );
+            }
+        }
+        assert!(compared >= 2, "too few re-visited cells: {compared}");
+    }
+
+    #[test]
+    fn repeated_review_apply_resimulate_passes_converge_on_the_biased_ve() {
+        // Simulation-only convergence check: each pass is analyse -> (stand-in
+        // for the human-approved) apply -> re-run. The physical engine (truth
+        // VE) is fixed to the original table throughout.
+        let original = cal();
+        let opts = ecu_lambda::MixtureMapOptions::default();
+        let mut current = original.clone();
+        let mut errs: Vec<f32> = Vec::new();
+        let mut tracked: Option<Vec<(usize, usize)>> = None;
+        for pass in 0..4 {
+            let mut s = SimEngine::new(current.clone(), by_id("mixture_dwell").unwrap())
+                .unwrap()
+                .with_truth_ve_from(&original);
+            s.run_to_end();
+            let report = ecu_lambda::mixture_map::analyze(&current, s.frames(), &opts).unwrap();
+            assert!(report.hard_faults.is_empty(), "{:?}", report.hard_faults);
+            // Unclamped pre-trim error over the cells tracked from pass 0.
+            let cells: Vec<(usize, usize)> = tracked.clone().unwrap_or_else(|| {
+                report
+                    .proposed_cells()
+                    .iter()
+                    .map(|c| (c.row, c.col))
+                    .collect()
+            });
+            let mut sum = 0.0f32;
+            let mut n = 0;
+            for (r, c) in &cells {
+                let cell = report
+                    .cells
+                    .iter()
+                    .find(|x| x.row == *r && x.col == *c)
+                    .unwrap();
+                if let (Some(l), Some(t), Some(tr)) = (
+                    cell.mean_lambda,
+                    cell.mean_target_lambda,
+                    cell.mean_total_trim,
+                ) {
+                    sum += ((l / t) * (1.0 + tr) - 1.0).abs();
+                    n += 1;
+                }
+            }
+            assert!(n >= 3, "pass {pass}: only {n} tracked cells visited");
+            errs.push(sum / n as f32);
+            tracked = Some(cells);
+            let Some(proposal) = report.proposal else {
+                break;
+            };
+            current = ecu_lambda::apply_proposal(&current, &proposal, None, 100 + pass as u64)
+                .unwrap()
+                .calibration;
+        }
+        eprintln!("dwell-converge: mean raw error per pass = {errs:?}");
+        assert!(errs.len() >= 3, "{errs:?}");
+        for w in errs.windows(2) {
+            assert!(w[1] < w[0], "error must fall every pass: {errs:?}");
+        }
+        assert!(
+            *errs.last().unwrap() < errs[0] * 0.5,
+            "expected at least halving: {errs:?}"
+        );
     }
 
     #[test]

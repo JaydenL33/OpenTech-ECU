@@ -214,6 +214,8 @@ export interface MixtureCellReport {
   mean_lambda: number | null;
   mean_target_lambda: number | null;
   lambda_stddev: number;
+  /** Spread of lambda*(1+trim); drives the variance gate (absent in older reports). */
+  corrected_lambda_stddev?: number;
   mean_stft: number;
   mean_ltft: number;
   mean_total_trim: number | null;

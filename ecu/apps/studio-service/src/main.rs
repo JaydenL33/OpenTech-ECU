@@ -66,6 +66,12 @@ struct AppState {
 
 struct Session {
     calibration: Calibration,
+    /// Calibration whose VE table defines how the *simulated physical engine*
+    /// breathes. Fixed when a baseline is loaded/generated and deliberately NOT
+    /// updated by table edits, applied proposals or undo; otherwise the
+    /// scenario's VE error would be relative to the ECU table and could never
+    /// be corrected. Simulation only; real hardware has no such field.
+    truth: Calibration,
     scenario: Scenario,
     engine: SimEngine,
     running: bool,
@@ -194,7 +200,8 @@ async fn main() -> anyhow::Result<()> {
                     }
                     if session.engine.is_finished() {
                         if session.auto_loop {
-                            if let Ok(mut next) = SimEngine::new(
+                            if let Ok(mut next) = engine_for(
+                                &session.truth,
                                 session.calibration.clone(),
                                 session.scenario.clone(),
                             ) {
@@ -230,6 +237,15 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// Build a virtual engine whose physical VE is `truth`'s, with `cal` as the ECU map.
+fn engine_for(
+    truth: &Calibration,
+    cal: Calibration,
+    scenario: Scenario,
+) -> Result<SimEngine, ecu_simulator::SimError> {
+    Ok(SimEngine::new(cal, scenario)?.with_truth_ve_from(truth))
+}
+
 /// Build the shared session. Separate from `main` so tests can drive the real
 /// router without binding a port or spawning the background ticker.
 fn new_state(
@@ -243,6 +259,7 @@ fn new_state(
     let (tx, _) = broadcast::channel(512);
     Ok(AppState {
         inner: Arc::new(Mutex::new(Session {
+            truth: calibration.clone(),
             calibration,
             scenario,
             engine,
@@ -409,7 +426,7 @@ async fn edit_table(
     }
     // The running/paused engine owns a snapshot. Rebuild it so a resumed run
     // actually uses the newly sealed map instead of stale table data.
-    let new_engine = SimEngine::new(next.clone(), session.scenario.clone())
+    let new_engine = engine_for(&session.truth, next.clone(), session.scenario.clone())
         .map_err(|e| ApiError::internal(e.to_string()))?;
     session.calibration = next;
     session.engine = new_engine;
@@ -506,8 +523,12 @@ async fn resample_axis(
     session.calibration = next;
     let snapshot = session.calibration.clone();
     session.history.push(snapshot);
-    session.engine = SimEngine::new(session.calibration.clone(), session.scenario.clone())
-        .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = engine_for(
+        &session.truth,
+        session.calibration.clone(),
+        session.scenario.clone(),
+    )
+    .map_err(|e| ApiError::internal(e.to_string()))?;
     session.frame_cursor = 0;
     Ok(Json(json!({
         "calibration": session.calibration,
@@ -535,8 +556,12 @@ async fn undo_calibration(
         .cloned()
         .ok_or_else(|| ApiError::internal("history empty"))?;
     session.calibration = restored;
-    session.engine = SimEngine::new(session.calibration.clone(), session.scenario.clone())
-        .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = engine_for(
+        &session.truth,
+        session.calibration.clone(),
+        session.scenario.clone(),
+    )
+    .map_err(|e| ApiError::internal(e.to_string()))?;
     session.frame_cursor = 0;
     Ok(Json(json!({
         "calibration": session.calibration,
@@ -561,8 +586,12 @@ async fn sim_start(
         .inner
         .lock()
         .map_err(|_| ApiError::internal("state poisoned"))?;
-    let mut engine = SimEngine::new(session.calibration.clone(), scenario.clone())
-        .map_err(|e| ApiError::bad(e.to_string()))?;
+    let mut engine = engine_for(
+        &session.truth,
+        session.calibration.clone(),
+        scenario.clone(),
+    )
+    .map_err(|e| ApiError::bad(e.to_string()))?;
     engine.advance_ms(20);
     session.engine = engine;
     session.scenario = scenario;
@@ -592,8 +621,12 @@ async fn sim_resume(State(state): State<AppState>) -> Result<Json<serde_json::Va
         .lock()
         .map_err(|_| ApiError::internal("state poisoned"))?;
     if session.engine.is_finished() {
-        let mut next = SimEngine::new(session.calibration.clone(), session.scenario.clone())
-            .map_err(|e| ApiError::internal(e.to_string()))?;
+        let mut next = engine_for(
+            &session.truth,
+            session.calibration.clone(),
+            session.scenario.clone(),
+        )
+        .map_err(|e| ApiError::internal(e.to_string()))?;
         next.advance_ms(20);
         session.engine = next;
         session.frame_cursor = 0;
@@ -608,8 +641,12 @@ async fn sim_stop(State(state): State<AppState>) -> Result<Json<serde_json::Valu
         .lock()
         .map_err(|_| ApiError::internal("state poisoned"))?;
     session.running = false;
-    session.engine = SimEngine::new(session.calibration.clone(), session.scenario.clone())
-        .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = engine_for(
+        &session.truth,
+        session.calibration.clone(),
+        session.scenario.clone(),
+    )
+    .map_err(|e| ApiError::internal(e.to_string()))?;
     session.frame_cursor = 0;
     Ok(Json(json!({ "running": false, "reset": true })))
 }
@@ -750,7 +787,7 @@ async fn mixture_analyze(
     State(state): State<AppState>,
     Json(body): Json<AnalyzeOptions>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (cal, scenario, opts) = {
+    let (cal, truth, scenario, opts) = {
         let session = state
             .inner
             .lock()
@@ -764,10 +801,15 @@ async fn mixture_analyze(
             allow_wot: body.allow_wot,
             ..MixtureMapOptions::default()
         };
-        (session.calibration.clone(), scenario, opts)
+        (
+            session.calibration.clone(),
+            session.truth.clone(),
+            scenario,
+            opts,
+        )
     };
     let (log, report) = tokio::task::spawn_blocking(move || {
-        let mut engine = SimEngine::new(cal.clone(), scenario).map_err(|e| e.to_string())?;
+        let mut engine = engine_for(&truth, cal.clone(), scenario).map_err(|e| e.to_string())?;
         engine.run_to_end();
         let log = engine.log_file();
         let report = analyze_log(&cal, &log, &opts).map_err(|e| e.to_string())?;
@@ -1027,8 +1069,12 @@ async fn mixture_apply(
     let pre = preflight(&next);
     session.history.push(next.clone());
     session.calibration = next;
-    session.engine = SimEngine::new(session.calibration.clone(), session.scenario.clone())
-        .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = engine_for(
+        &session.truth,
+        session.calibration.clone(),
+        session.scenario.clone(),
+    )
+    .map_err(|e| ApiError::internal(e.to_string()))?;
     session.frame_cursor = 0;
     Ok(Json(json!({
         "applied_cells": result.applied_cells,
@@ -1154,6 +1200,7 @@ async fn evo_simulation(
         .map_err(|_| ApiError::internal("state poisoned"))?;
     session.running = false;
     session.calibration = calibration.clone();
+    session.truth = calibration.clone();
     session.history.push(calibration.clone());
     session.engine = SimEngine::new(calibration.clone(), session.scenario.clone())
         .map_err(|e| ApiError::internal(e.to_string()))?;
@@ -1235,6 +1282,7 @@ async fn setup_generate(
         .map_err(|_| ApiError::internal("state poisoned"))?;
     session.running = false;
     session.calibration = result.clone();
+    session.truth = result.clone();
     session.history.push(result.clone());
     let scenario = by_id("mixture_sweep").unwrap_or_else(|| session.scenario.clone());
     session.scenario = scenario;
@@ -1792,6 +1840,117 @@ mod http_tests {
         let (status, undone) = call(&app, "POST", "/api/calibration/undo", None).await;
         assert_eq!(status, StatusCode::OK, "{undone}");
         assert_eq!(checksum(&app).await, base);
+    }
+
+    /// Unclamped pre-trim error of one reported cell: |lambda/target*(1+trim)-1|.
+    fn cell_raw_error(report: &serde_json::Value, row: u64, col: u64) -> Option<f64> {
+        let c = report["cells"]
+            .as_array()?
+            .iter()
+            .find(|c| c["row"] == row && c["col"] == col)?;
+        let l = c["mean_lambda"].as_f64()?;
+        let t = c["mean_target_lambda"].as_f64()?;
+        let tr = c["mean_total_trim"].as_f64()?;
+        Some(((l / t) * (1.0 + tr) - 1.0).abs())
+    }
+
+    /// Three human-approved review/apply passes against the long-dwell scenario
+    /// (closed then open loop). The virtual engine's physical VE is fixed, so
+    /// each applied correction must visibly reduce the next pass's lambda error;
+    /// rolling back all three restores the exact original checksum.
+    #[tokio::test]
+    async fn dwell_scenario_passes_converge_over_http_and_full_rollback_restores_base() {
+        let (app, state) = test_app();
+        let base = checksum(&app).await;
+        let mut tracked: Vec<(u64, u64)> = Vec::new();
+        let mut errs: Vec<f64> = Vec::new();
+        let mut applied_passes = 0;
+
+        for pass in 0..3 {
+            let (status, started) = call(
+                &app,
+                "POST",
+                "/api/sim/start",
+                Some(json!({ "scenario_id": "mixture_dwell" })),
+            )
+            .await;
+            assert_eq!(status, StatusCode::OK, "{started}");
+            state.inner.lock().unwrap().engine.run_to_end();
+            let (status, analysis) = call(
+                &app,
+                "POST",
+                "/api/mixture/analyze-current",
+                Some(json!({ "min_samples": 12 })),
+            )
+            .await;
+            assert_eq!(status, StatusCode::OK, "{analysis}");
+            let report = &analysis["report"];
+            assert_eq!(report["hard_faults"].as_array().unwrap().len(), 0);
+            if pass == 0 {
+                assert!(report["closed_loop_samples_used"].as_u64().unwrap() > 0);
+                assert!(report["open_loop_samples_used"].as_u64().unwrap() > 0);
+                for c in report["proposal"]["cells"].as_array().unwrap() {
+                    tracked.push((c["row"].as_u64().unwrap(), c["col"].as_u64().unwrap()));
+                }
+                assert!(tracked.len() >= 3, "tracked={tracked:?}");
+                eprintln!(
+                    "e2e-dwell pass0: frames={} used={} (closed={} open={}) rejected={} cells={}",
+                    report["total_frames"],
+                    report["samples_used"],
+                    report["closed_loop_samples_used"],
+                    report["open_loop_samples_used"],
+                    report["samples_rejected"],
+                    tracked.len()
+                );
+            }
+            let vals: Vec<f64> = tracked
+                .iter()
+                .filter_map(|(r, c)| cell_raw_error(report, *r, *c))
+                .collect();
+            assert!(
+                vals.len() >= 3,
+                "pass {pass}: {} tracked cells seen",
+                vals.len()
+            );
+            errs.push(vals.iter().sum::<f64>() / vals.len() as f64);
+
+            let proposal = report["proposal"].clone();
+            if !proposal.is_object() {
+                break;
+            }
+            let (status, _) = call(&app, "POST", "/api/sim/pause", None).await;
+            assert_eq!(status, StatusCode::OK);
+            let (status, preview) = call(
+                &app,
+                "POST",
+                "/api/mixture/preview",
+                Some(json!({ "proposal": proposal })),
+            )
+            .await;
+            assert_eq!(status, StatusCode::OK, "{preview}");
+            let (status, applied) = call(
+                &app,
+                "POST",
+                "/api/mixture/apply",
+                Some(json!({ "proposal": proposal, "approve": true })),
+            )
+            .await;
+            assert_eq!(status, StatusCode::OK, "{applied}");
+            assert_eq!(applied["diff"], preview["diff"]);
+            applied_passes += 1;
+        }
+        eprintln!("e2e-dwell converge: mean raw error per pass = {errs:?}");
+        assert_eq!(applied_passes, 3);
+        for w in errs.windows(2) {
+            assert!(w[1] < w[0], "error must fall each pass: {errs:?}");
+        }
+        assert_ne!(checksum(&app).await, base);
+
+        for _ in 0..applied_passes {
+            let (status, undone) = call(&app, "POST", "/api/calibration/undo", None).await;
+            assert_eq!(status, StatusCode::OK, "{undone}");
+        }
+        assert_eq!(checksum(&app).await, base, "rollback must restore base");
     }
 
     #[tokio::test]
