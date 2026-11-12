@@ -205,6 +205,9 @@ pub struct ProtectionLimits {
     pub knock_retard_start: f32,
     pub knock_derate_level: f32,
     pub clear_hold_us: u64,
+    /// Consecutive sensor-threshold evaluations required to latch; zero is one.
+    /// Integrity faults latch immediately, independently of this count.
+    pub latch_confirmation_samples: u32,
 }
 
 impl Default for ProtectionLimits {
@@ -228,6 +231,7 @@ impl Default for ProtectionLimits {
             knock_retard_start: 1.5,
             knock_derate_level: 4.0,
             clear_hold_us: 1_000_000,
+            latch_confirmation_samples: 3,
         }
     }
 }
@@ -275,6 +279,8 @@ impl ProtectionDecision {
 pub struct ProtectionController {
     limits: ProtectionLimits,
     faults: [Option<ActiveFault>; MAX_FAULTS],
+    latch_counts: [u32; Dtc::ALL.len()],
+    latch_seen: [bool; Dtc::ALL.len()],
     state: ProtectionState,
     last_signature: u64,
 }
@@ -284,6 +290,8 @@ impl ProtectionController {
         Self {
             limits,
             faults: [None; MAX_FAULTS],
+            latch_counts: [0; Dtc::ALL.len()],
+            latch_seen: [false; Dtc::ALL.len()],
             state: ProtectionState::Normal,
             last_signature: 0,
         }
@@ -331,6 +339,7 @@ impl ProtectionController {
 
     pub fn evaluate(&mut self, i: &ProtectionInputs, now_us: u64) -> ProtectionDecision {
         let limits = self.limits;
+        self.latch_seen.fill(false);
         let freeze = FreezeFrame {
             timestamp_us: now_us,
             rpm: i.rpm,
@@ -534,6 +543,20 @@ impl ProtectionController {
             limits,
         );
 
+        // Count sensor-threshold latching conditions once per evaluation per DTC.
+        // Derate-only samples and oil-pressure hysteresis do not confirm a latch.
+        for (count, seen) in self.latch_counts.iter_mut().zip(self.latch_seen) {
+            if seen {
+                *count = count.saturating_add(1);
+            } else {
+                *count = 0;
+            }
+        }
+        for fault in self.faults.iter_mut().flatten() {
+            fault.latched |=
+                self.latch_counts[fault.dtc as usize] >= limits.latch_confirmation_samples.max(1);
+        }
+
         // Clear non-latched faults whose condition has been absent long enough.
         for slot in &mut self.faults {
             if let Some(f) = slot {
@@ -632,6 +655,22 @@ impl ProtectionController {
         freeze: FreezeFrame,
         _limits: ProtectionLimits,
     ) {
+        // Only noisy sensor thresholds require confirmation. Calibration checksum
+        // and watchdog integrity failures retain their single-evaluation latch.
+        // Reactions remain immediate for all faults.
+        let confirm_latch = latch
+            && matches!(
+                dtc,
+                Dtc::CoolantOverTemperature
+                    | Dtc::LowOilPressure
+                    | Dtc::LeanUnderLoad
+                    | Dtc::Overboost
+                    | Dtc::LowBatteryVoltage
+            );
+        if condition && confirm_latch {
+            self.latch_seen[dtc as usize] = true;
+        }
+        let latch = latch && !confirm_latch;
         let existing = self
             .faults
             .iter()
@@ -760,10 +799,69 @@ mod tests {
     }
 
     #[test]
+    fn single_sample_overtemp_does_not_latch() {
+        let mut c = ctrl();
+        let mut i = good();
+        i.coolant_c = 120.0;
+        let d = c.evaluate(&i, 1);
+        assert_eq!(c.limits().latch_confirmation_samples, 3);
+        assert!(d.contains(Dtc::CoolantOverTemperature));
+        assert!(d.reaction.cut_fuel && d.reaction.cut_spark);
+        assert_eq!(d.latched_count, 0);
+        i.coolant_c = 90.0;
+        c.evaluate(&i, 2);
+        let d = c.evaluate(&i, 2 + c.limits().clear_hold_us);
+        assert_eq!(d.state, ProtectionState::Normal);
+        assert_eq!(c.clear_latched(3_000_000), 0);
+    }
+
+    #[test]
+    fn n_consecutive_samples_latch() {
+        for required in [0, 1, 3, 5] {
+            let mut c = ProtectionController::new(ProtectionLimits {
+                latch_confirmation_samples: required,
+                ..ProtectionLimits::default()
+            });
+            let mut i = good();
+            i.coolant_c = 120.0;
+            for sample in 1..=required.max(1) {
+                let d = c.evaluate(&i, u64::from(sample));
+                assert_eq!(d.latched_count, usize::from(sample == required.max(1)));
+            }
+            i.coolant_c = 90.0;
+            c.evaluate(&i, 100);
+            let d = c.evaluate(&i, 100 + c.limits().clear_hold_us);
+            assert_eq!(d.latched_count, 1);
+            assert!(d.reaction.cut_fuel && d.reaction.cut_spark);
+        }
+    }
+
+    #[test]
+    fn clearing_before_n_samples_resets_confirmation() {
+        // Both a fully clear reading and a derate-only reading break the run.
+        for interrupted_coolant in [90.0, 115.0] {
+            let mut c = ctrl();
+            let mut i = good();
+            i.coolant_c = 120.0;
+            c.evaluate(&i, 1);
+            assert_eq!(c.evaluate(&i, 2).latched_count, 0);
+            i.coolant_c = interrupted_coolant;
+            assert_eq!(c.evaluate(&i, 3).latched_count, 0);
+            i.coolant_c = 120.0;
+            assert_eq!(c.evaluate(&i, 4).latched_count, 0);
+            assert_eq!(c.evaluate(&i, 5).latched_count, 0);
+            assert_eq!(c.evaluate(&i, 6).latched_count, 1);
+        }
+    }
+
+    #[test]
     fn overtemp_latches_and_requires_explicit_clear() {
         let mut c = ctrl();
         let mut i = good();
         i.coolant_c = 120.0;
+        for sample in 1..c.limits().latch_confirmation_samples {
+            c.evaluate(&i, u64::from(sample));
+        }
         let d = c.evaluate(&i, 1_000_000);
         assert!(d.reaction.cut_fuel);
         assert!(d.contains(Dtc::CoolantOverTemperature));
@@ -786,6 +884,9 @@ mod tests {
         let mut i = good();
         i.rpm = 3000.0;
         i.oil_pressure_kpa = 30.0;
+        for sample in 0..c.limits().latch_confirmation_samples - 1 {
+            c.evaluate(&i, u64::from(sample));
+        }
         let d = c.evaluate(&i, 5);
         assert!(d.reaction.cut_fuel);
         assert!(d.contains(Dtc::LowOilPressure));
@@ -829,6 +930,29 @@ mod tests {
         assert!(d.reaction.cut_fuel && d.reaction.cut_spark);
         assert!(d.contains(Dtc::CalibrationChecksum));
         assert_eq!(d.latched_count, 1);
+    }
+
+    #[test]
+    fn crc_mismatch_latches_on_first_evaluation() {
+        let mut c = ProtectionController::new(ProtectionLimits {
+            latch_confirmation_samples: 5,
+            ..ProtectionLimits::default()
+        });
+        let mut i = good();
+        i.calibration_crc_ok = false;
+        let d = c.evaluate(&i, 1);
+        assert!(d.contains(Dtc::CalibrationChecksum));
+        assert!(d.reaction.cut_fuel && d.reaction.cut_spark);
+        assert_eq!(d.latched_count, 1);
+        assert!(c
+            .active_faults()
+            .any(|f| { f.dtc == Dtc::CalibrationChecksum && f.latched && f.first_seen_us == 1 }));
+        i.calibration_crc_ok = true;
+        c.evaluate(&i, 2);
+        let d = c.evaluate(&i, 2 + c.limits().clear_hold_us);
+        assert!(d.contains(Dtc::CalibrationChecksum));
+        assert_eq!(d.latched_count, 1);
+        assert_eq!(c.clear_latched(3 + c.limits().clear_hold_us), 1);
     }
 
     #[test]
