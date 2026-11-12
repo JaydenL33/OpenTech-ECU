@@ -2,7 +2,7 @@
 
 > ## STATUS: NOT YET EXECUTED
 >
-> This is a plan for a future bench test. No test in this document has been run. No PCB, ECU, harness, bench fixture, firmware image, or Evo VIII vehicle is available in the audited snapshot. Every pass/fail threshold marked `TBD-REVIEW` is a placeholder that requires an electrical/engine review before use.
+> This is a plan for a future bench test. No test in this document has been run. Only an unreviewed, unrouted PCB draft exists; no built ECU, harness, bench fixture, firmware image, or Evo VIII vehicle is available in the audited snapshot. Every pass/fail threshold marked `TBD-REVIEW` is a placeholder that requires an electrical/engine review before use.
 
 | Field | Value |
 |---|---|
@@ -239,7 +239,7 @@ Do not fill these with guessed values. A number without a source is not an accep
 ## 13. Explicit non-claims
 
 - **NOT YET EXECUTED.** No result in this document is measured.
-- No PCB, firmware image, harness, bench fixture, or Evo vehicle exists in the audited snapshot.
+- Only an unreviewed, unrouted PCB draft exists; no built ECU, firmware image, harness, bench fixture, or Evo vehicle exists in the audited snapshot.
 - No pinout, connector, current rating, timing threshold, or thermal limit is defined here.
 - No electrical safety, EMC, automotive qualification, engine readiness, or vehicle readiness is claimed.
 - A passed bench test would be Gate 2 evidence only, not permission for Gate 3-5.

@@ -2,7 +2,7 @@
 
 > ## STATUS: DESIGN REQUIREMENTS, NOT A VALIDATED SCHEMATIC
 >
-> No manufacturing-ready KiCad PCB, gerber, drill file or assembly drawing exists. An **UNREVIEWED bench-prototype schematic package** exists at `hardware/kicad/evo8-bench-ecu/` (7 hierarchical sheets, BOM, netlist, pin map, test points, ERC JSON reporting 0 violations from the generator). It has **no PCB layout, no DRC, no gerbers, no thermal/EMC validation and no independent review**. `kicad-cli` is not installed in the audit environment, so the ERC report was not independently reproduced. Nothing in this document is a manufacturable design, an electrical safety approval, an EMC claim, or a vehicle-installation instruction.
+> No manufacturing-ready KiCad PCB, gerber, drill file or assembly drawing exists. An **UNREVIEWED bench-prototype schematic package** exists at `hardware/kicad/evo8-bench-ecu/` (7 hierarchical sheets, BOM, netlist, pin map, test points, ERC JSON reporting 0 violations from the generator). It has an unrouted PCB placement draft; DRC reports **14 violations and 499 unconnected items**. There are no gerbers, thermal/EMC validation or independent review. `kicad-cli` is not installed in the audit environment, so the ERC report was not independently reproduced. Nothing in this document is a manufacturable design, an electrical safety approval, an EMC claim, or a vehicle-installation instruction.
 
 | Field | Value |
 |---|---|
@@ -337,13 +337,13 @@ A design can pass ERC/DRC and still:
 - leave an output enabled on reset;
 - be impossible to assemble or service.
 
-The unreviewed package has an ERC JSON reporting 0 violations from the generator's KiCad 9.0.9, but it was not independently reproduced in this audit. No DRC exists because there is no PCB. Any future report must state the KiCad version, rule set, exclusions, and unresolved violations; a green status alone is not evidence.
+The unreviewed package has an ERC JSON reporting 0 violations from the generator's KiCad 9.0.9, but it was not independently reproduced in this audit. The PCB draft has a DRC report with 14 violations and 499 unconnected items. Any future report must state the KiCad version, rule set, exclusions, and unresolved violations; a green status alone is not evidence.
 
 ## 8. Open electrical issues / blockers
 
 | ID | Issue | Impact | Required action |
 |---|---|---|---|
-| ELEC-01 | Unreviewed schematic; no PCB/DRC/gerbers | Cannot build or review hardware | Review schematic/nets; create PCB; DRC; DFM. The unreviewed Codex package does not satisfy Gate 1 |
+| ELEC-01 | Unreviewed schematic; PCB draft fails DRC; no gerbers | Cannot build or review hardware | Review schematic/nets; complete routing; fix DRC; DFM. The unreviewed Codex package does not satisfy Gate 1 |
 | ELEC-02 | Exact Evo ECU part number unknown | Connector and pinout cannot be selected | Photograph label/connectors; obtain service data |
 | ELEC-03 | Pinout/connector unverified | Wrong wiring can destroy ECU/vehicle | Key-off continuity and second-person check; no forum guesses |
 | ELEC-04 | Trigger pattern unverified | Wrong decoder/conditioning | Scope crank/cam at cranking; record pattern |

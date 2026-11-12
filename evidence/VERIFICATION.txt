@@ -106,7 +106,7 @@ Final counts: 128 Rust tests, 0 failures; core no_std checks pass; firmware targ
 
 KiCad bench schematic package: hardware/kicad/evo8-bench-ecu
 - 7 hierarchical sheets, 305 BOM lines/parts, 198 nets, 0 ERC violations (ERC re-run with the isolated KiCad 9 toolchain used to generate the package).
-- No .kicad_pcb, no DRC, no gerbers, no manufacturing outputs, no independent review. NOT Gate 1 evidence.
+- PCB placement/routing draft: 305 footprints, 37 tracks/vias, 499 unconnected items and 14 DRC violations. No gerbers, no manufacturing outputs, no independent review. NOT Gate 1 evidence.
 Source commit: 041be84f665d9aefa551df81792df8acb5ac7873 (documentation/hardware commits follow)
 Final source manifest SHA-256: 9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724
 Cargo.lock SHA-256: 71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e

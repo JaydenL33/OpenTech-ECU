@@ -206,8 +206,8 @@
 | ID | Requirement | Source | Implementation / evidence | Status | Notes / blocker |
 |---|---|---|---|---|---|
 | HW-001 | MCU trade study (STM32H7 vs S32K) | Brief §3H | Unreviewed schematic uses STM32H743VIT6; no validated selection | Planned / Partial | See AUD-03; exact HAL/timer proof still required |
-| HW-002 | KiCad schematic/PCB/BOM/gerbers | Brief §3H | Unreviewed 7-sheet schematic, BOM, netlist; no PCB/gerbers | Partial / Blocked | `hardware/kicad/evo8-bench-ecu/` is unreviewed; no manufacturing package |
-| HW-003 | ERC/DRC with issue log | Brief §3H | ERC JSON reports 0 violations from generator; no DRC | Partial / Blocked | Not independently reproduced; no PCB exists |
+| HW-002 | KiCad schematic/PCB/BOM/gerbers | Brief §3H | Unreviewed 7-sheet schematic, BOM, netlist, unrouted PCB draft | Partial / Blocked | `hardware/kicad/evo8-bench-ecu/`; PCB fails DRC; no manufacturing package |
+| HW-003 | ERC/DRC with issue log | Brief §3H | ERC 0 (rerun with isolated toolchain); DRC 14 violations + 499 unconnected | Partial / Blocked | Unreviewed; PCB not routable/manufacturable |
 | HW-004 | Power input protection/transients | Brief §3H | Requirements only | Blocked | See AUD-03 |
 | HW-005 | Injector low-side drivers/flyback | Brief §3H | Requirements only | Blocked | Injector data unverified |
 | HW-006 | Ignition outputs/igniter compatibility | Brief §3H | Requirements only | Blocked | Coil topology unverified |
@@ -249,7 +249,7 @@ The following are **not** requirements satisfied by code. They are evidence item
 | Gate | Definition | Current status | Blocking evidence |
 |---|---|---|---|
 | Gate 0 | Software simulation | **PASS, scoped** | 128/128 tests; fmt/clippy pass; firmware skeleton target check; UI build; copilot typecheck. Not a certification |
-| Gate 1 | Unpowered hardware verification | **Blocked** | Unreviewed schematic/BOM; no PCB/DRC/gerbers/assembly/review |
+| Gate 1 | Unpowered hardware verification | **Blocked** | Unreviewed schematic/BOM and PCB draft; DRC fails; no gerbers/assembly/review |
 | Gate 2 | Powered bench verification | **Blocked** | No HAL/timer/driver firmware image, bench fixture, dummy loads, E-stop |
 | Gate 3 | Vehicle electrical compatibility | **Blocked / Unverified** | No Evo pinout/connector/trigger/harness evidence |
 | Gate 4 | Controlled engine testing | **Blocked** | No bench engine, timing light, knock instrumentation, supervision |
@@ -272,7 +272,7 @@ A numeric percentage would be misleading because requirements differ in scope, e
 | Calibration | Tables, checksum revisions, wizard, preflight | Unkeyed hash; warnings not blocking; no durable audit trail |
 | Protocol/UI | CRC frame tests; UI typecheck/build; copilot typecheck | No auth/CSRF; header not CRC-covered; no Electron/browser/live LLM test |
 | Firmware | no_std skeleton target check; 5 tests | No HAL/timer/driver/watchdog; not a controller |
-| Hardware | Unreviewed schematic/BOM/ERC; no PCB/DRC/gerbers | No manufacturing package, thermal/EMC, bench |
+| Hardware | Unreviewed schematic/BOM/ERC; unrouted PCB with failing DRC; no gerbers | No manufacturing package, thermal/EMC, bench |
 | Evo evidence | Fail-closed `vehicle.rs` profile | All 15 items unverified; physical configuration refused |
 
 The dominant pattern is: **host software exists for the core algorithms; hardware, vehicle evidence, security, timing and independent review are absent.**

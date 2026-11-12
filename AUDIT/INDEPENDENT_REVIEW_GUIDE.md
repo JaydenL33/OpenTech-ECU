@@ -22,7 +22,7 @@
 | 5 | `docs/ARCHITECTURE.md` | Layers/data flow/host-firmware boundary | 15 min |
 | 6 | `AUDIT/ENGINE_CONTROL_SAFETY.md` | Hazard analysis, safety requirements, GSN, non-claims | 30 min |
 | 7 | `AUDIT/FAILURE_MODE_ANALYSIS.md` | Component FMEA and coverage gaps | 30 min |
-| 8 | `AUDIT/ELECTRICAL_DESIGN_REVIEW.md` | Hardware requirements; confirm the schematic is unreviewed and no PCB exists | 20 min |
+| 8 | `AUDIT/ELECTRICAL_DESIGN_REVIEW.md` | Hardware requirements; confirm the schematic/PCB draft is unreviewed and DRC fails | 20 min |
 | 9 | `AUDIT/FIRMWARE_TIMING_ANALYSIS.md` | Timing budget concept; confirm no timing evidence | 20 min |
 | 10 | `AUDIT/TEST_EVIDENCE.md` | Commands/results; reproduce the current evidence | 20 min |
 | 11 | `AUDIT/REQUIREMENTS_TRACEABILITY.md` | Requirement-to-code/test mapping; Evo unverified items | 20 min |
@@ -128,7 +128,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 
 | Claim to test | Falsification experiment | What would disprove it | Safety note |
 |---|---|---|---|
-| "No physical output path" | Search all Rust for hardware register/driver calls; inspect `apply_events`; inspect `firmware/stm32`; confirm no PCB | Any hardware write or driver call | Do not add one to test |
+| "No physical output path" | Search all Rust for hardware register/driver calls; inspect `apply_events`; inspect `firmware/stm32`; confirm no reviewed PCB | Any hardware write or driver call | Do not add one to test |
 | "Interlock cannot be bypassed by calibration" | Inspect `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED`; run preflight on a synthetic cal | Preflight returns `physical_export_allowed=true` | Do not edit the constant in the repo |
 | "Lambda never informs ignition" | Inspect `ecu-ignition` API and grep; run ignition tests | Any lambda/AFR parameter or conversion | Static review is sufficient for the snapshot |
 | "Mixture Map cannot auto-apply" | Call `/api/mixture/apply` without `approve`; CLI without `--approve` | Success without approval | Use a copy/throwaway calibration |
@@ -143,7 +143,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | No Electron/browser runtime test |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
-| "Hardware exists" | Inspect `hardware/kicad`; `find` for PCB/gerbers; `command -v kicad-cli` | A reviewed package with PCB/DRC/gerbers exists | Unreviewed schematic/BOM; no PCB/DRC/gerbers |
+| "Hardware exists" | Inspect `hardware/kicad`; read ERC/DRC; `find` for gerbers | A reviewed package with clean DRC/gerbers exists | Unreviewed schematic/BOM; PCB draft has 14 DRC violations, 499 unconnected; no gerbers |
 
 ## 5. Missing evidence checklist
 
@@ -168,7 +168,7 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 
 ### Gate 1 — unpowered hardware
 
-- [ ] Reviewed schematic, PCB, BOM, gerbers, assembly drawing. An unreviewed bench schematic/BOM exists; no PCB/gerbers/assembly.
+- [ ] Reviewed schematic, PCB, BOM, gerbers, assembly drawing. An unreviewed schematic/BOM and failing PCB draft exist; no gerbers/assembly.
 - [ ] Reviewed ERC and DRC report with rule set and exceptions. ERC JSON exists (0 violations from generator) but is unreviewed; no DRC.
 - [ ] BOM derating/lifecycle review (missing).
 - [ ] Visual/continuity inspection procedure and results (missing).

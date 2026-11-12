@@ -9,7 +9,7 @@
 | Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
-> **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It has **no PCB layout, no DRC, no gerbers, no thermal/EMC validation and no independent engineering review**. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.
+> **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It includes an unrouted PCB placement draft, but DRC reports **14 violations and 499 unconnected items**; there are no gerbers, thermal/EMC validation or independent engineering review. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.
 
 ## 1. Hardware artefacts: exists vs absent
 
@@ -26,10 +26,10 @@
 | Flash/calibration storage | No | No bootloader, dual-bank, or calibration flash layout |
 | CAN driver | No | No transceiver/driver; simulator `can_ok=true` |
 | KiCad schematic | Yes, **UNREVIEWED** | `hardware/kicad/evo8-bench-ecu/`; 7 hierarchical sheets; bench-prototype only |
-| KiCad PCB | No | No `.kicad_pcb`; no placement/routing/DRC |
+| KiCad PCB | Draft, **NOT USABLE** | `.kicad_pcb`; 305 footprints, 37 tracks/vias, 499 unconnected items, 14 DRC violations |
 | KiCad project | Yes, **UNREVIEWED** | `.kicad_pro` present; not independently opened/reviewed in this audit |
 | BOM | Yes, **UNREVIEWED** | 305 lines; real MPNs but sourcing/derating/thermal not reviewed |
-| ERC report | Yes, **UNREVIEWED** | `reports/erc.json`; 0 violations reported by generator's KiCad 9.0.9; not independently reproduced |
+| ERC report | Yes, **UNREVIEWED** | `reports/erc.json`; 0 violations; re-run with isolated toolchain; DRC separately fails |
 | Gerbers/drill | No | No `.gbr`/`.drl` found |
 | Assembly drawing | No | Not present |
 | Enclosure/mechanical | No | Not present |
@@ -92,7 +92,7 @@ No connector is selected. Do not order an adapter or publish a pinout from a for
 
 | ID | Item | Impact | Required action |
 |---|---|---|---|
-| HW-01 | Unreviewed schematic; no PCB, no DRC, no gerbers | Cannot build or review manufacturing | Review schematic/nets; create PCB; DRC; DFM |
+| HW-01 | Unreviewed schematic; unrouted PCB with failing DRC | Cannot build or review manufacturing | Review schematic/nets; complete routing; fix DRC; DFM |
 | HW-02 | Codex KiCad attempt unreviewed | Could be mistaken for a valid design | Treat as draft only; independent review; do not manufacture |
 | HW-03 | MCU/HAL not selected/proven (schematic uses STM32H743VIT6, unreviewed) | Firmware plan may be infeasible | Dev-board proof for exact part/peripherals |
 | HW-04 | No timer capture/compare implementation | No timing evidence | Implement and measure; AUD-04 |
@@ -126,7 +126,7 @@ Until then: **requirements only, no manufacturing claim, no vehicle connection.*
 ## 7. Explicit non-claims
 
 - No manufacturing-ready PCB, gerbers or assembly exists; the schematic/BOM are unreviewed drafts.
-- An ERC report exists (0 violations reported by the generator), but it has not been independently reproduced or reviewed; no DRC exists because there is no PCB.
+- An ERC report exists (0 violations; re-run with the isolated toolchain), but it has not been independently reviewed. A PCB placement draft exists, but DRC reports 14 violations and 499 unconnected items; it is not manufacturable.
 - The Codex KiCad attempt has not been validated; every value/net/protection choice is unreviewed.
 - No MCU/HAL/timer/driver/watchdog firmware implementation exists.
 - No electrical safety, EMC, thermal, vibration, IP or automotive qualification is claimed.

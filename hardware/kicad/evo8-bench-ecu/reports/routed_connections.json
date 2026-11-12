@@ -1,0 +1,350 @@
+[
+  {
+    "net": "+3V3",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        157.325,
+        118.0
+      ],
+      [
+        155.45,
+        118.0
+      ]
+    ],
+    "purpose": "MCU local decoupling pin11"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        153.55,
+        118.0
+      ],
+      [
+        152.55,
+        118.0
+      ]
+    ],
+    "purpose": "Local bypass return to In1 GND"
+  },
+  {
+    "net": "+3V3",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        159.5,
+        126.675
+      ],
+      [
+        159.5,
+        129.05
+      ]
+    ],
+    "purpose": "MCU local decoupling pin27"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        159.5,
+        130.95
+      ],
+      [
+        159.5,
+        131.95
+      ]
+    ],
+    "purpose": "Local bypass return to In1 GND"
+  },
+  {
+    "net": "+3V3",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        171.0,
+        126.675
+      ],
+      [
+        171.0,
+        129.05
+      ]
+    ],
+    "purpose": "MCU local decoupling pin50"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        171.0,
+        130.95
+      ],
+      [
+        171.0,
+        131.95
+      ]
+    ],
+    "purpose": "Local bypass return to In1 GND"
+  },
+  {
+    "net": "+3V3",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        172.675,
+        113.0
+      ],
+      [
+        174.55,
+        113.0
+      ]
+    ],
+    "purpose": "MCU local decoupling pin75"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        176.45,
+        113.0
+      ],
+      [
+        177.45,
+        113.0
+      ]
+    ],
+    "purpose": "Local bypass return to In1 GND"
+  },
+  {
+    "net": "+3V3",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        159.0,
+        111.325
+      ],
+      [
+        159.0,
+        108.95
+      ]
+    ],
+    "purpose": "MCU local decoupling pin100"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        159.0,
+        107.05
+      ],
+      [
+        159.0,
+        106.05
+      ]
+    ],
+    "purpose": "Local bypass return to In1 GND"
+  },
+  {
+    "net": "+3V3",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        157.325,
+        115.5
+      ],
+      [
+        155.45,
+        115.5
+      ]
+    ],
+    "purpose": "MCU local decoupling pin6"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        153.55,
+        115.5
+      ],
+      [
+        152.55,
+        115.5
+      ]
+    ],
+    "purpose": "Local bypass return to In1 GND"
+  },
+  {
+    "net": "VCAP48",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        170.0,
+        126.675
+      ],
+      [
+        170.0,
+        132.05
+      ],
+      [
+        168.5,
+        132.05
+      ]
+    ],
+    "purpose": "Core LDO capacitor connection; return via In1 GND"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        168.5,
+        133.95
+      ],
+      [
+        168.5,
+        134.95
+      ]
+    ],
+    "purpose": "VCAP local ground return"
+  },
+  {
+    "net": "VCAP73",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        172.675,
+        114.0
+      ],
+      [
+        174.0,
+        114.0
+      ],
+      [
+        174.0,
+        116.5
+      ],
+      [
+        174.55,
+        116.5
+      ]
+    ],
+    "purpose": "Core LDO capacitor connection; return via In1 GND"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.3,
+    "layer": "F.Cu",
+    "points": [
+      [
+        176.45,
+        116.5
+      ],
+      [
+        177.45,
+        116.5
+      ]
+    ],
+    "purpose": "VCAP local ground return"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        157.325,
+        117.5
+      ],
+      [
+        159.2,
+        117.5
+      ]
+    ],
+    "purpose": "MCU VSS to In1"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        159.0,
+        126.675
+      ],
+      [
+        159.0,
+        124.8
+      ]
+    ],
+    "purpose": "MCU VSS to In1"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        170.5,
+        126.675
+      ],
+      [
+        170.5,
+        124.8
+      ]
+    ],
+    "purpose": "MCU VSS to In1"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        172.675,
+        113.5
+      ],
+      [
+        170.8,
+        113.5
+      ]
+    ],
+    "purpose": "MCU VSS to In1"
+  },
+  {
+    "net": "GND",
+    "width_mm": 0.2,
+    "layer": "F.Cu",
+    "points": [
+      [
+        159.5,
+        111.325
+      ],
+      [
+        159.5,
+        113.2
+      ]
+    ],
+    "purpose": "MCU VSS to In1"
+  }
+]

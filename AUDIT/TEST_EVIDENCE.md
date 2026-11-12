@@ -7,7 +7,7 @@
 | Date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:45Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `9a4e044e331d5c2728630d2c0fbd2b5da22a694b` |
+| Git HEAD | `fdf25420bb6925389f17a0e2d1fa365159acba3d` |
 | Rust source manifest | SHA-256 `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
@@ -19,7 +19,7 @@
 
 > **Scope.** This evidence supports host-side software behaviour only. It does not establish engine safety, timing accuracy, EMC, electrical safety, or Evo VIII compatibility. Gate 0 pass means "the implemented host behaviour has reproducible evidence", not "the ECU is safe or ready".
 
-> **Source-control note.** Source commit `041be84f` is the code revision used for this evidence; current HEAD `9a4e044e` contains documentation/audit commits only. The Rust source tree was clean at cut-off (`git status --short ecu` empty). The manifest hash above matches that tree. Re-hash the source after any source change.
+> **Source-control note.** Source commit `041be84f` is the code revision used for this evidence; current HEAD `fdf25420` contains documentation/audit commits only. The Rust source tree was clean at cut-off (`git status --short ecu` empty). The manifest hash above matches that tree. Re-hash the source after any source change.
 
 ## 1. Environment
 
@@ -32,11 +32,11 @@
 | npm | `11.11.0` |
 | `rustfmt` | Available and passing |
 | `clippy` | Available and passing with `-D warnings` |
-| KiCad / `kicad-cli` | Not installed on the host PATH; per the package README, an isolated Codex toolchain produced and re-ran ERC on the unreviewed schematic (0 violations). Not independently reproduced. No PCB/DRC. |
+| KiCad / `kicad-cli` | Not installed on the host PATH; an isolated Codex toolchain produced ERC (0) and DRC (14 violations, 499 unconnected) on the unreviewed schematic/PCB draft. Not independently reviewed. |
 | Electron | Dependency present; **application launch not exercised** in this headless audit |
 | WebKit/Tauri | Not used by the current Electron shell; no Tauri validation; Electron launch untested |
 | Physical hardware | **None**; no assembled board/PCB, harness, sensors, injectors, coils, or vehicle; unreviewed schematic only |
-| Network/service | Local smoke test on `127.0.0.1:18768`; no external exposure |
+| Network/service | Local smoke test on `127.0.0.1:18769`; no external exposure |
 
 ## 2. Command summary
 
@@ -55,7 +55,7 @@
 | 11 | `npm run build` in `apps/tuning-studio` | 0 | Vite build, 44 modules, `dist/` produced |
 | 12 | `npm run build` in `apps/tuning-copilot` (`tsc --noEmit`) | 0 | Pass |
 | 13 | Local `studio-service` smoke test | 0 | Health/preflight/status; physical outputs false |
-| 14 | `hardware/kicad/evo8-bench-ecu` + KiCad `sch erc` | 0 | Unreviewed 7-sheet schematic/netlist/BOM; 0 ERC violations; **no PCB/DRC/gerbers** |
+| 14 | KiCad schematic ERC + PCB DRC on `hardware/kicad/evo8-bench-ecu` | 0 / 5 | Unreviewed 7-sheet schematic, 0 ERC; PCB draft 14 DRC violations + 499 unconnected; no gerbers |
 
 ## 3. Rust test results
 
@@ -270,7 +270,7 @@ COPILOT_BUILD_EXIT=0
 
 ## 7. Local service smoke test
 
-Command: `cargo run -q -p studio-service -- --port 18768 --no-loop`
+Command: `cargo run -q -p studio-service -- --port 18769 --no-loop`
 
 | Endpoint | Observed |
 |---|---|
@@ -312,7 +312,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 | ECS-SR-021: timing light/knock | None | **Blocked** | Gate 4 |
 | ECS-SR-022: Evo data | `vehicle.rs`; `/api/vehicles` | **Unverified** | Gate 3 |
 | Gate 0 host software | 128 tests, fmt, clippy, UI build, copilot typecheck, firmware target check, two narrow Speeduino formula-parity tests | **Pass, scoped** | Not a certification; not physical; no full Speeduino oracle build |
-| Gate 1 | Hardware package | **Blocked** | Unreviewed schematic/netlist/BOM only; no PCB/DRC/gerbers/review |
+| Gate 1 | Hardware package | **Blocked** | Unreviewed schematic/netlist/BOM and PCB draft; DRC fails; no gerbers/review |
 | Gate 2 | Powered bench | **Blocked** | No firmware image/timing/fixture |
 | Gate 3-5 | Vehicle/engine/road | **Blocked** | No Evo evidence/engine/legal |
 
@@ -326,8 +326,8 @@ The workflow was **not observed running** in this audit. The local commands abov
 | Copilot tool approval boundary | Untrusted output must not write | Not tested |
 | WebSocket lag/reconnect | Operator may see stale data | Not tested |
 | Full core `no_std` | All core crates and firmware skeleton pass | Pass |
-| KiCad ERC/DRC | ERC report exists (unreviewed, 0 generator violations); no PCB exists for DRC | Not independently reproduced; DRC not run |
-| Hardware/bench | No PCB/fixture | Not run |
+| KiCad ERC/DRC | Unreviewed: ERC 0 violations; DRC 14 violations + 499 unconnected items | Not independently reviewed; no gerbers |
+| Hardware/bench | Unrouted PCB draft only; no fixture or built ECU | Not run |
 | Scope timing | No firmware/timer | Not run |
 | Evo pinout/trigger/harness | Unverified | Not run |
 | EMC/thermal/power | No hardware | Not run |
@@ -339,7 +339,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 - No evidence that the Evo VIII is compatible, plug-and-play, or safe to connect.
 - No evidence that the firmware skeleton is flashable, timed, or safe on an MCU.
 - No evidence that the UI/copilot behave correctly at runtime; only type/build checks.
-- No guarantee that the source hash corresponds to a Git commit; the Rust tree is committed.
+- The manifest hash matches the clean committed source tree at cut-off; re-hash after any source change. HEAD contains documentation-only commits after the source commit.
 - Only the six control crates listed in §4.3 are proven no_std-capable; `ecu-protocol` and `ecu-lambda` remain std-only by design.
 
 ## 12. Reproduction commands
@@ -372,7 +372,7 @@ Expected: all listed commands pass at this snapshot, including the core `no_std`
 - `/tmp/opencode/final-test.log` — 128-test run.
 - `/home/jlee/OpenTech-ECU/evidence/VERIFICATION.txt` — companion verification record with the same final counts; re-check hashes before relying on it.
 - `/tmp/opencode/audit-current/` — log, CSV, summary, calibration, report, applied calibration.
-- `/tmp/opencode/studio3.log` — local service smoke log.
+- `/tmp/opencode/studio-final.log` — local service smoke log.
 - `/tmp/opencode/cli3-run.log`, `/tmp/opencode/cli3-analyze.log` — CLI output.
 
 These are ephemeral copies outside the repository. Re-run the commands; do not rely on a screenshot or a single log line.

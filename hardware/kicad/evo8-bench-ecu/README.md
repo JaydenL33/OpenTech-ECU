@@ -1,7 +1,7 @@
-# Evo VIII bench-prototype ECU — KiCad schematic package
+# Evo VIII bench-prototype ECU — unreviewed KiCad schematic + PCB draft
 
-> **STATUS: UNREVIEWED BENCH SCHEMATIC ONLY. NOT A PCB. NOT MANUFACTURABLE.
-> NOT AUTOMOTIVE-QUALIFIED. NOT AN EVO VIII PLUG-IN. DO NOT CONNECT TO A VEHICLE.**
+> **STATUS: UNREVIEWED BENCH SCHEMATIC + UNROUTED PCB DRAFT. NOT MANUFACTURABLE.
+> NOT AUTOMOTIVE-QUALIFIED. NOT AN EVO VIII PLUG-IN. DO NOT FABRICATE OR CONNECT TO A VEHICLE.**
 
 This package was produced in a time-boxed independent Codex hardware pass and
 then imported into the repository for review. It has **not** been designed or
@@ -19,7 +19,7 @@ component value, pin, net and protection choice as a hypothesis to be reviewed.
 | Test point list | Yes | Scope points for rails, MCU, injectors, triggers, CAN |
 | ERC report | Yes | 0 violations reported by the generator's KiCad CLI |
 | Schematic SVG | Yes | `reports/schematic-svg/` |
-| **PCB layout** | **No** | No `.kicad_pcb`, no placement, no routing, no DRC |
+| PCB layout draft | Yes, **NOT USABLE** | `.kicad_pcb` with 305 footprints; 37 tracks/vias, 499 unconnected items, 14 DRC violations. Unrouted placement draft, not a manufacturable board |
 | Manufacturing outputs | **No** | No gerbers, drill, assembly or fabrication drawing |
 | Thermal/EMC/transient validation | **No** | Not started |
 | Evo connector/pinout | **No** | OEM harness remains UNVERIFIED |
@@ -49,8 +49,9 @@ correct, manufacturable, automotive-qualified or compatible with an Evo VIII.
 
 ## Review blockers before fabrication
 
-1. Assign/verify footprints and create a PCB layout; run DRC and review every
-   clearance, creepage, current path and thermal pad.
+1. Complete the PCB routing and fix all DRC violations; review every clearance,
+   creepage, current path and thermal pad. The current draft has 499 unconnected
+   items and 14 DRC violations.
 2. Review the power input for reverse polarity, load dump, transient energy,
    fuse coordination, inrush and brownout.
 3. Verify the TPS259260 configuration, e-fuse current limit, SOA and thermal
@@ -81,8 +82,9 @@ provenance before manufacture or redistribution.
 The files were generated with a local KiCad 9 installation fetched into an
 isolated workspace. The generator script is retained under `tools/` for review,
 but it depends on local KiCad libraries and is not a manufacturing build system.
-The ERC JSON is in `reports/erc.json`; no DRC report exists because no PCB was
-created.
+The ERC JSON is in `reports/erc.json`. A DRC run on the unrouted placement draft
+is in `reports/drc.json`: **14 violations and 499 unconnected items**. It is not
+a routable/manufacturable board and must not be fabricated.
 
 Do not claim Gate 1 or Gate 2 from this package. See
 `AUDIT/HARDWARE_STATUS.md`, `AUDIT/ELECTRICAL_DESIGN_REVIEW.md` and

@@ -24,6 +24,6 @@ complete. See [`AUDIT/HARDWARE_STATUS.md`](../AUDIT/HARDWARE_STATUS.md),
 
 `hardware/kicad/evo8-bench-ecu/` now contains an **UNREVIEWED** hierarchical
 KiCad bench schematic, netlist, BOM, pin map, test-point list and ERC report from
-a time-boxed independent Codex pass. It has **no PCB layout, no DRC, no
-manufacturing outputs and no independent review**. ERC passing is not electrical
+a time-boxed independent Codex pass. It has an **unrouted PCB placement draft** with 499 unconnected items and 14 DRC
+violations, **no manufacturing outputs and no independent review**. ERC passing is not electrical
 or functional safety. See its README before touching it.

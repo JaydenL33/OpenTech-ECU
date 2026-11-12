@@ -7,7 +7,7 @@
 | Audit date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:45Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `9a4e044e331d5c2728630d2c0fbd2b5da22a694b` (source commit `041be84f`; docs/audit commits after; Rust tree clean at cut-off) |
+| Git HEAD | `fdf25420bb6925389f17a0e2d1fa365159acba3d` (source commit `041be84f`; docs/audit commits after; Rust tree clean at cut-off) |
 | Rust source manifest | SHA-256 `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test status at cut-off | 128 tests (126 unit + 2 integration): 128 passed, 0 failed; `cargo fmt` and clippy pass; firmware no_std skeleton target check passes. See AUD-05. Gate 0 host software evidence is **PASS, scoped**; not a certification |
@@ -23,7 +23,7 @@ The v0.1 safety concept is **containment by absence of an actuator path**, suppo
 
 | Layer | Mechanism in this snapshot | Evidence | Fundamental limitation |
 |---|---|---|---|
-| L0 Physical | No MCU HAL, timer capture/compare, injector/coil driver, PCB or harness; a no_std firmware skeleton exists but forces outputs off; an unreviewed bench schematic/BOM exists but has no PCB/DRC/gerbers | `ecu/firmware/stm32`; `PHYSICAL_OUTPUTS_AUTHORISED=false`; `hardware/kicad/evo8-bench-ecu/` is UNREVIEWED | A future commit can add a path; this audit expires |
+| L0 Physical | No MCU HAL, timer capture/compare, injector/coil driver, or harness; a no_std firmware skeleton exists but forces outputs off; an unreviewed bench schematic/BOM and unrouted PCB draft exist, with failing DRC and no gerbers | `ecu/firmware/stm32`; `PHYSICAL_OUTPUTS_AUTHORISED=false`; `hardware/kicad/evo8-bench-ecu/` is UNREVIEWED | A future commit can add a path; this audit expires |
 | L1 Interlock | `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED = true` in `ecu-calibration/src/preflight.rs` | Constant; preflight reports physical export blocked | Compile-time constant, not a hardware inhibit; one edit removes it |
 | L2 Preflight | Calibration shape, checksum, ignition evidence, target-lambda bounds | `preflight()` and tests | Warnings do not block `hardware_candidate`; metadata can be forged |
 | L3 Ignition evidence | No lambda input in `ecu-ignition`; synthetic map rejected for physical use | API shape; `recommend_from_reference`; tests | "Verified reference" is a caller-supplied label, not an authenticated source |
@@ -43,7 +43,7 @@ The v0.1 safety concept is **containment by absence of an actuator path**, suppo
 | Studio service | Yes | No | Local HTTP/WebSocket, calibration editing, simulation control |
 | Tuning UI | Yes, host build | No | React/Vite + Electron main; Electron launch not tested; no hardware transport |
 | Firmware | Yes, no_std skeleton | No | `firmware/stm32`; no HAL, timer capture/compare, injector/ignition driver, watchdog integration, or flash image |
-| PCB / harness | Unreviewed schematic/BOM only | No | `hardware/kicad/evo8-bench-ecu/`; no PCB, DRC, gerbers, harness or connector definition |
+| PCB / harness | Unreviewed schematic/BOM and failing PCB draft | No | `hardware/kicad/evo8-bench-ecu/`; DRC 14 violations, 499 unconnected, no gerbers, harness or connector definition |
 | Physical injector/coil | No | No | No code path; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED` is true |
 
 The simulator's "injection" and "spark" events are calls in `apply_events` that update model state (`fuel_cycle_kg`, `sparks_this_cycle`). They do not call a GPIO, timer, CAN transmit API, or driver. This is confirmed by source inspection, not by a runtime sandbox.

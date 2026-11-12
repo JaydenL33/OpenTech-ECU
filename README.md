@@ -42,7 +42,7 @@ Status terms: **Implemented** means host-side code exists and type-checks; it is
 | Firmware / embedded target | Implemented, skeleton | `ecu/firmware/stm32`: `no_std` safety skeleton with capture-to-decoder path, protection, and fail-closed `EngineOutputs`. The `thumbv7em-none-eabihf` check passes. No HAL, timer capture, drivers, watchdog, flash, or target image. |
 | Durable audit / persistence | Planned | Calibration history is in memory; there is no durable audit log or signed provenance store. |
 | Physical injector/coil actuation | Blocked | `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED = true`; no code path energizes hardware. |
-| Bench hardware schematic | Unreviewed | `hardware/kicad/evo8-bench-ecu`: 7-sheet KiCad schematic, netlist/BOM/ERC; **no PCB layout or manufacturing outputs** |
+| Bench hardware schematic | Unreviewed | `hardware/kicad/evo8-bench-ecu`: 7-sheet KiCad schematic, netlist/BOM/ERC, plus an **unrouted PCB draft** with 499 unconnected items and 14 DRC violations; no manufacturing outputs |
 | Vehicle use | Blocked | No bench, engine, EMC, or functional-safety validation. |
 
 ### Verification note
@@ -70,7 +70,7 @@ Release gates follow [`ECU_MASTER_BRIEF.md`](ECU_MASTER_BRIEF.md) exactly:
 | Gate | Scope | Current status |
 |---|---|---|
 | **0** | Software simulation | Current stage; host simulation, CLI, UI, copilot, and `no_std` skeleton checks |
-| **1** | Unpowered hardware | Unreviewed KiCad bench schematic exists; no PCB, DRC, fabrication, harness, or physical hardware |
+| **1** | Unpowered hardware | Unreviewed KiCad schematic and unrouted PCB draft exist; DRC fails (14) and 499 connections are unrouted; no fabrication, harness, or physical hardware |
 | **2** | Powered bench | Not started; no drivers, loads, or fault injection |
 | **3** | Vehicle electrical compatibility | Blocked; ECU variant and pinout unverified |
 | **4** | Controlled engine testing | Blocked; requires Gates 1–3 and independent review |
@@ -261,7 +261,7 @@ Audit documents are snapshot drafts. Where an audit file reports an older test r
 - Original Rust code in `ecu/` is declared **GPL-2.0-or-later** in the workspace `Cargo.toml`, package metadata and `NOTICE.md`, matching the Speeduino reference licence.
 - The retained Speeduino C++ tree is **GPL-2.0-or-later** per its file headers and remains under its original terms. It is not relicensed by this project.
 - A Rust rewrite does not remove GPL obligations. Any future module derived from Speeduino must retain the applicable notices and carry a recorded provenance entry. No code is copied from Speeduino or another project without provenance.
-- Speeduino-derived hardware, if used, would be subject to CERN-OHL-S-2.0. A separate, unreviewed bench schematic package is included under `hardware/kicad/evo8-bench-ecu` and is licensed CERN-OHL-S-2.0; it has no PCB or manufacturing outputs.
+- Speeduino-derived hardware, if used, would be subject to CERN-OHL-S-2.0. A separate, unreviewed bench schematic package is included under `hardware/kicad/evo8-bench-ecu` and is licensed CERN-OHL-S-2.0; it has an unrouted PCB draft with failing DRC and no manufacturing outputs.
 - “Speeduino” and associated marks belong to their respective owners. OpenTech-ECU does not claim endorsement by the Speeduino project.
 
 ## Contributing
