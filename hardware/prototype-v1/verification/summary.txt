@@ -19,11 +19,7 @@ DRC category counts:
      19 [silk_over_copper]
      12 [shorting_items]
       5 [silk_edge_clearance]
-      4 [starved_thermal]
       4 [lib_footprint_issues]
-      2 [padstack]
-      2 [annular_width]
-      1 [track_dangling]
 
 Found 0 unconnected items
 

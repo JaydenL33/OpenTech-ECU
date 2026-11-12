@@ -1,16 +1,8 @@
 ** Drc report for v0.4.4d.kicad_pcb **
-** Created on 2026-11-12T23:06:17+0000 **
+** Created on 2026-11-12T23:11:59+0000 **
 ** Report includes: Errors, Warnings **
 
-** Found 609 DRC violations **
-[annular_width]: Annular width (board setup constraints min annular width 0.0500 mm; actual -0.0044 mm)
-    Rule: board setup constraints; error
-    @(113.5000 mm, 72.1720 mm): PTH pad ~ [<no net>] of U5
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
-[annular_width]: Annular width (board setup constraints min annular width 0.0500 mm; actual -0.0044 mm)
-    Rule: board setup constraints; error
-    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
+** Found 600 DRC violations **
 [shorting_items]: Items shorting two nets (nets  and MAP-EXT)
     Local override; error
     @(157.0880 mm, 116.0320 mm): Polygon [<no net>] of JP11 on F.Cu
@@ -855,30 +847,6 @@
     Rule: board setup constraints courtyard; error
     @(195.7150 mm, 76.3200 mm): Footprint REF**
     @(195.7150 mm, 78.8600 mm): Footprint REF**
-[padstack]: Padstack is questionable (PTH pad hole leaves no copper)
-    Local override; error
-    @(113.5000 mm, 72.1720 mm): PTH pad ~ [<no net>] of U5
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
-[padstack]: Padstack is questionable (PTH pad hole leaves no copper)
-    Local override; error
-    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
-[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
-    Local override; error
-    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
-    @(146.5375 mm, 116.6000 mm): Pad 2 [GND] of C5 on F.Cu
-[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
-    Local override; error
-    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
-    @(142.1375 mm, 129.1500 mm): Pad 2 [GND] of C10 on F.Cu
-[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
-    Local override; error
-    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
-    @(142.1375 mm, 124.6500 mm): Pad 2 [GND] of C11 on F.Cu
-[starved_thermal]: Thermal relief connection to zone incomplete (layer F.Cu; zone min spoke count 2; actual 1)
-    Local override; error
-    @(110.5000 mm, 137.0000 mm): Zone [GND] on F.Cu, priority 0
-    @(156.7500 mm, 98.6650 mm): Pad 3 [GND] of U4 on F.Cu
 [solder_mask_bridge]: Front solder mask aperture bridges items with different nets
     Rule: board setup solder mask min width; error
     @(156.6880 mm, 116.3320 mm): Pad 1 [MAP-EXT] of JP11 on F.Cu
@@ -955,10 +923,6 @@
     Rule: board setup solder mask min width; error
     @(140.2500 mm, 121.3000 mm): Polygon [<no net>] of JP10 on B.Cu
     @(139.3500 mm, 121.6000 mm): Pad 2 [PROTO-5] of JP10 on B.Cu
-[track_dangling]: Track has unconnected end
-    Local override; warning
-    @(162.1570 mm, 132.9910 mm): Track [VDDA] on F.Cu, length 0.5520 mm
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; warning
     @(110.5000 mm, 137.0000 mm): Segment on Edge.Cuts
@@ -1601,6 +1565,14 @@
     @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
+    @(113.5000 mm, 72.1720 mm): NPTH pad of U5
+    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(113.5000 mm, 49.0220 mm): NPTH pad of U5
+    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
     @(125.8200 mm, 66.9220 mm): PTH pad 1 [Net-(JP11-Pad2)] of U5
     @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
 [silk_over_copper]: Silkscreen clipped by solder mask
@@ -1622,14 +1594,6 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
     @(125.8200 mm, 54.2220 mm): PTH pad 6 [<no net>] of U5
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; warning
-    @(113.5000 mm, 72.1720 mm): PTH pad ~ [<no net>] of U5
-    @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; warning
-    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
     @(210.5000 mm, 37.0000 mm): Rule Area on F.Cu and B.Cu
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
@@ -1708,7 +1672,7 @@ THIS END' on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
     @(113.5200 mm, 60.5220 mm): Circle of U5 on F.Silkscreen
-    @(113.5000 mm, 49.0220 mm): PTH pad ~ [<no net>] of U5
+    @(113.5000 mm, 49.0220 mm): NPTH pad of U5
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
     @(110.0000 mm, 54.4600 mm): Segment of XA1 on F.Silkscreen
