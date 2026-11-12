@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 
 import pcbnew
+from preroutes import PREROUTES
 
 
 def without_placement(text):
@@ -48,6 +49,69 @@ def placement(board):
             for f in board.GetFootprints()}
 
 
+def point_mm(point):
+    return tuple(pcbnew.FromMM(value) for value in point)
+
+
+def same_location(item, route):
+    if route['layer'] == 'via':
+        return (isinstance(item, pcbnew.PCB_VIA)
+                and (item.GetPosition().x, item.GetPosition().y) == point_mm(route['position']))
+    if isinstance(item, pcbnew.PCB_VIA):
+        return False
+    endpoints = ((item.GetStart().x, item.GetStart().y),
+                 (item.GetEnd().x, item.GetEnd().y))
+    expected = (point_mm(route['start']), point_mm(route['end']))
+    return endpoints in (expected, expected[::-1])
+
+
+def matches(item, route):
+    if not same_location(item, route) or item.GetNetname() != route['net']:
+        return False
+    if route['layer'] == 'via':
+        return (item.GetWidth(pcbnew.F_Cu) == pcbnew.FromMM(route['size'])
+                and item.GetDrillValue() == pcbnew.FromMM(route['drill'])
+                and item.TopLayer() == pcbnew.F_Cu and item.BottomLayer() == pcbnew.B_Cu
+                and item.GetViaType() == pcbnew.VIATYPE_THROUGH)
+    return (item.GetLayerName() == route['layer']
+            and item.GetWidth() == pcbnew.FromMM(route['width']))
+
+
+def keep_preroutes(board):
+    from_ses = added = 0
+    for route in PREROUTES:
+        found = [item for item in board.GetTracks() if same_location(item, route)]
+        assert len(found) <= 1, f"duplicate pre-route {route['id']}: {len(found)}"
+        if found:
+            item = found[0]
+            assert matches(item, route), f"pre-route geometry or net differs: {route['id']}"
+            from_ses += 1
+        else:
+            if route['layer'] == 'via':
+                item = pcbnew.PCB_VIA(board)
+                item.SetPosition(pcbnew.VECTOR2I(*point_mm(route['position'])))
+                item.SetViaType(pcbnew.VIATYPE_THROUGH)
+                item.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu)
+                item.SetWidth(pcbnew.FromMM(route['size']))
+                item.SetDrill(pcbnew.FromMM(route['drill']))
+            else:
+                item = pcbnew.PCB_TRACK(board)
+                item.SetStart(pcbnew.VECTOR2I(*point_mm(route['start'])))
+                item.SetEnd(pcbnew.VECTOR2I(*point_mm(route['end'])))
+                item.SetLayer(board.GetLayerID(route['layer']))
+                item.SetWidth(pcbnew.FromMM(route['width']))
+            item.SetNetCode(board.FindNet(route['net']).GetNetCode())
+            board.Add(item)
+            added += 1
+        item.SetLocked(True)
+    for route in PREROUTES:
+        found = [item for item in board.GetTracks() if same_location(item, route)]
+        assert len(found) == 1 and matches(found[0], route), f"pre-route missing or changed: {route['id']}"
+        assert found[0].IsLocked(), f"pre-route unlocked: {route['id']}"
+    assert from_ses + added == 12, 'pre-route count'
+    return from_ses, added
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--board', required=True, type=Path)
@@ -69,6 +133,7 @@ def main():
         copy.flush()
         assert pcbnew.ImportSpecctraSES(board, copy.name), 'SES import returned False'
     assert placement(board) == before, 'footprint placement changed'
+    preroutes_from_ses, preroutes_added = keep_preroutes(board)
     segments = vias = 0
     for item in board.GetTracks():
         if isinstance(item, pcbnew.PCB_VIA):
@@ -81,7 +146,9 @@ def main():
             segments += 1
             assert item.GetLayer() in (pcbnew.F_Cu, pcbnew.B_Cu), 'track on inner layer'
     assert pcbnew.SaveBoard(str(args.out), board, True), 'board save failed'
-    print({'footprints_unchanged': len(before), 'segments': segments, 'vias': vias}, flush=True)
+    print({'footprints_unchanged': len(before), 'segments': segments, 'vias': vias,
+           'preroutes_from_ses': preroutes_from_ses,
+           'preroutes_added': preroutes_added}, flush=True)
 
 
 if __name__ == '__main__':
