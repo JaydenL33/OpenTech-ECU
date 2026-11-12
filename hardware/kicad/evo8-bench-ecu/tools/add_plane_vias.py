@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pcbnew
+from preroutes import SERVED_PADS
 
 
 def position(point):
@@ -94,9 +95,13 @@ def add_vias(board):
     failures = []
     skipped = 0
     skipped_pth = 0
+    prerouted_skipped = 0
     for pad in targets:
         centre = pad.GetPosition()
         net = pad.GetNetCode()
+        if (pad.GetParentFootprint().GetReference(), pad.GetNumber()) in SERVED_PADS:
+            prerouted_skipped += 1
+            continue
         # A plated through-hole pad already has a barrel connection to every
         # copper layer, so a second through via only adds a hole and can leave
         # a dangling via beside the pad.
@@ -147,6 +152,7 @@ def add_vias(board):
                                        radius + settings.m_MinClearance))
     return {"pads": len(targets), "already_within_0_5_mm": skipped,
             "through_hole_skipped": skipped_pth,
+            "prerouted_skipped": prerouted_skipped,
             "added": sum(added.values()), "added_by_net": dict(sorted(added.items())),
             "failures": len(failures), "plane_via_failures": failures}
 
