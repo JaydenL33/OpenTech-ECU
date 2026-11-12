@@ -34,7 +34,7 @@
 | DRC | 609 violations (238 errors, 371 warnings); 0 unconnected | 14 violations; 499 unconnected |
 | ERC | 101 violations (44 errors, 57 warnings) | 0 reported, unreviewed |
 | BOM | 47 grouped rows; 11 rows lack MPN | 305 lines, unreviewed |
-| Manufacturing exports | 9 gerbers + drill + position + IPC-D-356 + BOM + schematic PDF | None |
+| Manufacturing exports | 9 gerbers + drill + IPC-D-356 + BOM + schematic PDF; position file has 150 proto pads (not assembly-ready) | None |
 | Firmware compatibility | Upstream Speeduino `megaatmega2560` target; build passes (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`) | No validated firmware/HAL |
 | Review status | H2 open; not fabrication-approved | Unreviewed; not usable |
 | Gate | H0 pass; H1 partial; H2 not passed | Not a baseline |

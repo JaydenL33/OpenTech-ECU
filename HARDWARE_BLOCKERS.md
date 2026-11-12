@@ -20,7 +20,7 @@
 | Gate | Status | Evidence / reason |
 |---|---|---|
 | **H0 — Verified upstream reference** | **PASS (hardware + build)** | Exact Speeduino Hardware commit, path, licence and hash manifest selected (`AUDIT/UPSTREAM_PROVENANCE.md`). Firmware tree commit `5d217bf4…` builds for `megaatmega2560` with PlatformIO 6.2.0; artifact hashes recorded (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`). Caveat: firmware is an in-tree snapshot, not a tagged upstream release; pin a tag in the review package. |
-| **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB, all footprints assigned, 0 unconnected items, closed outline, gerbers/drill/BOM/position generated. Missing: dedicated mounting holes, mechanical/assembly drawing, complete BOM MPNs, library-link cleanup. |
+| **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB, all 147 components have footprints, 0 unconnected items, closed outline, gerbers/drill/BOM generated. Position file is not assembly-ready (150 proto pads). Missing: mounting holes, mechanical/assembly drawing, complete BOM MPNs, library-link cleanup. |
 | **H2 — Engineering checks completed** | **NOT PASSED** | ERC 101 violations, DRC 609 (238 errors), connectivity PASS. Exceptions are classified in `AUDIT/PCB_CHECK_RESULTS.md`; several remain open. |
 | **H3 — Independent fabrication review candidate** | **NOT READY** | Review package exists but H2 exceptions, BOM and mechanical package are incomplete. |
 | **H4 — Fabrication approved** | **BLOCKED — human only** | Requires independent engineering review and explicit human approval. AI cannot grant. |
@@ -187,6 +187,20 @@
 | Verification | DRC after hole placement; clearance to copper ≥ manufacturer rule; assembly drawing shows standoffs |
 | Status | **OPEN** |
 
+### HW-MECH-03 — Pick-and-place contains 150 unannotated proto pads
+
+| Field | Value |
+|---|---|
+| Severity | S2 (blocks automated assembly / H3) |
+| Affected files | `hardware/prototype-v1/manufacturing/assembly/v0.4.4d-pos.csv` |
+| Problem | The position file has 291 rows: 141 real components plus **150 `REF**` proto-area pads** (`Pin_D1.0mm_L10.0mm`). An assembly house would treat these as placements, producing a wrong or rejected job. Six solder jumpers (JP6–JP11) are not in the position file. |
+| Evidence | `grep -c '^"REF\*\*"' v0.4.4d-pos.csv` → 150; total rows 291. |
+| Required action | Mark the 150 proto pads "exclude from position files" (and exclude from BOM) in a derived revision, or generate an assembly position file filtered to the 141 real placements. Document JP6–JP11 placement/hand-solder intent. |
+| Owner | Hardware workstream |
+| Autonomous | Yes |
+| Verification | Position file has exactly 141 rows (or a documented populated subset); no `REF**`; cross-check with BOM |
+| Status | **OPEN** |
+
 ### HW-BOM-01 — 11 BOM rows lack manufacturer part numbers
 
 | Field | Value |
@@ -323,8 +337,9 @@ blocker.
 1. **HW-BOM-01 / HW-BOM-02** — make the purchasing case real and costed.
 2. **HW-DRC-02 / HW-DRC-03 / HW-ERC-01/02** — reduce H2 exceptions with
    reproducible re-checks.
-3. **HW-BENCH-01 / HW-MECH-01 / HW-MECH-02** — complete the H3 review package,
-   including the IDC40 breakout, assembly drawing and a mounting-hole decision.
+3. **HW-BENCH-01 / HW-MECH-01 / HW-MECH-02 / HW-MECH-03** — complete the H3
+   review package, including the IDC40 breakout, assembly drawing, mounting
+   holes and a filtered pick-and-place file.
 4. **HW-FW-02 (new, low priority)** — pin an official Speeduino firmware tag
    for the release package instead of the in-tree snapshot; re-run the build and
    record the tag/hash.

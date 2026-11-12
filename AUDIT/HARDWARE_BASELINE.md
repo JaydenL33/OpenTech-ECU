@@ -83,10 +83,10 @@ Reasons, in priority order:
 5. **It has a real BOM with manufacturer part numbers and assembly data**
    (paste layers and a position file). The THT variant's BOM is XLSX-only and
    its revision is older.
-6. **The SMD assembly risk is manageable and lower than hand-building 297
-   joints.** 0805 passives and SOIC/QSOP parts can be assembled by a low-cost
-   SMT service or by an experienced hand assembler. The THT board remains a
-   documented fallback for fully manual assembly.
+6. **The SMD assembly risk is manageable and lower than hand-building every joint.**
+   147 component placements (mostly 0805/SOIC/QSOP) can be assembled by a
+   low-cost SMT service or by an experienced hand assembler. The THT board
+   remains a documented fallback for fully manual assembly.
 
 The THT variant is **not rejected on electrical grounds**; it is a viable
 hand-assembly fallback. It was not selected because it is an older revision,

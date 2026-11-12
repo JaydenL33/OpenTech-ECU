@@ -90,7 +90,10 @@ These are review rules, not final substitutions:
 4. **Derating/thermal review** for power, driver and clamp parts.
 5. **Assembly method and risk class** per row (SMT, hand-solder, module,
    connector, PCB feature).
-6. **Purchase-vs-build comparison** (assembled v0.4.4d board vs bare PCB +
+6. **Pick-and-place cleanup**: the current position file contains 150
+   unannotated `REF**` proto pads and omits JP6–JP11; an assembly house cannot
+   use it as-is (`HW-MECH-03`).
+7. **Purchase-vs-build comparison** (assembled v0.4.4d board vs bare PCB +
    parts), under the A$250 target if credible.
 
 No price is stated in this document because none has been quoted yet. This is
