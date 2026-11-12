@@ -6,7 +6,8 @@ ECU.
 
 ## Selected prototype baseline (H0 hardware reference)
 
-The primary hardware path is now an **unmodified Speeduino v0.4.4d SMD** design:
+The primary hardware path is now a **Speeduino v0.4.4d SMD** design with a
+documented minimal PCB revision (R-01…R-03; no net or topology change):
 
 | Path | Contents |
 |---|---|
@@ -14,6 +15,7 @@ The primary hardware path is now an **unmodified Speeduino v0.4.4d SMD** design:
 | `prototype-v1/` | Native KiCad 9 review copy, manufacturing exports and verification evidence |
 | `bench-interface/` | Netlist-derived IDC40 pin map and safe-breakout specification (not a built fixture) |
 | `tools/check_prototype_v1.sh` | Reproducible ERC/DRC/export/connectivity run |
+| `tools/apply_v1_minimal_revision.py` | Idempotent R-01…R-03 PCB revision script (KiCad container) |
 | `tools/verify_upstream_baseline.sh` | SHA-256 verification of the preserved upstream tree |
 
 The v0.4.4d board is a 100 × 100 mm, 2-layer Arduino Mega 2560 shield with four
