@@ -7,7 +7,7 @@
 | Date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:35Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `5d217bf4471fa1391a5acd0aa341848ec43f5431` |
+| Git HEAD | `c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909` |
 | Rust source manifest | SHA-256 `e9bb90a63184b4834bf793ed6fea89342aef6ddea917e68e4207d32256027971` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
@@ -337,7 +337,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 - No evidence that the Evo VIII is compatible, plug-and-play, or safe to connect.
 - No evidence that the firmware skeleton is flashable, timed, or safe on an MCU.
 - No evidence that the UI/copilot behave correctly at runtime; only type/build checks.
-- No guarantee that the source hash corresponds to a Git commit; the Rust tree is untracked.
+- No guarantee that the source hash corresponds to a Git commit; the Rust tree is committed.
 - Only the six control crates listed in §4.3 are proven no_std-capable; `ecu-protocol` and `ecu-lambda` remain std-only by design.
 
 ## 12. Reproduction commands
