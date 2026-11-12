@@ -6,8 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::table::{Axis, Table};
 use crate::{
-    hex_sha256, now_unix_ms, Calibration, CalibrationError, IgnitionPolicy,
-    CALIBRATION_SCHEMA_VERSION,
+    hex_sha256, Calibration, CalibrationError, IgnitionPolicy, CALIBRATION_SCHEMA_VERSION,
 };
 
 pub const VE_TABLE: &str = "ve";
@@ -124,7 +123,9 @@ pub fn generate_starter(
         id,
         revision,
         parent: None,
-        created_unix_ms: now_unix_ms(),
+        // Starter generation is deterministic; zero denotes an unrecorded wall
+        // clock. Service edits and applied proposals use an explicit timestamp.
+        created_unix_ms: 0,
         engine: req.engine.clone(),
         fuel: req.fuel.clone(),
         sensors: req.sensors.clone(),

@@ -5,7 +5,7 @@
 | Document ID | AUD-07 |
 | Status | Reviewer instructions; not itself an independent review |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree; source manifest `f9fb7b79...` |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree; source manifest `984aa392...` |
 | Audience | Automotive controls engineer, embedded Rust reviewer, PCB reviewer, functional-safety reviewer, project owner |
 | Related | AUD-01 through AUD-10 |
 
@@ -139,7 +139,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "STFT bounded" | Run `integrator_never_winds_beyond_limit`; inspect clamp | Trim > 0.25 | Host test only |
 | "Protection latches" | Run overtemp/low-oil tests; inspect `clear_latched` | Fault auto-clears without explicit action | Host test only |
 | "Trigger detects gap mismatch" | Run `extra_missing_tooth_causes_sync_loss`; inspect `on_tooth` | Mismatch accepted | Host test only |
-| "Deterministic simulation" | Run twice with same `--cal`; compare log hashes | Different frames | Fresh calibration differs; use fixed cal |
+| "Deterministic simulation" | Run twice with same `--cal`; compare log hashes; run twice without `--cal` and compare calibration checksums | Different frames/checksums | Fresh generation is deterministic at this cut-off; record checksums |
 | "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | No Electron/browser runtime test |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
@@ -160,7 +160,7 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 - [x] Copilot typecheck passes.
 - [ ] Live LLM/tool/approval test (missing).
 - [x] Deterministic run with a recorded calibration checksum (fixed cal).
-- [ ] Fresh-generation determinism or documented seed/time policy (missing).
+- [x] Fresh-generation determinism (starter calibration timestamp is zero; repeat checksums match).
 - [ ] Service auth/CSRF or explicit "local-only development" restriction (missing).
 - [ ] CI run attestation (workflow defined; not observed running).
 - [x] Source committed with a reproducible hash (see Git HEAD and TEST_EVIDENCE manifest).

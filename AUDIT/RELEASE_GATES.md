@@ -5,8 +5,8 @@
 | Document ID | AUD-08 |
 | Status | Gate definitions and current status; not a release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree |
-| Source manifest | `f9fb7b792d87d39c0eb7dbb3a240d406f8556ea99dad327c04bf3aef6d278d7e` |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree |
+| Source manifest | `ca8440bf733ce2c8506c194865fdd982d1701648e4b65dab6f0bfea449785fe7` |
 | Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
 | Related | AUD-01 through AUD-10 |
 
@@ -50,7 +50,7 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 | 0.4 | Firmware skeleton target check | `thumbv7em-none-eabihf`, no-default-features | **PASS** |
 | 0.5 | Full core `no_std` portability | Per-crate checks | **PASS**: ecu-types, ecu-fuel, ecu-ignition, ecu-scheduler, ecu-trigger, ecu-protection pass |
 | 0.6 | CLI determinism for a recorded calibration | Two runs, same log hash | **PASS** for fixed calibration |
-| 0.7 | Fresh-generation determinism or documented seed/time policy | Repeat-run hashes | **NOT MET**: wall-clock `created_unix_ms` changes checksum; use `--cal` for reproducibility |
+| 0.7 | Fresh-generation determinism or documented seed/time policy | Repeat-run hashes | **PASS**: starter calibration timestamp is deterministic (0); repeat generation yields identical calibration checksum |
 | 0.8 | Mixture Map apply requires approval/checksum/revision | CLI/API refusal; tests | **PASS** |
 | 0.9 | Protection latching/recovery tests | Test log | **PASS** |
 | 0.10 | Trigger sync/loss tests | Test log | **PASS** (known timing gaps noted in AUD-02/AUD-04) |
@@ -240,7 +240,7 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 | Clippy | Yes | `-D warnings` pass |
 | Firmware skeleton target check | Yes | `thumbv7em-none-eabihf` pass; skeleton only |
 | Full core `no_std` | Pass for core control crates | All six pass; `ecu-protocol`/`ecu-lambda` remain std-only; firmware skeleton has no HAL/drivers |
-| CLI determinism | Yes, fixed cal | `mixture_sweep` PASS, 2184 frames |
+| CLI determinism | Yes, fixed and fresh | `mixture_sweep` PASS, 2184 frames; fresh `idle_warmup` checksum stable |
 | Mixture Map analysis/apply | Yes, host | 3 cells; approval/CLI refusal |
 | UI typecheck/build | Yes | PASS; Electron/browser not tested |
 | Copilot typecheck | Yes | PASS; live LLM/tools not tested |

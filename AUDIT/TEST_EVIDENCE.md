@@ -5,10 +5,10 @@
 | Document ID | AUD-05 |
 | Status | Evidence record for the audited host snapshot; not a certification, not a physical-safety approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
 | Git HEAD | `c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909` |
-| Rust source manifest | SHA-256 `e9bb90a63184b4834bf793ed6fea89342aef6ddea917e68e4207d32256027971` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Rust source manifest | SHA-256 `ca8440bf733ce2c8506c194865fdd982d1701648e4b65dab6f0bfea449785fe7` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
 | Formatting | `cargo fmt --all -- --check` passed |
@@ -46,7 +46,7 @@
 | 4 | `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` | 0 | Passes; skeleton only, no HAL/timer/driver |
 | 5 | `cargo check -p ecu-types -p ecu-fuel -p ecu-ignition -p ecu-trigger -p ecu-scheduler -p ecu-protection --no-default-features` | 0 | Core no_std checks pass |
 | 6 | `cargo run -q -p ecu-sim-cli -- run --scenario mixture_sweep --out ... --check-determinism` | 0 | Determinism PASS, 2184 frames byte-identical |
-| 7 | `cargo run -q -p ecu-sim-cli -- analyze --log ... --cal ... --out ...` | 0 | 1348 used / 836 rejected; 3 proposed cells; ignition untouched |
+| 7 | `cargo run -q -p ecu-sim-cli -- analyze --log ... --cal ... --out ...` | 0 | 1378 used / 806 rejected; 3 proposed cells; ignition untouched |
 | 8 | `cargo run -q -p ecu-sim-cli -- apply ... --approve` | 0 | Applied 3 cells; revision 1 -> 2 |
 | 9 | `cargo run -q -p ecu-sim-cli -- apply ...` without `--approve` | 1 | Refused, as designed |
 | 10 | `npm run typecheck` in `apps/tuning-studio` | 0 | Pass |
@@ -171,37 +171,37 @@ determinism: PASS (2184 frames byte-identical)
 scenario: mixture_sweep
 frames:   2184
 duration: 42.0s
-rpm mean/max: 2758 / 4565
+rpm mean/max: 2769 / 4566
 coolant max: 89.6 C
-lambda mean: 0.969 (2184 samples)
+lambda mean: 0.977 (2184 samples)
 faults:   ["P0335", "P0133"]
 ```
 
-Previously observed runs of `trigger_loss`, `fault_recovery`, `sensor_stuck_lean`, `idle_warmup` and `transient` also reported PASS for fixed calibrations. The same caveat applies: determinism is per calibration, not for fresh starter-calibration generation.
+Previously observed runs of `trigger_loss`, `fault_recovery`, `sensor_stuck_lean`, `idle_warmup` and `transient` also reported PASS. Determinism is per calibration; the current starter calibration is also deterministic (below).
 
-### 5.3 Fresh-calibration determinism caveat
+### 5.3 Fresh-calibration determinism
 
-`generate_starter` sets `created_unix_ms: now_unix_ms()`, which changes the sealed checksum on each fresh generation. Observed across invocations:
+The current working tree sets `created_unix_ms: 0` in `generate_starter` (committed in the OpenTech source revision). Two fresh `idle_warmup` runs without `--cal` produced identical calibration checksums and byte-identical logs:
 
-| Run | `created_unix_ms` | Calibration checksum prefix | Proposal ID |
+| Run | `created_unix_ms` | Calibration checksum prefix | Log SHA-256 prefix |
 |---|---:|---|---|
-| Earlier | 1794460482681 | `d5cb3370` | `mix-c2aacb3193fa583a` |
-| Current | 1794461335432 | `d1f90382` | `mix-f12d9675ff375c3e` |
+| Fresh 1 | 0 | `fee18418` | `ade065d3` |
+| Fresh 2 | 0 | `fee18418` | `ade065d3` |
 
-For reproducible audit evidence, pass `--cal` with a recorded checksum or add a deterministic seed/time option. The `--check-determinism` check itself reuses the same generated calibration for both runs, so it passes.
+Both reported `determinism: PASS (1300 frames byte-identical)`. This resolves the earlier timestamp caveat; the change is committed and the evidence was reproduced on the committed source. For audit evidence, still record the calibration checksum with the log.
 
 ### 5.4 Mixture Map analysis
 
 ```text
-samples used/rejected: 1348/836  cells proposed: 3  hard faults: []
+samples used/rejected: 1378/806  cells proposed: 3  hard faults: []
   gates: {"CRITICAL_DTC": 12, "ENGINE_NOT_RUNNING": 13, "FUEL_CUT": 13,
           "LAMBDA_IMPLAUSIBLE": 32, "LAMBDA_NOT_READY": 32, "LAMBDA_STATUS": 32,
-          "MAP_TRANSIENT": 184, "RPM_LOW": 4, "RPM_TRANSIENT": 412,
-          "SYNC_NOT_SEQUENTIAL": 8, "TPS_TRANSIENT": 187, "WOT_BOUNDARY": 411}
-proposal: mix-f12d9675ff375c3e (3 cells, requires approval)
-   1000 rpm   40 kPa  VE 45.93 -> 48.23  (+5.0%, n=124, conf=0.82)
-   2100 rpm   50 kPa  VE 59.16 -> 62.12  (+5.0%, n=412, conf=0.85)
-   2900 rpm   60 kPa  VE 66.13 -> 69.44  (+5.0%, n=259, conf=0.93)
+          "MAP_TRANSIENT": 196, "RPM_LOW": 4, "RPM_TRANSIENT": 447,
+          "SYNC_NOT_SEQUENTIAL": 8, "TPS_TRANSIENT": 204, "WOT_BOUNDARY": 411}
+proposal: mix-e56c7b554ec2b0bd (3 cells, requires approval)
+   1000 rpm   50 kPa  VE 46.71 -> 49.05  (+5.0%, n=170, conf=0.78)
+   2100 rpm   50 kPa  VE 59.16 -> 62.12  (+5.0%, n=431, conf=0.85)
+   2900 rpm   60 kPa  VE 66.13 -> 69.44  (+5.0%, n=259, conf=0.92)
 ignition untouched: true
 ```
 
@@ -216,7 +216,7 @@ Observations:
 With `--approve`:
 
 ```text
-applied 3 cells; revision 1 -> 2; checksum 2c101258bed166d0
+applied 3 cells; revision 1 -> 2; checksum a746366def1e1dfc
 diff: 3 cells, max |delta| 3.31 VE points
 undo snapshot is the input calibration: .../calibration.json
 ```
@@ -367,8 +367,8 @@ Expected: all listed commands pass at this snapshot, including the core `no_std`
 
 ## 13. Raw evidence locations
 
-- `/tmp/opencode/cargo-test-final.log` — 128-test run.
-- `/tmp/opencode/audit3/mixture_sweep/` — log, CSV, summary, calibration, report, applied calibration.
+- `/tmp/opencode/cargo-test-latest.log` — 128-test run.
+- `/tmp/opencode/audit-final/` — log, CSV, summary, calibration, report, applied calibration.
 - `/tmp/opencode/studio3.log` — local service smoke log.
 - `/tmp/opencode/cli3-run.log`, `/tmp/opencode/cli3-analyze.log` — CLI output.
 

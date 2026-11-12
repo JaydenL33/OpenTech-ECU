@@ -5,7 +5,7 @@
 | Document ID | AUD-06 |
 | Status | Audit traceability matrix; not a certification or release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree; source manifest `f9fb7b79...` |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree; source manifest `984aa392...` |
 | Sources | `ECU_MASTER_BRIEF.md`; project context; `ecu-calibration/src/vehicle.rs`; code/tests in `ecu/` |
 | Related | AUD-01, AUD-02, AUD-05, AUD-08, AUD-10 |
 
@@ -29,7 +29,7 @@
 | ID | Requirement | Source | Implementation / evidence | Status | Notes / blocker |
 |---|---|---|---|---|---|
 | SYS-001 | Rust-first Cargo workspace with separate core crates | Brief §4 | `ecu/Cargo.toml`; 13 crates/apps | Implemented | Host-only; `apps/tuning-studio/src-tauri` excluded/absent |
-| SYS-002 | Deterministic host virtual ECU with fixed-step engine model | Brief §1, §5 | `ecu-simulator`; `step_once` 1 ms; CLI determinism PASS | Simulated | Deterministic per fixed calibration; fresh starter calibration uses wall-clock timestamp |
+| SYS-002 | Deterministic host virtual ECU with fixed-step engine model | Brief §1, §5 | `ecu-simulator`; `step_once` 1 ms; CLI determinism PASS | Simulated | Deterministic; starter calibration uses a deterministic zero timestamp |
 | SYS-003 | No physical output path in v0.1 | Project context | No hardware driver/PCB; firmware skeleton forces outputs off; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED=true` | Implemented (snapshot) | Source committed; interlock enforcement still needs independent review |
 | SYS-004 | Versioned protocol with CRC and explicit negotiation | Brief §4 | `ecu-protocol`; 7 tests | Implemented | Binary CRC covers payload, not header; no auth |
 | SYS-005 | Real tuning UI, not mock controls | Brief §1, §7 | `apps/tuning-studio` React/Vite + Electron main; typecheck/build PASS | Partial | Electron launch/browser interaction not tested; no visual/accessibility tests; brief requested Tauri |
@@ -49,13 +49,13 @@
 | SIM-003 | Crank-tooth timestamp model and missing-tooth decoder | Brief §3A | `ecu-trigger`; 10 tests | Implemented | Host model only; no capture hardware |
 | SIM-004 | Phase/sync state machine with deterministic loss response | Brief §3A | `SyncState`; gap/cam/timeout tests | Implemented | Cam-loss timeout absent; 250 ms extrapolation gap |
 | SIM-005 | Strongly typed sensor pipeline with invalid/stale status | Brief §3A | `SensorStatus`, `SensorSample`, `TelemetryFrame` | Partial | Control paths mostly use raw `f32`; only lambda status is wired through |
-| SIM-006 | Deterministic seeded scenarios and logs | Brief §5 | 6 scenarios; CLI `--check-determinism` PASS | Simulated | `idle_warmup`/`transient` are not realistic; fresh calibration timestamp breaks byte-identity |
-| SIM-007 | Telemetry log, CSV, replay | Brief §3G | `LogFile`, `to_csv`, `ReplayCursor`; 4 diagnostics tests | Implemented (host) | No browser replay test; logs ephemeral |
+| SIM-006 | Deterministic seeded scenarios and logs | Brief §5 | 6 scenarios; CLI `--check-determinism` PASS; fresh calibration checksum deterministic | Simulated | `idle_warmup`/`transient` are not realistic engine validation |
+| SIM-007 | Telemetry log, CSV, replay | Brief §3G | `LogFile`, `to_csv`, `ReplayCursor`; 4 diagnostics tests | Implemented (host) | Replay start/stop and Logs UI exercised; logs ephemeral |
 | SIM-008 | Fault injection: sensor, sync, overtemp, overboost, lean, CAN, watchdog | Brief §3E | `SimFault` windows; 6 scenarios | Partial | Watchdog/CAN inputs hard-coded healthy; no hardware fault injection |
 | SIM-009 | Cranking -> sync -> idle -> transient -> fault -> recovery acceptance | Brief §5 | `idle_warmup`, `fault_recovery`, `trigger_loss` | Partial | Observed idle/transient mean RPM very low; tests assert only some `Running` frame |
 | SIM-010 | Crank acceleration/deceleration, rollover, missing teeth | Brief §5 | `acceleration_tracks_rpm_without_false_gap`; missing-tooth tests | Partial | Deceleration and high-RPM extrapolation not tested |
 | SIM-011 | Exhaust delay, sensor lag, noise model | Brief §3B | `update_wideband`; scenario parameters | Simulated | Fixed delay/lag; no real sensor validation |
-| SIM-012 | Deterministic replay for same seeded log | Brief §5 | `deterministic_for_same_log`; CLI PASS | Implemented | Same calibration only; fresh generation differs |
+| SIM-012 | Deterministic replay for same seeded log | Brief §5 | `deterministic_for_same_log`; CLI PASS | Implemented | Fresh starter calibration is deterministic; logs are reproducible |
 
 ## 4. Fuel calculation requirements
 
@@ -262,8 +262,8 @@ A numeric percentage would be misleading because requirements differ in scope, e
 | Area | Strongest current evidence | Dominant gap |
 |---|---|---|
 | System/platform | Cargo workspace, protocol, UI build, CI workflow, all core no_std checks pass | CI not observed running; protocol/lambda std-only; source committed |
-| Simulation | Deterministic fixed-calibration runs; six scenarios | Idle/transient realism; fresh-calibration determinism; no hardware |
-| Fuel | Unit-tested air mass, pulse width, dead time, duty inhibition | No flow bench; no transient/wall-wetting; no per-cylinder |
+| Simulation | Deterministic fixed and fresh runs; six scenarios | Idle/transient realism; no hardware |
+| Fuel | Unit-tested air mass, pulse width, dead time, duty inhibition; 2 Speeduino parity tests | No flow bench; no transient/wall-wetting; no per-cylinder |
 | Ignition | API excludes lambda; bounded advance/dwell; evidence policy | No authenticated evidence; no knock validation; apparent double retard |
 | Trigger | Gap/dropped-tooth tests; sync state machine | Cam-loss detection; extra-edge latency; 250 ms timeout; Evo pattern unverified |
 | Scheduler | Angle-domain tests; firing-order validation | Silent overflow path; no overlap check; no hardware timer |

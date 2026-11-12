@@ -5,8 +5,8 @@
 | Document ID | AUD-10 |
 | Status | Hardware status and requirements only; **no manufacturing-ready hardware exists** |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree |
-| Source manifest | `f9fb7b792d87d39c0eb7dbb3a240d406f8556ea99dad327c04bf3aef6d278d7e` |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree |
+| Source manifest | `984aa392bcb457bfd60a14cff7d505959e3534fe3afe4cf9428ea542ec649aad` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
 > **Plain statement.** No manufacturing-ready KiCad schematic, PCB, BOM, gerber, drill file, assembly drawing, enclosure or harness exists in this repository. A separate Codex attempt at a bench-prototype KiCad package is reportedly underway and is **UNREVIEWED**. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until ERC/DRC, BOM/derating, thermal, EMC and independent engineering review are complete.

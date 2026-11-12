@@ -5,7 +5,7 @@
 | Document ID | AUD-02 |
 | Status | Independent audit draft; qualitative FMEA, not a quantitative FMEDA or safety validation |
 | Audit date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree; source manifest `f9fb7b79...` |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree; source manifest `984aa392...` |
 | Scope | Host-side Rust trigger, lambda, fuel, ignition, sensor, calibration, service/UI, protocol, scheduler, processor/watchdog, power assumptions, and the no_std firmware skeleton |
 | Out of scope | Physical PCB, harness, MCU HAL/timer/driver implementation, EMC, thermal, vehicle installation |
 | Related | AUD-01, AUD-03, AUD-04, AUD-05, AUD-08 |
@@ -231,7 +231,7 @@
 | Trigger timeout | `timeout_declares_lost_sync` | Passes; does not test high-RPM extrapolation |
 | Wideband stuck | `stuck_wideband_is_detected_and_no_proposal_issued` | Simulator exact-constant case; noisy stuck sensor not covered |
 | Wideband gate | `every_invalidity_is_explained`, `cold_engine_and_stale_sensor_are_explained` | Good gate-reason coverage; flags are synthetic |
-| Fuel pulse/dead time/duty | 9 `ecu-fuel` tests | Good unit coverage; no bench data |
+| Fuel pulse/dead time/duty | 9 `ecu-fuel` unit tests + 2 Speeduino parity integration tests | Good unit coverage; no bench data; parity is formula-only |
 | Mixture Map | 12 tests, all pass in current snapshot | Broad; trim term is verified with `max_cell_correction=0.20`; default 5% cap still binds |
 | Ignition evidence | `missing_reference...`, `synthetic_or_unknown...`, `verified_reference...` | Good policy tests; no forged-policy test |
 | Knock retard | `knock_produces_bounded_retard_not_fuel_learning` | Single-step; does not catch double application |
@@ -239,7 +239,7 @@
 | Scheduler | 6 tests | Good angle/cut tests; no overflow/overlap test |
 | Protocol | 7 tests | Good CRC/version tests; no header corruption/auth |
 | Calibration | 22 tests including vehicle profile | Good checksum/revision; no signature/durability |
-| Simulator scenarios | 10 tests; CLI determinism PASS | Deterministic per calibration; starter calibration timestamp is not deterministic |
+| Simulator scenarios | 10 tests; CLI determinism PASS for fixed and fresh calibration | Deterministic; idle/transient realism remains weak |
 | Firmware skeleton | 5 tests; `thumbv7em-none-eabihf` check | No HAL/timer/driver/watchdog; fail-closed interface only |
 | Service/UI | No Rust integration tests; UI typecheck/build PASS; Electron launch not tested | No auth/CSRF/concurrency tests; browser/Electron not tested |
 

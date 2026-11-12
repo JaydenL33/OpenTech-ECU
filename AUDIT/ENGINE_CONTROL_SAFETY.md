@@ -5,7 +5,7 @@
 | Document ID | AUD-01 |
 | Status | Independent audit draft. Not a certification, not a safety case for an engine, not an approval to connect hardware. |
 | Audit date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:35Z, working tree |
+| Evidence cut-off | 2026-11-12T05:37Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
 | Git HEAD | `c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909` (OpenTech source commit; later commits are documentation only) |
 | Rust source manifest | SHA-256 `e9bb90a63184b4834bf793ed6fea89342aef6ddea917e68e4207d32256027971` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |

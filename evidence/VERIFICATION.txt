@@ -105,3 +105,6 @@ Cargo.lock SHA-256: 71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f
 Final counts: 128 Rust tests, 0 failures; core no_std checks pass; firmware target check passes; UI build and copilot typecheck pass.
 
 Git HEAD: c8758a6cc3c80ab6e7705ce3deaf9d0b4aed7909
+
+Final source manifest SHA-256: ca8440bf733ce2c8506c194865fdd982d1701648e4b65dab6f0bfea449785fe7
+Cargo.lock SHA-256: 71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e
