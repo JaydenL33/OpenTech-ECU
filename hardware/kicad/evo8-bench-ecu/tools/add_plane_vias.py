@@ -22,9 +22,11 @@ def candidates(centre):
 
 
 def obstacle(shape, gap):
-    box = shape.BBox(gap)
-    return (shape, gap, box.GetLeft(), box.GetTop(),
-            box.GetRight(), box.GetBottom())
+    # SHAPE.BBox(gap) does not inflate in pcbnew 9.0.9; expand it here so the
+    # quick point-in-box test cannot skip a real clearance collision.
+    box = shape.BBox()
+    return (shape, gap, box.GetLeft() - gap, box.GetTop() - gap,
+            box.GetRight() + gap, box.GetBottom() + gap)
 
 
 def nearby(obstacles, centre):
@@ -71,6 +73,17 @@ def add_vias(board):
                                    item.GetOwnClearance(layer))
                 by_net[item.GetNetCode()].append(obstacle(
                     item.GetEffectiveShape(layer), gap))
+    # Filled signal-layer zones are copper obstacles too.  Plane fills are
+    # regenerated around vias by the later fill step, so they are not treated
+    # as fixed obstacles here.
+    for zone in board.Zones():
+        layer = zone.GetLayer()
+        if not zone.IsFilled() or layer not in (pcbnew.F_Cu, pcbnew.B_Cu):
+            continue
+        polygon = zone.GetFilledPolysList(layer)
+        if polygon.OutlineCount():
+            by_net[zone.GetNetCode()].append(obstacle(
+                polygon, radius + settings.m_MinClearance))
     edges = [obstacle(item.GetEffectiveShape(),
                       radius + settings.m_CopperEdgeClearance)
              for item in board.GetDrawings() if item.GetLayer() == pcbnew.Edge_Cuts]
@@ -80,9 +93,16 @@ def add_vias(board):
     added = collections.Counter()
     failures = []
     skipped = 0
+    skipped_pth = 0
     for pad in targets:
         centre = pad.GetPosition()
         net = pad.GetNetCode()
+        # A plated through-hole pad already has a barrel connection to every
+        # copper layer, so a second through via only adds a hole and can leave
+        # a dangling via beside the pad.
+        if pad.GetAttribute() == pcbnew.PAD_ATTRIB_PTH:
+            skipped_pth += 1
+            continue
         if any(v.GetNetCode() == net and
                (v.GetPosition().x-centre.x)**2 + (v.GetPosition().y-centre.y)**2
                <= pcbnew.FromMM(0.5)**2 for v in vias):
@@ -90,10 +110,15 @@ def add_vias(board):
             continue
         obstacles = nearby(holes + edges + [o for n, group in by_net.items()
                                            if n != net for o in group], centre)
+        pad_shape = pad.GetEffectiveShape(pcbnew.F_Cu)
         chosen = None
         tried = 0
         for point in candidates(centre):
             tried += 1
+            # The via must still touch its own pad on F.Cu; an offset via that
+            # clears everything but misses the pad is a dangling via.
+            if not pad_shape.Collide(point, radius):
+                continue
             if outline.Contains(point) and clear(point, obstacles):
                 chosen = point
                 break
@@ -117,9 +142,11 @@ def add_vias(board):
         added[pad.GetNetname()] += 1
         holes.append(obstacle(via.GetEffectiveHoleShape(),
                               drill_radius + settings.m_HoleClearance))
-        by_net[net].append(obstacle(via.GetEffectiveShape(pcbnew.F_Cu),
-                                   radius + settings.m_MinClearance))
+        for layer in layers:
+            by_net[net].append(obstacle(via.GetEffectiveShape(layer),
+                                       radius + settings.m_MinClearance))
     return {"pads": len(targets), "already_within_0_5_mm": skipped,
+            "through_hole_skipped": skipped_pth,
             "added": sum(added.values()), "added_by_net": dict(sorted(added.items())),
             "failures": len(failures), "plane_via_failures": failures}
 
