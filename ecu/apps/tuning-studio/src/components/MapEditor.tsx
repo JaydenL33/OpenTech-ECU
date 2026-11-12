@@ -14,8 +14,8 @@ function cellColor(value: number, table: Table, kind: string): string {
   const t = Math.max(0, Math.min(1, (value - table.value_min) / (table.value_max - table.value_min || 1)));
   const [h1, h2] = KIND_HUES[kind] ?? [200, 40];
   const hue = h1 + (h2 - h1) * t;
-  const light = 14 + 46 * t;
-  const sat = 45 + 35 * t;
+  const light = 66 + 26 * t;
+  const sat = 38 + 34 * t;
   return `hsl(${hue} ${sat}% ${light}%)`;
 }
 

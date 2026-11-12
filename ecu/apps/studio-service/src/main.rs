@@ -23,6 +23,7 @@ use ecu_calibration::preflight::{preflight, PreflightReport};
 use ecu_calibration::vehicle::{builtin_profiles, by_id as vehicle_by_id};
 use ecu_calibration::wizard::{generate_starter, WizardRequest};
 use ecu_calibration::{now_unix_ms, Calibration};
+use ecu_harness::{validate_manifest, BenchHarnessManifest};
 use ecu_lambda::mixture_map::{
     analyze_log, apply_proposal, ApplyResult, MixtureMapOptions, MixtureMapReport, VeProposal,
 };
@@ -265,6 +266,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/api/replay/stop", post(replay_stop))
         .route("/api/faults", get(get_faults))
         .route("/api/faults/clear", post(clear_faults))
+        .route("/api/harness", get(get_harness))
         .route("/api/ws", get(ws_handler))
         .layer(CorsLayer::permissive())
         .fallback_service(ServeDir::new(&static_dir).not_found_service(ServeFile::new(&index)))
@@ -278,6 +280,21 @@ async fn main() -> anyhow::Result<()> {
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
     Ok(())
+}
+
+const BENCH_HARNESS_JSON: &str =
+    include_str!("../../../../config/harness/opentech-bench-harness.json");
+
+async fn get_harness() -> Result<Json<serde_json::Value>, ApiError> {
+    let manifest: BenchHarnessManifest = serde_json::from_str(BENCH_HARNESS_JSON)
+        .map_err(|e| ApiError::internal(format!("bench harness manifest: {e}")))?;
+    let issues = validate_manifest(&manifest);
+    Ok(Json(json!({
+        "manifest": manifest,
+        "issues": issues,
+        "valid": issues.is_empty(),
+        "source_note": "OpenTech bench schematic export. UNREVIEWED; board-local connectors only; not an OEM harness."
+    })))
 }
 
 async fn health() -> Json<serde_json::Value> {

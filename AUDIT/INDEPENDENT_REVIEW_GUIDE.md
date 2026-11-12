@@ -5,7 +5,7 @@
 | Document ID | AUD-07 |
 | Status | Reviewer instructions; not itself an independent review |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `9837ba88...` |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `733355cc...` |
 | Audience | Automotive controls engineer, embedded Rust reviewer, PCB reviewer, functional-safety reviewer, project owner |
 | Related | AUD-01 through AUD-10 |
 
@@ -37,10 +37,10 @@
 
 ## 2. Commands to reproduce
 
-Run from `/home/jlee/OpenTech-ECU/ecu` with a Rust toolchain on `PATH`.
+Run from `OpenTech-ECU/ecu` with a Rust toolchain on `PATH`.
 
 ```bash
-# 1. Full suite. Expect 128/128 passing.
+# 1. Full suite. Expect 130/130 passing.
 cargo test --workspace
 
 # 2. Formatting and clippy. Expect both to pass.
@@ -84,14 +84,14 @@ curl -sS http://127.0.0.1:18766/api/vehicles
 
 | Command | Expected result |
 |---|---|
-| `cargo test --workspace` | 128 tests; 128 pass; 0 fail |
+| `cargo test --workspace` | 130 tests; 130 pass; 0 fail |
 | `cargo fmt` / `clippy` | Pass |
 | `cargo check --workspace --all-targets` | Pass |
 | Firmware target check | Pass; skeleton only, no HAL/timer/driver |
 | Core `no_std` loop | `ecu-types`, `ecu-fuel`, `ecu-ignition`, `ecu-scheduler`, `ecu-trigger`, `ecu-protection` pass |
 | CLI determinism | PASS for fixed calibration; 2184 frames |
 | CLI apply without `--approve` | Exit 1, refusal message |
-| UI typecheck/build | PASS; Electron/browser runtime not tested |
+| UI typecheck/build | PASS; headless Chromium smoke test PASS; Electron not launched |
 | Copilot typecheck | PASS; live LLM/tools not tested |
 | Service health | `physical_outputs:false`, interlock engaged |
 
@@ -140,7 +140,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "Protection latches" | Run overtemp/low-oil tests; inspect `clear_latched` | Fault auto-clears without explicit action | Host test only |
 | "Trigger detects gap mismatch" | Run `extra_missing_tooth_causes_sync_loss`; inspect `on_tooth` | Mismatch accepted | Host test only |
 | "Deterministic simulation" | Run twice with same `--cal`; compare log hashes; run twice without `--cal` and compare calibration checksums | Different frames/checksums | Fresh generation is deterministic at this cut-off; record checksums |
-| "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | No Electron/browser runtime test |
+| "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | Headless Chromium passed; Electron launch not tested |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
 | "Hardware exists" | Inspect `hardware/kicad`; read ERC/DRC; `find` for gerbers | A reviewed package with clean DRC/gerbers exists | Unreviewed schematic/BOM; PCB draft has 14 DRC violations, 499 unconnected; no gerbers |
@@ -151,19 +151,20 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 
 ### Gate 0 — software
 
-- [x] Full test suite green: 128/128.
+- [x] Full test suite green: 130/130.
 - [x] `cargo fmt --check` and clippy clean.
 - [x] Firmware no_std skeleton target check passes.
 - [x] Full core `no_std` build for `ecu-types`, `ecu-fuel`, `ecu-ignition`, `ecu-scheduler`, `ecu-trigger`, `ecu-protection`.
 - [x] UI typecheck/build passes.
-- [ ] Electron/browser interaction test (missing).
+- [x] Headless Chromium interaction test (dashboard, maps, Harness upload, Mixture Map, Setup, Diagnostics, Logs, Copilot).
+- [ ] Electron launch test (missing).
 - [x] Copilot typecheck passes.
 - [ ] Live LLM/tool/approval test (missing).
 - [x] Deterministic run with a recorded calibration checksum (fixed cal).
 - [x] Fresh-generation determinism (starter calibration timestamp is zero; repeat checksums match).
 - [ ] Service auth/CSRF or explicit "local-only development" restriction (missing).
 - [ ] CI run attestation (workflow defined; not observed running).
-- [x] Source committed with a reproducible hash (Git HEAD `041be84f`; Rust tree clean).
+- [x] Source committed with a reproducible hash (Git HEAD `27b91df9`; Rust tree clean; local branch not pushed).
 - [ ] Independent software review (missing).
 
 ### Gate 1 — unpowered hardware
@@ -272,7 +273,7 @@ Stop the review and escalate if any of the following is observed:
 1. This AUD set and the exact source manifest hash.
 2. Raw test logs (not summaries), including any failed or skipped test.
 3. CLI logs/CSV/report/calibration checksums for each scenario.
-4. UI build log and an Electron/browser interaction recording (if claiming UI).
+4. UI build log and a headless Chromium interaction recording; Electron launch is still missing (if claiming UI).
 5. Calibration JSON and checksum for every claim.
 6. Hardware schematic/PCB/BOM/gerbers/ERC/DRC (if claiming hardware).
 7. Firmware source/hash, map file, build log, debug probe output (if claiming firmware).

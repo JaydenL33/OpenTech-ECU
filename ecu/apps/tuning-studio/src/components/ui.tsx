@@ -41,7 +41,7 @@ export function Gauge({
   return (
     <div className={`gauge ${warning ? "gauge-warning" : ""}`}>
       <svg viewBox="0 0 180 112" role="img" aria-label={`${label} ${value ?? "unavailable"}`}>
-        <path d={arc(start, end, r)} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="9" strokeLinecap="round" />
+        <path d={arc(start, end, r)} fill="none" stroke="#e8e8e8" strokeWidth="9" strokeLinecap="round" />
         <path d={arc(start, angle, r)} fill="none" stroke={warning ? "var(--danger)" : color} strokeWidth="9" strokeLinecap="round" />
         <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={warning ? "var(--danger)" : color} strokeWidth="2" />
         <circle cx={cx} cy={cy} r="3.5" fill={warning ? "var(--danger)" : color} />
@@ -113,5 +113,60 @@ export function Panel({
       )}
       {children}
     </section>
+  );
+}
+
+export function SummaryCard({
+  icon,
+  title,
+  subtitle,
+  action,
+  children,
+  className = "",
+}: {
+  icon?: ReactNode;
+  title: string;
+  subtitle?: string;
+  action?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`summary-card ${className}`}>
+      <header className="summary-head">
+        {icon && <span className="summary-icon">{icon}</span>}
+        <div>
+          <h2>{title}</h2>
+          {subtitle && <p>{subtitle}</p>}
+        </div>
+      </header>
+      <div className="summary-body">{children}</div>
+      {action && <div className="summary-more">{action}</div>}
+    </section>
+  );
+}
+
+export function SummaryRow({
+  label,
+  value,
+  tone = "",
+}: {
+  label: string;
+  value: ReactNode;
+  tone?: "" | "warn" | "danger" | "good";
+}) {
+  return (
+    <div className={`summary-row ${tone}`}>
+      <span>{label}</span>
+      <b>{value}</b>
+    </div>
+  );
+}
+
+export function MoreLink({ onClick, children }: { onClick: () => void; children: ReactNode }) {
+  return (
+    <button className="more-link" onClick={onClick}>
+      {children} <span aria-hidden="true">→</span>
+    </button>
   );
 }

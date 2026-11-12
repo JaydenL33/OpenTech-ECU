@@ -1,30 +1,28 @@
 Rust-First ECU Engineering Mandate
-Haltech Nexus R5 + Link G5 Voodoo Pro V2 Feature-Parity Research and OpenCode Execution Brief
+Reference ECU Platform + Link G5 Voodoo Pro V2 Feature-Parity Research and OpenCode Execution Brief
 Research snapshot: 12 November 2026.
 Target: Original, open-source, Speeduino-informed ECU platform; Rust-first software; virtual ECU and tuning studio first; physical vehicle operation only after independent engineering validation.
 Execution budget: approximately US$26 in DeepSeek API credit.
 Status: Research and implementation specification, not a validated ECU design or a safe engine calibration.
 1. Mission
-Build an original next-generation engine management platform with functionality benchmarked against Haltech Nexus R5/NSP and Link G5 Voodoo Pro V2/PCLink. Reproduce capabilities and engineering workflows, not proprietary code, brand assets, confidential firmware, locked protocols, or pixel-identical interfaces.
+Build an original next-generation engine management platform with functionality benchmarked against published reference VCU/ECU platforms and Link G5 Voodoo Pro V2/PCLink. Reproduce capabilities and engineering workflows, not proprietary code, brand assets, confidential firmware, locked protocols, or pixel-identical interfaces.
 
 Produce actual working Rust code, a cross-platform tuning application, a virtual ECU, deterministic calibration algorithms, test evidence, and real KiCad design assets. The first end-to-end milestone is a host-executable virtual four-cylinder ECU controlled by a real tuning interface, not a vehicle-ready PCB.
 Non-negotiable distinction
 A wideband lambda sensor measures combustion oxygen/fuelling consequences, not optimal or knock-safe ignition timing. Implement lambda-based fuel correction separately from ignition recommendation. Never label estimated ignition maps safe or engine-ready without verified source calibration and expert validation; never perform automatic spark advance based on lambda error.
 2. Verified competitive baselines
-Haltech Nexus R5 — official published capabilities
+Reference VCU platform — official published capabilities
 Hardware and I/O: 18 peak/hold injector drivers; 12 low-current ignition outputs; 23 analogue 0–5 V inputs; 10 synchronous pulsed inputs; differential crank/home inputs; two knock inputs; two onboard wideband controllers (NTK/LSU 4.9); three CAN networks; USB-C; Wi-Fi; 512 MB onboard logging; up to 300 channels at up to 1 kHz/channel; four 25 A high-current outputs; twelve 8 A high-side outputs; four 8 A half-bridges; eight PWM-capable low-side digital outputs. The device integrates a PDM-like subsystem and supports dual electronic throttle.
 
 Engine/motorsport software: long-term learning up to 4D; 32×32×8 4D mapping; dual closed-loop oxygen; dual knock; multistage fuel injection; four-cam control; flex fuel; multi-level engine protection; advanced torque/driveshaft RPM strategies; 4D closed-loop boost; CO₂ control; launch; traction; anti-lag and rolling anti-lag; rotational idle; flat-shift; transbrake; six-stage nitrous; ride height/shock travel; race timer; selectable automatic-transmission functions.
 
-NSP workflow: vehicle/engine/harness configuration wizards, sensor and injector setup, configurable base maps for supported plug-in systems, live programming, target-lambda tables, short-term and long-term trim, log analysis, low-power USB configuration with physical outputs disabled on applicable models.
+Vendor workflow: vehicle/engine/harness configuration wizards, sensor and injector setup, configurable base maps for supported plug-in systems, live programming, target-lambda tables, short-term and long-term trim, log analysis, low-power USB configuration with physical outputs disabled on applicable models.
 
-Important limits: Haltech explicitly warns that base maps are starting configurations, not validated tunes; ignition base timing must be physically synchronised using a timing light for applications that require it.
+Important limits: the vendor explicitly warns that base maps are starting configurations, not validated tunes; ignition base timing must be physically synchronised using a timing light for applications that require it.
 
 Sources:
-- https://www.haltech.com/product/ht-195000-nexus-r5-vcu/
 - https://support.haltech.com/portal/en/kb/articles/short-and-long-term-fuel-trim
 - https://support.haltech.com/portal/en/kb/articles/target-lambda
-- https://support.haltech.com/portal/en/kb/articles/nexus-plug-in-ecu-nissan-skyline-r32-r33-r34-gt-r
 - https://support.haltech.com/portal/en/kb/articles/engine-protection
 - https://support.haltech.com/portal/en/kb/articles/flex-fuel-tuning-guide
 - https://support.haltech.com/portal/en/kb/articles/fuel-film-model-map-prediction
@@ -193,7 +191,7 @@ Simulate cranking → sync → idle → load transient → sensor failure → pr
 8. Extras: only after passing integrated tests, add advanced feature models and graphical polish.
 Budget: use DeepSeek tokens economically; target US$22 spend and reserve US$4 for review, but if there is no billing API, acknowledge spend is unknown. Require periodic concise progress checkpoints and final status with exact commands/results. Stop for genuine external blockers or at an externally enforced cap; do not assume a prompt can force a hard payment limit.
 7. OpenCode master execution instruction (paste this section into OpenCode)
-You are an autonomous, senior automotive controls, embedded Rust, PCB and tuning software engineering team. Your mission is to create an original open-source, Rust-first ECU development platform informed by Speeduino, benchmarking Haltech Nexus R5 and Link G5 Voodoo Pro V2/PCLink. The comprehensive requirements and citations are in this Markdown document. Read the document fully and turn the feature-parity backlog into tracked issues or a feature matrix.
+You are an autonomous, senior automotive controls, embedded Rust, PCB and tuning software engineering team. Your mission is to create an original open-source, Rust-first ECU development platform informed by Speeduino, benchmarking published reference VCU/ECU platforms and Link G5 Voodoo Pro V2/PCLink. The comprehensive requirements and citations are in this Markdown document. Read the document fully and turn the feature-parity backlog into tracked issues or a feature matrix.
 
 Do not merely write a plan. Build a working, host-executable, integrated demonstration now. Make technically defensible decisions, but never claim unverified physical safety, high-performance capability, test success, or compatibility.
 

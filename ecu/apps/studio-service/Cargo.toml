@@ -21,3 +21,4 @@ ecu-simulator = { path = "../../crates/ecu-simulator" }
 ecu-protocol = { path = "../../crates/ecu-protocol" }
 ecu-protection = { path = "../../crates/ecu-protection" }
 ecu-diagnostics = { path = "../../crates/ecu-diagnostics" }
+ecu-harness = { path = "../../crates/ecu-harness" }

@@ -47,7 +47,7 @@ export function Surface3D({ table, kind }: { table: Table; kind: "fuel" | "targe
       const [x1, y1] = project(a[0], a[1], a[2]);
       const [x2, y2] = project(b[0], b[1], b[2]);
       const t = (((a[2] + b[2]) / 2) - min) / range;
-      ctx.strokeStyle = `hsla(${hue1 + (hue2 - hue1) * t} 80% 62% / 0.72)`;
+      ctx.strokeStyle = `hsla(${hue1 + (hue2 - hue1) * t} 62% 48% / 0.78)`;
       ctx.lineWidth = 1.15;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
@@ -66,7 +66,7 @@ export function Surface3D({ table, kind }: { table: Table; kind: "fuel" | "targe
       }
     }
 
-    ctx.fillStyle = "rgba(220, 235, 245, 0.72)";
+    ctx.fillStyle = "#6d6d6d";
     ctx.font = "11px ui-monospace, monospace";
     ctx.fillText(`${table.axes[0].name} [rows]`, 14, 20);
     ctx.fillText(`${table.axes[1].name} [cols]`, width - 110, height - 30);

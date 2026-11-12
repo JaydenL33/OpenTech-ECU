@@ -4,7 +4,7 @@
 
 > **Status: v0.1, virtual-first.** The host Rust core, headless CLI, local service, browser/Electron tuning studio, local read-only copilot, and a `no_std` STM32 safety skeleton are present. There is no target firmware image, no physical output path, and no vehicle actuation. Nothing in this repository is an engine-safe calibration.
 
-OpenTech-ECU is a new, original aftermarket ECU platform. It is being built as a Rust port/reimplementation of Speeduino behavior, with a feature target informed by Haltech Nexus R5 and Link G5 Voodoo Pro-class capabilities, and a tuning workflow designed around explainable and reviewable changes rather than hidden auto-tuning.
+OpenTech-ECU is a new, original aftermarket ECU platform. It is being built as a Rust port/reimplementation of Speeduino behavior, with a feature target informed by modern VCU-class capabilities and Link G5 Voodoo Pro-class workflows, and a tuning workflow designed around explainable and reviewable changes rather than hidden auto-tuning.
 
 **Not a Speeduino fork.** OpenTech-ECU is a separate, Rust-first project based on Speeduino. The original Speeduino C++ tree is retained in `speeduino/`, `test/`, `reference/`, `lib/`, and `boards/` as a behavioral oracle for parity testing. It is not the product firmware, and it has not been replaced or deleted. Upstream Speeduino is at <https://github.com/speeduino/speeduino>; its documentation describes the reference tree, not this Rust platform.
 
@@ -28,7 +28,7 @@ Status terms: **Implemented** means host-side code exists and type-checks; it is
 
 | Area | Status | Notes |
 |---|---|---|
-| Rust workspace | Implemented, host-only | `cargo fmt`, `cargo clippy`, and `cargo test --workspace` pass (128 tests); see the verification note. |
+| Rust workspace | Implemented, host-only | `cargo fmt`, `cargo clippy`, and `cargo test --workspace` pass (130 tests); see the verification note. |
 | Deterministic virtual ECU | Simulated | 1 ms physics-lite engine, trigger generation, scheduler, wideband lag/delay/faults, protection, telemetry; six built-in scenarios. |
 | Calibration and tables | Implemented, host-only | 1D–4D tables, clamped interpolation, axis resampling, validation, SHA-256 sealed revisions, table diffs, starter wizard, preflight, in-memory revision history. |
 | Lambda fuel calibration | Implemented, host-only | Shared gates, bounded STFT, cell/bank-aware LTFT, offline Mixture Map with hard-fault abstention, confidence, proposal preview, selective apply and undo. |
@@ -36,8 +36,9 @@ Status terms: **Implemented** means host-side code exists and type-checks; it is
 | Engine protection | Implemented, host-only | 14 DTCs, latching, freeze frames, warning/derate/limp/cut reactions. |
 | Protocol | Implemented, served locally | JSON/WebSocket envelopes and a length-delimited binary frame with CRC32; the local service exposes the JSON link. |
 | `ecu-sim-cli` | Implemented, verified | Scenario runner, deterministic replay check, Mixture Map analysis and approval-gated apply. See the quick start. |
-| `studio-service` | Implemented, local-only | Axum HTTP/WebSocket service for live telemetry, calibration edits/undo, axis resampling, log replay, preflight, Mixture Map, faults and logs. In-memory state; no auth/TLS. |
-| Tuning Studio (browser + Electron) | Implemented, verified UI | React/TypeScript/Vite app; `npm run typecheck` and `npm run build` pass. Map axis resampling and the Logs replay control exist. `electron/main.cjs` is a desktop shell; it was not launch-tested (no display). Tauri is not used. |
+| `studio-service` | Implemented, local-only | Axum HTTP/WebSocket service for live telemetry, calibration edits/undo, axis resampling, log replay, preflight, Mixture Map, faults, logs and a bench harness view. In-memory state; no auth/TLS. |
+| Tuning Studio (browser + Electron) | Implemented, verified UI | React/TypeScript/Vite app; `npm run build` and headless browser smoke tests pass. Includes the black/yellow support-style shell, maps, Mixture Map, diagnostics, logs and a Harness & I/O page. `electron/main.cjs` is a desktop shell; it was not launch-tested (no display). Tauri is not used. |
+| Harness & I/O | Implemented, unreviewed source | `config/harness/opentech-bench-harness.json` is generated from the unreviewed KiCad BOM/pin/test-point exports; `ecu-harness` validates the generated manifest. No OEM pinout, no vendor map data, no vehicle adapter. |
 | Mastra tuning copilot | Implemented, local-only | `apps/tuning-copilot`: read-only tools, structured output, `ignitionAdvice: none`, and a deterministic offline mode. LLM mode is opt-in with an API key. Per-request tool audit only; no durable audit store. |
 | Firmware / embedded target | Implemented, skeleton | `ecu/firmware/stm32`: `no_std` safety skeleton with capture-to-decoder path, protection, and fail-closed `EngineOutputs`. The `thumbv7em-none-eabihf` check passes. No HAL, timer capture, drivers, watchdog, flash, or target image. |
 | Durable audit / persistence | Planned | Calibration history is in memory; there is no durable audit log or signed provenance store. |
@@ -51,10 +52,11 @@ Verified on 2026-11-12 with the native Rust toolchain:
 
 - `cargo fmt --all -- --check` — pass.
 - `cargo clippy --workspace --all-targets -- -D warnings` — pass.
-- `cargo test --workspace` — 128 passed, 0 failed.
+- `cargo test --workspace` — 130 passed, 0 failed.
 - `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` — pass. This is a compile check for the `no_std` skeleton, not hardware validation.
 - CLI `mixture_sweep` — determinism PASS, 2184 frames byte-identical; `analyze` produced 3–4 bounded cells; `apply --approve` produced sealed revision 2.
-- Tuning Studio — `npm run build` passes.
+- Tuning Studio — `npm run build` passes. A headless Chromium smoke test opened the black/yellow shell, Fuel map, Harness page, Mixture Map, Setup, Diagnostics, Logs and Copilot with no page errors. Screenshots are in `evidence/ui/`.
+- Harness — `GET /api/harness` reports a valid bench manifest (29 connectors, 54 test points). The page is a documentation view only; no vendor map data is shipped.
 - Copilot — `npx tsc --noEmit` passes; `npm test` now runs `tsc --noEmit` and passes. The offline `/api/copilot` path was exercised against the Rust service and returned tool-audit entries. LLM mode was not called.
 
 The Electron shell was not launch-tested because this environment has no display. Axis resampling and replay endpoints/UI exist; the replay start/stop endpoints were exercised (658 frames queued), but full WebSocket playback was not independently inspected. Axis resampling was not exercised in this verification pass. Re-run the commands on a clean host before relying on these results.
@@ -229,7 +231,7 @@ OpenTech-ECU/
 
 - [Architecture](docs/ARCHITECTURE.md) — layers, data flow, protocol, simulation, host/firmware split, trust boundary.
 - [Porting from Speeduino](docs/PORTING-FROM-SPEEDUINO.md) — what “based on Speeduino” means, oracle strategy, GPL obligations, comparison plan.
-- [Feature matrix](docs/FEATURE-MATRIX.md) — Speeduino parity and Haltech/Link feature families, with honest status.
+- [Feature matrix](docs/FEATURE-MATRIX.md) — Speeduino parity and modern ECU feature families, with honest status.
 - [LLM tuning copilot](docs/LLM-COPILOT.md) — Mastra design, tools, schemas, approval flow, prompt-injection defenses, audit.
 - [Safety case](docs/SAFETY-CASE.md) — v0.1 virtual-only argument, hazards, evidence status, unresolved validation, interlock release criteria.
 - [Calibration workflow](docs/CALIBRATION.md) — profile creation, sealed revisions, table editing/resampling, Mixture Map apply.
@@ -250,6 +252,7 @@ Audit documents are snapshot drafts. Where an audit file reports an older test r
 - [Evo VIII bench test plan](AUDIT/EVO8_BENCH_TEST_PLAN.md) — unexecuted Gate 1/2 procedure.
 - [ECU pinout verification](AUDIT/ECU_PINOUT_VERIFICATION.md) — connector and pin evidence status.
 - [Release gates](AUDIT/RELEASE_GATES.md) — Gate 0–5 definitions and current status.
+- [Public release checklist](AUDIT/PUBLIC_RELEASE_CHECKLIST.md) — provenance, secrets, vendor data, build and claim checks before publishing.
 - [Vehicle compatibility](AUDIT/VEHICLE_COMPATIBILITY.md) — vehicle-specific unknowns and compatibility matrix.
 - [Open issues](AUDIT/OPEN_ISSUES.md) — blocking EVO VIII research items.
 - [Firmware timing analysis](AUDIT/FIRMWARE_TIMING_ANALYSIS.md) — timing and scheduling limits.

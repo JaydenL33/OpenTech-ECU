@@ -10,6 +10,8 @@ export interface AppContextValue {
   running: boolean;
   busy: boolean;
   error: string | null;
+  page: string;
+  setPage: (page: "dashboard" | "fuel" | "target" | "ignition" | "mixture" | "setup" | "harness" | "diagnostics" | "calibration" | "logs" | "copilot") => void;
   setError: (value: string | null) => void;
   setCalibration: (cal: Calibration, preflight?: PreflightReport) => void;
   reloadCalibration: () => Promise<void>;

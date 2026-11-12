@@ -200,8 +200,8 @@ export function MixturePage() {
                       title={`${c.map_kpa.toFixed(0)} kPa / ${c.rpm.toFixed(0)} rpm — ${c.samples_used} samples, ${c.status}`}
                       style={{
                         background: c.samples_used
-                          ? `hsla(210, 70%, ${28 + 30 * (c.samples_used / coverage.max)}%, 1)`
-                          : "rgba(255,255,255,0.04)",
+                          ? `hsla(210, 58%, ${72 + 20 * (c.samples_used / coverage.max)}%, 1)`
+                          : "#f1f1f1",
                       }}
                     />
                   ))}

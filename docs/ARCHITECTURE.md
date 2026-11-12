@@ -51,6 +51,7 @@ ecu-types
 | `ecu-protection` | serde | `no_std` check passes | DTCs, latching, freeze frames, bounded reactions. |
 | `ecu-protocol` | types, serde_json | std | Version negotiation, JSON events, binary framing, CRC32. |
 | `ecu-diagnostics` | types | std | Session log, summary, replay cursor. |
+| `ecu-harness` | serde, serde_json | std | Bench harness manifest models and structural validation. |
 | `ecu-simulator` | all control crates | std | Physics-lite plant and integration harness. |
 
 All crates use `#![forbid(unsafe_code)]`.
@@ -225,7 +226,7 @@ Full design and current gaps: [LLM-COPILOT.md](LLM-COPILOT.md).
 ## 10. Directory map
 
 ```text
-/home/jlee/OpenTech-ECU/
+OpenTech-ECU/
   README.md
   ECU_MASTER_BRIEF.md          source specification (not modified)
   LICENSE                      GPL-2.0 text
@@ -252,6 +253,7 @@ Full design and current gaps: [LLM-COPILOT.md](LLM-COPILOT.md).
       ecu-protection/
       ecu-protocol/
       ecu-diagnostics/
+      ecu-harness/
       ecu-simulator/
     apps/
       ecu-sim-cli/             headless simulator/calibration CLI
@@ -276,7 +278,7 @@ Planned but absent: a target firmware image/HAL, `ecu/hardware`, `ecu/tests/fixt
 ## 11. Known gaps
 
 - No target firmware image, HAL, drivers, or hardware; the STM32 crate is a skeleton only.
-- `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace` (128 passed, 0 failed) pass. The `thumbv7em-none-eabihf` check for the firmware skeleton passes. See the README verification note.
+- `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace` (130 passed, 0 failed) pass. The `thumbv7em-none-eabihf` check for the firmware skeleton passes. See the README verification note.
 - `no_std` portability checks pass for `ecu-types`, `ecu-fuel`, `ecu-ignition`, `ecu-scheduler`, `ecu-trigger`, `ecu-protection`, and the firmware skeleton. This is host-verified portability, not target-hardware behaviour.
 - No authentication, TLS, multi-user isolation, durable calibration store, or durable audit log; both services are local-only. The copilot's tool audit is per-request and not persisted.
 - No proposal provenance/expiry/actor validation beyond checksum/revision/bounds; the API can be called directly with a crafted proposal JSON.

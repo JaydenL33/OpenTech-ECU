@@ -5,7 +5,7 @@
 | Document ID | AUD-06 |
 | Status | Audit traceability matrix; not a certification or release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `9837ba88...` |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `733355cc...` |
 | Sources | `ECU_MASTER_BRIEF.md`; project context; `ecu-calibration/src/vehicle.rs`; code/tests in `ecu/` |
 | Related | AUD-01, AUD-02, AUD-05, AUD-08, AUD-10 |
 
@@ -28,11 +28,11 @@
 
 | ID | Requirement | Source | Implementation / evidence | Status | Notes / blocker |
 |---|---|---|---|---|---|
-| SYS-001 | Rust-first Cargo workspace with separate core crates | Brief §4 | `ecu/Cargo.toml`; 14 workspace members (11 libs, 2 apps, firmware skeleton) | Implemented | Host-only; Tauri shell absent; current UI uses Electron |
+| SYS-001 | Rust-first Cargo workspace with separate core crates | Brief §4 | `ecu/Cargo.toml`; 15 workspace members (12 libs, 2 apps, firmware skeleton) | Implemented | Host-only; Tauri shell absent; current UI uses Electron |
 | SYS-002 | Deterministic host virtual ECU with fixed-step engine model | Brief §1, §5 | `ecu-simulator`; `step_once` 1 ms; CLI determinism PASS | Simulated | Deterministic; starter calibration uses a deterministic zero timestamp |
 | SYS-003 | No physical output path in v0.1 | Project context | No hardware driver/PCB; firmware skeleton forces outputs off; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED=true` | Implemented (snapshot) | Source committed; interlock enforcement still needs independent review |
 | SYS-004 | Versioned protocol with CRC and explicit negotiation | Brief §4 | `ecu-protocol`; 7 tests | Implemented | Binary CRC covers payload, not header; no auth |
-| SYS-005 | Real tuning UI, not mock controls | Brief §1, §7 | `apps/tuning-studio` React/Vite + Electron main; typecheck/build PASS | Partial | Electron launch/browser interaction not tested; no visual/accessibility tests; brief requested Tauri |
+| SYS-005 | Real tuning UI, not mock controls | Brief §1, §7 | `apps/tuning-studio` React/Vite + Electron main; build PASS; headless Chromium smoke test PASS | Partial | Electron launch not tested; no formal visual/accessibility suite; Tauri not used because WebKitGTK libs are unavailable |
 | SYS-006 | Bounded memory, no heap allocation in hard real-time paths | Brief §4 | Core control crates use fixed arrays; skeleton has no heap | Partial | Simulator uses `Vec`; no ISR/timer exists to assess |
 | SYS-007 | Embedded-relevant crates compile under `no_std` | Brief §4 | All six core control crates pass no-default-features; firmware skeleton target check passes | Implemented | `ecu-protocol`/`ecu-lambda` remain std-only; no HAL/drivers yet |
 | SYS-008 | `cargo fmt`, clippy, tests, CI | Brief §4 | fmt/clippy/test pass locally; CI workflow defined | Partial | CI not observed running |
@@ -183,9 +183,10 @@
 | COM-004 | Calibration apply via authoritative service | Brief §4 | `mixture_apply`; checks pause/approve/checksum | Implemented (host) | Local unauth HTTP |
 | COM-005 | Authentication/authorization | Brief §4 | None | Planned | Must precede hardware |
 | COM-006 | CAN interface / external wideband | Brief §3H | No CAN driver; protocol only | Planned / Blocked | No hardware |
-| COM-007 | Live dashboard/maps/mixture/diagnostics UI | Brief §3G | React pages + Electron main; typecheck/build PASS | Partial | Electron/browser/visual tests missing; DTC mapping bug |
+| COM-007 | Live dashboard/maps/mixture/diagnostics UI | Brief §3G | React pages + Electron main; build PASS; headless Chromium smoke test PASS | Partial | Electron not launched; no accessibility/visual-regression suite |
 | COM-008 | Tauri v2 desktop package | Brief §3G | `apps/tuning-studio/electron` exists; no Tauri `src-tauri` | Planned / Partial | Brief specified Tauri; current shell is Electron; runtime not validated |
-| COM-009 | Read-only Mastra copilot | Brief §3G, §7 | UI page; design doc | Planned | No service/tool implementation; no evals |
+| COM-009 | Read-only Mastra copilot | Brief §3G, §7 | `apps/tuning-copilot`; read-only tools, structured output, offline mode exercised; `tsc` PASS | Implemented (host) | LLM mode not called; no prompt-injection eval suite or durable audit |
+| COM-013 | Bench harness/I/O visibility | Project extension | `GET /api/harness`; Harness page; 2 `ecu-harness` manifest tests | Implemented (host) | Bench manifest is UNREVIEWED; no measurement or physical approval |
 | COM-010 | Log record/replay/CSV | Brief §3G | `LogFile`, CSV, `ReplayCursor` | Implemented (host) | No browser replay validation |
 | COM-011 | Protocol capability negotiation | Brief §4 | `negotiate` lists capabilities | Implemented | Capabilities are informational only |
 | COM-012 | Message size/backpressure limits | Brief §4 | Binary 64 KiB; WS lag warning | Partial | JSON body limit not explicit |
@@ -248,7 +249,7 @@ The following are **not** requirements satisfied by code. They are evidence item
 
 | Gate | Definition | Current status | Blocking evidence |
 |---|---|---|---|
-| Gate 0 | Software simulation | **PASS, scoped** | 128/128 tests; fmt/clippy pass; firmware skeleton target check; UI build; copilot typecheck. Not a certification |
+| Gate 0 | Software simulation | **PASS, scoped** | 130/130 tests; fmt/clippy pass; firmware skeleton target check; UI build; copilot typecheck. Not a certification |
 | Gate 1 | Unpowered hardware verification | **Blocked** | Unreviewed schematic/BOM and PCB draft; DRC fails; no gerbers/assembly/review |
 | Gate 2 | Powered bench verification | **Blocked** | No HAL/timer/driver firmware image, bench fixture, dummy loads, E-stop |
 | Gate 3 | Vehicle electrical compatibility | **Blocked / Unverified** | No Evo pinout/connector/trigger/harness evidence |
@@ -270,7 +271,7 @@ A numeric percentage would be misleading because requirements differ in scope, e
 | Lambda | Shared gate, bounded STFT/LTFT, Mixture Map tests pass | Real misfire/leak/stuck detection absent; default cap; trim labels misleading |
 | Protection | Separate state machine; latching; 10 tests | No debounce; placeholder thresholds; watchdog/CAN hard-coded healthy |
 | Calibration | Tables, checksum revisions, wizard, preflight | Unkeyed hash; warnings not blocking; no durable audit trail |
-| Protocol/UI | CRC frame tests; UI typecheck/build; copilot typecheck | No auth/CSRF; header not CRC-covered; no Electron/browser/live LLM test |
+| Protocol/UI | CRC frame tests; UI build and headless Chromium smoke test; copilot typecheck | No auth/CSRF; header not CRC-covered; no Electron launch or live LLM test; harness source unreviewed |
 | Firmware | no_std skeleton target check; 5 tests | No HAL/timer/driver/watchdog; not a controller |
 | Hardware | Unreviewed schematic/BOM/ERC; unrouted PCB with failing DRC; no gerbers | No manufacturing package, thermal/EMC, bench |
 | Evo evidence | Fail-closed `vehicle.rs` profile | All 15 items unverified; physical configuration refused |

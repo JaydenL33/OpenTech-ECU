@@ -270,6 +270,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "ecu-harness"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "ecu-ignition"
 version = "0.1.0"
 dependencies = [
@@ -873,6 +881,7 @@ dependencies = [
  "clap",
  "ecu-calibration",
  "ecu-diagnostics",
+ "ecu-harness",
  "ecu-lambda",
  "ecu-protection",
  "ecu-protocol",

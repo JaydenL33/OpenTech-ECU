@@ -12,6 +12,7 @@ members = [
   "crates/ecu-protocol",
   "crates/ecu-simulator",
   "crates/ecu-diagnostics",
+  "crates/ecu-harness",
   "apps/ecu-sim-cli",
   "apps/studio-service",
   "firmware/stm32",

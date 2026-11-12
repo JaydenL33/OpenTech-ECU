@@ -62,7 +62,7 @@ Record the exact upstream Speeduino commit used for a comparison in the fixture 
 Speeduino's own test suite is the first oracle. The repository's CI uses PlatformIO and a native simulator environment:
 
 ```bash
-cd /home/jlee/OpenTech-ECU
+cd OpenTech-ECU
 platformio test -v -e megaatmega2560_sim_unittest
 ```
 

@@ -387,3 +387,48 @@ export interface VehicleProfile {
   factory_systems: { name: string; status: string; note: string }[];
   notes: string[];
 }
+
+export interface HarnessPin {
+  pin: string;
+  name: string;
+  net: string;
+  function: string;
+  oem_assignment: string;
+}
+
+export interface HarnessConnector {
+  reference: string;
+  label: string;
+  sheet: string;
+  mpn: string;
+  pins: HarnessPin[];
+}
+
+export interface HarnessSubsystem {
+  id: string;
+  name: string;
+  sheet: string;
+  description: string;
+  connectors: string[];
+}
+
+export interface HarnessManifest {
+  schema_version: number;
+  id: string;
+  title: string;
+  status: string;
+  physical_use: string;
+  notice: string;
+  source: {
+    design: string;
+    erc: string;
+    drc: string;
+    files: { path: string; sha256: string }[];
+  };
+  generated_by: string;
+  subsystems: HarnessSubsystem[];
+  connectors: HarnessConnector[];
+  test_points: { reference: string; net: string; purpose: string }[];
+  reference_target: { vehicle: string; compatibility: string; note: string };
+}
+

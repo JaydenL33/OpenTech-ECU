@@ -38,7 +38,7 @@ Verification at the end of the milestone:
 
 - `cargo fmt --all -- --check` pass.
 - `cargo clippy --workspace --all-targets -- -D warnings` pass.
-- `cargo test --workspace` 128 passed, 0 failed.
+- `cargo test --workspace` 130 passed, 0 failed.
 - `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` pass.
 - `npm run build` in the tuning studio pass.
 - `npx tsc --noEmit` in the copilot pass.
@@ -89,3 +89,18 @@ Verification at the end of the milestone:
 4. Complete Evo pinout/trigger/injector/ignition verification on the actual car
    with the engine off.
 5. Durable, signed calibration/audit storage and firmware flash safety.
+
+## Milestone 2 — support-style UI and bench harness view (local branch)
+
+Completed on `feature/support-ui-harness` (not pushed):
+
+- Restyled the tuning studio around a black/yellow support-site visual language:
+  dark masthead, white nav band, breadcrumb/page header, light cards, yellow
+  primary actions. No Haltech logo, image or proprietary asset was copied.
+- Added a **Harness & I/O** page driven by a generated manifest from the
+  OpenTech bench KiCad exports (29 connectors, 54 test points). The manifest
+  remains `UNREVIEWED_BENCH_ONLY` and every pin is marked `NONE - BENCH ONLY`.
+- Added `ecu-harness`, which models and validates the generated bench manifest.
+  It is structural validation only, not a wiring or safety approval.
+- Added `GET /api/harness` and headless browser verification of the new page.
+- Test count is now 130 (2 new `ecu-harness` manifest tests).

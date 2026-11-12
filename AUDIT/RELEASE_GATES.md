@@ -6,7 +6,7 @@
 | Status | Gate definitions and current status; not a release approval |
 | Date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:45Z, working tree |
-| Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
+| Source manifest | `733355ccfefcc18b31806f1493b9d7b8de8f4504b841e4bb0a83335690c82397` |
 | Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
 | Related | AUD-01 through AUD-10 |
 
@@ -46,7 +46,7 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 |---:|---|---|---|
 | 0.1 | Formatting clean | `cargo fmt --all -- --check` exit 0 | **PASS** |
 | 0.2 | Clippy clean with `-D warnings` | Raw log | **PASS** |
-| 0.3 | Full host test suite green | `cargo test --workspace` | **PASS**: 128/128 |
+| 0.3 | Full host test suite green | `cargo test --workspace` | **PASS**: 130/130 |
 | 0.4 | Firmware skeleton target check | `thumbv7em-none-eabihf`, no-default-features | **PASS** |
 | 0.5 | Full core `no_std` portability | Per-crate checks | **PASS**: ecu-types, ecu-fuel, ecu-ignition, ecu-scheduler, ecu-trigger, ecu-protection pass |
 | 0.6 | CLI determinism for a recorded calibration | Two runs, same log hash | **PASS** for fixed calibration |
@@ -56,23 +56,23 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 | 0.10 | Trigger sync/loss tests | Test log | **PASS** (known timing gaps noted in AUD-02/AUD-04) |
 | 0.11 | UI typecheck/build | Raw log; `dist/` | **PASS** |
 | 0.12 | Copilot typecheck | `tsc --noEmit` | **PASS** |
-| 0.13 | UI browser/Electron interaction | Recording/test log | **MISSING** |
+| 0.13 | UI browser/Electron interaction | Recording/test log | **PARTIAL**: headless Chromium smoke test passed for dashboard, maps, Harness, Mixture Map, Setup, Diagnostics, Logs and Copilot; Electron not launched |
 | 0.14 | Live copilot/LLM/tool test | Runtime log/evals | **MISSING** |
 | 0.15 | Service smoke test, no physical outputs | Health/preflight logs | **PASS** (local) |
 | 0.16 | Service security posture documented | Review record | **PARTIAL**: no auth, permissive CORS, localhost bind |
 | 0.17 | Invariants INV-01..INV-20 reviewed | Review record | Partial; see AUD-07 |
 | 0.18 | Known gaps/limitations documented | AUD set | Present |
 | 0.19 | Independent software review | Signed record | **MISSING** |
-| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: source commit `041be84f`; Rust tree clean; tested manifest hash recorded in AUD-05 |
+| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: local branch source commit `27b91df90695eb7d1a8870b552befe3fcb400577`; Rust tree clean; tested manifest hash recorded in AUD-05 |
 
-**Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 128 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: no browser/Electron runtime test, no live LLM test, and no independent review. It does **not** authorise Gate 1+.
+**Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 130 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: headless Chromium only (Electron not launched), no live LLM test, and no independent review. It does **not** authorise Gate 1+.
 
 ### 2.4 Conditions for maintaining Gate 0
 
 1. Re-run the full command set on every source change; a regression resets Gate 0.
 2. Keep the firmware skeleton interlock false; no physical output path.
 3. Do not claim target-hardware behaviour from a host no_std check.
-4. Add Electron/browser/copilot runtime tests before claiming UI/copilot readiness.
+4. Add an Electron launch test, accessibility checks and copilot behavioral evals before claiming UI/copilot readiness.
 5. Commit the source or keep the manifest hash current.
 6. Obtain independent software review; record findings.
 
@@ -235,14 +235,14 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 | Evidence | Available? | Location / note |
 |---|---|---|
-| Rust tests | Yes, green | 128 tests; AUD-05 |
+| Rust tests | Yes, green | 130 tests; AUD-05 |
 | Formatting | Yes | `cargo fmt --check` pass |
 | Clippy | Yes | `-D warnings` pass |
 | Firmware skeleton target check | Yes | `thumbv7em-none-eabihf` pass; skeleton only |
 | Full core `no_std` | Pass for core control crates | All six pass; `ecu-protocol`/`ecu-lambda` remain std-only; firmware skeleton has no HAL/drivers |
 | CLI determinism | Yes, fixed and fresh | `mixture_sweep` PASS, 2184 frames; fresh `idle_warmup` checksum stable |
 | Mixture Map analysis/apply | Yes, host | 3 cells; approval/CLI refusal |
-| UI typecheck/build | Yes | PASS; Electron/browser not tested |
+| UI typecheck/build | Yes | PASS; headless Chromium smoke test passed; Electron not launched |
 | Copilot typecheck | Yes | PASS; live LLM/tools not tested |
 | Service smoke | Yes, local | Health/preflight/status; no auth |
 | CI workflow | Defined | `.github/workflows/opentech-ci.yml`; not observed running |
@@ -295,6 +295,6 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 ## 11. Current release statement
 
-> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 128 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because only an unreviewed bench schematic/BOM and failing PCB draft exist, with no gerbers; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
+> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 130 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because only an unreviewed bench schematic/BOM and failing PCB draft exist, with no gerbers; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
 
 The next step is not a vehicle test. It is: keep the Gate 0 evidence current, complete a software review, produce a reviewed hardware design and bench fixture, and only then seek Gate 3 evidence.

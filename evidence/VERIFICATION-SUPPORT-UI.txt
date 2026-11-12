@@ -1,0 +1,58 @@
+OpenTech-ECU public-readiness verification — 2026-11-12T21:54:54Z
+Branch: feature/support-ui-harness (local only; not pushed)
+
+$ cargo fmt --all -- --check
+PASS
+
+$ cargo clippy --workspace --all-targets -- -D warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.08s
+
+$ cargo test --workspace
+TOTAL passed=130 failed=0
+
+$ core no_std checks
+PASS
+
+$ firmware target check
+PASS
+
+$ UI build
+dist/assets/index-CSajzbfW.css   21.76 kB │ gzip:  5.23 kB
+dist/assets/index-BD-629J4.js   297.92 kB │ gzip: 90.67 kB │ map: 1,249.22 kB
+✓ built in 1.01s
+
+$ copilot typecheck
+PASS
+
+$ GET /api/harness
+{
+  "valid": true,
+  "status": "UNREVIEWED_BENCH_ONLY",
+  "physical_use": "PROHIBITED",
+  "connectors": 29,
+  "test_points": 54
+}
+
+$ GET /api/health
+{"interlock":"PHYSICAL_OUTPUT_INTERLOCK_ENGAGED","note":"Virtual ECU only. No injector or ignition hardware path exists.","physical_outputs":false,"protocol_version":1,"service":"opentech-ecu-studio","status":"ok","version":"0.1.0"}
+
+$ cargo run -p ecu-sim-cli -- run --scenario mixture_sweep --check-determinism
+determinism: PASS (2184 frames byte-identical)
+frames:   2184
+wrote:    runs/public-sweep
+
+$ analyze
+samples used/rejected: 1378/806  cells proposed: 3  hard faults: []
+proposal: mix-e56c7b554ec2b0bd (3 cells, requires approval)
+ignition untouched: true
+
+Headless Chromium UI smoke test (2026-11-13):
+- dashboard, Fuel map, Harness, Mixture Map, Setup, Diagnostics, Logs and Copilot loaded
+- no page errors
+- Harness page showed the bench manifest and test points; no vendor map archive UI
+- screenshots: evidence/ui/dashboard.png, evidence/ui/harness.png
+
+Public tree checks:
+- No vendor map archive or extracted vendor calibration data is tracked.
+- No API keys, private keys or .env files are tracked.
+- No absolute developer paths remain in tracked documentation or source.

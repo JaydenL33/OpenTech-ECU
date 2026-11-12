@@ -169,6 +169,14 @@ export const api = {
   replayStop: () => request<unknown>("/api/replay/stop", { method: "POST" }),
   logSummary: () => request<SessionSummary>("/api/log/summary"),
 
+  harness: () =>
+    request<{
+      manifest: import("./types").HarnessManifest;
+      issues: { code: string; detail: string }[];
+      valid: boolean;
+      source_note: string;
+    }>("/api/harness"),
+
   copilot: (message: string, history: { role: string; content: string }[]) =>
     request<{
       reply: string;
