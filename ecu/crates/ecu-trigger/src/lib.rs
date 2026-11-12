@@ -370,8 +370,13 @@ impl MissingToothDecoder {
         let synced = matches!(self.state, SyncState::CrankSynced | SyncState::Sequential);
         let valid = match (self.cam_window_deg, self.last_gap_us) {
             (Some((start, end)), Some(gap)) if synced && timestamp_us >= gap => {
-                let angle = (timestamp_us - gap) as f32 * self.rpm * 6e-6;
-                (start..=end).contains(&angle)
+                // Use the decoder's own tooth-based angle, not gap time times
+                // the lagged speed estimate. That estimate is off by 30-60 deg
+                // while the engine accelerates, which rejected valid cam edges.
+                match self.crank_angle_at(timestamp_us) {
+                    Some(angle) => (start..=end).contains(&angle),
+                    None => false,
+                }
             }
             _ => false,
         };
