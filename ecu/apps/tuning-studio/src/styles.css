@@ -142,8 +142,17 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 .global-error { display: flex; justify-content: space-between; gap: 12px; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.35); color: #ffc4c4; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.8rem; }
 .global-error button { border: 0; background: transparent; color: inherit; text-decoration: underline; }
 
-.map-toolbar { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
-.selected-cell { display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: var(--muted); flex-wrap: wrap; }
+.map-sets-bar { background: linear-gradient(180deg, rgba(20,27,36,0.96), rgba(13,18,24,0.98)); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+.map-sets-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.map-sets-row label { display: flex; flex-direction: column; gap: 4px; font-size: 0.63rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.map-sets-row label input, .map-sets-row label select { text-transform: none; letter-spacing: normal; }
+.map-sets-row input { width: 140px; }
+.map-sets-row select { min-width: 180px; }
+.map-sets-row .badge { margin-bottom: 8px; }
+.map-sets-message { margin: 8px 0 0; font-size: 0.72rem; color: var(--accent-2); }
+.map-sets-bar .hint { margin-top: 6px; }
+
+.map-toolbar { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }.selected-cell { display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: var(--muted); flex-wrap: wrap; }
 .selected-cell label { display: flex; align-items: center; gap: 6px; }
 .selected-cell input { width: 94px; font-family: ui-monospace, monospace; font-size: 0.9rem; padding: 6px; }
 .selected-cell .unit { color: var(--accent-2); }
