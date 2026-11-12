@@ -6,7 +6,7 @@
 | Status | Gate definitions and current status; not a release approval |
 | Date | 2026-11-12 |
 | Evidence cut-off | 2026-11-12T05:40Z, working tree |
-| Source manifest | `b78751a95244e59abbf5683c76b291c1eaff3d8fefa6302e54fb1fc1b594a237` |
+| Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
 | Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
 | Related | AUD-01 through AUD-10 |
 
@@ -88,14 +88,14 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 - Schematic, PCB, BOM, gerbers, drill, assembly drawing, build notes.
 - ERC/DRC report with rule set, exceptions and reviewer rationale.
 - Board revision/serial number; assembly inspection record.
-- A separate Codex attempt at a bench-prototype KiCad package may exist; it is **UNREVIEWED** and cannot be used as Gate 1 evidence until reviewed.
+- An unreviewed bench-prototype schematic package exists at `hardware/kicad/evo8-bench-ecu/`; it has no PCB/DRC/gerbers and cannot be used as Gate 1 evidence until reviewed.
 
 ### 3.3 Exit criteria
 
 | # | Criterion | Required evidence | Current status |
 |---:|---|---|---|
-| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **BLOCKED**: no manufacturing-ready package |
-| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED** |
+| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **BLOCKED**: unreviewed schematic/BOM; no PCB/gerbers; no reviewed revision |
+| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC JSON exists (0 violations from generator) but not independently reviewed; no DRC |
 | 1.3 | BOM derating/lifecycle review | BOM review | **BLOCKED** |
 | 1.4 | Visual inspection | Photos/checklist | **BLOCKED** |
 | 1.5 | Continuity/rails/no shorts | Measurement record | **BLOCKED** |

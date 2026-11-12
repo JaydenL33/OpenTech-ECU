@@ -8,7 +8,7 @@
 | Evidence cut-off | 2026-11-12T05:40Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
 | Git HEAD | `041be84f665d9aefa551df81792df8acb5ac7873` |
-| Rust source manifest | SHA-256 `b78751a95244e59abbf5683c76b291c1eaff3d8fefa6302e54fb1fc1b594a237` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Rust source manifest | SHA-256 `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
 | Formatting | `cargo fmt --all -- --check` passed |

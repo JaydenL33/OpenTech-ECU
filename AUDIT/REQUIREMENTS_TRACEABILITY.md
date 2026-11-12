@@ -5,7 +5,7 @@
 | Document ID | AUD-06 |
 | Status | Audit traceability matrix; not a certification or release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `b78751a9...` |
+| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `9837ba88...` |
 | Sources | `ECU_MASTER_BRIEF.md`; project context; `ecu-calibration/src/vehicle.rs`; code/tests in `ecu/` |
 | Related | AUD-01, AUD-02, AUD-05, AUD-08, AUD-10 |
 
@@ -205,9 +205,9 @@
 
 | ID | Requirement | Source | Implementation / evidence | Status | Notes / blocker |
 |---|---|---|---|---|---|
-| HW-001 | MCU trade study (STM32H7 vs S32K) | Brief §3H | None | Planned | See AUD-03; no selection |
-| HW-002 | KiCad schematic/PCB/BOM/gerbers | Brief §3H | None | Blocked | No files found |
-| HW-003 | ERC/DRC with issue log | Brief §3H | None | Blocked | `kicad-cli` absent; no design |
+| HW-001 | MCU trade study (STM32H7 vs S32K) | Brief §3H | Unreviewed schematic uses STM32H743VIT6; no validated selection | Planned / Partial | See AUD-03; exact HAL/timer proof still required |
+| HW-002 | KiCad schematic/PCB/BOM/gerbers | Brief §3H | Unreviewed 7-sheet schematic, BOM, netlist; no PCB/gerbers | Partial / Blocked | `hardware/kicad/evo8-bench-ecu/` is unreviewed; no manufacturing package |
+| HW-003 | ERC/DRC with issue log | Brief §3H | ERC JSON reports 0 violations from generator; no DRC | Partial / Blocked | Not independently reproduced; no PCB exists |
 | HW-004 | Power input protection/transients | Brief §3H | Requirements only | Blocked | See AUD-03 |
 | HW-005 | Injector low-side drivers/flyback | Brief §3H | Requirements only | Blocked | Injector data unverified |
 | HW-006 | Ignition outputs/igniter compatibility | Brief §3H | Requirements only | Blocked | Coil topology unverified |

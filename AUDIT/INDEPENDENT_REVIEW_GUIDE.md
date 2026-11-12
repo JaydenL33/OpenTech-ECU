@@ -5,7 +5,7 @@
 | Document ID | AUD-07 |
 | Status | Reviewer instructions; not itself an independent review |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `b78751a9...` |
+| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `9837ba88...` |
 | Audience | Automotive controls engineer, embedded Rust reviewer, PCB reviewer, functional-safety reviewer, project owner |
 | Related | AUD-01 through AUD-10 |
 
