@@ -15,6 +15,7 @@ import { LogsPage } from "./pages/Logs";
 import { LogViewerPage } from "./pages/LogViewer";
 import { CopilotPage } from "./pages/Copilot";
 import { WarningsPage } from "./pages/Warnings";
+import { ChannelsPage } from "./pages/Channels";
 import { WarningBanner } from "./components/WarningBanner";
 import { Badge } from "./components/ui";
 
@@ -32,6 +33,7 @@ type PageId =
   | "logs"
   | "logviewer"
   | "warnings"
+  | "channels"
   | "copilot";
 
 const NAV: { id: PageId; label: string; group: string }[] = [
@@ -48,6 +50,7 @@ const NAV: { id: PageId; label: string; group: string }[] = [
   { id: "logs", label: "Logs & evidence", group: "Service" },
   { id: "logviewer", label: "Log viewer", group: "Service" },
   { id: "warnings", label: "Warning limits", group: "Service" },
+  { id: "channels", label: "Channels & sensors", group: "Service" },
   { id: "copilot", label: "Tuning Copilot", group: "Assist" },
 ];
 
@@ -213,6 +216,7 @@ export default function App() {
                 : page === "logs" ? "Evidence & logs"
                 : page === "logviewer" ? "Log viewer"
                 : page === "warnings" ? "Channel warning limits"
+                : page === "channels" ? "Channels & sensors"
                 : page === "copilot" ? "Tuning Copilot"
                 : "Live engine overview"
               }</h1>
@@ -244,6 +248,7 @@ export default function App() {
           {page === "logs" && <LogsPage />}
           {page === "logviewer" && <LogViewerPage />}
           {page === "warnings" && <WarningsPage />}
+          {page === "channels" && <ChannelsPage />}
           {page === "copilot" && <CopilotPage />}
           <footer className="app-footer">
             OpenTech-ECU is an independent Rust platform based on Speeduino. Speeduino C++ is retained as the

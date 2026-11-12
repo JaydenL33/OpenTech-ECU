@@ -206,6 +206,14 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 .cylinder-strip { margin-bottom: 12px; }
 .cylinder-table .cylinder-number { color: var(--text); font-weight: 650; }
 .missing-source { color: var(--warning); font-family: inherit; font-size: 0.68rem; }
+.channel-strip { margin-bottom: 12px; }
+.channel-table-wrap { margin-top: 12px; }
+.channel-group-row td { background: #0c1219; color: #7f93a6; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: inherit; }
+.channel-table td { vertical-align: top; }
+.channel-label { display: block; color: var(--text); font-family: inherit; font-size: 0.74rem; }
+.channel-key { display: block; color: #66788a; font-size: 0.61rem; margin-top: 2px; }
+.channel-live { color: var(--good); font-size: 0.66rem; }
+.channel-row-missing td { background: rgba(240,179,94,0.025); }
 
 .setup-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 16px 0; }
 .setup-grid label { display: flex; flex-direction: column; gap: 5px; font-size: 0.7rem; color: var(--muted); }
