@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { api } from "../api";
 import { useApp } from "../context";
-import type { MixtureMapReport } from "../types";
+import type { MixtureMapReport, MixturePreview } from "../types";
 import { Panel, Badge, Stat } from "../components/ui";
 
 const statusTone: Record<string, "good" | "warn" | "danger" | "neutral" | "info"> = {
@@ -23,12 +23,50 @@ export function MixturePage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [undoAvailable, setUndoAvailable] = useState(false);
+  // Read-only diff awaiting an explicit human decision. Any change to the
+  // selection or report invalidates it, so the diff on screen is always the
+  // diff for the cells that would be applied.
+  const [review, setReview] = useState<MixturePreview | null>(null);
+  const [reviewAck, setReviewAck] = useState(false);
+
+  const clearReview = () => {
+    setReview(null);
+    setReviewAck(false);
+  };
+
+  const changeSelection = (next: Set<string>) => {
+    setSelected(next);
+    clearReview();
+  };
 
   const takeReport = (r: MixtureMapReport) => {
     setReport(r);
     setSelected(new Set((r.proposal?.cells ?? []).map((c) => `${c.row},${c.col}`)));
     setUndoAvailable(false);
     setError(null);
+    clearReview();
+  };
+
+  const selectedCells = () =>
+    [...selected].map((key) => key.split(",").map(Number) as [number, number]);
+
+  const startReview = async () => {
+    if (!report?.proposal) return;
+    if (selected.size === 0) {
+      setError("Select at least one proposed cell.");
+      return;
+    }
+    setBusy("Computing the exact diff (nothing is stored)…");
+    setError(null);
+    try {
+      setReview(await api.mixturePreview(report.proposal, selectedCells()));
+      setReviewAck(false);
+    } catch (e) {
+      clearReview();
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(null);
+    }
   };
 
   const runSweep = async () => {
@@ -63,28 +101,23 @@ export function MixturePage() {
 
   const apply = async () => {
     if (!report?.proposal) return;
-    if (selected.size === 0) {
-      setError("Select at least one proposed cell.");
-      return;
-    }
-    if (
-      !window.confirm(
-        `Apply ${selected.size} fuel-cell corrections as a new sealed revision?\n\nThis changes the virtual calibration only. The maps remain unvalidated; no physical outputs exist.`,
-      )
-    ) {
+    // Applying requires a reviewed diff for exactly this selection and an
+    // explicit acknowledgement; there is no one-click apply path.
+    if (!review || !reviewAck || review.applied_cells !== selected.size) {
+      setError("Review the diff and tick the acknowledgement before applying.");
       return;
     }
     setBusy("Pausing engine and applying selected cells…");
     setError(null);
     try {
       if (app.running) await app.pause();
-      const cells = [...selected].map((key) => key.split(",").map(Number) as [number, number]);
-      const result = await api.mixtureApply(report.proposal, cells);
+      const result = await api.mixtureApply(report.proposal, selectedCells());
       app.setCalibration(result.calibration, result.preflight);
       setMessage(
         `Applied ${result.applied_cells} cells. Revision ${result.calibration.revision}, checksum ${result.calibration.checksum.slice(0, 12)}… Max VE delta ${result.diff.max_abs_delta.toFixed(2)} points.`,
       );
       setUndoAvailable(true);
+      clearReview();
       setReport(null);
       await app.refreshStatus();
     } catch (e) {
@@ -166,6 +199,7 @@ export function MixturePage() {
               <Stat label="Samples rejected" value={report.samples_rejected} tone="warn" />
               <Stat label="Proposed cells" value={proposals.length} tone={proposals.length ? "good" : ""} />
               <Stat label="Bank" value={report.bank} />
+              <Stat label="Closed / open loop" value={`${report.closed_loop_samples_used ?? 0} / ${report.open_loop_samples_used ?? 0}`} />
               <Stat label="Coverage" value={`${report.cells.filter((c) => c.samples_used > 0).length}/${report.cells.length}`} />
               <Stat label="Log checksum" value={report.source_log_checksum.slice(0, 12) + "…"} />
               <Stat label="Calibration" value={`rev ${report.calibration_revision}`} />
@@ -225,7 +259,7 @@ export function MixturePage() {
                               const next = new Set(selected);
                               if (e.target.checked) next.add(key);
                               else next.delete(key);
-                              setSelected(next);
+                              changeSelection(next);
                             }}
                           />
                           <span className="cell-pos">
@@ -245,14 +279,61 @@ export function MixturePage() {
                     })}
                   </div>
                 )}
+                {review && (
+                  <div className="alert warn" data-testid="mixture-review">
+                    <strong>
+                      Review: {review.applied_cells} cell(s), revision {review.base_revision} →{" "}
+                      {review.would_be_revision}
+                    </strong>
+                    <div className="muted">
+                      Base checksum {review.base_checksum.slice(0, 12)}… · max |ΔVE|{" "}
+                      {review.diff.max_abs_delta.toFixed(2)} · mean |ΔVE| {review.diff.mean_abs_delta.toFixed(2)}
+                    </div>
+                    <table className="data-table">
+                      <thead>
+                        <tr><th>Cell (row,col)</th><th>VE before</th><th>VE after</th><th>Δ</th></tr>
+                      </thead>
+                      <tbody>
+                        {review.diff.changes.map((ch) => (
+                          <tr key={ch.indices.join(",")}>
+                            <td>{ch.indices.join(", ")}</td>
+                            <td>{ch.old.toFixed(2)}</td>
+                            <td>{ch.new.toFixed(2)}</td>
+                            <td className={ch.delta >= 0 ? "pos" : "neg"}>
+                              {ch.delta >= 0 ? "+" : ""}
+                              {ch.delta.toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <p className="hint">{review.notice}</p>
+                    <label className="checkbox">
+                      <input type="checkbox" checked={reviewAck} onChange={(e) => setReviewAck(e.target.checked)} />
+                      I have reviewed this diff. Apply to the virtual calibration only; I understand it is
+                      unvalidated and can be undone.
+                    </label>
+                  </div>
+                )}
                 <div className="button-row">
-                  <button className="button primary" onClick={apply} disabled={!!busy || proposals.length === 0}>
-                    Apply selected ({selected.size})
+                  <button
+                    className="button ghost"
+                    onClick={startReview}
+                    disabled={!!busy || proposals.length === 0 || selected.size === 0}
+                  >
+                    Review diff ({selected.size})
+                  </button>
+                  <button
+                    className="button primary"
+                    onClick={apply}
+                    disabled={!!busy || !review || !reviewAck || review.applied_cells !== selected.size}
+                  >
+                    Apply reviewed ({selected.size})
                   </button>
                   <button
                     className="button ghost"
                     onClick={() =>
-                      setSelected(
+                      changeSelection(
                         selected.size === proposals.length
                           ? new Set()
                           : new Set(proposals.map((c) => `${c.row},${c.col}`)),
@@ -271,7 +352,8 @@ export function MixturePage() {
                 <thead>
                   <tr>
                     <th>Map</th><th>RPM</th><th>Seen</th><th>Used</th><th>Dwell s</th><th>λ mean</th>
-                    <th>Target</th><th>Trim</th><th>Conf.</th><th>Status</th><th>Correction</th>
+                    <th>Target</th><th>Trim</th><th>Window drops</th><th>Rejected for</th>
+                    <th>Conf.</th><th>Status</th><th>Correction</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -285,6 +367,14 @@ export function MixturePage() {
                       <td>{c.mean_lambda?.toFixed(3) ?? "—"}</td>
                       <td>{c.mean_target_lambda?.toFixed(3) ?? "—"}</td>
                       <td>{c.mean_total_trim !== null ? `${(c.mean_total_trim * 100).toFixed(1)}%` : "—"}</td>
+                      <td>{c.window_rejected_samples ?? 0}</td>
+                      <td className="muted">
+                        {Object.entries(c.exclusion_reasons)
+                          .sort((a, b) => b[1] - a[1])
+                          .slice(0, 3)
+                          .map(([code, n]) => `${code} ×${n}`)
+                          .join(", ") || "—"}
+                      </td>
                       <td>{c.confidence.toFixed(2)}</td>
                       <td><Badge tone={statusTone[c.status] ?? "neutral"}>{c.status.replaceAll("_", " ")}</Badge></td>
                       <td>{c.status === "proposed" ? `${(c.correction_fraction * 100).toFixed(1)}%` : "—"}</td>

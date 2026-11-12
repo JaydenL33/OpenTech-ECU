@@ -230,6 +230,8 @@ export interface MixtureCellReport {
     | "wot_excluded"
     | "no_samples";
   exclusion_reasons: Record<string, number>;
+  /** Gate-clean samples dropped by the latency window (optional: older reports lack it). */
+  window_rejected_samples?: number;
 }
 
 export interface ProposedVeCell {
@@ -262,6 +264,72 @@ export interface VeProposal {
   created_unix_ms: number;
 }
 
+/** Response of POST /api/mixture/preview — a read-only diff; nothing is stored. */
+export interface MixturePreview {
+  preview_only: true;
+  applied: false;
+  proposal_id: string;
+  applied_cells: number;
+  diff: {
+    table_id: string;
+    changes: { indices: number[]; old: number; new: number; delta: number }[];
+    max_abs_delta: number;
+    mean_abs_delta: number;
+  };
+  base_revision: number;
+  base_checksum: string;
+  would_be_revision: number;
+  requires_approval: boolean;
+  notice: string;
+}
+
+export type IgnitionEvidenceStatus =
+  | "insufficient_evidence"
+  | "simulation_only"
+  | "verified_reference";
+
+export interface TimingReferenceProvenance {
+  source: "verified_reference" | "manufacturer_published" | "engineering_estimate" | "synthetic_simulation_only" | "unknown";
+  citation: string;
+  licence: string;
+  verified_by: string;
+  verification_date: string;
+  engine_specific_verified: boolean;
+  notes: string;
+}
+
+export interface TimingReferenceInput {
+  provenance: TimingReferenceProvenance;
+  advance_deg: number;
+  rpm: number;
+  map_kpa: number;
+  compression_ratio: number;
+  fuel: string;
+  aspiration: string;
+}
+
+/** Response of POST /api/ignition/recommend. Advisory only; never written to a table. */
+export interface IgnitionRecommendationResponse {
+  recommendation: {
+    status: IgnitionEvidenceStatus;
+    proposed_advance_deg: number | null;
+    lower_bound_deg: number | null;
+    upper_bound_deg: number | null;
+    confidence: number;
+    reasons: string[];
+    required_validation: string[];
+  };
+  attestation_notes: string[];
+  reference_provenance: TimingReferenceProvenance | null;
+  engine: { compression_ratio: number; aspiration: string; fuel_stated_by_caller: string };
+  calibration_ignition_policy: string | null;
+  lambda_used: false;
+  fuel_trim_used: false;
+  writes_calibration: false;
+  advisory_only: true;
+  notice: string;
+}
+
 export interface MixtureMapReport {
   source_scenario: string;
   source_seed: number;
@@ -275,6 +343,9 @@ export interface MixtureMapReport {
   samples_used: number;
   samples_rejected: number;
   gate_reason_counts: Record<string, number>;
+  /** Absent in reports produced before the latency-window gate was added. */
+  closed_loop_samples_used?: number;
+  open_loop_samples_used?: number;
   cells: MixtureCellReport[];
   proposal: VeProposal | null;
   hard_faults: string[];

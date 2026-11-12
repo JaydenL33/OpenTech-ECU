@@ -134,6 +134,28 @@ export const api = {
       body: JSON.stringify(opts),
     }),
 
+  /** Read-only: the exact diff apply would produce. Stores nothing. */
+  mixturePreview: (
+    proposal: import("./types").VeProposal,
+    selected: [number, number][],
+  ) =>
+    request<import("./types").MixturePreview>("/api/mixture/preview", {
+      method: "POST",
+      body: JSON.stringify({ proposal, selected }),
+    }),
+
+  /** Advisory ignition recommendation. No lambda input; writes nothing. */
+  ignitionRecommend: (body: {
+    target_rpm: number;
+    target_map_kpa: number;
+    engine_fuel: string;
+    reference: import("./types").TimingReferenceInput | null;
+  }) =>
+    request<import("./types").IgnitionRecommendationResponse>("/api/ignition/recommend", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
   mixtureApply: (
     proposal: import("./types").VeProposal,
     selected: [number, number][],

@@ -31,6 +31,28 @@ pub struct MixtureMapOptions {
     pub min_oil_pressure_kpa: f32,
     pub bank: u8,
     pub time_align_exhaust: bool,
+    /// Extra settling time (ms) added to the exhaust transport delay. A lambda
+    /// sample is only used if no transient, misfire, fuel/spark cut or trim
+    /// change occurred anywhere in `[t - exhaust_delay - holdoff, t]`, because
+    /// the sensor reading reflects fuel delivered that long ago. This is a
+    /// proxy: `TelemetryFrame` carries no accel-enrichment channel, so
+    /// transient enrichment is detected from TPS/MAP/RPM rates only.
+    #[serde(default = "default_transient_holdoff_ms")]
+    pub transient_holdoff_ms: u32,
+    /// Maximum permitted spread of (STFT + LTFT) inside the latency window.
+    /// A moving trim means the fuel actually delivered is not the fuel the
+    /// aligned frame reports. Initial value is an unvalidated engineering
+    /// guess, not a calibrated figure.
+    #[serde(default = "default_max_trim_swing")]
+    pub max_trim_swing: f32,
+}
+
+fn default_transient_holdoff_ms() -> u32 {
+    250
+}
+
+fn default_max_trim_swing() -> f32 {
+    0.06
 }
 
 impl Default for MixtureMapOptions {
@@ -48,6 +70,8 @@ impl Default for MixtureMapOptions {
             min_oil_pressure_kpa: 40.0,
             bank: 1,
             time_align_exhaust: true,
+            transient_holdoff_ms: default_transient_holdoff_ms(),
+            max_trim_swing: default_max_trim_swing(),
         }
     }
 }
@@ -85,6 +109,11 @@ pub struct MixtureCellReport {
     pub confidence: f32,
     pub status: CellStatus,
     pub exclusion_reasons: BTreeMap<String, u32>,
+    /// Samples that passed the instantaneous gate but were dropped because of a
+    /// disturbance inside the latency window (`WINDOW_*` reasons). Counted once
+    /// per sample, not once per reason.
+    #[serde(default)]
+    pub window_rejected_samples: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -134,6 +163,13 @@ pub struct MixtureMapReport {
     pub samples_used: u32,
     pub samples_rejected: u32,
     pub gate_reason_counts: BTreeMap<String, u32>,
+    /// Used samples taken while the STFT loop reported active.
+    #[serde(default)]
+    pub closed_loop_samples_used: u32,
+    /// Used samples taken with the STFT loop inactive (open loop). The
+    /// frame's applied STFT/LTFT is still folded into the pre-trim estimate.
+    #[serde(default)]
+    pub open_loop_samples_used: u32,
     pub cells: Vec<MixtureCellReport>,
     pub proposal: Option<VeProposal>,
     pub hard_faults: Vec<String>,
@@ -182,6 +218,7 @@ struct Acc {
     sum_ltft: f64,
     sum_trim: f64,
     dwell_ms: f32,
+    window_rejected: u32,
     exclusion: BTreeMap<String, u32>,
 }
 
@@ -205,6 +242,8 @@ pub fn analyze(
         || options.min_confidence > 1.0
         || !options.max_lambda_stddev.is_finite()
         || options.max_lambda_stddev <= 0.0
+        || !options.max_trim_swing.is_finite()
+        || options.max_trim_swing <= 0.0
     {
         return Err(MixtureMapError::InvalidOptions(
             "bounds must be finite and within documented limits".into(),
@@ -287,6 +326,44 @@ pub fn analyze(
         require_oil_pressure_ok: true,
         ..GateConfig::default()
     };
+
+    // Per-frame event flags for the latency-window check below. Thresholds
+    // match the instantaneous gate so the two checks stay consistent.
+    const EV_TRANSIENT: u8 = 1;
+    const EV_MISFIRE: u8 = 2;
+    const EV_CUT: u8 = 4;
+    let event_flags: Vec<u8> = frames
+        .iter()
+        .enumerate()
+        .map(|(j, fr)| {
+            let prev = j.checked_sub(1).map(|k| &frames[k]);
+            let (rr, mr, tr) = rates(prev, fr);
+            let mut flags = 0u8;
+            if options.require_steady_state
+                && (!rr.is_finite()
+                    || !mr.is_finite()
+                    || !tr.is_finite()
+                    || rr.abs() > learning_gate_cfg.max_rpm_rate_rpm_s
+                    || mr.abs() > learning_gate_cfg.max_map_rate_kpa_s
+                    || tr.abs() > learning_gate_cfg.max_tps_rate_pct_s)
+            {
+                flags |= EV_TRANSIENT;
+            }
+            if fr
+                .active_faults
+                .iter()
+                .any(|s| s.contains("MISFIRE") || s.contains("EXHAUST_LEAK"))
+            {
+                flags |= EV_MISFIRE;
+            }
+            if fr.fuel_cut || fr.spark_cut {
+                flags |= EV_CUT;
+            }
+            flags
+        })
+        .collect();
+    let mut closed_loop_used = 0u32;
+    let mut open_loop_used = 0u32;
 
     for (i, f) in frames.iter().enumerate() {
         if f.lambda_bank != options.bank {
@@ -392,6 +469,71 @@ pub fn analyze(
                 .or_insert(0) += 1;
             continue;
         }
+
+        // Latency window: the lambda reading at `f` reflects fuel delivered
+        // `exhaust_delay_ms` earlier, and needs `transient_holdoff_ms` to
+        // settle. Any disturbance anywhere in that span invalidates it, even
+        // if the current frame itself looks steady. A window that starts
+        // before the log is clipped (no evidence of a disturbance).
+        let transport_ms: u64 = if options.time_align_exhaust {
+            f.exhaust_delay_ms as u64
+        } else {
+            0
+        };
+        let lead_ms: u64 = transport_ms + options.transient_holdoff_ms as u64;
+        let start_us = f.timestamp_us.saturating_sub(lead_ms * 1000);
+        let start = frames[..=i].partition_point(|x| x.timestamp_us < start_us);
+        let window_flags = event_flags[start..=i].iter().fold(0u8, |m, b| m | b);
+        let mut trim_min = f32::MAX;
+        let mut trim_max = f32::MIN;
+        let mut trim_finite = true;
+        let mut saw_closed = false;
+        let mut saw_open = false;
+        for w in &frames[start..=i] {
+            let t = w.stft + w.ltft;
+            if t.is_finite() {
+                trim_min = trim_min.min(t);
+                trim_max = trim_max.max(t);
+            } else {
+                trim_finite = false;
+            }
+            if w.closed_loop {
+                saw_closed = true;
+            } else {
+                saw_open = true;
+            }
+        }
+        let mut window_reasons: Vec<&'static str> = Vec::new();
+        if window_flags & EV_TRANSIENT != 0 {
+            window_reasons.push("WINDOW_TRANSIENT");
+        }
+        if window_flags & EV_MISFIRE != 0 {
+            window_reasons.push("WINDOW_MISFIRE");
+        }
+        if window_flags & EV_CUT != 0 {
+            window_reasons.push("WINDOW_FUEL_OR_SPARK_CUT");
+        }
+        if !trim_finite || trim_max - trim_min > options.max_trim_swing {
+            window_reasons.push("WINDOW_TRIM_UNSTABLE");
+        }
+        if saw_closed && saw_open {
+            window_reasons.push("WINDOW_LOOP_STATE_CHANGE");
+        }
+        if !window_reasons.is_empty() {
+            rejected += 1;
+            acc[idx].window_rejected += 1;
+            for code in window_reasons {
+                *gate_counts.entry(code.to_string()).or_insert(0) += 1;
+                *acc[idx].exclusion.entry(code.to_string()).or_insert(0) += 1;
+            }
+            continue;
+        }
+        if f.closed_loop {
+            closed_loop_used += 1;
+        } else {
+            open_loop_used += 1;
+        }
+
         let trim = (a.stft + a.ltft).clamp(-0.6, 0.6);
         acc[idx].used += 1;
         acc[idx].sum_lambda += f.lambda_measured as f64;
@@ -506,6 +648,7 @@ pub fn analyze(
                 confidence,
                 status,
                 exclusion_reasons: a.exclusion.clone(),
+                window_rejected_samples: a.window_rejected,
             });
         }
     }
@@ -550,6 +693,7 @@ pub fn analyze(
         "Measured cells only; unvisited cells are not fabricated or interpolated.".into(),
         "Proportional VE correction is a starting estimate and requires validation.".into(),
         "No ignition advance is proposed or implied. Lambda cannot establish safe timing.".into(),
+        "Samples are rejected if a transient, misfire, fuel/spark cut, trim change or loop-state change occurred inside the exhaust-delay + holdoff window; accel enrichment is inferred from TPS/MAP/RPM rates only.".into(),
     ];
 
     Ok(MixtureMapReport {
@@ -565,6 +709,8 @@ pub fn analyze(
         samples_used: used,
         samples_rejected: rejected,
         gate_reason_counts: gate_counts,
+        closed_loop_samples_used: closed_loop_used,
+        open_loop_samples_used: open_loop_used,
         cells,
         proposal,
         hard_faults,
@@ -633,7 +779,25 @@ fn confidence(a: &Acc, options: &MixtureMapOptions) -> f32 {
     let sd = var.sqrt() as f32;
     let variance = (1.0 - (sd / options.max_lambda_stddev).min(1.0)).max(0.0);
     let dwell = (a.dwell_ms / options.min_dwell_ms.max(1.0)).min(1.0);
-    (0.45 * sample + 0.35 * variance + 0.20 * dwell).clamp(0.0, 1.0)
+    let base = 0.45 * sample + 0.35 * variance + 0.20 * dwell;
+    (base * window_factor(a)).clamp(0.0, 1.0)
+}
+
+/// Maximum fraction of confidence removed when every otherwise-gate-clean
+/// sample in a cell was dropped by the latency window. The weight is an
+/// unvalidated engineering choice, not a calibrated figure.
+const WINDOW_CONFIDENCE_PENALTY: f32 = 0.30;
+
+/// Confidence multiplier in `[1 - WINDOW_CONFIDENCE_PENALTY, 1]`. A cell whose
+/// instantaneously-clean samples were mostly lost to the latency window is
+/// mostly visited during transients/trim movement, so the few survivors are
+/// less representative of its steady behaviour.
+fn window_factor(a: &Acc) -> f32 {
+    let clean = a.used + a.window_rejected;
+    if clean == 0 {
+        return 1.0;
+    }
+    1.0 - WINDOW_CONFIDENCE_PENALTY * (a.window_rejected as f32 / clean as f32)
 }
 
 fn classify(a: &Acc, stddev: f32, confidence: f32, options: &MixtureMapOptions) -> CellStatus {
@@ -1046,6 +1210,204 @@ mod tests {
         let proposal = report.proposal.unwrap();
         let changed = c.fork(c.revision + 1, 1);
         assert!(apply_proposal(&changed, &proposal, None, 2).is_err());
+    }
+
+    fn window_opts() -> MixtureMapOptions {
+        MixtureMapOptions {
+            min_dwell_ms: 50.0,
+            min_samples_per_cell: 5,
+            transient_holdoff_ms: 200,
+            ..MixtureMapOptions::default()
+        }
+    }
+
+    fn delayed_log(n: usize) -> Vec<TelemetryFrame> {
+        let mut frames = steady_log(3000.0, 60.0, 1.05, 0.0, n);
+        for f in frames.iter_mut() {
+            f.exhaust_delay_ms = 100;
+        }
+        frames
+    }
+
+    #[test]
+    fn throttle_blip_invalidates_later_steady_looking_samples() {
+        let c = cal();
+        let mut frames = delayed_log(80);
+        // One-frame throttle blip at frame 30 (t = 600 ms).
+        frames[30].tps_pct = 40.0;
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        let n = report
+            .gate_reason_counts
+            .get("WINDOW_TRANSIENT")
+            .copied()
+            .unwrap_or(0);
+        assert!(n > 0, "{:?}", report.gate_reason_counts);
+
+        // With no holdoff and no transport delay the same log has no window
+        // rejections: the option really controls the behaviour.
+        let mut frames = delayed_log(80);
+        frames[30].tps_pct = 40.0;
+        for f in frames.iter_mut() {
+            f.exhaust_delay_ms = 0;
+        }
+        let opts = MixtureMapOptions {
+            transient_holdoff_ms: 0,
+            ..window_opts()
+        };
+        let report = analyze(&c, &frames, &opts).unwrap();
+        assert!(!report.gate_reason_counts.contains_key("WINDOW_TRANSIENT"));
+    }
+
+    #[test]
+    fn misfire_inside_latency_window_rejects_following_samples() {
+        let c = cal();
+        let mut frames = delayed_log(80);
+        frames[30].active_faults.push("P0301_MISFIRE".into());
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        // The misfire frame itself is rejected by the instantaneous gate; the
+        // 15 frames after it (t = 620..900 ms, window = 100 + 200 ms) are
+        // rejected by the window check.
+        assert_eq!(
+            report.gate_reason_counts.get("WINDOW_MISFIRE").copied(),
+            Some(15),
+            "{:?}",
+            report.gate_reason_counts
+        );
+        assert!(report.gate_reason_counts.contains_key("MISFIRE"));
+    }
+
+    #[test]
+    fn fuel_cut_inside_window_is_rejected_even_when_current_frame_is_clean() {
+        let c = cal();
+        let mut frames = delayed_log(80);
+        frames[30].fuel_cut = true;
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        assert!(report
+            .gate_reason_counts
+            .contains_key("WINDOW_FUEL_OR_SPARK_CUT"));
+    }
+
+    #[test]
+    fn moving_trim_and_loop_state_change_are_rejected() {
+        let c = cal();
+        let mut frames = delayed_log(80);
+        // Loop engages at frame 40 and immediately carries a 10% trim.
+        for f in frames.iter_mut().skip(40) {
+            f.closed_loop = true;
+            f.stft = 0.10;
+        }
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        assert!(report
+            .gate_reason_counts
+            .contains_key("WINDOW_TRIM_UNSTABLE"));
+        assert!(report
+            .gate_reason_counts
+            .contains_key("WINDOW_LOOP_STATE_CHANGE"));
+    }
+
+    #[test]
+    fn open_and_closed_loop_samples_are_counted_separately() {
+        let c = cal();
+        let open = analyze(&c, &steady_log(3000.0, 60.0, 1.05, 0.0, 40), &window_opts()).unwrap();
+        assert!(open.open_loop_samples_used > 0);
+        assert_eq!(open.closed_loop_samples_used, 0);
+        assert_eq!(open.open_loop_samples_used, open.samples_used);
+
+        let mut frames = steady_log(3000.0, 60.0, 1.05, 0.02, 40);
+        for f in frames.iter_mut() {
+            f.closed_loop = true;
+        }
+        let closed = analyze(&c, &frames, &window_opts()).unwrap();
+        assert!(closed.closed_loop_samples_used > 0);
+        assert_eq!(closed.open_loop_samples_used, 0);
+        assert_eq!(closed.closed_loop_samples_used, closed.samples_used);
+    }
+
+    #[test]
+    fn invalid_trim_swing_option_is_refused() {
+        let c = cal();
+        let opts = MixtureMapOptions {
+            max_trim_swing: f32::NAN,
+            ..window_opts()
+        };
+        assert!(matches!(
+            analyze(&c, &steady_log(3000.0, 60.0, 1.05, 0.0, 40), &opts),
+            Err(MixtureMapError::InvalidOptions(_))
+        ));
+    }
+
+    #[test]
+    fn options_json_without_new_fields_still_deserializes() {
+        let mut v = serde_json::to_value(MixtureMapOptions::default()).unwrap();
+        let obj = v.as_object_mut().unwrap();
+        obj.remove("transient_holdoff_ms");
+        obj.remove("max_trim_swing");
+        let back: MixtureMapOptions = serde_json::from_value(v).unwrap();
+        assert_eq!(back, MixtureMapOptions::default());
+    }
+
+    #[test]
+    fn window_rejections_are_counted_per_cell_and_lower_confidence() {
+        let c = cal();
+        let opts = window_opts();
+        let clean = analyze(&c, &delayed_log(80), &opts).unwrap();
+        let clean_cell = clean.cells.iter().find(|x| x.samples_used > 0).unwrap();
+        assert_eq!(clean_cell.window_rejected_samples, 0);
+
+        let mut frames = delayed_log(80);
+        frames[30].active_faults.push("P0301_MISFIRE".into());
+        let hit = analyze(&c, &frames, &opts).unwrap();
+        let hit_cell = hit
+            .cells
+            .iter()
+            .find(|x| x.row == clean_cell.row && x.col == clean_cell.col)
+            .unwrap();
+        // Same 15 post-misfire frames as the latency-window test, counted once
+        // per sample.
+        assert_eq!(hit_cell.window_rejected_samples, 15);
+        assert_eq!(
+            hit_cell.exclusion_reasons.get("WINDOW_MISFIRE").copied(),
+            Some(15)
+        );
+        let total: u32 = hit.cells.iter().map(|x| x.window_rejected_samples).sum();
+        assert_eq!(total, 15);
+        assert!(
+            hit_cell.confidence < clean_cell.confidence,
+            "{} !< {}",
+            hit_cell.confidence,
+            clean_cell.confidence
+        );
+        // The penalty is bounded by the documented share.
+        assert!(hit_cell.confidence >= clean_cell.confidence * (1.0 - WINDOW_CONFIDENCE_PENALTY));
+    }
+
+    #[test]
+    fn window_factor_is_bounded_and_neutral_without_rejections() {
+        assert_eq!(window_factor(&Acc::default()), 1.0);
+        let none = Acc {
+            used: 10,
+            ..Acc::default()
+        };
+        assert_eq!(window_factor(&none), 1.0);
+        let all = Acc {
+            window_rejected: 10,
+            ..Acc::default()
+        };
+        assert!((window_factor(&all) - (1.0 - WINDOW_CONFIDENCE_PENALTY)).abs() < 1e-6);
+    }
+
+    #[test]
+    fn report_json_without_window_rejected_field_still_deserializes() {
+        let c = cal();
+        let report = analyze(&c, &delayed_log(80), &window_opts()).unwrap();
+        let mut v = serde_json::to_value(&report).unwrap();
+        for cell in v["cells"].as_array_mut().unwrap() {
+            cell.as_object_mut()
+                .unwrap()
+                .remove("window_rejected_samples");
+        }
+        let back: MixtureMapReport = serde_json::from_value(v).unwrap();
+        assert!(back.cells.iter().all(|x| x.window_rejected_samples == 0));
     }
 
     #[test]
