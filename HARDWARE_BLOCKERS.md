@@ -235,14 +235,14 @@
 | Field | Value |
 |---|---|
 | Severity | S2 (blocks safe bench use) |
-| Affected files | `hardware/bench-interface/` (missing), `AUDIT/EVO8_BENCH_TEST_PLAN.md` (plan only) |
-| Problem | The v0.4.4d IDC40 pinout has not been turned into a labelled breakout with current-limited supply, fuses, dummy loads, E-stop and scope points. Without it, safe powered bring-up is not defined. |
-| Evidence | No `hardware/bench-interface/` directory; existing bench plan is generic. |
-| Required action | Produce an IDC40 breakout schematic/assembly drawing, test-point map and safe power-up procedure tied to the v0.4.4d pinout. |
+| Affected files | `hardware/bench-interface/` (pin map only), `AUDIT/EVO8_BENCH_TEST_PLAN.md` (plan only) |
+| Problem | The v0.4.4d IDC40 pin map now exists, but it has not been turned into a labelled breakout with current-limited supply, fuses, dummy loads, E-stop and scope points. Without the physical breakout, safe powered bring-up is not defined. |
+| Evidence | `hardware/bench-interface/README.md` + `idc40_pinout.csv` (netlist-derived, 40 pads); no breakout schematic/assembly/continuity record. Physical pin-1 orientation unverified. |
+| Required action | Produce an IDC40 breakout schematic/assembly drawing, test-point map and safe power-up procedure tied to the v0.4.4d pinout; build and buzz-out only after H4 approval. |
 | Owner | Hardware workstream |
 | Autonomous | Yes (design/package); no power-on |
 | Verification | Reviewer can map every IDC40 pin to a labelled terminal/test point; continuity check procedure documented |
-| Status | **OPEN** |
+| Status | **OPEN — pin map complete; breakout/continuity missing** |
 
 ### HW-MECH-01 — No fabrication/assembly drawing or enclosure definition
 

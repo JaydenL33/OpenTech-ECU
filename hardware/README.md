@@ -12,6 +12,7 @@ The primary hardware path is now an **unmodified Speeduino v0.4.4d SMD** design:
 |---|---|
 | `upstream-speeduino/v0.4.4d/` | Byte-exact upstream source, commit `ee6a9242834891877744ff2137663b6ca8d79ed6`, CERN-OHL-S-2.0 |
 | `prototype-v1/` | Native KiCad 9 review copy, manufacturing exports and verification evidence |
+| `bench-interface/` | Netlist-derived IDC40 pin map and safe-breakout specification (not a built fixture) |
 | `tools/check_prototype_v1.sh` | Reproducible ERC/DRC/export/connectivity run |
 | `tools/verify_upstream_baseline.sh` | SHA-256 verification of the preserved upstream tree |
 

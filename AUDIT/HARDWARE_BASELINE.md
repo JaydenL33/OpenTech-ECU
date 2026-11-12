@@ -170,6 +170,6 @@ and `HARDWARE_BLOCKERS.md` `HW-EXP-01`.
    `AUDIT/PCB_CHECK_RESULTS.md` (H2).
 2. Replace blank BOM MPNs and obtain dated AUD supplier quotes (see
    `HARDWARE_BLOCKERS.md`, `HW-BOM-01`).
-3. Produce the bench breakout/test-point assembly drawing for the IDC40
-   interface (H3 review package).
+3. Turn the IDC40 pin map in `hardware/bench-interface/` into a breakout
+   schematic, assembly drawing and continuity procedure (H3 review package).
 4. Obtain independent review; do not fabricate before H4.

@@ -67,6 +67,7 @@ explicitly named.
 | Assembly drawing | No | Not present |
 | Enclosure/mechanical | No | Not present |
 | Bench harness manifest | Yes, unreviewed source | `config/harness/opentech-bench-harness.json`; 29 bench connectors, 54 test points; no OEM cavities |
+| IDC40 bench pin map | Yes — netlist-derived only | `hardware/bench-interface/idc40_pinout.csv`; 40 pads, no physical continuity/orientation check; breakout not built |
 | Harness/adapter for vehicle | No | Not present; Evo connector unverified |
 | Bench fixture | No | AUD-09 is a plan only |
 | EMC/thermal test data | No | Not present |
