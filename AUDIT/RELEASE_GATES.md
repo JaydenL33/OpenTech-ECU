@@ -5,7 +5,7 @@
 | Document ID | AUD-08 |
 | Status | Gate definitions and current status; not a release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree |
 | Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
 | Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
 | Related | AUD-01 through AUD-10 |

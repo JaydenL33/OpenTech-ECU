@@ -5,7 +5,7 @@
 | Document ID | AUD-07 |
 | Status | Reviewer instructions; not itself an independent review |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `9837ba88...` |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `9837ba88...` |
 | Audience | Automotive controls engineer, embedded Rust reviewer, PCB reviewer, functional-safety reviewer, project owner |
 | Related | AUD-01 through AUD-10 |
 
@@ -22,7 +22,7 @@
 | 5 | `docs/ARCHITECTURE.md` | Layers/data flow/host-firmware boundary | 15 min |
 | 6 | `AUDIT/ENGINE_CONTROL_SAFETY.md` | Hazard analysis, safety requirements, GSN, non-claims | 30 min |
 | 7 | `AUDIT/FAILURE_MODE_ANALYSIS.md` | Component FMEA and coverage gaps | 30 min |
-| 8 | `AUDIT/ELECTRICAL_DESIGN_REVIEW.md` | Hardware requirements; confirm no schematic exists | 20 min |
+| 8 | `AUDIT/ELECTRICAL_DESIGN_REVIEW.md` | Hardware requirements; confirm the schematic is unreviewed and no PCB exists | 20 min |
 | 9 | `AUDIT/FIRMWARE_TIMING_ANALYSIS.md` | Timing budget concept; confirm no timing evidence | 20 min |
 | 10 | `AUDIT/TEST_EVIDENCE.md` | Commands/results; reproduce the current evidence | 20 min |
 | 11 | `AUDIT/REQUIREMENTS_TRACEABILITY.md` | Requirement-to-code/test mapping; Evo unverified items | 20 min |
@@ -143,7 +143,7 @@ Each invariant is a claim that should be falsifiable by source inspection or a t
 | "UI is buildable" | `npm run typecheck && npm run build` | TypeScript/build errors | No Electron/browser runtime test |
 | "Service blocks physical export" | `/api/preflight`; `/api/health` | `physical_export_allowed=true` or `physical_outputs=true` | Local only |
 | "Evo profile is unverified" | `/api/vehicles`; inspect `vehicle.rs` flags | Any flag true without evidence | Do not fill from assumption |
-| "Hardware exists" | `find` for KiCad/gerbers/BOM; `command -v kicad-cli` | A reviewed design package exists; `hardware/README.md` alone is not one | No KiCad/BOM/gerbers at snapshot |
+| "Hardware exists" | Inspect `hardware/kicad`; `find` for PCB/gerbers; `command -v kicad-cli` | A reviewed package with PCB/DRC/gerbers exists | Unreviewed schematic/BOM; no PCB/DRC/gerbers |
 
 ## 5. Missing evidence checklist
 
@@ -168,8 +168,8 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 
 ### Gate 1 — unpowered hardware
 
-- [ ] Schematic, PCB, BOM, gerbers, assembly drawing (missing).
-- [ ] ERC/DRC report with rule set and exceptions (missing).
+- [ ] Reviewed schematic, PCB, BOM, gerbers, assembly drawing. An unreviewed bench schematic/BOM exists; no PCB/gerbers/assembly.
+- [ ] Reviewed ERC and DRC report with rule set and exceptions. ERC JSON exists (0 violations from generator) but is unreviewed; no DRC.
 - [ ] BOM derating/lifecycle review (missing).
 - [ ] Visual/continuity inspection procedure and results (missing).
 - [ ] Connector/pinout verification (missing).

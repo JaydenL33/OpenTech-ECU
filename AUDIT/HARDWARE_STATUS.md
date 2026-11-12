@@ -5,7 +5,7 @@
 | Document ID | AUD-10 |
 | Status | Hardware status and requirements only; **no manufacturing-ready hardware exists** |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree |
 | Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
@@ -54,7 +54,7 @@
    |-> CAN transceiver -> external wideband / PC / dash
 ```
 
-The architecture is deliberately generic. No pin, timer channel, connector cavity, driver part number or current rating is assigned. `hardware/README.md` states the first target is a bench prototype with an STM32H7-class MCU; that is a project intent, not a verified part selection or HAL support claim.
+The architecture is deliberately generic. No pin, timer channel, connector cavity, driver part number or current rating is assigned. `hardware/README.md` states the first target is a bench prototype with an STM32H7-class MCU; the unreviewed schematic captures an STM32H743VIT6, but that is not a validated part selection or HAL support claim.
 
 ## 3. MCU trade study inputs (no selection)
 

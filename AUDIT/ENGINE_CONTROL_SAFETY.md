@@ -5,9 +5,9 @@
 | Document ID | AUD-01 |
 | Status | Independent audit draft. Not a certification, not a safety case for an engine, not an approval to connect hardware. |
 | Audit date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `041be84f665d9aefa551df81792df8acb5ac7873` (source commit; Rust tree clean at cut-off) |
+| Git HEAD | `9a4e044e331d5c2728630d2c0fbd2b5da22a694b` (source commit `041be84f`; docs/audit commits after; Rust tree clean at cut-off) |
 | Rust source manifest | SHA-256 `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test status at cut-off | 128 tests (126 unit + 2 integration): 128 passed, 0 failed; `cargo fmt` and clippy pass; firmware no_std skeleton target check passes. See AUD-05. Gate 0 host software evidence is **PASS, scoped**; not a certification |
@@ -275,4 +275,4 @@ G1: In the audited v0.1 snapshot, no physical injector, ignition coil, fuel pump
 
 In the audited snapshot, OpenTech-ECU is a host-side simulation and calibration-analysis platform. It has no physical output path, its ignition API refuses lambda, its fuel learning is gated and bounded, and its protection state machine is separate. Those are meaningful software properties.
 
-They do **not** make it an engine-safe ECU. The host test suite is green and Gate 0 host software evidence passes for the implemented behaviour, but the trigger and protection layers still have material gaps, the calibration trust model is not authenticated, runtime UI/copilot behaviour is not fully tested, `ecu-protocol`/`ecu-lambda` remain std-only, and no hardware, timing, EMC, thermal, sensor, injector, harness or vehicle evidence exists. The correct status is **Gate 0 host software evidence: PASS, scoped; Gate 1 and above blocked**. Any stronger statement requires the evidence and independent sign-off defined in AUD-08.
+They do **not** make it an engine-safe ECU. The host test suite is green and Gate 0 host software evidence passes for the implemented behaviour, but the trigger and protection layers still have material gaps, the calibration trust model is not authenticated, runtime UI/copilot behaviour is not fully tested, `ecu-protocol`/`ecu-lambda` remain std-only, and no reviewed hardware, timing, EMC, thermal, sensor, injector, harness or vehicle evidence exists. The correct status is **Gate 0 host software evidence: PASS, scoped; Gate 1 and above blocked**. Any stronger statement requires the evidence and independent sign-off defined in AUD-08.

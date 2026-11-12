@@ -17,7 +17,7 @@
 ## 1. Scope and assumptions
 
 - Target engine family: 4G63T inline-4, sequential port injection, inductive ignition. Exact Evo VIII trigger pattern, injector data, coil/igniter topology and pinout are **UNVERIFIED**.
-- The DUT (device under test) may be a future OpenTech-ECU board or a vendor development board with a reviewed adapter. This plan does not define its pinout.
+- The DUT (device under test) may be a future OpenTech-ECU board or a vendor development board with a reviewed adapter. This plan does not define its pinout. The unreviewed `hardware/kicad` schematic is not a buildable DUT until Gate 1 review; do not power it from this plan.
 - Crank/cam signals are simulated by a verified signal generator or a recorded waveform player. No engine.
 - Injectors are replaced by dummy resistive/inductive loads. Ignition is observed at the driver/igniter input or a shielded dummy coil/spark gap; no fuel.
 - The DUT is powered from a current-limited supply with a fuse. No vehicle battery, no vehicle harness, no alternator.

@@ -5,7 +5,7 @@
 | Document ID | AUD-02 |
 | Status | Independent audit draft; qualitative FMEA, not a quantitative FMEDA or safety validation |
 | Audit date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `9837ba88...` |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `9837ba88...` |
 | Scope | Host-side Rust trigger, lambda, fuel, ignition, sensor, calibration, service/UI, protocol, scheduler, processor/watchdog, power assumptions, and the no_std firmware skeleton |
 | Out of scope | Physical PCB, harness, MCU HAL/timer/driver implementation, EMC, thermal, vehicle installation |
 | Related | AUD-01, AUD-03, AUD-04, AUD-05, AUD-08 |

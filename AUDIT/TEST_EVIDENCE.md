@@ -5,9 +5,9 @@
 | Document ID | AUD-05 |
 | Status | Evidence record for the audited host snapshot; not a certification, not a physical-safety approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree |
 | Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `041be84f665d9aefa551df81792df8acb5ac7873` |
+| Git HEAD | `9a4e044e331d5c2728630d2c0fbd2b5da22a694b` |
 | Rust source manifest | SHA-256 `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
 | Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
@@ -19,7 +19,7 @@
 
 > **Scope.** This evidence supports host-side software behaviour only. It does not establish engine safety, timing accuracy, EMC, electrical safety, or Evo VIII compatibility. Gate 0 pass means "the implemented host behaviour has reproducible evidence", not "the ECU is safe or ready".
 
-> **Source-control note.** HEAD `041be84f` contains the source commit used for this evidence; the Rust source tree was clean at cut-off (`git status --short ecu` empty). The manifest hash above matches the committed tree. Documentation/audit files may have later working-tree edits; re-hash the source after any source change.
+> **Source-control note.** Source commit `041be84f` is the code revision used for this evidence; current HEAD `9a4e044e` contains documentation/audit commits only. The Rust source tree was clean at cut-off (`git status --short ecu` empty). The manifest hash above matches that tree. Re-hash the source after any source change.
 
 ## 1. Environment
 
@@ -32,10 +32,10 @@
 | npm | `11.11.0` |
 | `rustfmt` | Available and passing |
 | `clippy` | Available and passing with `-D warnings` |
-| KiCad / `kicad-cli` | Not installed on the host PATH; an isolated Codex toolchain produced and re-ran ERC on the unreviewed schematic (0 violations). No PCB/DRC. |
+| KiCad / `kicad-cli` | Not installed on the host PATH; per the package README, an isolated Codex toolchain produced and re-ran ERC on the unreviewed schematic (0 violations). Not independently reproduced. No PCB/DRC. |
 | Electron | Dependency present; **application launch not exercised** in this headless audit |
 | WebKit/Tauri | Not used by the current Electron shell; no Tauri validation; Electron launch untested |
-| Physical hardware | **None**; no MCU, PCB, harness, sensors, injectors, coils, or vehicle |
+| Physical hardware | **None**; no assembled board/PCB, harness, sensors, injectors, coils, or vehicle; unreviewed schematic only |
 | Network/service | Local smoke test on `127.0.0.1:18768`; no external exposure |
 
 ## 2. Command summary
@@ -326,7 +326,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 | Copilot tool approval boundary | Untrusted output must not write | Not tested |
 | WebSocket lag/reconnect | Operator may see stale data | Not tested |
 | Full core `no_std` | All core crates and firmware skeleton pass | Pass |
-| KiCad ERC/DRC | ERC passed; no PCB exists for DRC | ERC 0 violations; DRC not run |
+| KiCad ERC/DRC | ERC report exists (unreviewed, 0 generator violations); no PCB exists for DRC | Not independently reproduced; DRC not run |
 | Hardware/bench | No PCB/fixture | Not run |
 | Scope timing | No firmware/timer | Not run |
 | Evo pinout/trigger/harness | Unverified | Not run |
@@ -369,7 +369,7 @@ Expected: all listed commands pass at this snapshot, including the core `no_std`
 
 ## 13. Raw evidence locations
 
-- `/tmp/opencode/test-final2.log` — 128-test run.
+- `/tmp/opencode/final-test.log` — 128-test run.
 - `/home/jlee/OpenTech-ECU/evidence/VERIFICATION.txt` — companion verification record with the same final counts; re-check hashes before relying on it.
 - `/tmp/opencode/audit-current/` — log, CSV, summary, calibration, report, applied calibration.
 - `/tmp/opencode/studio3.log` — local service smoke log.

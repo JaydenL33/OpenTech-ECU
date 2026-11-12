@@ -5,7 +5,7 @@
 | Document ID | AUD-06 |
 | Status | Audit traceability matrix; not a certification or release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:40Z, working tree; source manifest `9837ba88...` |
+| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `9837ba88...` |
 | Sources | `ECU_MASTER_BRIEF.md`; project context; `ecu-calibration/src/vehicle.rs`; code/tests in `ecu/` |
 | Related | AUD-01, AUD-02, AUD-05, AUD-08, AUD-10 |
 

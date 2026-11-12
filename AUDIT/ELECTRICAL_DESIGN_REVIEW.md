@@ -14,7 +14,7 @@
 | Evidence | Source inspection; no hardware artefacts; see AUD-10 |
 | Related | AUD-02, AUD-04, AUD-08, AUD-09, AUD-10 |
 
-> **Do not build from this document.** It defines what a future design must satisfy and how it must be reviewed. It does not define pin assignments, connector part numbers, component values, current ratings, or a safe schematic. Those require the physical vehicle evidence and a reviewed design.
+> **Do not build from this document.** It defines what a future design must satisfy and how it must be reviewed. It does not define pin assignments, connector part numbers, component values, current ratings, or a safe schematic. Those require the physical vehicle evidence and a reviewed design. The unreviewed `hardware/kicad` schematic may appear to address some rows, but none is reviewed or validated; the requirement statuses remain "Not designed" until reviewed.
 
 ## 1. Scope and design intent
 
