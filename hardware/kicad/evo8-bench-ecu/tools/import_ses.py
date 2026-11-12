@@ -59,7 +59,9 @@ def main():
     board = pcbnew.LoadBoard(str(args.board))
     before = placement(board)
     assert len(before) == 305, 'footprint count'
-    for item in list(board.GetTracks()):
+    # Keep the removed SWIG proxies alive until the import and save finish.
+    draft_copper = list(board.GetTracks())
+    for item in draft_copper:
         board.Remove(item)
     with tempfile.NamedTemporaryFile(mode='w', suffix='.ses', dir=args.out.parent,
                                      encoding='utf-8') as copy:
