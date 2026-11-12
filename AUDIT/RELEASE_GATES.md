@@ -104,7 +104,7 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 | 1.8 | Outputs default off with no power | Schematic review; measurement | **BLOCKED** |
 | 1.9 | Independent electrical review | Signed record | **MISSING** |
 
-**Gate 1 decision: BLOCKED.** No reviewed manufacturing package exists. A separate unreviewed KiCad attempt does not change this status.
+**Gate 1 decision: BLOCKED.** An unreviewed bench schematic/BOM exists, but there is no PCB, DRC, gerbers, assembly or independent review. It does not satisfy Gate 1.
 
 ## 4. Gate 2 — Powered bench verification
 
@@ -246,7 +246,7 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 | Copilot typecheck | Yes | PASS; live LLM/tools not tested |
 | Service smoke | Yes, local | Health/preflight/status; no auth |
 | CI workflow | Defined | `.github/workflows/opentech-ci.yml`; not observed running |
-| KiCad/schematic/PCB/BOM/gerbers | No | No manufacturing-ready package |
+| KiCad/schematic/PCB/BOM/gerbers | Partial, unreviewed | Unreviewed schematic/BOM/ERC; no PCB/DRC/gerbers |
 | Firmware HAL/timer/driver | No | Skeleton only |
 | Bench fixture/E-stop | No | Plan only (AUD-09) |
 | Evo pinout/connector/trigger/harness | No | All unverified |
@@ -295,6 +295,6 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 ## 11. Current release statement
 
-> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 128 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because no reviewed manufacturing-ready PCB/BOM/gerbers exist; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
+> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 128 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because only an unreviewed bench schematic/BOM exists, with no PCB/DRC/gerbers; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
 
 The next step is not a vehicle test. It is: keep the Gate 0 evidence current, complete a software review, produce a reviewed hardware design and bench fixture, and only then seek Gate 3 evidence.

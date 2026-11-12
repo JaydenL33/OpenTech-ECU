@@ -23,7 +23,7 @@ The v0.1 safety concept is **containment by absence of an actuator path**, suppo
 
 | Layer | Mechanism in this snapshot | Evidence | Fundamental limitation |
 |---|---|---|---|
-| L0 Physical | No MCU HAL, timer capture/compare, injector/coil driver, PCB or harness; a no_std firmware skeleton exists but forces outputs off | `ecu/firmware/stm32`; `PHYSICAL_OUTPUTS_AUTHORISED=false`; no `.kicad_*`; no `.gbr` | A future commit can add a path; this audit expires |
+| L0 Physical | No MCU HAL, timer capture/compare, injector/coil driver, PCB or harness; a no_std firmware skeleton exists but forces outputs off; an unreviewed bench schematic/BOM exists but has no PCB/DRC/gerbers | `ecu/firmware/stm32`; `PHYSICAL_OUTPUTS_AUTHORISED=false`; `hardware/kicad/evo8-bench-ecu/` is UNREVIEWED | A future commit can add a path; this audit expires |
 | L1 Interlock | `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED = true` in `ecu-calibration/src/preflight.rs` | Constant; preflight reports physical export blocked | Compile-time constant, not a hardware inhibit; one edit removes it |
 | L2 Preflight | Calibration shape, checksum, ignition evidence, target-lambda bounds | `preflight()` and tests | Warnings do not block `hardware_candidate`; metadata can be forged |
 | L3 Ignition evidence | No lambda input in `ecu-ignition`; synthetic map rejected for physical use | API shape; `recommend_from_reference`; tests | "Verified reference" is a caller-supplied label, not an authenticated source |
@@ -43,7 +43,7 @@ The v0.1 safety concept is **containment by absence of an actuator path**, suppo
 | Studio service | Yes | No | Local HTTP/WebSocket, calibration editing, simulation control |
 | Tuning UI | Yes, host build | No | React/Vite + Electron main; Electron launch not tested; no hardware transport |
 | Firmware | Yes, no_std skeleton | No | `firmware/stm32`; no HAL, timer capture/compare, injector/ignition driver, watchdog integration, or flash image |
-| PCB / harness | No | No | No KiCad schematic/PCB, no BOM, no gerbers, no connector definition |
+| PCB / harness | Unreviewed schematic/BOM only | No | `hardware/kicad/evo8-bench-ecu/`; no PCB, DRC, gerbers, harness or connector definition |
 | Physical injector/coil | No | No | No code path; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED` is true |
 
 The simulator's "injection" and "spark" events are calls in `apply_events` that update model state (`fuel_cycle_kg`, `sparks_this_cycle`). They do not call a GPIO, timer, CAN transmit API, or driver. This is confirmed by source inspection, not by a runtime sandbox.
