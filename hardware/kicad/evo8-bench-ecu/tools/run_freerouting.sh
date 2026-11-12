@@ -16,5 +16,7 @@ timeout 14400 docker run --rm --network none \
     -v "$(dirname -- "$DSN")":/work "$FREEROUTING_IMAGE" \
     java -jar /app/freerouting-executable.jar \
     -de "/work/$(basename -- "$DSN")" -do "/work/$(basename -- "$SES")" \
-    -mp 100 -mt 1 --gui.enabled=false >"$LOG" 2>&1
+    -mp 100 -mt 1 --gui.enabled=false \
+    --router.automatic_neckdown=false --router.neck_width_um=150 \
+    >"$LOG" 2>&1
 [[ -s "$SES" ]]
