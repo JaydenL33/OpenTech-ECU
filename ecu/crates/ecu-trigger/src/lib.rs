@@ -69,6 +69,7 @@ pub enum TriggerConfigError {
     InvalidMissingCount,
     InvalidOffset,
     InvalidTimeout,
+    InvalidCamWindow,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -115,11 +116,13 @@ pub struct DecoderStatus {
     pub error_count: u32,
     pub gap_count: u64,
     pub cam_seen: bool,
+    pub cam_phase_rejected: bool,
 }
 
 #[derive(Clone, Debug)]
 pub struct MissingToothDecoder {
     cfg: MissingToothConfig,
+    cam_window_deg: Option<(f32, f32)>,
     state: SyncState,
     last_tooth_us: Option<u64>,
     last_interval_us: f32,
@@ -130,6 +133,7 @@ pub struct MissingToothDecoder {
     cam_seen_since_gap: bool,
     cam_ever_seen: bool,
     cam_phase_known: bool,
+    cam_phase_rejected: bool,
     rev_parity: u8,
     tooth_index: u16,
     gap_count: u64,
@@ -142,6 +146,7 @@ impl MissingToothDecoder {
         cfg.validate()?;
         Ok(Self {
             cfg,
+            cam_window_deg: None,
             state: SyncState::Unsynced,
             last_tooth_us: None,
             last_interval_us: 0.0,
@@ -152,6 +157,7 @@ impl MissingToothDecoder {
             cam_seen_since_gap: false,
             cam_ever_seen: false,
             cam_phase_known: false,
+            cam_phase_rejected: false,
             rev_parity: 0,
             tooth_index: 0,
             gap_count: 0,
@@ -162,6 +168,31 @@ impl MissingToothDecoder {
 
     pub fn config(&self) -> MissingToothConfig {
         self.cfg
+    }
+
+    /// Set an inclusive cam window in crank degrees from the last gap.
+    /// Windows must be finite, ordered, and within one revolution. `None`
+    /// disables cam phase validation. Changing the window requires revalidation.
+    pub fn set_cam_window(
+        &mut self,
+        window_deg: Option<(f32, f32)>,
+    ) -> Result<(), TriggerConfigError> {
+        if let Some((start, end)) = window_deg {
+            if !start.is_finite()
+                || !end.is_finite()
+                || !(0.0..360.0).contains(&start)
+                || !(start..360.0).contains(&end)
+            {
+                return Err(TriggerConfigError::InvalidCamWindow);
+            }
+        }
+        self.cam_window_deg = window_deg;
+        self.cam_phase_known = false;
+        self.cam_seen_since_gap = false;
+        if self.cfg.cam_required && self.state == SyncState::Sequential {
+            self.state = SyncState::CrankSynced;
+        }
+        Ok(())
     }
 
     pub fn status(&self) -> DecoderStatus {
@@ -185,6 +216,7 @@ impl MissingToothDecoder {
             error_count: self.error_count,
             gap_count: self.gap_count,
             cam_seen: self.cam_ever_seen,
+            cam_phase_rejected: self.cam_phase_rejected,
         }
     }
 
@@ -288,7 +320,6 @@ impl MissingToothDecoder {
             self.last_gap_us = Some(timestamp_us);
 
             if self.cam_seen_since_gap {
-                self.cam_phase_known = true;
                 self.rev_parity = 0;
             } else {
                 self.rev_parity = self.rev_parity.wrapping_add(1) & 1;
@@ -323,16 +354,35 @@ impl MissingToothDecoder {
         DecodeEvent::None
     }
 
-    /// Cam phase input. The decoder only uses this to distinguish the two crank
-    /// revolutions; it does not validate cam timing against a target.
-    pub fn on_cam(&mut self, _timestamp_us: u64) -> DecodeEvent {
-        self.cam_seen_since_gap = true;
+    /// Cam phase input, validated against the configured window from the last
+    /// crank gap. Physical cam timing still requires independent verification.
+    pub fn on_cam(&mut self, timestamp_us: u64) -> DecodeEvent {
         self.cam_ever_seen = true;
-        // Cam phase is latched; the crank parity then identifies each revolution.
-        // Physical cam timing still has to be verified separately.
-        self.cam_phase_known = true;
-        if self.state == SyncState::CrankSynced && !self.cfg.cam_required {
+        if !self.cfg.cam_required {
+            self.cam_seen_since_gap = true;
+            self.cam_phase_known = true;
+            if self.state == SyncState::CrankSynced {
+                self.state = SyncState::Sequential;
+            }
+            return DecodeEvent::CamPhase;
+        }
+
+        let synced = matches!(self.state, SyncState::CrankSynced | SyncState::Sequential);
+        let valid = match (self.cam_window_deg, self.last_gap_us) {
+            (Some((start, end)), Some(gap)) if synced && timestamp_us >= gap => {
+                let angle = (timestamp_us - gap) as f32 * self.rpm * 6e-6;
+                (start..=end).contains(&angle)
+            }
+            _ => false,
+        };
+        self.cam_phase_rejected = !valid;
+        self.cam_phase_known = valid;
+        self.cam_seen_since_gap = valid;
+        if valid {
+            self.rev_parity = 1;
             self.state = SyncState::Sequential;
+        } else if synced {
+            self.state = SyncState::CrankSynced;
         }
         DecodeEvent::CamPhase
     }
@@ -466,6 +516,7 @@ mod tests {
     #[test]
     fn syncs_and_measures_constant_speed() {
         let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
         for (cam, ts) in generate(3000.0, 3, true) {
             if cam {
                 d.on_cam(ts);
@@ -489,6 +540,107 @@ mod tests {
         }
         assert_eq!(d.state(), SyncState::CrankSynced);
         assert!(d.cycle_angle_at(20_000_000).is_none());
+    }
+
+    #[test]
+    fn cam_inside_window_gives_sequential() {
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        for (cam, ts) in generate(3000.0, 2, true) {
+            if cam {
+                d.on_cam(ts);
+                assert_eq!(d.state(), SyncState::Sequential);
+                assert!(!d.status().cam_phase_rejected);
+            } else {
+                d.on_tooth(ts);
+            }
+        }
+        assert_eq!(d.state(), SyncState::Sequential);
+    }
+
+    #[test]
+    fn cam_outside_window_is_rejected() {
+        let mut d = decoder();
+        d.set_cam_window(Some((10.0, 20.0))).unwrap();
+        for (cam, ts) in generate(3000.0, 2, true) {
+            if cam {
+                d.on_cam(ts);
+                assert_eq!(d.state(), SyncState::CrankSynced);
+                assert!(d.status().cam_phase_rejected);
+            } else {
+                d.on_tooth(ts);
+            }
+        }
+        assert_eq!(d.state(), SyncState::CrankSynced);
+        assert!(d.status().cycle_angle_deg.is_none());
+    }
+
+    #[test]
+    fn cam_without_window_is_rejected() {
+        let mut d = decoder();
+        for (cam, ts) in generate(3000.0, 2, true) {
+            if cam {
+                d.on_cam(ts);
+                assert_eq!(d.state(), SyncState::CrankSynced);
+                assert!(d.status().cam_phase_rejected);
+            } else {
+                d.on_tooth(ts);
+            }
+        }
+        assert_eq!(d.state(), SyncState::CrankSynced);
+    }
+
+    #[test]
+    fn cam_rejection_revokes_validated_phase() {
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        for (cam, ts) in generate(3000.0, 2, true) {
+            if cam {
+                d.on_cam(ts);
+                assert_eq!(d.state(), SyncState::Sequential);
+                d.on_cam(ts + 1_000);
+                assert_eq!(d.state(), SyncState::CrankSynced);
+                assert!(d.status().cam_phase_rejected);
+            } else {
+                d.on_tooth(ts);
+            }
+        }
+        assert_eq!(d.state(), SyncState::CrankSynced);
+    }
+
+    #[test]
+    fn cam_not_required_keeps_sequential_without_window() {
+        let mut d = MissingToothDecoder::new(MissingToothConfig {
+            cam_required: false,
+            ..Default::default()
+        })
+        .unwrap();
+        for (cam, ts) in generate(3000.0, 2, true) {
+            if cam {
+                d.on_cam(ts);
+            } else {
+                d.on_tooth(ts);
+            }
+        }
+        assert_eq!(d.state(), SyncState::Sequential);
+        assert!(!d.status().cam_phase_rejected);
+    }
+
+    #[test]
+    fn invalid_cam_windows_are_rejected() {
+        let mut d = decoder();
+        for window in [
+            (f32::NAN, 10.0),
+            (0.0, f32::INFINITY),
+            (-1.0, 10.0),
+            (20.0, 10.0),
+            (0.0, 360.0),
+        ] {
+            assert_eq!(
+                d.set_cam_window(Some(window)),
+                Err(TriggerConfigError::InvalidCamWindow)
+            );
+        }
     }
 
     #[test]
@@ -639,6 +791,7 @@ mod tests {
             }
         }
         let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
         for (cam, ts) in events {
             if cam {
                 d.on_cam(ts);
@@ -655,6 +808,7 @@ mod tests {
     #[test]
     fn cycle_angle_wraps_0_to_720() {
         let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
         for (cam, ts) in generate(1000.0, 4, true) {
             if cam {
                 d.on_cam(ts);

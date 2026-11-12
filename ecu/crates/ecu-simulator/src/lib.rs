@@ -182,7 +182,7 @@ impl SimEngine {
                 ))
             }
         };
-        let decoder = MissingToothDecoder::new(MissingToothConfig {
+        let mut decoder = MissingToothDecoder::new(MissingToothConfig {
             teeth,
             missing,
             cam_required: motor_cfg.cam_required,
@@ -190,6 +190,11 @@ impl SimEngine {
             timeout_ms: motor_cfg.tooth_timeout_ms,
         })
         .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
+        // advance_trigger emits the synthetic cam at 690 degrees, after the
+        // crank gap at 360: 330 degrees from the gap, with a 10-degree margin.
+        decoder
+            .set_cam_window(Some((320.0, 340.0)))
+            .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
 
         let sample_hz = scenario.sample_hz.max(1) as u64;
         let auto_starter = scenario.id == "fault_recovery" || scenario.id == "trigger_loss";
