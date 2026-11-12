@@ -200,7 +200,7 @@
 | Autonomous | Yes |
 | Verification | Position file has exactly 141 rows (or a documented populated subset); no `REF**`; cross-check with BOM |
 | Status | **CLOSED (metadata-only; no copper change)** |
-| Resolved by | This round; all 150 `REF**` footprints marked exclude-from-BOM/position, regenerated `v0.4.4d-pos.csv` has 141 real placements and 0 `REF**`; DRC unchanged 609, connectivity PASS |
+| Resolved by | `3200e3d5`; all 150 `REF**` footprints marked exclude-from-BOM/position, regenerated `v0.4.4d-pos.csv` has 141 real placements and 0 `REF**`; DRC unchanged 609, connectivity PASS |
 
 ### HW-BOM-01 — 11 BOM rows lack manufacturer part numbers
 
