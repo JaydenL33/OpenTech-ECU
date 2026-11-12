@@ -15,8 +15,8 @@ cd hardware/kicad/evo8-bench-ecu
 cmp /tmp/routed-a.kicad_pcb /tmp/routed-b.kicad_pcb
 ```
 
-The router uses a 0.1 mm grid within the board outline, F.Cu and B.Cu, and
-through vias when it changes layers. It routes power, then ground, then signal
+The router uses a 0.1 mm grid within the board outline, F.Cu, In1.Cu, In2.Cu
+and B.Cu, and through vias when it changes between any two layers. It routes power, then ground, then signal
 nets using existing net names and pad positions. Conservative rectangular
 obstacle envelopes preserve clearance around copper from other nets. Existing
 tracks, vias, zones, footprints, outline, labels and rules are preserved.

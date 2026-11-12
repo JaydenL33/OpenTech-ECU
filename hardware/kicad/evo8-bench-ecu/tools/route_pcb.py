@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Deterministic two-layer grid routing for the UNREVIEWED bench PCB.
+"""Deterministic four-layer grid routing for the UNREVIEWED bench PCB.
 
 No packages, pcbnew, schematic edits, placement edits, or design-rule edits.
 The input is never overwritten. A nonzero result means the output is only a
@@ -24,7 +24,7 @@ from sexpr import child, children, dump, node, parse
 
 
 GRID = 0.1
-LAYERS = ("F.Cu", "B.Cu")
+LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
 EPS = 1e-8
 BIN = 2.0
 NAMESPACE = uuid.UUID("343c648e-e194-5b48-bc11-178b461ec25f")
@@ -321,9 +321,9 @@ def find_path(net, starts, goals, geometry):
                 return list(reversed(result))
             expanded += 1
             x, y, layer = state
-            # Prefer F.Cu horizontal, B.Cu vertical, with deterministic ties.
+            # Alternate horizontal/vertical preferences, with deterministic ties.
             directions = ((1, 0), (-1, 0), (0, 1), (0, -1))
-            if layer == 1:
+            if layer % 2:
                 directions = directions[2:] + directions[:2]
             candidates = []
             for step in (20, 5, 1):
@@ -336,12 +336,13 @@ def find_path(net, starts, goals, geometry):
                         track_cache[key] = geometry.track_free(
                             net, LAYERS[layer], (x * GRID, y * GRID), (nx * GRID, ny * GRID))
                     if track_cache[key]:
-                        preferred = (dy == 0) if layer == 0 else (dx == 0)
+                        preferred = (dy == 0) if layer % 2 == 0 else (dx == 0)
                         candidates.append(((nx, ny, layer), step * (1.0 if preferred else 1.05)))
             if (x, y) not in via_cache:
                 via_cache[x, y] = geometry.via_free(net, x * GRID, y * GRID)
             if via_cache[x, y]:
-                candidates.append(((x, y, 1 - layer), 80))
+                candidates.extend(((x, y, other), 80)
+                                  for other in range(len(LAYERS)) if other != layer)
             for neighbor, increment in candidates:
                 new_cost = cost + increment
                 if new_cost + EPS < distance.get(neighbor, math.inf):
@@ -385,7 +386,8 @@ class Router:
             return
         self.existing.add(key)
         self.additions.append(node("via", node("at", x, y), node("size", rule.via),
-                                   node("drill", rule.drill), node("layers", *LAYERS),
+                                   node("drill", rule.drill),
+                                   node("layers", LAYERS[0], LAYERS[-1]),
                                    node("net", net),
                                    node("uuid", str(uuid.uuid5(NAMESPACE, repr(key))))))
         self.geometry.add(Obstacle(net, LAYERS, box(x, y, rule.via / 2, rule.via / 2),
