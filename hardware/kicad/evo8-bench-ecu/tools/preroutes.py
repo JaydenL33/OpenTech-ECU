@@ -1,4 +1,4 @@
-"""Required route-3 pre-routes, in millimetres and P1–P14 table order."""
+"""Required route-3 pre-routes, in millimetres and P1–P15 table order."""
 
 PREROUTES = (
     dict(id='P1', net='GND', layer='F.Cu', start=(157.325, 117.5),
@@ -29,10 +29,16 @@ PREROUTES = (
          end=(174.585, 151.625), width=0.2),
     dict(id='P14', net='AUX3_OUT', layer='B.Cu', start=(261.05, 199.175),
          end=(254.25, 203.385), width=0.2),
+    # P15 consists of one through via and its protected C201 pad 2 track.
+    dict(id='P15', net='GND', layer='via', position=(156.30, 130.95),
+         size=0.6, drill=0.3),
+    dict(id='P15', net='GND', layer='F.Cu', start=(159.50, 130.95),
+         end=(156.30, 130.95), width=0.2),
 )
 
 SERVED_PADS = (
     ('U200', '10'), ('U200', '26'), ('U200', '49'),
     ('U200', '74'), ('U200', '99'), ('U104', '3'),
     ('Y200', '4'),
+    ('C201', '2'),
 )
