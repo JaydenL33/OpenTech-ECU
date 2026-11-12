@@ -1,0 +1,1144 @@
+{
+  "schema_version": 1,
+  "id": "opentech-bench-ecu-v0.1",
+  "title": "OpenTech bench ECU harness map",
+  "status": "UNREVIEWED_BENCH_ONLY",
+  "physical_use": "PROHIBITED",
+  "notice": "Board-local bench connectors only. Pin numbers are NOT Mitsubishi or any OEM cavity numbers. The schematic and PCB draft are UNREVIEWED; no connector, current rating or harness is approved for a vehicle.",
+  "source": {
+    "design": "hardware/kicad/evo8-bench-ecu",
+    "erc": "reports/erc.json (0 violations; unreviewed)",
+    "drc": "reports/drc.json (14 violations, 499 unconnected; not manufacturable)",
+    "files": [
+      {
+        "path": "BOM.csv",
+        "sha256": "2bc89aed14229d91dcb6647d5f3fd3303c999a5bb3d96b3c407b19b83e8b0cfe"
+      },
+      {
+        "path": "pin_map.csv",
+        "sha256": "7fa5c3ac724d1a3190effc30f62560801ad7b49c50add651d9d77fe72f3c189a"
+      },
+      {
+        "path": "test_points.csv",
+        "sha256": "23f0e5d16d1d3aa33ce281209965ffa1fe5504a0bef532d9215cdc534ad37418"
+      }
+    ]
+  },
+  "generated_by": "hardware/kicad/evo8-bench-ecu/tools/export_harness_manifest.py",
+  "subsystems": [
+    {
+      "id": "power",
+      "name": "Power protection & hardware inhibit",
+      "sheet": "power_protection",
+      "description": "Fused bench input, reverse-polarity protection, transient clamp, e-fuse, 5 V/3.3 V rails and the hardware arm/inhibit path.",
+      "connectors": [
+        "J100",
+        "J101"
+      ]
+    },
+    {
+      "id": "mcu",
+      "name": "STM32H743 MCU & service",
+      "sheet": "mcu",
+      "description": "MCU, reset supervisor, boot strap, watchdog kick, SWD and clock. Pin map is the schematic's own pin assignment.",
+      "connectors": [
+        "JP200"
+      ]
+    },
+    {
+      "id": "injectors",
+      "name": "Four bench injector sinks",
+      "sheet": "injector_drivers",
+      "description": "Low-side dummy-load outputs with gate command, drain, shunt and Kelvin test points. No real injector is approved.",
+      "connectors": [
+        "J300",
+        "J301",
+        "J302",
+        "J303"
+      ]
+    },
+    {
+      "id": "ignition",
+      "name": "Logic ignition outputs",
+      "sheet": "ignition_outputs",
+      "description": "0/5 V logic commands to external, verified igniters. No coil primary drive and no high-voltage section.",
+      "connectors": [
+        "J400",
+        "J401",
+        "J402",
+        "J403",
+        "J404"
+      ]
+    },
+    {
+      "id": "sensors",
+      "name": "Analogue & trigger conditioning",
+      "sheet": "sensor_trigger",
+      "description": "Protected 0-5 V analogue channels plus comparator-conditioned crank/cam inputs for simulated signals.",
+      "connectors": [
+        "J500",
+        "J501",
+        "J502",
+        "J503",
+        "J504",
+        "J505",
+        "J506"
+      ]
+    },
+    {
+      "id": "comms",
+      "name": "CAN, USB & SWD",
+      "sheet": "can_debug",
+      "description": "CAN transceiver and termination header, USB device, Cortex SWD and service UART.",
+      "connectors": [
+        "J600",
+        "J601",
+        "J602",
+        "J603",
+        "JP600"
+      ]
+    },
+    {
+      "id": "aux",
+      "name": "Auxiliary & relay sinks",
+      "sheet": "aux_outputs",
+      "description": "Four low-side bench loads plus one relay driver, all default-off.",
+      "connectors": [
+        "J700",
+        "J701",
+        "J702",
+        "J703",
+        "J704"
+      ]
+    }
+  ],
+  "connectors": [
+    {
+      "reference": "J100",
+      "label": "J_PWR 12V BENCH ONLY",
+      "sheet": "power_protection",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "VIN_BENCH",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "PGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J101",
+      "label": "J_ESTOP EXTERNAL NC CONTACTS",
+      "sheet": "power_protection",
+      "mpn": "1715747",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "+12V_PROTECTED",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "ACT_FEED",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "3",
+          "name": "Pin_3",
+          "net": "ESTOP_SEND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "4",
+          "name": "Pin_4",
+          "net": "ESTOP_OK",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "JP200",
+      "label": "BOOT ROM",
+      "sheet": "mcu",
+      "mpn": "61300211121",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "A",
+          "net": "+3V3",
+          "function": "Normally open; bootloader is not authenticated",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "B",
+          "net": "BOOT0",
+          "function": "Normally open; bootloader is not authenticated",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J300",
+      "label": "INJ1 DUMMY LOAD ONLY",
+      "sheet": "injector_drivers",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "INJ1_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "INJ1_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J301",
+      "label": "INJ2 DUMMY LOAD ONLY",
+      "sheet": "injector_drivers",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "INJ2_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "INJ2_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J302",
+      "label": "INJ3 DUMMY LOAD ONLY",
+      "sheet": "injector_drivers",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "INJ3_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "INJ3_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J303",
+      "label": "INJ4 DUMMY LOAD ONLY",
+      "sheet": "injector_drivers",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "INJ4_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "INJ4_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J400",
+      "label": "IGN1 EXTERNAL IGNITER",
+      "sheet": "ignition_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "IGN1_LOGIC",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "GND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J401",
+      "label": "IGN2 EXTERNAL IGNITER",
+      "sheet": "ignition_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "IGN2_LOGIC",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "GND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J402",
+      "label": "IGN3 EXTERNAL IGNITER",
+      "sheet": "ignition_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "IGN3_LOGIC",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "GND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J403",
+      "label": "IGN4 EXTERNAL IGNITER",
+      "sheet": "ignition_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "IGN4_LOGIC",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "GND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J404",
+      "label": "IGNITER BENCH POWER",
+      "sheet": "ignition_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "+12V_ACT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "PGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J500",
+      "label": "AN1 0-5V BENCH",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AN1_INPUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J501",
+      "label": "AN2 0-5V BENCH",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AN2_INPUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J502",
+      "label": "AN3 0-5V BENCH",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AN3_INPUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J503",
+      "label": "AN4 0-5V BENCH",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AN4_INPUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J504",
+      "label": "CRANK 0-5V HALL ONLY",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "CRANK_INPUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J505",
+      "label": "CAM 0-5V HALL ONLY",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "CAM_INPUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J506",
+      "label": "SENSOR 5V BENCH",
+      "sheet": "sensor_trigger",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "+5V",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AGND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J600",
+      "label": "CAN BENCH",
+      "sheet": "can_debug",
+      "mpn": "1715734",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "CAN_H",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "CAN_L",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "3",
+          "name": "Pin_3",
+          "net": "GND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J601",
+      "label": "USB DEVICE SELF POWERED",
+      "sheet": "can_debug",
+      "mpn": "10118194-0001LF",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "VBUS",
+          "net": "USB_VBUS",
+          "function": "VBUS does not power board; do not attach USB until board powered",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "D-",
+          "net": "USB_CONN_DM",
+          "function": "VBUS does not power board; do not attach USB until board powered",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "3",
+          "name": "D+",
+          "net": "USB_CONN_DP",
+          "function": "VBUS does not power board; do not attach USB until board powered",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "4",
+          "name": "ID",
+          "net": "NC",
+          "function": "VBUS does not power board; do not attach USB until board powered",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "5",
+          "name": "GND",
+          "net": "GND",
+          "function": "VBUS does not power board; do not attach USB until board powered",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "6",
+          "name": "Shield",
+          "net": "GND",
+          "function": "VBUS does not power board; do not attach USB until board powered",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J602",
+      "label": "CORTEX SWD 10PIN",
+      "sheet": "can_debug",
+      "mpn": "20021121-00010T4LF",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "+3V3",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "SWDIO",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "3",
+          "name": "Pin_3",
+          "net": "GND",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "4",
+          "name": "Pin_4",
+          "net": "SWCLK",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "5",
+          "name": "Pin_5",
+          "net": "GND",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "6",
+          "name": "Pin_6",
+          "net": "SWO",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "7",
+          "name": "Pin_7",
+          "net": "NC",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "8",
+          "name": "Pin_8",
+          "net": "NC",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "9",
+          "name": "Pin_9",
+          "net": "GND",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "10",
+          "name": "Pin_10",
+          "net": "NRST",
+          "function": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J603",
+      "label": "UART 3V3",
+      "sheet": "can_debug",
+      "mpn": "1715734",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "UART_TX",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "UART_RX",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "3",
+          "name": "Pin_3",
+          "net": "GND",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "JP600",
+      "label": "CAN TERMINATION",
+      "sheet": "can_debug",
+      "mpn": "61300211121",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "A",
+          "net": "CAN_TERM",
+          "function": "Fit shunt only at bus endpoint",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "B",
+          "net": "CAN_L",
+          "function": "Fit shunt only at bus endpoint",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J700",
+      "label": "AUX1 BENCH LOAD",
+      "sheet": "aux_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AUX1_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AUX1_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J701",
+      "label": "AUX2 BENCH LOAD",
+      "sheet": "aux_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AUX2_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AUX2_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J702",
+      "label": "AUX3 BENCH LOAD",
+      "sheet": "aux_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AUX3_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AUX3_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J703",
+      "label": "AUX4 BENCH LOAD",
+      "sheet": "aux_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "AUX4_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "AUX4_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    },
+    {
+      "reference": "J704",
+      "label": "RELAY BENCH LOAD",
+      "sheet": "aux_outputs",
+      "mpn": "1715721",
+      "pins": [
+        {
+          "pin": "1",
+          "name": "Pin_1",
+          "net": "RELAY_SUPPLY",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        },
+        {
+          "pin": "2",
+          "name": "Pin_2",
+          "net": "RELAY_OUT",
+          "function": "Board-local bench connector; pin numbers are NOT OEM cavities",
+          "oem_assignment": "NONE - BENCH ONLY"
+        }
+      ]
+    }
+  ],
+  "test_points": [
+    {
+      "reference": "TP100",
+      "net": "VIN_BENCH",
+      "purpose": "Measure VIN_BENCH relative to GND"
+    },
+    {
+      "reference": "TP101",
+      "net": "+12V_PROTECTED",
+      "purpose": "Measure +12V_PROTECTED relative to GND"
+    },
+    {
+      "reference": "TP102",
+      "net": "+12V_ACT",
+      "purpose": "Measure +12V_ACT relative to GND"
+    },
+    {
+      "reference": "TP103",
+      "net": "+5V",
+      "purpose": "Measure +5V relative to GND"
+    },
+    {
+      "reference": "TP104",
+      "net": "+3V3",
+      "purpose": "Measure +3V3 relative to GND"
+    },
+    {
+      "reference": "TP105",
+      "net": "NRST",
+      "purpose": "Measure NRST relative to GND"
+    },
+    {
+      "reference": "TP106",
+      "net": "ARMED",
+      "purpose": "Measure ARMED relative to GND"
+    },
+    {
+      "reference": "TP107",
+      "net": "ACT_EN",
+      "purpose": "Measure ACT_EN relative to GND"
+    },
+    {
+      "reference": "TP108",
+      "net": "PGND",
+      "purpose": "Measure PGND relative to GND"
+    },
+    {
+      "reference": "TP109",
+      "net": "GND",
+      "purpose": "Measure GND relative to GND"
+    },
+    {
+      "reference": "TP110",
+      "net": "ESTOP_OK",
+      "purpose": "Measure ESTOP_OK relative to GND"
+    },
+    {
+      "reference": "TP200",
+      "net": "VCAP48",
+      "purpose": "Measure VCAP48 relative to GND"
+    },
+    {
+      "reference": "TP201",
+      "net": "VCAP73",
+      "purpose": "Measure VCAP73 relative to GND"
+    },
+    {
+      "reference": "TP202",
+      "net": "VDDA",
+      "purpose": "Measure VDDA relative to GND"
+    },
+    {
+      "reference": "TP203",
+      "net": "BOOT0",
+      "purpose": "Measure BOOT0 relative to GND"
+    },
+    {
+      "reference": "TP204",
+      "net": "WD_KICK",
+      "purpose": "Measure WD_KICK relative to GND"
+    },
+    {
+      "reference": "TP300",
+      "net": "INJ1_OUT",
+      "purpose": "Drain transient, PGND reference; do not use a logic probe"
+    },
+    {
+      "reference": "TP301",
+      "net": "INJ1_SHUNT",
+      "purpose": "Kelvin high: I = V/0.22ohm; <=55mV at250mA"
+    },
+    {
+      "reference": "TP302",
+      "net": "PGND",
+      "purpose": "INJ1 Kelvin low for shunt measurement"
+    },
+    {
+      "reference": "TP303",
+      "net": "INJ1_GATE",
+      "purpose": "Gate referenced to local source/shunt"
+    },
+    {
+      "reference": "TP304",
+      "net": "INJ2_OUT",
+      "purpose": "Drain transient, PGND reference; do not use a logic probe"
+    },
+    {
+      "reference": "TP305",
+      "net": "INJ2_SHUNT",
+      "purpose": "Kelvin high: I = V/0.22ohm; <=55mV at250mA"
+    },
+    {
+      "reference": "TP306",
+      "net": "PGND",
+      "purpose": "INJ2 Kelvin low for shunt measurement"
+    },
+    {
+      "reference": "TP307",
+      "net": "INJ2_GATE",
+      "purpose": "Gate referenced to local source/shunt"
+    },
+    {
+      "reference": "TP308",
+      "net": "INJ3_OUT",
+      "purpose": "Drain transient, PGND reference; do not use a logic probe"
+    },
+    {
+      "reference": "TP309",
+      "net": "INJ3_SHUNT",
+      "purpose": "Kelvin high: I = V/0.22ohm; <=55mV at250mA"
+    },
+    {
+      "reference": "TP310",
+      "net": "PGND",
+      "purpose": "INJ3 Kelvin low for shunt measurement"
+    },
+    {
+      "reference": "TP311",
+      "net": "INJ3_GATE",
+      "purpose": "Gate referenced to local source/shunt"
+    },
+    {
+      "reference": "TP312",
+      "net": "INJ4_OUT",
+      "purpose": "Drain transient, PGND reference; do not use a logic probe"
+    },
+    {
+      "reference": "TP313",
+      "net": "INJ4_SHUNT",
+      "purpose": "Kelvin high: I = V/0.22ohm; <=55mV at250mA"
+    },
+    {
+      "reference": "TP314",
+      "net": "PGND",
+      "purpose": "INJ4 Kelvin low for shunt measurement"
+    },
+    {
+      "reference": "TP315",
+      "net": "INJ4_GATE",
+      "purpose": "Gate referenced to local source/shunt"
+    },
+    {
+      "reference": "TP400",
+      "net": "IGN1_LOGIC",
+      "purpose": "0/5V active-high external-igniter command; <=2mA load"
+    },
+    {
+      "reference": "TP401",
+      "net": "IGN2_LOGIC",
+      "purpose": "0/5V active-high external-igniter command; <=2mA load"
+    },
+    {
+      "reference": "TP402",
+      "net": "IGN3_LOGIC",
+      "purpose": "0/5V active-high external-igniter command; <=2mA load"
+    },
+    {
+      "reference": "TP403",
+      "net": "IGN4_LOGIC",
+      "purpose": "0/5V active-high external-igniter command; <=2mA load"
+    },
+    {
+      "reference": "TP500",
+      "net": "ADC_AN1",
+      "purpose": "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+    },
+    {
+      "reference": "TP501",
+      "net": "ADC_AN2",
+      "purpose": "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+    },
+    {
+      "reference": "TP502",
+      "net": "ADC_AN3",
+      "purpose": "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+    },
+    {
+      "reference": "TP503",
+      "net": "ADC_AN4",
+      "purpose": "0-3.0V nominal for0-5V input; source impedance14.2kohm"
+    },
+    {
+      "reference": "TP504",
+      "net": "CRANK_DIG",
+      "purpose": "3.3V comparator-conditioned timer capture"
+    },
+    {
+      "reference": "TP505",
+      "net": "CAM_DIG",
+      "purpose": "3.3V comparator-conditioned timer capture"
+    },
+    {
+      "reference": "TP506",
+      "net": "CLAMP_3V0",
+      "purpose": "Measure CLAMP_3V0 relative to GND"
+    },
+    {
+      "reference": "TP507",
+      "net": "TRIG_REF",
+      "purpose": "Measure TRIG_REF relative to GND"
+    },
+    {
+      "reference": "TP600",
+      "net": "USB_VBUS_SENSE",
+      "purpose": "Measure USB_VBUS_SENSE relative to GND"
+    },
+    {
+      "reference": "TP601",
+      "net": "CAN_TX",
+      "purpose": "Measure CAN_TX relative to GND"
+    },
+    {
+      "reference": "TP602",
+      "net": "CAN_RX",
+      "purpose": "Measure CAN_RX relative to GND"
+    },
+    {
+      "reference": "TP603",
+      "net": "SWDIO",
+      "purpose": "Measure SWDIO relative to GND"
+    },
+    {
+      "reference": "TP604",
+      "net": "SWCLK",
+      "purpose": "Measure SWCLK relative to GND"
+    },
+    {
+      "reference": "TP700",
+      "net": "AUX1_OUT",
+      "purpose": "Measure AUX1_OUT relative to PGND"
+    },
+    {
+      "reference": "TP701",
+      "net": "AUX2_OUT",
+      "purpose": "Measure AUX2_OUT relative to PGND"
+    },
+    {
+      "reference": "TP702",
+      "net": "AUX3_OUT",
+      "purpose": "Measure AUX3_OUT relative to PGND"
+    },
+    {
+      "reference": "TP703",
+      "net": "AUX4_OUT",
+      "purpose": "Measure AUX4_OUT relative to PGND"
+    },
+    {
+      "reference": "TP704",
+      "net": "RELAY_OUT",
+      "purpose": "Measure RELAY_OUT relative to PGND"
+    }
+  ],
+  "reference_target": {
+    "vehicle": "Mitsubishi Lancer Evolution VIII GSR (JDM, CT9A, 4G63T, 6MT)",
+    "compatibility": "UNVERIFIED",
+    "note": "This bench harness is not an Evo VIII adapter. The factory ECU part number, connector architecture, pinout, trigger pattern, injectors and ignition topology remain unverified. See AUDIT/ECU_PINOUT_VERIFICATION.md."
+  }
+}

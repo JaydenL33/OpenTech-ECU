@@ -1,0 +1,13 @@
+[package]
+name = "ecu-ignition"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = ["std"]
+std = ["ecu-types/std"]
+
+[dependencies]
+ecu-types = { path = "../ecu-types", default-features = false }
+serde = { workspace = true }

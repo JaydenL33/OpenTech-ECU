@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "package_id": "opentech-vehicle-mitsubishi-evo8-jdm-gsr-6mt",
+  "status": "UNVERIFIED_SIMULATION_ONLY",
+  "physical_use": "BLOCKED",
+  "vehicle": {
+    "make": "Mitsubishi",
+    "model": "Lancer Evolution VIII",
+    "variant": "GSR",
+    "market": "Japan (JDM)",
+    "chassis": "CT9A",
+    "engine": "4G63 turbocharged 2.0L inline-4",
+    "transmission": "6-speed manual",
+    "transmission_code": "W6MAA expected, unconfirmed",
+    "aspiration": "turbocharged"
+  },
+  "verification": {
+    "verification_status": "unverified",
+    "ecu_part_number": null,
+    "connector_count": null,
+    "connector_family": null,
+    "pinout_documented": false,
+    "trigger_verified": false,
+    "injector_data_verified": false,
+    "ignition_topology_verified": false,
+    "sensor_transfer_functions_verified": false,
+    "bench_tested": false,
+    "vehicle_tested": false
+  },
+  "sources": {
+    "research": [
+      "research/evo8/sources.md",
+      "AUDIT/ECU_PINOUT_VERIFICATION.md",
+      "AUDIT/VEHICLE_COMPATIBILITY.md",
+      "AUDIT/EVO8_REFERENCE_PROFILE.md"
+    ],
+    "warning": "Sources are research leads, not a verified factory pinout for this exact vehicle."
+  },
+  "simulation_assumptions": {
+    "warning": "Synthetic placeholders. Never use these values for a physical harness, tune or engine start.",
+    "trigger": {
+      "pattern": "36-1 generic simulator wheel",
+      "cam_required": true,
+      "actual_4g63_pattern": "UNVERIFIED - do not assume this is the OEM pattern"
+    },
+    "injector": {
+      "flow_cc_min": 560.0,
+      "rated_pressure_kpa": 300.0,
+      "dead_time_ms": 1.0,
+      "resistor_pack": "UNKNOWN",
+      "actual_part_number": null
+    },
+    "ignition": {
+      "mode": "logic-level output to external igniter (bench concept)",
+      "coil_or_igniter_part_number": null,
+      "drive_polarity": "UNKNOWN"
+    },
+    "sensors": {
+      "map": "assumed for simulation",
+      "maf": "JDM engine is MAF-based; transfer function not implemented",
+      "wideband": "virtual LSU 4.9 model",
+      "clt_iat": "generic simulation curves"
+    }
+  },
+  "blocking_items": [
+    "EVO-ID-001",
+    "EVO-PIN-001",
+    "EVO-CON-001",
+    "EVO-TRIG-001",
+    "EVO-INJ-001",
+    "EVO-IGN-001",
+    "EVO-KNK-001",
+    "EVO-FUEL-001",
+    "EVO-ACD-001",
+    "EVO-IMM-001",
+    "EVO-BOOST-001",
+    "EVO-VSS-001"
+  ],
+  "factory_systems": [
+    { "name": "ACD", "status": "FURTHER RESEARCH", "note": "Do not disable or spoof." },
+    { "name": "AYC", "status": "FURTHER RESEARCH", "note": "JDM-specific; integration unknown." },
+    { "name": "Immobiliser", "status": "MUST NOT BYPASS", "note": "A legitimate integration strategy is required." },
+    { "name": "Dashboard / tachometer", "status": "UNVERIFIED", "note": "Signal and polarity unknown." },
+    { "name": "Air conditioning", "status": "FURTHER RESEARCH", "note": "Compressor request and idle-up unknown." },
+    { "name": "Cooling fans", "status": "UNVERIFIED", "note": "Relay/PWM type and failsafe state unknown." },
+    { "name": "Fuel pump control", "status": "UNVERIFIED", "note": "Do not assume a simple relay." },
+    { "name": "Intercooler spray", "status": "FURTHER RESEARCH", "note": "Output polarity and automatic behaviour unknown." },
+    { "name": "Factory diagnostics", "status": "FURTHER RESEARCH", "note": "K-line/MUT-III; no support claimed." }
+  ],
+  "release_gate": {
+    "current": 0,
+    "next_gate": 1,
+    "rule": "Do not connect to a vehicle. See AUDIT/RELEASE_GATES.md."
+  }
+}

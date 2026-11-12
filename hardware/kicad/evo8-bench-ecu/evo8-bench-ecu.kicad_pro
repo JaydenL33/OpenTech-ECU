@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "filename": "evo8-bench-ecu.kicad_pro",
+    "version": 1
+  },
+  "board": {
+    "design_settings": {
+      "defaults": {
+        "board_outline_line_width": 0.05,
+        "copper_line_width": 0.25,
+        "copper_text_size_h": 1.5,
+        "copper_text_size_v": 1.5
+      },
+      "rules": {
+        "min_clearance": 0.2,
+        "min_track_width": 0.15,
+        "min_via_diameter": 0.6,
+        "min_through_hole_diameter": 0.3,
+        "min_hole_clearance": 0.25,
+        "min_copper_edge_clearance": 0.5
+      },
+      "track_widths": [
+        0,
+        0.2,
+        0.25,
+        0.5,
+        1.0,
+        1.5
+      ],
+      "via_dimensions": [
+        {
+          "diameter": 0.6,
+          "drill": 0.3
+        }
+      ],
+      "drc_exclusions": [],
+      "meta": {
+        "version": 2
+      }
+    }
+  },
+  "net_settings": {
+    "meta": {
+      "version": 4
+    },
+    "classes": [
+      {
+        "name": "Default",
+        "clearance": 0.2,
+        "track_width": 0.25,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.2,
+        "diff_pair_via_gap": 0.25,
+        "bus_width": 12,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "wire_width": 6,
+        "schematic_color": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pcb_color": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "netclass_assignments": {},
+    "netclass_patterns": []
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "legacy_lib_dir": "",
+    "legacy_lib_list": [],
+    "meta": {
+      "version": 1
+    }
+  },
+  "text_variables": {
+    "PROTOTYPE_STATUS": "UNREVIEWED BENCH ONLY"
+  }
+}

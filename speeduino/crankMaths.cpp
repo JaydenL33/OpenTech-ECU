@@ -1,0 +1,105 @@
+#include <avr-fast-shift.h>
+#include "globals.h"
+#include "crankMaths.h"
+#include "preprocessor.h"
+
+#define SECOND_DERIV_ENABLED                0          
+
+//These are only part of the experimental 2nd deriv calcs
+#if SECOND_DERIV_ENABLED!=0
+byte deltaToothCount = 0; //The last tooth that was used with the deltaV calc
+int rpmDelta;
+#endif
+
+int16_t CRANK_ANGLE_MAX_IGN = 360;
+int16_t CRANK_ANGLE_MAX_INJ = 360; 
+
+typedef uint32_t UQ24X8_t;
+static constexpr uint8_t UQ24X8_Shift = 8U;
+static constexpr uint8_t microsPerDegree_Shift = UQ24X8_Shift;
+
+static constexpr uint8_t UQ1X15_Shift = 15U;
+static constexpr uint8_t degreesPerMicro_Shift = UQ1X15_Shift;
+
+/** @brief The factors used by the angle<->time conversion functions */
+static angle_converter_factors_t angleConverterFactors;
+
+angle_converter_factors_t calculateAngleConverterFactors(uint32_t revolutionTime) noexcept {
+  angle_converter_factors_t factors = { 0U, 0U };
+  if (revolutionTime!=0U)
+  {
+    factors.microsPerDegree = div360(lshift<microsPerDegree_Shift>(revolutionTime));
+    constexpr uint32_t UQ1X15_360 = UINT32_C(360) << degreesPerMicro_Shift;
+    factors.degreesPerMicro = (uint16_t)fast_div_closest(UQ1X15_360, revolutionTime);
+  }
+  return factors;
+}
+
+void applyAngleConverterFactors(const angle_converter_factors_t &factors) noexcept {
+  angleConverterFactors = factors;
+}
+
+void setAngleConverterRevolutionTime(uint32_t revolutionTime) noexcept {
+  applyAngleConverterFactors(calculateAngleConverterFactors(revolutionTime));
+}
+
+BEGIN_LTO_ALWAYS_INLINE(uint32_t) angleToTime(uint16_t angle) noexcept {
+  UQ24X8_t micros = (uint32_t)angle * (uint32_t)angleConverterFactors.microsPerDegree;
+  return rshift_round<microsPerDegree_Shift>(micros);
+}
+END_LTO_INLINE()
+
+BEGIN_LTO_ALWAYS_INLINE(COMPARE_TYPE) angleToTimerTicks(uint16_t angle) noexcept {
+    uint32_t micros = angleToTime(angle);
+    return uS_TO_TIMER_COMPARE(micros);
+}
+END_LTO_INLINE()
+
+BEGIN_LTO_ALWAYS_INLINE(uint16_t) timeToAngle(uint32_t time) noexcept {
+    uint32_t degFixed = time * (uint32_t)angleConverterFactors.degreesPerMicro;
+    return rshift_round<degreesPerMicro_Shift>(degFixed);
+}
+END_LTO_INLINE()
+
+#if SECOND_DERIV_ENABLED!=0
+void doCrankSpeedCalcs(void)
+{
+     //********************************************************
+      //How fast are we going? Need to know how long (uS) it will take to get from one tooth to the next. We then use that to estimate how far we are between the last tooth and the next one
+      //We use a 1st Deriv acceleration prediction, but only when there is an even spacing between primary sensor teeth
+      //Any decoder that has uneven spacing has its triggerToothAngle set to 0
+      //THIS IS CURRENTLY DISABLED FOR ALL DECODERS! It needs more work. 
+      if( (getDecoder().getFeatures().supports2ndDeriv) && (toothHistoryIndex >= 3) && (currentStatus.RPM < 2000) ) //toothHistoryIndex must be greater than or equal to 3 as we need the last 3 entries. Currently this mode only runs below 3000 rpm
+      {
+        //Only recalculate deltaV if the tooth has changed since last time (DeltaV stays the same until the next tooth)
+        //if (deltaToothCount != toothCurrentCount)
+        {
+          deltaToothCount = toothCurrentCount;
+          int angle1, angle2; //These represent the crank angles that are travelled for the last 2 pulses
+          if(configPage4.TrigPattern == 4)
+          {
+            //Special case for 70/110 pattern on 4g63
+            angle2 = triggerToothAngle; //Angle 2 is the most recent
+            if (angle2 == 70) { angle1 = 110; }
+            else { angle1 = 70; }
+          }
+          else if(configPage4.TrigPattern == 0)
+          {
+            //Special case for missing tooth decoder where the missing tooth was one of the last 2 seen
+            if(toothCurrentCount == 1) { angle2 = 2*triggerToothAngle; angle1 = triggerToothAngle; }
+            else if(toothCurrentCount == 2) { angle1 = 2*triggerToothAngle; angle2 = triggerToothAngle; }
+            else { angle1 = triggerToothAngle; angle2 = triggerToothAngle; }
+          }
+          else { angle1 = triggerToothAngle; angle2 = triggerToothAngle; }
+
+          uint32_t toothDeltaV = (MICROS_PER_SEC * angle2 / toothHistory[toothHistoryIndex]) - (MICROS_PER_SEC * angle1 / toothHistory[toothHistoryIndex-1]);
+          uint32_t toothDeltaT = toothHistory[toothHistoryIndex];
+          //long timeToLastTooth = micros() - toothLastToothTime;
+
+          rpmDelta = lshift<10>(toothDeltaV) / (6 * toothDeltaT);
+        }
+
+          timePerDegreex16 = ldiv( 2666656L, currentStatus.RPM + rpmDelta).quot; //This gives accuracy down to 0.1 of a degree and can provide noticeably better timing results on low resolution triggers
+      }
+}
+#endif

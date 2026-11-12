@@ -1,0 +1,17 @@
+[package]
+name = "ecu-simulator"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+ecu-types = { path = "../ecu-types" }
+ecu-calibration = { path = "../ecu-calibration" }
+ecu-fuel = { path = "../ecu-fuel" }
+ecu-ignition = { path = "../ecu-ignition" }
+ecu-trigger = { path = "../ecu-trigger" }
+ecu-scheduler = { path = "../ecu-scheduler" }
+ecu-lambda = { path = "../ecu-lambda" }
+ecu-protection = { path = "../ecu-protection" }
+serde = { workspace = true, features = ["std"] }
+serde_json = { workspace = true }

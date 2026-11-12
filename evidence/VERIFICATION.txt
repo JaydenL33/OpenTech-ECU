@@ -1,0 +1,113 @@
+OpenTech-ECU verification — 2026-11-12T05:35:33Z
+
+$ cargo fmt --all -- --check
+PASS
+
+$ cargo clippy --workspace --all-targets -- -D warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.09s
+
+$ cargo test --workspace
+test result: test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.16s
+test result: test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+TOTAL passed=128 failed=0
+
+$ core no_std checks
+PASS
+
+$ firmware target check
+PASS
+
+$ UI build
+dist/assets/index-CL8twMhr.css   17.30 kB │ gzip:  4.56 kB
+dist/assets/index-Cgy4K7Y_.js   285.13 kB │ gzip: 87.54 kB │ map: 1,219.57 kB
+✓ built in 1.04s
+
+$ copilot typecheck
+PASS
+
+$ cargo run -p ecu-sim-cli -- run --scenario mixture_sweep --out runs/final --check-determinism
+determinism: PASS (2184 frames byte-identical)
+scenario: mixture_sweep
+frames:   2184
+duration: 42.0s
+rpm mean/max: 2769 / 4566
+coolant max: 89.6 C
+lambda mean: 0.977 (2184 samples)
+faults:   ["P0335", "P0133"]
+wrote:    runs/final-evidence
+
+$ analyze
+samples used/rejected: 1378/806  cells proposed: 3  hard faults: []
+  gates: {"CRITICAL_DTC": 12, "ENGINE_NOT_RUNNING": 13, "FUEL_CUT": 13, "LAMBDA_IMPLAUSIBLE": 32, "LAMBDA_NOT_READY": 32, "LAMBDA_STATUS": 32, "MAP_TRANSIENT": 196, "RPM_LOW": 4, "RPM_TRANSIENT": 447, "SYNC_NOT_SEQUENTIAL": 8, "TPS_TRANSIENT": 204, "WOT_BOUNDARY": 411}
+proposal: mix-4d0eee3710e1660a (3 cells, requires approval)
+   1000 rpm   50 kPa  VE 46.71 -> 49.05  (+5.0%, n=170, conf=0.78)
+   2100 rpm   50 kPa  VE 59.16 -> 62.12  (+5.0%, n=431, conf=0.85)
+   2900 rpm   60 kPa  VE 66.13 -> 69.44  (+5.0%, n=259, conf=0.92)
+ignition untouched: true
+wrote: runs/final-evidence/report.json
+
+$ apply --approve
+applied 3 cells; revision 1 -> 2; checksum f6bf1ba3d7939900
+diff: 3 cells, max |delta| 3.31 VE points
+undo snapshot is the input calibration: runs/final-evidence/calibration.json
+wrote: runs/final-evidence/calibration-r2.json
+
+$ curl /api/health
+{"interlock":"PHYSICAL_OUTPUT_INTERLOCK_ENGAGED","note":"Virtual ECU only. No injector or ignition hardware path exists.","physical_outputs":false,"protocol_version":1,"service":"opentech-ecu-studio","status":"ok","version":"0.1.0"}
+$ POST /api/sim/start mixture_sweep
+{"calibration_checksum":"600a4de51fba04cbf1eade5da6545de5b952c2c3fd601bad8a4d3526325046a3","running":true,"scenario":{"ambient_c":24.0,"cranking":false,"description":"Warm steady-state dyno sweep across load and RPM with a deliberately biased true VE table. Used to demonstrate offline Mixture Map re
+$ POST /api/sim/pause
+{"running":false}
+$ POST /api/replay/start
+{"frames":4,"replaying":true,"source":"current"}
+$ POST /api/replay/stop
+{"replaying":false}
+$ copilot /health
+{"status":"ok","service":"opentech-tuning-copilot","mode":"offline-tools","model":"deepseek/deepseek-v4-pro","rust_api":"http://127.0.0.1:8765","safety":"read-only tools; no calibration writes, no ignition advice, no hardware access"}
+$ copilot offline tool query
+{
+  "mode": "offline-tools",
+  "approvalRequired": false,
+  "tools": [
+    "read_telemetry",
+    "read_faults"
+  ],
+  "reply": "Offline tool mode (no LLM call): At 0.0 s the engine is cut, 0 rpm, MAP 23 kPa, sync unsynced, protection cut. Protection state cut; 2 active DTC(s)."
+}
+
+Final counts: 128 Rust tests, 0 failures; core no_std checks pass; firmware target check passes; UI build and copilot typecheck pass.
+
+
+
+KiCad bench schematic package: hardware/kicad/evo8-bench-ecu
+- 7 hierarchical sheets, 305 BOM lines/parts, 198 nets, 0 ERC violations (ERC re-run with the isolated KiCad 9 toolchain used to generate the package).
+- PCB placement/routing draft: 305 footprints, 37 tracks/vias, 499 unconnected items and 14 DRC violations. No gerbers, no manufacturing outputs, no independent review. NOT Gate 1 evidence.
+Source commit: 041be84f665d9aefa551df81792df8acb5ac7873 (documentation/hardware commits follow)
+Final source manifest SHA-256: 9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724
+Cargo.lock SHA-256: 71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e
+Source commit: 041be84f665d9aefa551df81792df8acb5ac7873

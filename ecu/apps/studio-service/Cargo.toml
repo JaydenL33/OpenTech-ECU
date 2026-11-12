@@ -1,0 +1,24 @@
+[package]
+name = "studio-service"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+axum = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tower-http = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true, features = ["std"] }
+serde_json = { workspace = true }
+ecu-types = { path = "../../crates/ecu-types" }
+ecu-calibration = { path = "../../crates/ecu-calibration" }
+ecu-lambda = { path = "../../crates/ecu-lambda" }
+ecu-simulator = { path = "../../crates/ecu-simulator" }
+ecu-protocol = { path = "../../crates/ecu-protocol" }
+ecu-protection = { path = "../../crates/ecu-protection" }
+ecu-diagnostics = { path = "../../crates/ecu-diagnostics" }
+ecu-harness = { path = "../../crates/ecu-harness" }

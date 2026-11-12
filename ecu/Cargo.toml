@@ -1,0 +1,49 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/ecu-types",
+  "crates/ecu-calibration",
+  "crates/ecu-fuel",
+  "crates/ecu-ignition",
+  "crates/ecu-trigger",
+  "crates/ecu-scheduler",
+  "crates/ecu-lambda",
+  "crates/ecu-protection",
+  "crates/ecu-protocol",
+  "crates/ecu-simulator",
+  "crates/ecu-diagnostics",
+  "crates/ecu-harness",
+  "apps/ecu-sim-cli",
+  "apps/studio-service",
+  "firmware/stm32",
+]
+exclude = ["apps/tuning-studio/src-tauri"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-2.0-or-later"
+rust-version = "1.80"
+authors = ["OpenTech ECU contributors"]
+repository = "https://github.com/opentech-ecu/opentech-ecu"
+
+[workspace.dependencies]
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+serde_json = "1"
+libm = "0.2"
+sha2 = "0.10"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time", "signal"] }
+axum = { version = "0.8", features = ["ws", "json"] }
+tower-http = { version = "0.6", features = ["fs", "cors", "trace"] }
+anyhow = "1"
+thiserror = "2"
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.dev]
+opt-level = 1

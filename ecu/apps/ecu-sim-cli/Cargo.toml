@@ -1,0 +1,16 @@
+[package]
+name = "ecu-sim-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true, features = ["std"] }
+serde_json = { workspace = true }
+ecu-types = { path = "../../crates/ecu-types" }
+ecu-calibration = { path = "../../crates/ecu-calibration" }
+ecu-lambda = { path = "../../crates/ecu-lambda" }
+ecu-simulator = { path = "../../crates/ecu-simulator" }
+ecu-diagnostics = { path = "../../crates/ecu-diagnostics" }

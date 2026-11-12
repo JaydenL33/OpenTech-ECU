@@ -1,0 +1,5100 @@
+{
+  "project": "evo8-bench-ecu",
+  "root_uuid": "167fcfc1-64f6-5ef6-97c3-45bf49a9859d",
+  "sheets": [
+    [
+      "power_protection",
+      "Power protection and hardware inhibit"
+    ],
+    [
+      "mcu",
+      "STM32H743 MCU"
+    ],
+    [
+      "injector_drivers",
+      "Four bench injector sinks"
+    ],
+    [
+      "ignition_outputs",
+      "Logic ignition to external igniters"
+    ],
+    [
+      "sensor_trigger",
+      "Analog and Hall trigger conditioning"
+    ],
+    [
+      "can_debug",
+      "CAN USB and SWD"
+    ],
+    [
+      "aux_outputs",
+      "Auxiliary and relay sinks"
+    ]
+  ],
+  "parts": [
+    {
+      "ref": "J100",
+      "sheet": "power_protection",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "J_PWR 12V BENCH ONLY",
+      "pins": {
+        "1": "VIN_BENCH",
+        "2": "PGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "e1843be6-ad60-5f6b-bc41-13725dc9c337",
+      "dnp": false
+    },
+    {
+      "ref": "F100",
+      "sheet": "power_protection",
+      "libid": "Device:Fuse",
+      "value": "2A",
+      "pins": {
+        "1": "VIN_BENCH",
+        "2": "VIN_FUSED"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467002.NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "3f2f5f09-54ce-5825-872b-15c9b9622fa0",
+      "dnp": false
+    },
+    {
+      "ref": "Q100",
+      "sheet": "power_protection",
+      "libid": "Transistor_FET:IRF4905",
+      "value": "IRF4905PBF",
+      "pins": {
+        "1": "REV_GATE",
+        "2": "VIN_FUSED",
+        "3": "VIN_REVERSE_OK"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRF4905PBF",
+      "manufacturer": "Infineon",
+      "note": "Reverse protection: D=input S=protected; not ideal-diode backfeed blocking",
+      "uuid": "3afe8e28-5146-5aab-b8ba-0c31f8be73f7",
+      "dnp": false
+    },
+    {
+      "ref": "R100",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "REV_GATE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "c5fe4994-c448-5488-b888-4adf03794303",
+      "dnp": false
+    },
+    {
+      "ref": "D100",
+      "sheet": "power_protection",
+      "libid": "Device:D_Zener",
+      "value": "BZT52C12",
+      "pins": {
+        "1": "VIN_REVERSE_OK",
+        "2": "REV_GATE"
+      },
+      "footprint": "Diode_SMD:D_SOD-123",
+      "mpn": "BZT52C12-7-F",
+      "manufacturer": "Littelfuse",
+      "note": "12V gate-source clamp",
+      "uuid": "031e21cc-2e9d-5406-8c10-4e329e100af8",
+      "dnp": false
+    },
+    {
+      "ref": "D101",
+      "sheet": "power_protection",
+      "libid": "Device:D_Zener",
+      "value": "SMBJ12A",
+      "pins": {
+        "1": "VIN_REVERSE_OK",
+        "2": "PGND"
+      },
+      "footprint": "Diode_SMD:D_SMB",
+      "mpn": "SMBJ12A",
+      "manufacturer": "Littelfuse",
+      "note": "Bench transient clamp only; no load-dump qualification",
+      "uuid": "b55667e9-1211-5ed8-bf91-dc66580e3b2b",
+      "dnp": false
+    },
+    {
+      "ref": "C100",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "VIN_REVERSE_OK",
+        "2": "PGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "1c95cfa8-82fd-5943-aa97-7f1093afd32f",
+      "dnp": false
+    },
+    {
+      "ref": "U100",
+      "sheet": "power_protection",
+      "libid": "Power_Management:TPS2592xx",
+      "value": "TPS259260DRCR",
+      "pins": {
+        "1": "EFUSE_SLEW",
+        "2": "EFUSE_UVLO",
+        "3": "VIN_REVERSE_OK",
+        "4": "VIN_REVERSE_OK",
+        "5": "VIN_REVERSE_OK",
+        "6": "+12V_PROTECTED",
+        "7": "+12V_PROTECTED",
+        "8": "+12V_PROTECTED",
+        "9": null,
+        "10": "EFUSE_ILIM",
+        "11": "PGND"
+      },
+      "footprint": "Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm_ThermalVias",
+      "mpn": "TPS259260DRCR",
+      "manufacturer": "Texas Instruments",
+      "note": "12V variant, latched thermal shutdown; nominal 2.1A limit",
+      "uuid": "2d6773b5-66bb-50a0-8043-4e906d0ce17d",
+      "dnp": false
+    },
+    {
+      "ref": "R101",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "45.3k",
+      "pins": {
+        "1": "EFUSE_ILIM",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0745K3L",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "6b2a3c9e-89a6-5744-b207-1c1356740154",
+      "dnp": false
+    },
+    {
+      "ref": "C101",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "1n",
+      "pins": {
+        "1": "EFUSE_SLEW",
+        "2": "PGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21B5C1H102JA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "cc70b180-930e-58b4-ab9e-c7fba0a6510d",
+      "dnp": false
+    },
+    {
+      "ref": "R102",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "47k",
+      "pins": {
+        "1": "VIN_REVERSE_OK",
+        "2": "EFUSE_UVLO"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0747KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "89838138-cad4-536e-a53c-43c61fdc747c",
+      "dnp": false
+    },
+    {
+      "ref": "R103",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "EFUSE_UVLO",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "854311b8-a8e9-54be-8d85-476c02f90242",
+      "dnp": false
+    },
+    {
+      "ref": "C102",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "1u",
+      "pins": {
+        "1": "+12V_PROTECTED",
+        "2": "PGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H105KA12L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "d76be707-8e69-537f-93ec-b2920fd3b390",
+      "dnp": false
+    },
+    {
+      "ref": "C103",
+      "sheet": "power_protection",
+      "libid": "Device:C_Polarized",
+      "value": "220u 35V",
+      "pins": {
+        "1": "+12V_PROTECTED",
+        "2": "PGND"
+      },
+      "footprint": "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm",
+      "mpn": "UHE1V221MPD",
+      "manufacturer": "Nichicon",
+      "note": "Input ripple/temperature review required",
+      "uuid": "946f77d1-2b54-5ad7-820c-2933a044c34f",
+      "dnp": false
+    },
+    {
+      "ref": "U101",
+      "sheet": "power_protection",
+      "libid": "Regulator_Switching:LM2596S-5",
+      "value": "LM2596S-5.0/NOPB",
+      "pins": {
+        "1": "+12V_PROTECTED",
+        "2": "BUCK_SW",
+        "3": "PGND",
+        "4": "+5V",
+        "5": "PGND"
+      },
+      "footprint": "Package_TO_SOT_SMD:TO-263-5_TabPin3",
+      "mpn": "LM2596S-5.0/NOPB",
+      "manufacturer": "Texas Instruments",
+      "note": "",
+      "uuid": "fda67993-54e9-5199-aaff-368b9744b069",
+      "dnp": false
+    },
+    {
+      "ref": "D102",
+      "sheet": "power_protection",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "BUCK_SW",
+        "2": "PGND"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "",
+      "uuid": "439bddaf-3cc8-5be3-b56c-76fb22ad85c0",
+      "dnp": false
+    },
+    {
+      "ref": "L100",
+      "sheet": "power_protection",
+      "libid": "Device:L",
+      "value": "33uH",
+      "pins": {
+        "1": "BUCK_SW",
+        "2": "+5V"
+      },
+      "footprint": "Inductor_SMD:L_Bourns_SRR1260",
+      "mpn": "SRR1260-330M",
+      "manufacturer": "Bourns",
+      "note": "Check saturation and ripple at bench load",
+      "uuid": "46e38288-e2cc-53c3-b699-9e1423afa359",
+      "dnp": false
+    },
+    {
+      "ref": "C104",
+      "sheet": "power_protection",
+      "libid": "Device:C_Polarized",
+      "value": "330u 25V",
+      "pins": {
+        "1": "+5V",
+        "2": "PGND"
+      },
+      "footprint": "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm",
+      "mpn": "UHE1E331MPD",
+      "manufacturer": "Nichicon",
+      "note": "Buck stability/ESR requires scope validation",
+      "uuid": "5b819cbc-352b-57d2-85a0-1e558b543952",
+      "dnp": false
+    },
+    {
+      "ref": "C105",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "731ba80b-d4a5-5931-89c8-544f959b489e",
+      "dnp": false
+    },
+    {
+      "ref": "C106",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "10u",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR61A106KE19L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "44a117cf-ed7e-5114-9ef1-056cfd1862ba",
+      "dnp": false
+    },
+    {
+      "ref": "U102",
+      "sheet": "power_protection",
+      "libid": "Regulator_Linear:LD1117S33TR_SOT223",
+      "value": "LD1117S33TR",
+      "pins": {
+        "1": "GND",
+        "2": "+3V3",
+        "3": "+5V"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+      "mpn": "LD1117S33TR",
+      "manufacturer": "STMicroelectronics",
+      "note": "Budget <=350mA; thermal copper still incomplete",
+      "uuid": "a16c746b-7eef-5960-91e2-599f188c553d",
+      "dnp": false
+    },
+    {
+      "ref": "C107",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "10u",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR61A106KE19L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "0e5911ba-4c43-5340-80ea-9e2a303941a9",
+      "dnp": false
+    },
+    {
+      "ref": "C108",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "3003049a-f898-5f5a-a940-0de224116489",
+      "dnp": false
+    },
+    {
+      "ref": "R104",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "0",
+      "pins": {
+        "1": "GND",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "RC2512JK-070RL",
+      "manufacturer": "Yageo",
+      "note": "Single logic/power return star; never route injector current through it",
+      "uuid": "b7b22e8f-a822-5635-ad0f-f643d1b76822",
+      "dnp": false
+    },
+    {
+      "ref": "R105",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "0",
+      "pins": {
+        "1": "AGND",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-070RL",
+      "manufacturer": "Yageo",
+      "note": "Analog star beside MCU VSSA; no actuator return",
+      "uuid": "a8343888-fe2c-55e6-a9ec-4641d17ec842",
+      "dnp": false
+    },
+    {
+      "ref": "R106",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "+3V3",
+        "2": "ESTOP_SEND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "e3e16ab4-b84a-55ae-9c3b-47ecdc99ddf1",
+      "dnp": false
+    },
+    {
+      "ref": "J101",
+      "sheet": "power_protection",
+      "libid": "Connector_Generic:Conn_01x04",
+      "value": "J_ESTOP EXTERNAL NC CONTACTS",
+      "pins": {
+        "1": "+12V_PROTECTED",
+        "2": "ACT_FEED",
+        "3": "ESTOP_SEND",
+        "4": "ESTOP_OK"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-4-5.08_1x04_P5.08mm_Horizontal",
+      "mpn": "1715747",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "944d8425-8d48-548a-bd0c-6bdfa733b304",
+      "dnp": false
+    },
+    {
+      "ref": "R107",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "ESTOP_OK",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "5a48ef4c-2a17-5130-a3ab-5fccfcd57a5b",
+      "dnp": false
+    },
+    {
+      "ref": "Q101",
+      "sheet": "power_protection",
+      "libid": "Transistor_FET:IRF4905",
+      "value": "IRF4905PBF",
+      "pins": {
+        "1": "ACT_PWR_GATE",
+        "2": "+12V_ACT",
+        "3": "ACT_FEED"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRF4905PBF",
+      "manufacturer": "Infineon",
+      "note": "Actuator high-side switch; NC E-stop precedes source",
+      "uuid": "72ecd4ae-c9bb-5055-8ff2-e95b7d655ebe",
+      "dnp": false
+    },
+    {
+      "ref": "R108",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "ACT_PWR_GATE",
+        "2": "ACT_FEED"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "bb7364a5-f23c-56e8-bdfe-de9a27842c60",
+      "dnp": false
+    },
+    {
+      "ref": "D103",
+      "sheet": "power_protection",
+      "libid": "Device:D_Zener",
+      "value": "BZT52C12",
+      "pins": {
+        "1": "ACT_FEED",
+        "2": "ACT_PWR_GATE"
+      },
+      "footprint": "Diode_SMD:D_SOD-123",
+      "mpn": "BZT52C12-7-F",
+      "manufacturer": "Littelfuse",
+      "note": "",
+      "uuid": "3b81c674-8bc1-5c6f-bf1c-6abf8d1f781d",
+      "dnp": false
+    },
+    {
+      "ref": "R109",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "ACT_PWR_GATE",
+        "2": "ACT_PWR_COLLECTOR"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "d1f030e8-a32a-5932-b7fc-f3c8418f70dc",
+      "dnp": false
+    },
+    {
+      "ref": "Q102",
+      "sheet": "power_protection",
+      "libid": "Transistor_BJT:MMBT3904",
+      "value": "MMBT3904LT1G",
+      "pins": {
+        "1": "ACT_PWR_BASE",
+        "2": "PGND",
+        "3": "ACT_PWR_COLLECTOR"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "MMBT3904LT1G",
+      "manufacturer": "onsemi",
+      "note": "",
+      "uuid": "11f4499d-6dff-5d97-9a77-d202e90f2abc",
+      "dnp": false
+    },
+    {
+      "ref": "R110",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "4.7k",
+      "pins": {
+        "1": "ACT_EN",
+        "2": "ACT_PWR_BASE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-074K7L",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "4b332e58-f66c-554f-af27-8fe5f78e27e1",
+      "dnp": false
+    },
+    {
+      "ref": "R111",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "ACT_PWR_BASE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "6720f83c-5de6-5bfb-ae8b-dbf807460131",
+      "dnp": false
+    },
+    {
+      "ref": "C109",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "1u",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "PGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H105KA12L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "c047267d-78ab-5c46-ad95-3131fb9f968b",
+      "dnp": false
+    },
+    {
+      "ref": "R112",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "Actuator rail discharge; 0.16W at12.6V",
+      "uuid": "565434fb-30e7-5666-a18d-e5611f548eed",
+      "dnp": false
+    },
+    {
+      "ref": "U103",
+      "sheet": "power_protection",
+      "libid": "Power_Supervisor:TPS3808DBV",
+      "value": "TPS3808G33DBVR",
+      "pins": {
+        "1": "BROWN_RESET_N",
+        "2": "GND",
+        "3": "+3V3",
+        "4": null,
+        "5": "+3V3",
+        "6": "+3V3"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+      "mpn": "TPS3808G33DBVR",
+      "manufacturer": "Texas Instruments",
+      "note": "3.07V threshold; CT open gives20ms nominal reset release",
+      "uuid": "7471e2cc-4cfa-5a4d-a6fa-8dbd505d4e5e",
+      "dnp": false
+    },
+    {
+      "ref": "R113",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "BROWN_RESET_N",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "eec4e859-cc99-5a58-bb36-1756ec0432be",
+      "dnp": false
+    },
+    {
+      "ref": "D104",
+      "sheet": "power_protection",
+      "libid": "Device:D_Schottky",
+      "value": "BAT54WS",
+      "pins": {
+        "1": "BROWN_RESET_N",
+        "2": "NRST"
+      },
+      "footprint": "Diode_SMD:D_SOD-323",
+      "mpn": "BAT54WS-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "Reset isolation: anode NRST, cathode supervisor; verify low level after diode drop",
+      "uuid": "5804a162-d55a-5f17-a06a-e1976003b57b",
+      "dnp": false
+    },
+    {
+      "ref": "C110",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "f14b8bfa-2fb9-569e-8172-c753abe4f661",
+      "dnp": false
+    },
+    {
+      "ref": "U104",
+      "sheet": "power_protection",
+      "libid": "Power_Supervisor:TPS3430WDRC",
+      "value": "TPS3430WDRCR",
+      "pins": {
+        "1": "+3V3",
+        "2": null,
+        "3": "GND",
+        "4": null,
+        "5": "GND",
+        "6": "GND",
+        "7": "WD_KICK",
+        "8": "NRST",
+        "9": null,
+        "10": "+3V3",
+        "11": "GND"
+      },
+      "footprint": "Package_SON:VSON-10-1EP_3x3mm_P0.5mm_EP1.65x2.4mm",
+      "mpn": "TPS3430WDRCR",
+      "manufacturer": "Texas Instruments",
+      "note": "CWD/CRST open; SET0=SET1=0; service falling edge every35ms",
+      "uuid": "1db57da3-627d-5e94-8d44-861c716b4f75",
+      "dnp": false
+    },
+    {
+      "ref": "C111",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "4191e975-b529-5fd8-be37-b83b97053e7a",
+      "dnp": false
+    },
+    {
+      "ref": "R114",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "WD_KICK",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "3e75f928-7561-5ca7-b520-632ba034dba3",
+      "dnp": false
+    },
+    {
+      "ref": "R115",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "NRST",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "9af61d2c-c81e-53d3-8472-308ed0df54c2",
+      "dnp": false
+    },
+    {
+      "ref": "U105",
+      "sheet": "power_protection",
+      "libid": "74xx:74LS08",
+      "value": "SN74HC08DR",
+      "pins": {
+        "1": "NRST",
+        "2": "ESTOP_OK",
+        "3": "ARM_CLEAR_N",
+        "4": "ARMED",
+        "5": "MCU_ENABLE",
+        "6": "ENABLE_REQ",
+        "9": "ENABLE_REQ",
+        "10": "ARM_CLEAR_N",
+        "8": "ACT_EN",
+        "12": "GND",
+        "13": "GND",
+        "11": null,
+        "14": "+3V3",
+        "7": "GND"
+      },
+      "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm",
+      "mpn": "SN74HC08DR",
+      "manufacturer": "Texas Instruments",
+      "note": "Standard quad AND pinout; fit the specified logic family",
+      "uuid": "1c39382c-8da3-5920-81ff-17fb3b4947b6",
+      "dnp": false
+    },
+    {
+      "ref": "C112",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Local bypass for U105",
+      "uuid": "3ba0954a-e99e-5ba0-84ca-4517ca19d0a7",
+      "dnp": false
+    },
+    {
+      "ref": "U106",
+      "sheet": "power_protection",
+      "libid": "74xx:74HC74",
+      "value": "SN74HC74DR",
+      "pins": {
+        "1": "ARM_CLEAR_N",
+        "2": "+3V3",
+        "3": "ARM_CLOCK",
+        "4": "+3V3",
+        "5": "ARMED",
+        "6": null,
+        "13": "GND",
+        "12": "GND",
+        "11": "GND",
+        "10": "+3V3",
+        "9": null,
+        "8": null,
+        "14": "+3V3",
+        "7": "GND"
+      },
+      "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm",
+      "mpn": "SN74HC74DR",
+      "manufacturer": "Texas Instruments",
+      "note": "",
+      "uuid": "fa85dc85-fbe3-51d9-85b2-0bffe7e3aaad",
+      "dnp": false
+    },
+    {
+      "ref": "C113",
+      "sheet": "power_protection",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "474072cb-4658-5034-ab52-482407cf3fdc",
+      "dnp": false
+    },
+    {
+      "ref": "SW100",
+      "sheet": "power_protection",
+      "libid": "Switch:SW_Push",
+      "value": "ARM BENCH",
+      "pins": {
+        "1": "+3V3",
+        "2": "ARM_CLOCK"
+      },
+      "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+      "mpn": "B3F-1000",
+      "manufacturer": "Omron",
+      "note": "Press after valid watchdog service; contact bounce cannot defeat asynchronous clear",
+      "uuid": "ec238f78-d43d-5047-b21e-1f5c94e9a53a",
+      "dnp": false
+    },
+    {
+      "ref": "R116",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "ARM_CLOCK",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "2c750657-4ec9-57a2-9745-17fb40d6d51c",
+      "dnp": false
+    },
+    {
+      "ref": "R117",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "MCU_ENABLE",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "166ab4e5-d76a-573e-af49-4790582e4c62",
+      "dnp": false
+    },
+    {
+      "ref": "R118",
+      "sheet": "power_protection",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "ACT_EN",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "5a321956-9aaa-569e-9c84-2ea1629c1c8c",
+      "dnp": false
+    },
+    {
+      "ref": "TP100",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "VIN_BENCH",
+      "pins": {
+        "1": "VIN_BENCH"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure VIN_BENCH relative to GND",
+      "uuid": "b770ad70-41bd-5a24-a928-ef0418e6905f",
+      "dnp": false
+    },
+    {
+      "ref": "TP101",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "+12V_PROTECTED",
+      "pins": {
+        "1": "+12V_PROTECTED"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure +12V_PROTECTED relative to GND",
+      "uuid": "9c71f77d-a46c-59c8-996d-ed7682ef6d19",
+      "dnp": false
+    },
+    {
+      "ref": "TP102",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "+12V_ACT",
+      "pins": {
+        "1": "+12V_ACT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure +12V_ACT relative to GND",
+      "uuid": "3b595fd9-c81d-5cb5-b78f-a88585b4216e",
+      "dnp": false
+    },
+    {
+      "ref": "TP103",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "+5V",
+      "pins": {
+        "1": "+5V"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure +5V relative to GND",
+      "uuid": "c3b99afc-7427-5f99-99fe-9c4b07d9a737",
+      "dnp": false
+    },
+    {
+      "ref": "TP104",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "+3V3",
+      "pins": {
+        "1": "+3V3"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure +3V3 relative to GND",
+      "uuid": "ac16bde2-3b5c-5c65-9873-6340e4c755f6",
+      "dnp": false
+    },
+    {
+      "ref": "TP105",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "NRST",
+      "pins": {
+        "1": "NRST"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure NRST relative to GND",
+      "uuid": "bcb57727-b14b-57bd-a560-f32c1b2ddc1d",
+      "dnp": false
+    },
+    {
+      "ref": "TP106",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "ARMED",
+      "pins": {
+        "1": "ARMED"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure ARMED relative to GND",
+      "uuid": "0cce3ea4-713a-5eb2-9f08-40cd9af7a4c1",
+      "dnp": false
+    },
+    {
+      "ref": "TP107",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "ACT_EN",
+      "pins": {
+        "1": "ACT_EN"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure ACT_EN relative to GND",
+      "uuid": "d695a752-85f9-5d2e-a37b-bf6d8ef32a53",
+      "dnp": false
+    },
+    {
+      "ref": "TP108",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "PGND",
+      "pins": {
+        "1": "PGND"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure PGND relative to GND",
+      "uuid": "91c88b72-2b8e-5f2f-8424-65fa384501eb",
+      "dnp": false
+    },
+    {
+      "ref": "TP109",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "GND",
+      "pins": {
+        "1": "GND"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure GND relative to GND",
+      "uuid": "04cc3dbb-17fc-5004-8221-861029b32ca6",
+      "dnp": false
+    },
+    {
+      "ref": "TP110",
+      "sheet": "power_protection",
+      "libid": "Connector:TestPoint",
+      "value": "ESTOP_OK",
+      "pins": {
+        "1": "ESTOP_OK"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure ESTOP_OK relative to GND",
+      "uuid": "11db3cd3-5ef9-5893-9065-a9253a330095",
+      "dnp": false
+    },
+    {
+      "ref": "U200",
+      "sheet": "mcu",
+      "libid": "MCU_ST_STM32H7:STM32H743VITx",
+      "value": "STM32H743VIT6",
+      "pins": {
+        "14": "NRST",
+        "94": "BOOT0",
+        "20": "VDDA",
+        "12": "HSE_IN",
+        "13": "HSE_OUT",
+        "97": null,
+        "98": null,
+        "1": null,
+        "2": null,
+        "3": null,
+        "4": null,
+        "5": null,
+        "37": null,
+        "38": null,
+        "39": "INJ1_CMD",
+        "40": null,
+        "41": "INJ2_CMD",
+        "42": null,
+        "43": "INJ3_CMD",
+        "44": "INJ4_CMD",
+        "45": null,
+        "81": null,
+        "82": null,
+        "83": "ESTOP_OK",
+        "84": null,
+        "85": null,
+        "86": null,
+        "87": null,
+        "88": null,
+        "55": null,
+        "56": null,
+        "57": null,
+        "58": null,
+        "59": "IGN1_CMD",
+        "60": "IGN2_CMD",
+        "61": "IGN3_CMD",
+        "62": "IGN4_CMD",
+        "48": "VCAP48",
+        "73": "VCAP73",
+        "6": "+3V3",
+        "11": "+3V3",
+        "27": "+3V3",
+        "50": "+3V3",
+        "10": "GND",
+        "26": "GND",
+        "49": "GND",
+        "74": "GND",
+        "99": "GND",
+        "75": "+3V3",
+        "19": "AGND",
+        "100": "+3V3",
+        "21": "VDDA",
+        "22": "CRANK_DIG",
+        "23": "CAM_DIG",
+        "24": "UART_TX",
+        "25": "UART_RX",
+        "28": "ADC_AN1",
+        "29": "ADC_AN2",
+        "30": "ADC_AN3",
+        "31": "ADC_AN4",
+        "67": null,
+        "68": "USB_VBUS_SENSE",
+        "69": null,
+        "70": "USB_DM",
+        "71": "USB_DP",
+        "72": "SWDIO",
+        "76": "SWCLK",
+        "77": null,
+        "34": "RELAY_CMD",
+        "35": "MCU_ENABLE",
+        "36": "WD_KICK",
+        "89": "SWO",
+        "90": null,
+        "91": null,
+        "92": null,
+        "93": null,
+        "95": "CAN_RX",
+        "96": "CAN_TX",
+        "46": null,
+        "47": null,
+        "51": null,
+        "52": null,
+        "53": null,
+        "54": null,
+        "15": "ADC_IS1",
+        "16": "ADC_IS2",
+        "17": null,
+        "18": null,
+        "32": "ADC_IS3",
+        "33": "ADC_IS4",
+        "63": "AUX1_CMD",
+        "64": "AUX2_CMD",
+        "65": "AUX3_CMD",
+        "66": "AUX4_CMD",
+        "78": null,
+        "79": null,
+        "80": null,
+        "7": "ARMED",
+        "8": null,
+        "9": null
+      },
+      "footprint": "Package_QFP:LQFP-100_14x14mm_P0.5mm",
+      "mpn": "STM32H743VIT6",
+      "manufacturer": "STMicroelectronics",
+      "note": "",
+      "uuid": "167e4fc0-f11f-59d1-9fa5-18f77c8bdccd",
+      "dnp": false
+    },
+    {
+      "ref": "C200",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Place beside U200 VDD pin11",
+      "uuid": "e0d6042d-63c8-5ef4-a3ab-7acf3590d4e9",
+      "dnp": false
+    },
+    {
+      "ref": "C201",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Place beside U200 VDD pin27",
+      "uuid": "c1fe5b14-10dd-5f81-a2ed-9e4f9dc75787",
+      "dnp": false
+    },
+    {
+      "ref": "C202",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Place beside U200 VDD pin50",
+      "uuid": "88889765-18ad-5bb3-af37-62b49cc73f65",
+      "dnp": false
+    },
+    {
+      "ref": "C203",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Place beside U200 VDD pin75",
+      "uuid": "b7df9674-18e0-5b11-8cfa-903c0e7f8fc0",
+      "dnp": false
+    },
+    {
+      "ref": "C204",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Place beside U200 VDD pin100",
+      "uuid": "3c20c81a-d125-5192-b592-08d08d4213cc",
+      "dnp": false
+    },
+    {
+      "ref": "C205",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "VBAT local bypass",
+      "uuid": "8343a80b-24f7-52a6-b33f-8234a18e6c07",
+      "dnp": false
+    },
+    {
+      "ref": "C206",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "10u",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR61A106KE19L",
+      "manufacturer": "Murata",
+      "note": "MCU bulk",
+      "uuid": "59f25ad9-a95a-5e2d-97e8-1396855fa264",
+      "dnp": false
+    },
+    {
+      "ref": "C207",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "2.2u",
+      "pins": {
+        "1": "VCAP48",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71C225KA12L",
+      "manufacturer": "Murata",
+      "note": "U200 pin48 core LDO output; no other load",
+      "uuid": "04ee8bfc-7c6c-53ec-82cb-3837f2a9bc1c",
+      "dnp": false
+    },
+    {
+      "ref": "C208",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "2.2u",
+      "pins": {
+        "1": "VCAP73",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71C225KA12L",
+      "manufacturer": "Murata",
+      "note": "U200 pin73 core LDO output; no other load",
+      "uuid": "831b1a11-7d8e-5218-9b62-3166c99db621",
+      "dnp": false
+    },
+    {
+      "ref": "R200",
+      "sheet": "mcu",
+      "libid": "Device:R",
+      "value": "10",
+      "pins": {
+        "1": "+3V3",
+        "2": "VDDA"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710RL",
+      "manufacturer": "Yageo",
+      "note": "Analog rail RC isolator; verify drop at ADC load",
+      "uuid": "64547a1e-0da7-5173-85dc-1013dcb34c94",
+      "dnp": false
+    },
+    {
+      "ref": "C209",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "1u",
+      "pins": {
+        "1": "VDDA",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H105KA12L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "8b2c4bab-5404-50fe-bcae-c1fcd7f37eef",
+      "dnp": false
+    },
+    {
+      "ref": "C210",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "VDDA",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "fdf89562-b10a-5695-95c9-c01442639e92",
+      "dnp": false
+    },
+    {
+      "ref": "R201",
+      "sheet": "mcu",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "BOOT0",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "73a4a067-c661-5591-991e-f9ab292ae77a",
+      "dnp": false
+    },
+    {
+      "ref": "JP200",
+      "sheet": "mcu",
+      "libid": "Jumper:Jumper_2_Open",
+      "value": "BOOT ROM",
+      "pins": {
+        "1": "+3V3",
+        "2": "BOOT0"
+      },
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "mpn": "61300211121",
+      "manufacturer": "Wurth Elektronik",
+      "note": "Normally open; bootloader is not authenticated",
+      "uuid": "c14d2fe7-74a2-5f36-9c6d-b6c1c5bbe914",
+      "dnp": false
+    },
+    {
+      "ref": "SW200",
+      "sheet": "mcu",
+      "libid": "Switch:SW_Push",
+      "value": "RESET",
+      "pins": {
+        "1": "NRST",
+        "2": "GND"
+      },
+      "footprint": "Button_Switch_THT:SW_PUSH_6mm",
+      "mpn": "B3F-1000",
+      "manufacturer": "Omron",
+      "note": "",
+      "uuid": "f1964825-2e9a-5b10-83d8-d703ad219ed4",
+      "dnp": false
+    },
+    {
+      "ref": "C211",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "NRST",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "60978d80-9b3c-5133-8e7e-13ae1d570636",
+      "dnp": false
+    },
+    {
+      "ref": "Y200",
+      "sheet": "mcu",
+      "libid": "Device:Crystal_GND24",
+      "value": "8MHz CL18pF",
+      "pins": {
+        "1": "HSE_IN",
+        "2": "GND",
+        "3": "HSE_OUT",
+        "4": "GND"
+      },
+      "footprint": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
+      "mpn": "ABM8-8.000MHZ-B2-T",
+      "manufacturer": "Abracon",
+      "note": "Load caps27p assume4.5pF stray; oscillator gain/startup untested",
+      "uuid": "d89b062f-fae4-54bd-90bc-03c89d59d8d9",
+      "dnp": false
+    },
+    {
+      "ref": "C212",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "27p",
+      "pins": {
+        "1": "HSE_IN",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21A5C1H270JA01D",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "02c5730b-a72b-5353-b418-e2669735f88a",
+      "dnp": false
+    },
+    {
+      "ref": "C213",
+      "sheet": "mcu",
+      "libid": "Device:C",
+      "value": "27p",
+      "pins": {
+        "1": "HSE_OUT",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21A5C1H270JA01D",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "2ed389df-1069-52a1-bfff-942012839962",
+      "dnp": false
+    },
+    {
+      "ref": "TP200",
+      "sheet": "mcu",
+      "libid": "Connector:TestPoint",
+      "value": "VCAP48",
+      "pins": {
+        "1": "VCAP48"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure VCAP48 relative to GND",
+      "uuid": "82e4bb66-25ca-5518-a16a-994e8f6a5747",
+      "dnp": false
+    },
+    {
+      "ref": "TP201",
+      "sheet": "mcu",
+      "libid": "Connector:TestPoint",
+      "value": "VCAP73",
+      "pins": {
+        "1": "VCAP73"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure VCAP73 relative to GND",
+      "uuid": "e08e7453-a0e5-5505-b5b7-567226282d63",
+      "dnp": false
+    },
+    {
+      "ref": "TP202",
+      "sheet": "mcu",
+      "libid": "Connector:TestPoint",
+      "value": "VDDA",
+      "pins": {
+        "1": "VDDA"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure VDDA relative to GND",
+      "uuid": "9949b283-61d6-523b-847c-71514186d7f8",
+      "dnp": false
+    },
+    {
+      "ref": "TP203",
+      "sheet": "mcu",
+      "libid": "Connector:TestPoint",
+      "value": "BOOT0",
+      "pins": {
+        "1": "BOOT0"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure BOOT0 relative to GND",
+      "uuid": "c951f94c-bfb2-5e1f-9adb-58acc2db5262",
+      "dnp": false
+    },
+    {
+      "ref": "TP204",
+      "sheet": "mcu",
+      "libid": "Connector:TestPoint",
+      "value": "WD_KICK",
+      "pins": {
+        "1": "WD_KICK"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure WD_KICK relative to GND",
+      "uuid": "de09c497-39d0-51f9-bf9c-8a02b949a9ff",
+      "dnp": false
+    },
+    {
+      "ref": "H1",
+      "sheet": "mcu",
+      "libid": "Mechanical:MountingHole",
+      "value": "M3 NPTH",
+      "pins": {},
+      "footprint": "MountingHole:MountingHole_3.2mm_M3",
+      "mpn": "",
+      "manufacturer": "",
+      "note": "Nonconductive mounting hardware",
+      "uuid": "1c5c08ac-7fad-5dc2-9a16-0dd7a8f1546a",
+      "dnp": false
+    },
+    {
+      "ref": "H2",
+      "sheet": "mcu",
+      "libid": "Mechanical:MountingHole",
+      "value": "M3 NPTH",
+      "pins": {},
+      "footprint": "MountingHole:MountingHole_3.2mm_M3",
+      "mpn": "",
+      "manufacturer": "",
+      "note": "Nonconductive mounting hardware",
+      "uuid": "0dfa58b8-aa32-55e0-bc66-cd9ba8bc8e70",
+      "dnp": false
+    },
+    {
+      "ref": "H3",
+      "sheet": "mcu",
+      "libid": "Mechanical:MountingHole",
+      "value": "M3 NPTH",
+      "pins": {},
+      "footprint": "MountingHole:MountingHole_3.2mm_M3",
+      "mpn": "",
+      "manufacturer": "",
+      "note": "Nonconductive mounting hardware",
+      "uuid": "b1c03aa3-783b-51e0-92c1-36a49389a62e",
+      "dnp": false
+    },
+    {
+      "ref": "H4",
+      "sheet": "mcu",
+      "libid": "Mechanical:MountingHole",
+      "value": "M3 NPTH",
+      "pins": {},
+      "footprint": "MountingHole:MountingHole_3.2mm_M3",
+      "mpn": "",
+      "manufacturer": "",
+      "note": "Nonconductive mounting hardware",
+      "uuid": "1b89c2bc-0889-589f-934d-1b4151b9359a",
+      "dnp": false
+    },
+    {
+      "ref": "U300",
+      "sheet": "injector_drivers",
+      "libid": "74xx:74LS08",
+      "value": "SN74AHCT08DR",
+      "pins": {
+        "1": "INJ1_CMD",
+        "2": "ACT_EN",
+        "3": "INJ1_DRIVE",
+        "4": "INJ2_CMD",
+        "5": "ACT_EN",
+        "6": "INJ2_DRIVE",
+        "9": "INJ3_CMD",
+        "10": "ACT_EN",
+        "8": "INJ3_DRIVE",
+        "12": "INJ4_CMD",
+        "13": "ACT_EN",
+        "11": "INJ4_DRIVE",
+        "14": "+5V",
+        "7": "GND"
+      },
+      "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm",
+      "mpn": "SN74AHCT08DR",
+      "manufacturer": "Texas Instruments",
+      "note": "Standard quad AND pinout; fit the specified logic family",
+      "uuid": "b0af3d1b-bfc4-5cc2-8959-6e6f2b386e7a",
+      "dnp": false
+    },
+    {
+      "ref": "C300",
+      "sheet": "injector_drivers",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Local bypass for U300",
+      "uuid": "cb6efb9b-779f-59ce-abad-e6a7ba3615dc",
+      "dnp": false
+    },
+    {
+      "ref": "R300",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "INJ1_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "9200f635-06b1-54a9-8fa2-019f40fe331c",
+      "dnp": false
+    },
+    {
+      "ref": "R301",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "INJ1_DRIVE",
+        "2": "INJ1_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "537ac492-f9d0-5d32-910e-4f6b2929596f",
+      "dnp": false
+    },
+    {
+      "ref": "R302",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "INJ1_GATE",
+        "2": "INJ1_SHUNT"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "ea9ddf81-fcc5-5ece-b553-a8bf259049e4",
+      "dnp": false
+    },
+    {
+      "ref": "Q300",
+      "sheet": "injector_drivers",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "INJ1_GATE",
+        "2": "INJ1_OUT",
+        "3": "INJ1_SHUNT"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench saturated sink only; no peak/hold or fast overcurrent comparator",
+      "uuid": "2d0faacf-229f-51db-b557-d282d50c900b",
+      "dnp": false
+    },
+    {
+      "ref": "R303",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "0.22",
+      "pins": {
+        "1": "INJ1_SHUNT",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "WSL2512R2200FEA",
+      "manufacturer": "Yageo",
+      "note": "Kelvin test pads; 0.22ohm1%1W bench shunt",
+      "uuid": "67548c3c-226f-5592-8c46-a5289f63180d",
+      "dnp": false
+    },
+    {
+      "ref": "F300",
+      "sheet": "injector_drivers",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "INJ1_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "b01264d4-4389-5a25-9c5f-00e7b01245e9",
+      "dnp": false
+    },
+    {
+      "ref": "D300",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "INJ1_SUPPLY",
+        "2": "INJ1_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "Slow recirculating flyback; not calibrated injector closing",
+      "uuid": "a4775fb5-1da8-5872-8fd8-e3a97e696382",
+      "dnp": false
+    },
+    {
+      "ref": "D301",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Zener",
+      "value": "SMBJ24A",
+      "pins": {
+        "1": "INJ1_OUT",
+        "2": "PGND"
+      },
+      "footprint": "Diode_SMD:D_SMB",
+      "mpn": "SMBJ24A",
+      "manufacturer": "Littelfuse",
+      "note": "Secondary drain overshoot clamp; scope validation required",
+      "uuid": "ad13976a-8f38-53d8-b7aa-1d54684f8753",
+      "dnp": false
+    },
+    {
+      "ref": "R304",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "INJ1_SHUNT",
+        "2": "ADC_IS1"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "ca9129fd-21fb-5f00-bdb1-4ddc452d9777",
+      "dnp": false
+    },
+    {
+      "ref": "C301",
+      "sheet": "injector_drivers",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_IS1",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "ce2bcd09-d4f0-5b4d-af69-0013af985980",
+      "dnp": false
+    },
+    {
+      "ref": "J300",
+      "sheet": "injector_drivers",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "INJ1 DUMMY LOAD ONLY",
+      "pins": {
+        "1": "INJ1_SUPPLY",
+        "2": "INJ1_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "72b9ba4d-8dd7-5b6b-87f0-ec4ddb38857e",
+      "dnp": false
+    },
+    {
+      "ref": "TP300",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ1_OUT",
+      "pins": {
+        "1": "INJ1_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Drain transient, PGND reference; do not use a logic probe",
+      "uuid": "c4b1b5d5-6872-52d0-8662-f076c6fd7f56",
+      "dnp": false
+    },
+    {
+      "ref": "TP301",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ1_SHUNT",
+      "pins": {
+        "1": "INJ1_SHUNT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Kelvin high: I = V/0.22ohm; <=55mV at250mA",
+      "uuid": "abd90ed9-faab-5562-a7cd-d0674db5c503",
+      "dnp": false
+    },
+    {
+      "ref": "TP302",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "PGND",
+      "pins": {
+        "1": "PGND"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "INJ1 Kelvin low for shunt measurement",
+      "uuid": "a1ad785f-5b08-5003-b63d-c7cac7b6826c",
+      "dnp": false
+    },
+    {
+      "ref": "TP303",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ1_GATE",
+      "pins": {
+        "1": "INJ1_GATE"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Gate referenced to local source/shunt",
+      "uuid": "3837b17b-6bd5-5236-b646-2234f577cf07",
+      "dnp": false
+    },
+    {
+      "ref": "R305",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "INJ2_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "9cc5e5a8-c1c9-587f-84c3-d1de3baac007",
+      "dnp": false
+    },
+    {
+      "ref": "R306",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "INJ2_DRIVE",
+        "2": "INJ2_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "1b145489-bfa4-5b88-bc00-035d17959201",
+      "dnp": false
+    },
+    {
+      "ref": "R307",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "INJ2_GATE",
+        "2": "INJ2_SHUNT"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "f6292f57-a8d5-550a-9aa4-ab3657e60a86",
+      "dnp": false
+    },
+    {
+      "ref": "Q301",
+      "sheet": "injector_drivers",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "INJ2_GATE",
+        "2": "INJ2_OUT",
+        "3": "INJ2_SHUNT"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench saturated sink only; no peak/hold or fast overcurrent comparator",
+      "uuid": "f0ce3a57-68b2-5504-9918-77e1616d39bb",
+      "dnp": false
+    },
+    {
+      "ref": "R308",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "0.22",
+      "pins": {
+        "1": "INJ2_SHUNT",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "WSL2512R2200FEA",
+      "manufacturer": "Yageo",
+      "note": "Kelvin test pads; 0.22ohm1%1W bench shunt",
+      "uuid": "ac813814-b259-52bf-a839-1641a4dcc862",
+      "dnp": false
+    },
+    {
+      "ref": "F301",
+      "sheet": "injector_drivers",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "INJ2_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "dc612c41-5a3e-5298-9fd1-224795a7e9f4",
+      "dnp": false
+    },
+    {
+      "ref": "D302",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "INJ2_SUPPLY",
+        "2": "INJ2_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "Slow recirculating flyback; not calibrated injector closing",
+      "uuid": "30ddad7b-70d2-5778-874b-9fd833b43a29",
+      "dnp": false
+    },
+    {
+      "ref": "D303",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Zener",
+      "value": "SMBJ24A",
+      "pins": {
+        "1": "INJ2_OUT",
+        "2": "PGND"
+      },
+      "footprint": "Diode_SMD:D_SMB",
+      "mpn": "SMBJ24A",
+      "manufacturer": "Littelfuse",
+      "note": "Secondary drain overshoot clamp; scope validation required",
+      "uuid": "31b645ed-ecfc-5d08-81c9-b6223ef23868",
+      "dnp": false
+    },
+    {
+      "ref": "R309",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "INJ2_SHUNT",
+        "2": "ADC_IS2"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "914ceeba-18ea-58c8-9f4d-4866ce761b1d",
+      "dnp": false
+    },
+    {
+      "ref": "C302",
+      "sheet": "injector_drivers",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_IS2",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "60acb54f-369f-552e-9d6c-038de3edd953",
+      "dnp": false
+    },
+    {
+      "ref": "J301",
+      "sheet": "injector_drivers",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "INJ2 DUMMY LOAD ONLY",
+      "pins": {
+        "1": "INJ2_SUPPLY",
+        "2": "INJ2_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "2e61d080-6688-5767-87b0-fb53bf374a0d",
+      "dnp": false
+    },
+    {
+      "ref": "TP304",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ2_OUT",
+      "pins": {
+        "1": "INJ2_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Drain transient, PGND reference; do not use a logic probe",
+      "uuid": "e77f6224-8d96-537d-82ea-34331210ca1a",
+      "dnp": false
+    },
+    {
+      "ref": "TP305",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ2_SHUNT",
+      "pins": {
+        "1": "INJ2_SHUNT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Kelvin high: I = V/0.22ohm; <=55mV at250mA",
+      "uuid": "1816e000-28ea-5c04-9523-e22d21c6ba40",
+      "dnp": false
+    },
+    {
+      "ref": "TP306",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "PGND",
+      "pins": {
+        "1": "PGND"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "INJ2 Kelvin low for shunt measurement",
+      "uuid": "b7a79185-9023-5c24-8e5a-f5d496a45b3e",
+      "dnp": false
+    },
+    {
+      "ref": "TP307",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ2_GATE",
+      "pins": {
+        "1": "INJ2_GATE"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Gate referenced to local source/shunt",
+      "uuid": "789b8462-b691-5a82-90cf-090e7ecb9edb",
+      "dnp": false
+    },
+    {
+      "ref": "R310",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "INJ3_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "21e6ec48-3f93-5571-a329-56698e2e117a",
+      "dnp": false
+    },
+    {
+      "ref": "R311",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "INJ3_DRIVE",
+        "2": "INJ3_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "efe07358-eb94-5525-90a0-92b170d161c9",
+      "dnp": false
+    },
+    {
+      "ref": "R312",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "INJ3_GATE",
+        "2": "INJ3_SHUNT"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "69fb06a2-f934-576d-aefc-1c1349bd6611",
+      "dnp": false
+    },
+    {
+      "ref": "Q302",
+      "sheet": "injector_drivers",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "INJ3_GATE",
+        "2": "INJ3_OUT",
+        "3": "INJ3_SHUNT"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench saturated sink only; no peak/hold or fast overcurrent comparator",
+      "uuid": "07d84b0a-e468-514b-a7f5-0bddcf6afbe2",
+      "dnp": false
+    },
+    {
+      "ref": "R313",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "0.22",
+      "pins": {
+        "1": "INJ3_SHUNT",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "WSL2512R2200FEA",
+      "manufacturer": "Yageo",
+      "note": "Kelvin test pads; 0.22ohm1%1W bench shunt",
+      "uuid": "3242e7a5-3575-54c1-9dfe-66aa9212df91",
+      "dnp": false
+    },
+    {
+      "ref": "F302",
+      "sheet": "injector_drivers",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "INJ3_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "3889873f-03a5-58d8-8f5f-11bc6d0f7c8e",
+      "dnp": false
+    },
+    {
+      "ref": "D304",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "INJ3_SUPPLY",
+        "2": "INJ3_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "Slow recirculating flyback; not calibrated injector closing",
+      "uuid": "adb27815-5a9f-5ff1-8e1c-4256673d568b",
+      "dnp": false
+    },
+    {
+      "ref": "D305",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Zener",
+      "value": "SMBJ24A",
+      "pins": {
+        "1": "INJ3_OUT",
+        "2": "PGND"
+      },
+      "footprint": "Diode_SMD:D_SMB",
+      "mpn": "SMBJ24A",
+      "manufacturer": "Littelfuse",
+      "note": "Secondary drain overshoot clamp; scope validation required",
+      "uuid": "7d8012a0-59c6-576c-be45-e2991967336c",
+      "dnp": false
+    },
+    {
+      "ref": "R314",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "INJ3_SHUNT",
+        "2": "ADC_IS3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "c3e771ec-2279-5d81-9d43-a351653b745c",
+      "dnp": false
+    },
+    {
+      "ref": "C303",
+      "sheet": "injector_drivers",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_IS3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "d8f94eae-2eb8-5b3c-9a76-2656732b278a",
+      "dnp": false
+    },
+    {
+      "ref": "J302",
+      "sheet": "injector_drivers",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "INJ3 DUMMY LOAD ONLY",
+      "pins": {
+        "1": "INJ3_SUPPLY",
+        "2": "INJ3_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "f52adbba-18f7-5362-b086-092249d0856f",
+      "dnp": false
+    },
+    {
+      "ref": "TP308",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ3_OUT",
+      "pins": {
+        "1": "INJ3_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Drain transient, PGND reference; do not use a logic probe",
+      "uuid": "f52dced5-e18f-5d86-a9be-7a05dfd223d6",
+      "dnp": false
+    },
+    {
+      "ref": "TP309",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ3_SHUNT",
+      "pins": {
+        "1": "INJ3_SHUNT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Kelvin high: I = V/0.22ohm; <=55mV at250mA",
+      "uuid": "f8fd2502-8393-5e02-86b1-9d0722c00cc9",
+      "dnp": false
+    },
+    {
+      "ref": "TP310",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "PGND",
+      "pins": {
+        "1": "PGND"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "INJ3 Kelvin low for shunt measurement",
+      "uuid": "ed87562a-e4f6-5c8c-8b96-f449ccdcbe78",
+      "dnp": false
+    },
+    {
+      "ref": "TP311",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ3_GATE",
+      "pins": {
+        "1": "INJ3_GATE"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Gate referenced to local source/shunt",
+      "uuid": "877b3b7d-8cda-5989-bcf4-1720336ea627",
+      "dnp": false
+    },
+    {
+      "ref": "R315",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "INJ4_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "76a187a9-63c7-557d-8779-585adaea8f73",
+      "dnp": false
+    },
+    {
+      "ref": "R316",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "INJ4_DRIVE",
+        "2": "INJ4_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "9f3743e1-5ded-5b62-9045-f26a61ba4813",
+      "dnp": false
+    },
+    {
+      "ref": "R317",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "INJ4_GATE",
+        "2": "INJ4_SHUNT"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "3364fa54-5abf-524e-be07-3a6eb5209580",
+      "dnp": false
+    },
+    {
+      "ref": "Q303",
+      "sheet": "injector_drivers",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "INJ4_GATE",
+        "2": "INJ4_OUT",
+        "3": "INJ4_SHUNT"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench saturated sink only; no peak/hold or fast overcurrent comparator",
+      "uuid": "450a9087-4627-515e-b49a-7775552a60eb",
+      "dnp": false
+    },
+    {
+      "ref": "R318",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "0.22",
+      "pins": {
+        "1": "INJ4_SHUNT",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "mpn": "WSL2512R2200FEA",
+      "manufacturer": "Yageo",
+      "note": "Kelvin test pads; 0.22ohm1%1W bench shunt",
+      "uuid": "600ce72d-f864-54bb-971d-87f34f23c32c",
+      "dnp": false
+    },
+    {
+      "ref": "F303",
+      "sheet": "injector_drivers",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "INJ4_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "3d07f4c0-28c5-54d7-b490-157c5736fe66",
+      "dnp": false
+    },
+    {
+      "ref": "D306",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "INJ4_SUPPLY",
+        "2": "INJ4_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "Slow recirculating flyback; not calibrated injector closing",
+      "uuid": "6bcca458-336b-57d1-8fcc-f608fa56c7a8",
+      "dnp": false
+    },
+    {
+      "ref": "D307",
+      "sheet": "injector_drivers",
+      "libid": "Device:D_Zener",
+      "value": "SMBJ24A",
+      "pins": {
+        "1": "INJ4_OUT",
+        "2": "PGND"
+      },
+      "footprint": "Diode_SMD:D_SMB",
+      "mpn": "SMBJ24A",
+      "manufacturer": "Littelfuse",
+      "note": "Secondary drain overshoot clamp; scope validation required",
+      "uuid": "7b973b92-a098-5c9e-83d6-c3d472cc4079",
+      "dnp": false
+    },
+    {
+      "ref": "R319",
+      "sheet": "injector_drivers",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "INJ4_SHUNT",
+        "2": "ADC_IS4"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "ba499806-6b3f-5601-9869-f4723bd27a93",
+      "dnp": false
+    },
+    {
+      "ref": "C304",
+      "sheet": "injector_drivers",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_IS4",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "324e01dc-5a0a-5c48-a96e-86c7e0c2f748",
+      "dnp": false
+    },
+    {
+      "ref": "J303",
+      "sheet": "injector_drivers",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "INJ4 DUMMY LOAD ONLY",
+      "pins": {
+        "1": "INJ4_SUPPLY",
+        "2": "INJ4_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "47219f67-5378-5735-980a-3ef7f639186c",
+      "dnp": false
+    },
+    {
+      "ref": "TP312",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ4_OUT",
+      "pins": {
+        "1": "INJ4_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Drain transient, PGND reference; do not use a logic probe",
+      "uuid": "e42cb978-aea0-5b82-a744-f508244f0555",
+      "dnp": false
+    },
+    {
+      "ref": "TP313",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ4_SHUNT",
+      "pins": {
+        "1": "INJ4_SHUNT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Kelvin high: I = V/0.22ohm; <=55mV at250mA",
+      "uuid": "c2ff8804-dd3b-5e05-a35c-d143104e1d3a",
+      "dnp": false
+    },
+    {
+      "ref": "TP314",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "PGND",
+      "pins": {
+        "1": "PGND"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "INJ4 Kelvin low for shunt measurement",
+      "uuid": "77f6020a-eb09-5635-85e8-a490be44cfd1",
+      "dnp": false
+    },
+    {
+      "ref": "TP315",
+      "sheet": "injector_drivers",
+      "libid": "Connector:TestPoint",
+      "value": "INJ4_GATE",
+      "pins": {
+        "1": "INJ4_GATE"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Gate referenced to local source/shunt",
+      "uuid": "59847669-9630-5ce9-9bc0-7202d21f7a6d",
+      "dnp": false
+    },
+    {
+      "ref": "U400",
+      "sheet": "ignition_outputs",
+      "libid": "74xx:74LS08",
+      "value": "SN74AHCT08DR",
+      "pins": {
+        "1": "IGN1_CMD",
+        "2": "ACT_EN",
+        "3": "IGN1_BUF",
+        "4": "IGN2_CMD",
+        "5": "ACT_EN",
+        "6": "IGN2_BUF",
+        "9": "IGN3_CMD",
+        "10": "ACT_EN",
+        "8": "IGN3_BUF",
+        "12": "IGN4_CMD",
+        "13": "ACT_EN",
+        "11": "IGN4_BUF",
+        "14": "+5V",
+        "7": "GND"
+      },
+      "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm",
+      "mpn": "SN74AHCT08DR",
+      "manufacturer": "Texas Instruments",
+      "note": "Standard quad AND pinout; fit the specified logic family",
+      "uuid": "2d871377-9527-55ff-9dba-77f9befdd3ed",
+      "dnp": false
+    },
+    {
+      "ref": "C400",
+      "sheet": "ignition_outputs",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Local bypass for U400",
+      "uuid": "a822cd84-8c1b-5298-a793-9dba40c22ce6",
+      "dnp": false
+    },
+    {
+      "ref": "R400",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "IGN1_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "50dcf620-0697-598a-97d4-369807bfb70d",
+      "dnp": false
+    },
+    {
+      "ref": "R401",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "IGN1_BUF",
+        "2": "IGN1_LOGIC"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "1f0d26f8-6d68-5ca7-a486-f35fcc334c3f",
+      "dnp": false
+    },
+    {
+      "ref": "R402",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "IGN1_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "bde83166-3d22-52f5-bde9-74f0e95ce4ef",
+      "dnp": false
+    },
+    {
+      "ref": "D400",
+      "sheet": "ignition_outputs",
+      "libid": "Device:D_Zener",
+      "value": "BZT52C5V1",
+      "pins": {
+        "1": "IGN1_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Diode_SMD:D_SOD-123",
+      "mpn": "BZT52C5V1-7-F",
+      "manufacturer": "Littelfuse",
+      "note": "Logic connector clamp, not a coil flyback clamp",
+      "uuid": "b3c19563-0f13-5f81-b182-5c74be46a097",
+      "dnp": false
+    },
+    {
+      "ref": "J400",
+      "sheet": "ignition_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "IGN1 EXTERNAL IGNITER",
+      "pins": {
+        "1": "IGN1_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "2bf1510c-c4c3-5092-ae20-614389492783",
+      "dnp": false
+    },
+    {
+      "ref": "TP400",
+      "sheet": "ignition_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "IGN1_LOGIC",
+      "pins": {
+        "1": "IGN1_LOGIC"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0/5V active-high external-igniter command; <=2mA load",
+      "uuid": "059d2011-d95f-5402-9f7f-af691ca61fa1",
+      "dnp": false
+    },
+    {
+      "ref": "R403",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "IGN2_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "aa1a9990-b97c-5e1e-a934-d5a233134d39",
+      "dnp": false
+    },
+    {
+      "ref": "R404",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "IGN2_BUF",
+        "2": "IGN2_LOGIC"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "e7599570-2c0a-5a9c-91b3-16c591951f32",
+      "dnp": false
+    },
+    {
+      "ref": "R405",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "IGN2_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "fe7e5c23-e559-5f03-a2b8-2b64742d97b4",
+      "dnp": false
+    },
+    {
+      "ref": "D401",
+      "sheet": "ignition_outputs",
+      "libid": "Device:D_Zener",
+      "value": "BZT52C5V1",
+      "pins": {
+        "1": "IGN2_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Diode_SMD:D_SOD-123",
+      "mpn": "BZT52C5V1-7-F",
+      "manufacturer": "Littelfuse",
+      "note": "Logic connector clamp, not a coil flyback clamp",
+      "uuid": "cb5b58e4-c0ba-5cc7-a353-c90179902480",
+      "dnp": false
+    },
+    {
+      "ref": "J401",
+      "sheet": "ignition_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "IGN2 EXTERNAL IGNITER",
+      "pins": {
+        "1": "IGN2_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "ad4df62c-9d32-57be-9b27-4ddfea6aaf23",
+      "dnp": false
+    },
+    {
+      "ref": "TP401",
+      "sheet": "ignition_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "IGN2_LOGIC",
+      "pins": {
+        "1": "IGN2_LOGIC"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0/5V active-high external-igniter command; <=2mA load",
+      "uuid": "58c934dd-84aa-5c7a-82cd-c3f3bfa58ada",
+      "dnp": false
+    },
+    {
+      "ref": "R406",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "IGN3_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "7044880a-523e-524c-bd91-66c70c55724b",
+      "dnp": false
+    },
+    {
+      "ref": "R407",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "IGN3_BUF",
+        "2": "IGN3_LOGIC"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "3870cab0-f09f-53fa-9f01-caf806d4eecb",
+      "dnp": false
+    },
+    {
+      "ref": "R408",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "IGN3_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "25e0a014-c31f-5920-8758-7dc68c53f9b6",
+      "dnp": false
+    },
+    {
+      "ref": "D402",
+      "sheet": "ignition_outputs",
+      "libid": "Device:D_Zener",
+      "value": "BZT52C5V1",
+      "pins": {
+        "1": "IGN3_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Diode_SMD:D_SOD-123",
+      "mpn": "BZT52C5V1-7-F",
+      "manufacturer": "Littelfuse",
+      "note": "Logic connector clamp, not a coil flyback clamp",
+      "uuid": "8c8711fe-97ab-5889-bcac-7b41c7832c3a",
+      "dnp": false
+    },
+    {
+      "ref": "J402",
+      "sheet": "ignition_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "IGN3 EXTERNAL IGNITER",
+      "pins": {
+        "1": "IGN3_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "3d2078d3-fdd6-597e-b35b-5b965caa42c7",
+      "dnp": false
+    },
+    {
+      "ref": "TP402",
+      "sheet": "ignition_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "IGN3_LOGIC",
+      "pins": {
+        "1": "IGN3_LOGIC"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0/5V active-high external-igniter command; <=2mA load",
+      "uuid": "37c94a18-6b63-5b49-ab26-97212b92321f",
+      "dnp": false
+    },
+    {
+      "ref": "R409",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "IGN4_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "856c7a5e-1d59-5dae-b8a4-b123fff02efa",
+      "dnp": false
+    },
+    {
+      "ref": "R410",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "IGN4_BUF",
+        "2": "IGN4_LOGIC"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "cee173dc-f7dc-500d-ab54-f895cf69b94d",
+      "dnp": false
+    },
+    {
+      "ref": "R411",
+      "sheet": "ignition_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "IGN4_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "f8aa71ff-8235-5306-941f-1d796bc6b507",
+      "dnp": false
+    },
+    {
+      "ref": "D403",
+      "sheet": "ignition_outputs",
+      "libid": "Device:D_Zener",
+      "value": "BZT52C5V1",
+      "pins": {
+        "1": "IGN4_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "Diode_SMD:D_SOD-123",
+      "mpn": "BZT52C5V1-7-F",
+      "manufacturer": "Littelfuse",
+      "note": "Logic connector clamp, not a coil flyback clamp",
+      "uuid": "d0ea42a9-dea3-591b-a6d9-fb9c06f9696d",
+      "dnp": false
+    },
+    {
+      "ref": "J403",
+      "sheet": "ignition_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "IGN4 EXTERNAL IGNITER",
+      "pins": {
+        "1": "IGN4_LOGIC",
+        "2": "GND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "b0330d34-64ed-51b3-8151-0436ecf4f903",
+      "dnp": false
+    },
+    {
+      "ref": "TP403",
+      "sheet": "ignition_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "IGN4_LOGIC",
+      "pins": {
+        "1": "IGN4_LOGIC"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0/5V active-high external-igniter command; <=2mA load",
+      "uuid": "292c19cd-ac24-5b7a-a7c7-780308e0c6da",
+      "dnp": false
+    },
+    {
+      "ref": "J404",
+      "sheet": "ignition_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "IGNITER BENCH POWER",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "PGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "3319066c-bab0-5278-a934-1282fe337762",
+      "dnp": false
+    },
+    {
+      "ref": "R500",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "2.2k",
+      "pins": {
+        "1": "+5V",
+        "2": "CLAMP_3V0"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-072K2L",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "cb498cc3-1216-5cc3-9cce-c2435020b887",
+      "dnp": false
+    },
+    {
+      "ref": "U500",
+      "sheet": "sensor_trigger",
+      "libid": "Reference_Voltage:LM4040DBZ-3",
+      "value": "LM4040D30IDBZR",
+      "pins": {
+        "1": "CLAMP_3V0",
+        "2": "AGND",
+        "3": null
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "LM4040D30IDBZR",
+      "manufacturer": "Texas Instruments",
+      "note": "3.0V shunt absorbs positive fault clamp current; not ADC VREF",
+      "uuid": "91759be6-fedb-5fb2-859a-81daf25c0a71",
+      "dnp": false
+    },
+    {
+      "ref": "C500",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "CLAMP_3V0",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "dc049dbf-828f-5f61-913b-8503db5f4f2b",
+      "dnp": false
+    },
+    {
+      "ref": "J500",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AN1 0-5V BENCH",
+      "pins": {
+        "1": "AN1_INPUT",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "6e1bd8f0-9dd7-59b1-85d4-42f36a0149ce",
+      "dnp": false
+    },
+    {
+      "ref": "R501",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "22k",
+      "pins": {
+        "1": "AN1_INPUT",
+        "2": "AN1_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "b4686d86-9c43-545f-b5a1-9e95db14d61b",
+      "dnp": false
+    },
+    {
+      "ref": "R502",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "AN1_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "e6be8cca-51f5-5ead-b144-bc7c8e375dc0",
+      "dnp": false
+    },
+    {
+      "ref": "D500",
+      "sheet": "sensor_trigger",
+      "libid": "Diode:BAT54S",
+      "value": "BAT54S-7-F",
+      "pins": {
+        "1": "AGND",
+        "2": "CLAMP_3V0",
+        "3": "AN1_DIV"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "BAT54S-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "Lower clamp to AGND, upper to absorbing3.0V shunt",
+      "uuid": "0692fae2-d9d5-5123-b557-be2c5875225f",
+      "dnp": false
+    },
+    {
+      "ref": "R503",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "AN1_DIV",
+        "2": "ADC_AN1"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "259b6825-3c72-5a38-bc03-d49dcbb755d5",
+      "dnp": false
+    },
+    {
+      "ref": "C501",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_AN1",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "bf3e1416-574d-5d42-a922-b5c5fcba1326",
+      "dnp": false
+    },
+    {
+      "ref": "TP500",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "ADC_AN1",
+      "pins": {
+        "1": "ADC_AN1"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0-3.0V nominal for0-5V input; source impedance14.2kohm",
+      "uuid": "874bc68e-4f5f-529a-a15c-6e57e1f8bb6f",
+      "dnp": false
+    },
+    {
+      "ref": "J501",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AN2 0-5V BENCH",
+      "pins": {
+        "1": "AN2_INPUT",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "e4fab86f-c9d5-5910-82e7-49f7b30d130c",
+      "dnp": false
+    },
+    {
+      "ref": "R504",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "22k",
+      "pins": {
+        "1": "AN2_INPUT",
+        "2": "AN2_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "d8e47e7f-5b72-581d-afa2-a9cd5b766868",
+      "dnp": false
+    },
+    {
+      "ref": "R505",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "AN2_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "1ed5ab9d-2f0b-5d86-bbb5-afd1cf11b5fa",
+      "dnp": false
+    },
+    {
+      "ref": "D501",
+      "sheet": "sensor_trigger",
+      "libid": "Diode:BAT54S",
+      "value": "BAT54S-7-F",
+      "pins": {
+        "1": "AGND",
+        "2": "CLAMP_3V0",
+        "3": "AN2_DIV"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "BAT54S-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "Lower clamp to AGND, upper to absorbing3.0V shunt",
+      "uuid": "68915d1b-5c11-5f6c-826d-92390835c53a",
+      "dnp": false
+    },
+    {
+      "ref": "R506",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "AN2_DIV",
+        "2": "ADC_AN2"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "ac689417-4bee-5efb-8459-80459807a521",
+      "dnp": false
+    },
+    {
+      "ref": "C502",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_AN2",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "da8db62b-916a-5ce0-98cd-cc757a2f69fc",
+      "dnp": false
+    },
+    {
+      "ref": "TP501",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "ADC_AN2",
+      "pins": {
+        "1": "ADC_AN2"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0-3.0V nominal for0-5V input; source impedance14.2kohm",
+      "uuid": "fd2b9b9c-4e02-57f5-86a0-5aa0ac3c504d",
+      "dnp": false
+    },
+    {
+      "ref": "J502",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AN3 0-5V BENCH",
+      "pins": {
+        "1": "AN3_INPUT",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "9eecc40f-fa58-5435-8cc2-dc0292d62d57",
+      "dnp": false
+    },
+    {
+      "ref": "R507",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "22k",
+      "pins": {
+        "1": "AN3_INPUT",
+        "2": "AN3_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "0cf1993e-d75a-5dd0-b850-927736f2aba5",
+      "dnp": false
+    },
+    {
+      "ref": "R508",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "AN3_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "ccf24010-26c5-5b71-bdf4-0e63a8f07f95",
+      "dnp": false
+    },
+    {
+      "ref": "D502",
+      "sheet": "sensor_trigger",
+      "libid": "Diode:BAT54S",
+      "value": "BAT54S-7-F",
+      "pins": {
+        "1": "AGND",
+        "2": "CLAMP_3V0",
+        "3": "AN3_DIV"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "BAT54S-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "Lower clamp to AGND, upper to absorbing3.0V shunt",
+      "uuid": "a0f9350d-b426-5457-8d3d-292db5160002",
+      "dnp": false
+    },
+    {
+      "ref": "R509",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "AN3_DIV",
+        "2": "ADC_AN3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "c9044dd0-8c80-5deb-8654-4c9eb134fa76",
+      "dnp": false
+    },
+    {
+      "ref": "C503",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_AN3",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "d3851331-6db7-521e-a6ad-f9fd73f49faf",
+      "dnp": false
+    },
+    {
+      "ref": "TP502",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "ADC_AN3",
+      "pins": {
+        "1": "ADC_AN3"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0-3.0V nominal for0-5V input; source impedance14.2kohm",
+      "uuid": "996f74d4-9930-5762-ad6b-677227f0a197",
+      "dnp": false
+    },
+    {
+      "ref": "J503",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AN4 0-5V BENCH",
+      "pins": {
+        "1": "AN4_INPUT",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "2113fc7a-aedf-5969-a502-ed3a2911d5e9",
+      "dnp": false
+    },
+    {
+      "ref": "R510",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "22k",
+      "pins": {
+        "1": "AN4_INPUT",
+        "2": "AN4_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "900d558c-03fa-5414-8dd6-1feeb8d160b1",
+      "dnp": false
+    },
+    {
+      "ref": "R511",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "AN4_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "dd49db40-8729-57e8-97b9-0fa71f2e1868",
+      "dnp": false
+    },
+    {
+      "ref": "D503",
+      "sheet": "sensor_trigger",
+      "libid": "Diode:BAT54S",
+      "value": "BAT54S-7-F",
+      "pins": {
+        "1": "AGND",
+        "2": "CLAMP_3V0",
+        "3": "AN4_DIV"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "BAT54S-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "Lower clamp to AGND, upper to absorbing3.0V shunt",
+      "uuid": "166f0732-3628-575b-b597-3710cfdd43b7",
+      "dnp": false
+    },
+    {
+      "ref": "R512",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "1k",
+      "pins": {
+        "1": "AN4_DIV",
+        "2": "ADC_AN4"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "49bab9ae-b769-54e1-b33e-6961feaa2b09",
+      "dnp": false
+    },
+    {
+      "ref": "C504",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "10n",
+      "pins": {
+        "1": "ADC_AN4",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H103KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "2b65ae57-c2c0-5e53-9e1e-694acf52f174",
+      "dnp": false
+    },
+    {
+      "ref": "TP503",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "ADC_AN4",
+      "pins": {
+        "1": "ADC_AN4"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "0-3.0V nominal for0-5V input; source impedance14.2kohm",
+      "uuid": "b561fb5f-e907-5eb1-8e5a-ad7f62db664b",
+      "dnp": false
+    },
+    {
+      "ref": "R513",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "+5V",
+        "2": "TRIG_REF"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "10180b53-232f-586b-9333-2c99de76ae44",
+      "dnp": false
+    },
+    {
+      "ref": "R514",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "TRIG_REF",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "fb2b5bb9-8e89-54e9-a8f5-1eac814da653",
+      "dnp": false
+    },
+    {
+      "ref": "C505",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "TRIG_REF",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "78296685-0422-500b-835f-a0327f132789",
+      "dnp": false
+    },
+    {
+      "ref": "J504",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "CRANK 0-5V HALL ONLY",
+      "pins": {
+        "1": "CRANK_INPUT",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "c7ffcfd5-e5ac-5ddc-bb67-bc596a45fd5d",
+      "dnp": false
+    },
+    {
+      "ref": "R515",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "22k",
+      "pins": {
+        "1": "CRANK_INPUT",
+        "2": "CRANK_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "bba7fdde-d876-560b-9991-991e125e6bf9",
+      "dnp": false
+    },
+    {
+      "ref": "R516",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "CRANK_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "1d565fe4-56d8-51de-894a-33ddf66cfac3",
+      "dnp": false
+    },
+    {
+      "ref": "D504",
+      "sheet": "sensor_trigger",
+      "libid": "Diode:BAT54S",
+      "value": "BAT54S-7-F",
+      "pins": {
+        "1": "AGND",
+        "2": "CLAMP_3V0",
+        "3": "CRANK_DIV"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "BAT54S-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "",
+      "uuid": "24411c7c-01ca-5d35-aa23-074f3bfda6cc",
+      "dnp": false
+    },
+    {
+      "ref": "C506",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "1n",
+      "pins": {
+        "1": "CRANK_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21B5C1H102JA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "ad3b72cb-b881-5bb8-8778-ff41e92d1634",
+      "dnp": false
+    },
+    {
+      "ref": "R517",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "1M",
+      "pins": {
+        "1": "CRANK_DIG",
+        "2": "CRANK_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071ML",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "64f4defd-0f61-53b1-942d-d267e789888b",
+      "dnp": false
+    },
+    {
+      "ref": "U501",
+      "sheet": "sensor_trigger",
+      "libid": "Comparator:LM2903",
+      "value": "LM2903BDR",
+      "pins": {
+        "3": "CRANK_DIV",
+        "2": "TRIG_REF",
+        "1": "CRANK_DIG",
+        "5": "CAM_DIV",
+        "6": "TRIG_REF",
+        "7": "CAM_DIG",
+        "8": "+5V",
+        "4": "AGND"
+      },
+      "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "mpn": "LM2903BDR",
+      "manufacturer": "Texas Instruments",
+      "note": "Open-collector output with3.3V pullup; single-ended Hall/function generator only",
+      "uuid": "45da6975-6426-53f9-badc-7ef6b34c064f",
+      "dnp": false
+    },
+    {
+      "ref": "R518",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "4.7k",
+      "pins": {
+        "1": "CRANK_DIG",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-074K7L",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "02cb09d4-c763-5eef-abe7-c4433b3b3341",
+      "dnp": false
+    },
+    {
+      "ref": "TP504",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "CRANK_DIG",
+      "pins": {
+        "1": "CRANK_DIG"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "3.3V comparator-conditioned timer capture",
+      "uuid": "327aedb8-aeb5-572c-a952-288e201818eb",
+      "dnp": false
+    },
+    {
+      "ref": "J505",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "CAM 0-5V HALL ONLY",
+      "pins": {
+        "1": "CAM_INPUT",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "1c2afd80-4148-5558-b97e-74d18ae617cb",
+      "dnp": false
+    },
+    {
+      "ref": "R519",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "22k",
+      "pins": {
+        "1": "CAM_INPUT",
+        "2": "CAM_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "cf2bc66f-521d-5822-999a-6fc46dd74c2c",
+      "dnp": false
+    },
+    {
+      "ref": "R520",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "33k",
+      "pins": {
+        "1": "CAM_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0733KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "480c72db-7e25-54c9-8ea8-b9e4eebf8300",
+      "dnp": false
+    },
+    {
+      "ref": "D505",
+      "sheet": "sensor_trigger",
+      "libid": "Diode:BAT54S",
+      "value": "BAT54S-7-F",
+      "pins": {
+        "1": "AGND",
+        "2": "CLAMP_3V0",
+        "3": "CAM_DIV"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "BAT54S-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "note": "",
+      "uuid": "92386e0d-d8c2-5a6f-8fbd-248127bdad0e",
+      "dnp": false
+    },
+    {
+      "ref": "C507",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "1n",
+      "pins": {
+        "1": "CAM_DIV",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21B5C1H102JA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "dcb1385f-8138-5b9b-ac72-e4a48670ca5e",
+      "dnp": false
+    },
+    {
+      "ref": "R521",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "1M",
+      "pins": {
+        "1": "CAM_DIG",
+        "2": "CAM_DIV"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-071ML",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "c408e62a-efbe-5bd0-b940-933e6edb7b17",
+      "dnp": false
+    },
+    {
+      "ref": "R522",
+      "sheet": "sensor_trigger",
+      "libid": "Device:R",
+      "value": "4.7k",
+      "pins": {
+        "1": "CAM_DIG",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-074K7L",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "d89949be-22a5-58c4-8ac1-c52c091641dc",
+      "dnp": false
+    },
+    {
+      "ref": "TP505",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "CAM_DIG",
+      "pins": {
+        "1": "CAM_DIG"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "3.3V comparator-conditioned timer capture",
+      "uuid": "49e83cba-3bae-54a4-8eca-8dae2eef2181",
+      "dnp": false
+    },
+    {
+      "ref": "C508",
+      "sheet": "sensor_trigger",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+5V",
+        "2": "AGND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "a15ab15e-831c-5f47-9b89-24485c1c4602",
+      "dnp": false
+    },
+    {
+      "ref": "TP506",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "CLAMP_3V0",
+      "pins": {
+        "1": "CLAMP_3V0"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure CLAMP_3V0 relative to GND",
+      "uuid": "5323f5e1-3686-5303-9f1a-7966ab285b01",
+      "dnp": false
+    },
+    {
+      "ref": "TP507",
+      "sheet": "sensor_trigger",
+      "libid": "Connector:TestPoint",
+      "value": "TRIG_REF",
+      "pins": {
+        "1": "TRIG_REF"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure TRIG_REF relative to GND",
+      "uuid": "bd1689d4-25d4-541d-a5fd-18e1cde62d10",
+      "dnp": false
+    },
+    {
+      "ref": "J506",
+      "sheet": "sensor_trigger",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "SENSOR 5V BENCH",
+      "pins": {
+        "1": "+5V",
+        "2": "AGND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "8c87d691-81f9-5735-a2d3-67ccf2543007",
+      "dnp": false
+    },
+    {
+      "ref": "U600",
+      "sheet": "can_debug",
+      "libid": "Interface_CAN_LIN:TCAN332",
+      "value": "TCAN332DR",
+      "pins": {
+        "1": "CAN_TX",
+        "2": "GND",
+        "3": "+3V3",
+        "4": "CAN_RX",
+        "5": null,
+        "6": "CAN_L",
+        "7": "CAN_H",
+        "8": null
+      },
+      "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "mpn": "TCAN332DR",
+      "manufacturer": "Texas Instruments",
+      "note": "3.3V classic CAN; not an Evo OEM bus interface",
+      "uuid": "5804fea8-894b-5b34-a98b-4af2a81e6135",
+      "dnp": false
+    },
+    {
+      "ref": "C600",
+      "sheet": "can_debug",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+3V3",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "b848a894-58bd-5ca3-b253-565332b04d15",
+      "dnp": false
+    },
+    {
+      "ref": "R600",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "CAN_TX",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "Recessive TX during MCU reset",
+      "uuid": "f079372a-ab9a-518b-9393-550cbfc5b747",
+      "dnp": false
+    },
+    {
+      "ref": "D600",
+      "sheet": "can_debug",
+      "libid": "Power_Protection:NUP2105L",
+      "value": "NUP2105LT1G",
+      "pins": {
+        "1": "CAN_H",
+        "2": "CAN_L",
+        "3": "GND"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "mpn": "NUP2105LT1G",
+      "manufacturer": "onsemi",
+      "note": "",
+      "uuid": "b4d74ba6-6171-5a40-b02d-9abf4689dcba",
+      "dnp": false
+    },
+    {
+      "ref": "R601",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "120",
+      "pins": {
+        "1": "CAN_H",
+        "2": "CAN_TERM"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07120RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "cfc489c1-8570-5cf1-9cd1-3fc60e717cc8",
+      "dnp": false
+    },
+    {
+      "ref": "JP600",
+      "sheet": "can_debug",
+      "libid": "Jumper:Jumper_2_Open",
+      "value": "CAN TERMINATION",
+      "pins": {
+        "1": "CAN_TERM",
+        "2": "CAN_L"
+      },
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "mpn": "61300211121",
+      "manufacturer": "Wurth Elektronik",
+      "note": "Fit shunt only at bus endpoint",
+      "uuid": "c4f28f60-9454-57e0-8828-d1f762e9889b",
+      "dnp": false
+    },
+    {
+      "ref": "J600",
+      "sheet": "can_debug",
+      "libid": "Connector_Generic:Conn_01x03",
+      "value": "CAN BENCH",
+      "pins": {
+        "1": "CAN_H",
+        "2": "CAN_L",
+        "3": "GND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal",
+      "mpn": "1715734",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "2cbc90c7-5334-5cc9-a24c-9e3eab67dd18",
+      "dnp": false
+    },
+    {
+      "ref": "J601",
+      "sheet": "can_debug",
+      "libid": "Connector:USB_B_Micro",
+      "value": "USB DEVICE SELF POWERED",
+      "pins": {
+        "1": "USB_VBUS",
+        "2": "USB_CONN_DM",
+        "3": "USB_CONN_DP",
+        "4": null,
+        "5": "GND",
+        "6": "GND"
+      },
+      "footprint": "Connector_USB:USB_Micro-B_Amphenol_10118194-0001LF_Horizontal",
+      "mpn": "10118194-0001LF",
+      "manufacturer": "Amphenol",
+      "note": "VBUS does not power board; do not attach USB until board powered",
+      "uuid": "02171429-0041-5733-b248-bd16ab6ccd71",
+      "dnp": false
+    },
+    {
+      "ref": "U601",
+      "sheet": "can_debug",
+      "libid": "Power_Protection:USBLC6-2SC6",
+      "value": "USBLC6-2SC6",
+      "pins": {
+        "1": "USB_CONN_DM",
+        "6": "USB_CONN_DM",
+        "3": "USB_CONN_DP",
+        "4": "USB_CONN_DP",
+        "5": "USB_VBUS",
+        "2": "GND"
+      },
+      "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+      "mpn": "USBLC6-2SC6",
+      "manufacturer": "STMicroelectronics",
+      "note": "",
+      "uuid": "aacc3e74-7f0c-58fc-a765-d7ae60462e9e",
+      "dnp": false
+    },
+    {
+      "ref": "R602",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "22",
+      "pins": {
+        "1": "USB_CONN_DM",
+        "2": "USB_DM"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "de33cbfe-ff24-5c8b-902e-e1586a0c0054",
+      "dnp": false
+    },
+    {
+      "ref": "R603",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "22",
+      "pins": {
+        "1": "USB_CONN_DP",
+        "2": "USB_DP"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0722RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "2a3d19a8-e461-5e90-9aa3-c74e30cece07",
+      "dnp": false
+    },
+    {
+      "ref": "R604",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "68k",
+      "pins": {
+        "1": "USB_VBUS",
+        "2": "USB_VBUS_SENSE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0768KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "309b77e8-edca-51bb-b0bc-53bd96b19d65",
+      "dnp": false
+    },
+    {
+      "ref": "R605",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "USB_VBUS_SENSE",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "d56616de-8465-541e-a004-18ced4bf5dcf",
+      "dnp": false
+    },
+    {
+      "ref": "C601",
+      "sheet": "can_debug",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "USB_VBUS",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "",
+      "uuid": "b3d969bb-9f8d-52d7-a4c1-34a605b264de",
+      "dnp": false
+    },
+    {
+      "ref": "TP600",
+      "sheet": "can_debug",
+      "libid": "Connector:TestPoint",
+      "value": "USB_VBUS_SENSE",
+      "pins": {
+        "1": "USB_VBUS_SENSE"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure USB_VBUS_SENSE relative to GND",
+      "uuid": "c80178b5-37ce-5f7e-9aa6-3c7d87563cca",
+      "dnp": false
+    },
+    {
+      "ref": "J602",
+      "sheet": "can_debug",
+      "libid": "Connector_Generic:Conn_02x05_Odd_Even",
+      "value": "CORTEX SWD 10PIN",
+      "pins": {
+        "1": "+3V3",
+        "2": "SWDIO",
+        "3": "GND",
+        "4": "SWCLK",
+        "5": "GND",
+        "6": "SWO",
+        "7": null,
+        "8": null,
+        "9": "GND",
+        "10": "NRST"
+      },
+      "footprint": "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical",
+      "mpn": "20021121-00010T4LF",
+      "manufacturer": "Amphenol",
+      "note": "Pin1 target VREF output, not power input; pin7 key, pin8 NC",
+      "uuid": "b5ccba12-8be4-56c8-88f9-d86547cfde19",
+      "dnp": false
+    },
+    {
+      "ref": "R606",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "SWCLK",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "bb816f36-aa15-5946-934a-78e247b53c53",
+      "dnp": false
+    },
+    {
+      "ref": "R607",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "SWDIO",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "e59e3ec3-9a94-53f2-aa4e-9507680518d1",
+      "dnp": false
+    },
+    {
+      "ref": "J603",
+      "sheet": "can_debug",
+      "libid": "Connector_Generic:Conn_01x03",
+      "value": "UART 3V3",
+      "pins": {
+        "1": "UART_TX",
+        "2": "UART_RX",
+        "3": "GND"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal",
+      "mpn": "1715734",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "2a015f1f-5072-5c77-bdee-24fbeb3128d5",
+      "dnp": false
+    },
+    {
+      "ref": "R608",
+      "sheet": "can_debug",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "UART_RX",
+        "2": "+3V3"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "77c7f6f4-4308-504b-b872-b9e2a9f48e58",
+      "dnp": false
+    },
+    {
+      "ref": "TP601",
+      "sheet": "can_debug",
+      "libid": "Connector:TestPoint",
+      "value": "CAN_TX",
+      "pins": {
+        "1": "CAN_TX"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure CAN_TX relative to GND",
+      "uuid": "30a8de9c-9415-52aa-b0ce-5bf1ad6f294f",
+      "dnp": false
+    },
+    {
+      "ref": "TP602",
+      "sheet": "can_debug",
+      "libid": "Connector:TestPoint",
+      "value": "CAN_RX",
+      "pins": {
+        "1": "CAN_RX"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure CAN_RX relative to GND",
+      "uuid": "d1a3ff17-8419-5893-8cd5-3e54f5d471a9",
+      "dnp": false
+    },
+    {
+      "ref": "TP603",
+      "sheet": "can_debug",
+      "libid": "Connector:TestPoint",
+      "value": "SWDIO",
+      "pins": {
+        "1": "SWDIO"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure SWDIO relative to GND",
+      "uuid": "5316a613-3b80-5199-9bf7-d5f5f1eadc89",
+      "dnp": false
+    },
+    {
+      "ref": "TP604",
+      "sheet": "can_debug",
+      "libid": "Connector:TestPoint",
+      "value": "SWCLK",
+      "pins": {
+        "1": "SWCLK"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure SWCLK relative to GND",
+      "uuid": "878ebe34-f49a-56ab-92d5-30ea6f564879",
+      "dnp": false
+    },
+    {
+      "ref": "U700",
+      "sheet": "aux_outputs",
+      "libid": "74xx:74LS08",
+      "value": "SN74AHCT08DR",
+      "pins": {
+        "1": "AUX1_CMD",
+        "2": "ACT_EN",
+        "3": "AUX1_DRIVE",
+        "4": "AUX2_CMD",
+        "5": "ACT_EN",
+        "6": "AUX2_DRIVE",
+        "9": "AUX3_CMD",
+        "10": "ACT_EN",
+        "8": "AUX3_DRIVE",
+        "12": "AUX4_CMD",
+        "13": "ACT_EN",
+        "11": "AUX4_DRIVE",
+        "14": "+5V",
+        "7": "GND"
+      },
+      "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm",
+      "mpn": "SN74AHCT08DR",
+      "manufacturer": "Texas Instruments",
+      "note": "Standard quad AND pinout; fit the specified logic family",
+      "uuid": "60651634-48a3-55f8-b250-c57fd7b35451",
+      "dnp": false
+    },
+    {
+      "ref": "C700",
+      "sheet": "aux_outputs",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Local bypass for U700",
+      "uuid": "dcda8bfb-4ee0-56c6-8c6b-65afdf8545c6",
+      "dnp": false
+    },
+    {
+      "ref": "U701",
+      "sheet": "aux_outputs",
+      "libid": "74xx:74LS08",
+      "value": "SN74AHCT08DR",
+      "pins": {
+        "1": "RELAY_CMD",
+        "2": "ACT_EN",
+        "3": "RELAY_DRIVE",
+        "4": "GND",
+        "5": "GND",
+        "6": null,
+        "9": "GND",
+        "10": "GND",
+        "8": null,
+        "12": "GND",
+        "13": "GND",
+        "11": null,
+        "14": "+5V",
+        "7": "GND"
+      },
+      "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm",
+      "mpn": "SN74AHCT08DR",
+      "manufacturer": "Texas Instruments",
+      "note": "Standard quad AND pinout; fit the specified logic family",
+      "uuid": "8a967219-7f58-5743-b690-e0350fd0218d",
+      "dnp": false
+    },
+    {
+      "ref": "C701",
+      "sheet": "aux_outputs",
+      "libid": "Device:C",
+      "value": "100n",
+      "pins": {
+        "1": "+5V",
+        "2": "GND"
+      },
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "mpn": "GRM21BR71H104KA01L",
+      "manufacturer": "Murata",
+      "note": "Local bypass for U701",
+      "uuid": "088df3c4-b6ce-514b-8ac7-4cc937f0152e",
+      "dnp": false
+    },
+    {
+      "ref": "R700",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "AUX1_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "f3a91781-624c-504e-8ca3-3953fe874862",
+      "dnp": false
+    },
+    {
+      "ref": "R701",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "AUX1_DRIVE",
+        "2": "AUX1_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "96e49263-4cb0-5aa5-9098-5443f116976f",
+      "dnp": false
+    },
+    {
+      "ref": "R702",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "AUX1_GATE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "57b56f6c-2495-50cf-898a-a8667969ec32",
+      "dnp": false
+    },
+    {
+      "ref": "Q700",
+      "sheet": "aux_outputs",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "AUX1_GATE",
+        "2": "AUX1_OUT",
+        "3": "PGND"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench sink <=100mA; no per-channel electronic current protection",
+      "uuid": "520d590b-c79a-58cd-9efa-578bce1d3616",
+      "dnp": false
+    },
+    {
+      "ref": "F700",
+      "sheet": "aux_outputs",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "AUX1_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "6d0a0cea-b3e4-57c7-9027-7f09b7134b10",
+      "dnp": false
+    },
+    {
+      "ref": "D700",
+      "sheet": "aux_outputs",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "AUX1_SUPPLY",
+        "2": "AUX1_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "",
+      "uuid": "9385a8f6-4766-5670-9401-7e9a9b89373f",
+      "dnp": false
+    },
+    {
+      "ref": "J700",
+      "sheet": "aux_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AUX1 BENCH LOAD",
+      "pins": {
+        "1": "AUX1_SUPPLY",
+        "2": "AUX1_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "f74c3a5e-beb4-534f-9814-9c6946a0e333",
+      "dnp": false
+    },
+    {
+      "ref": "TP700",
+      "sheet": "aux_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "AUX1_OUT",
+      "pins": {
+        "1": "AUX1_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure AUX1_OUT relative to PGND",
+      "uuid": "b8472c7c-b69a-5f13-8685-c319237fe54f",
+      "dnp": false
+    },
+    {
+      "ref": "R703",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "AUX2_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "928833de-6e39-5602-95f8-53eb26393a73",
+      "dnp": false
+    },
+    {
+      "ref": "R704",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "AUX2_DRIVE",
+        "2": "AUX2_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "e8458e81-1aae-56cc-8ef0-22d52b53f964",
+      "dnp": false
+    },
+    {
+      "ref": "R705",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "AUX2_GATE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "5f47624a-c2c8-5100-b5a4-5580f818ccd0",
+      "dnp": false
+    },
+    {
+      "ref": "Q701",
+      "sheet": "aux_outputs",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "AUX2_GATE",
+        "2": "AUX2_OUT",
+        "3": "PGND"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench sink <=100mA; no per-channel electronic current protection",
+      "uuid": "743fc49a-abd0-5a99-9484-cecdc9e92e5a",
+      "dnp": false
+    },
+    {
+      "ref": "F701",
+      "sheet": "aux_outputs",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "AUX2_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "00df404d-4d33-5fe7-938f-4348307ef4c3",
+      "dnp": false
+    },
+    {
+      "ref": "D701",
+      "sheet": "aux_outputs",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "AUX2_SUPPLY",
+        "2": "AUX2_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "",
+      "uuid": "2c7028b8-9369-5a27-8050-e76b850259a9",
+      "dnp": false
+    },
+    {
+      "ref": "J701",
+      "sheet": "aux_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AUX2 BENCH LOAD",
+      "pins": {
+        "1": "AUX2_SUPPLY",
+        "2": "AUX2_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "bea42f7f-5912-523e-b5e2-74ee2fe594d9",
+      "dnp": false
+    },
+    {
+      "ref": "TP701",
+      "sheet": "aux_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "AUX2_OUT",
+      "pins": {
+        "1": "AUX2_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure AUX2_OUT relative to PGND",
+      "uuid": "4737288b-aab3-5454-9dca-1a3b43f2c48e",
+      "dnp": false
+    },
+    {
+      "ref": "R706",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "AUX3_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "5b2ca1a1-2afb-523c-9bed-d95b51f94c80",
+      "dnp": false
+    },
+    {
+      "ref": "R707",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "AUX3_DRIVE",
+        "2": "AUX3_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "5626cca6-eb8a-5e7a-82fa-271d137068b2",
+      "dnp": false
+    },
+    {
+      "ref": "R708",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "AUX3_GATE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "3c184e14-9ec0-53b5-9638-f432d273fe5c",
+      "dnp": false
+    },
+    {
+      "ref": "Q702",
+      "sheet": "aux_outputs",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "AUX3_GATE",
+        "2": "AUX3_OUT",
+        "3": "PGND"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench sink <=100mA; no per-channel electronic current protection",
+      "uuid": "f5828f48-4869-54ef-9f44-5a453e241465",
+      "dnp": false
+    },
+    {
+      "ref": "F702",
+      "sheet": "aux_outputs",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "AUX3_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "eabe8d37-1d1e-50eb-a9f1-0c9c989a58d6",
+      "dnp": false
+    },
+    {
+      "ref": "D702",
+      "sheet": "aux_outputs",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "AUX3_SUPPLY",
+        "2": "AUX3_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "",
+      "uuid": "e742065b-3bb9-571b-b3b5-64b3055a5ae2",
+      "dnp": false
+    },
+    {
+      "ref": "J702",
+      "sheet": "aux_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AUX3 BENCH LOAD",
+      "pins": {
+        "1": "AUX3_SUPPLY",
+        "2": "AUX3_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "01394141-c156-5dc4-83ef-a1e188001322",
+      "dnp": false
+    },
+    {
+      "ref": "TP702",
+      "sheet": "aux_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "AUX3_OUT",
+      "pins": {
+        "1": "AUX3_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure AUX3_OUT relative to PGND",
+      "uuid": "97709ece-dc7c-5e8f-97bd-f92232315197",
+      "dnp": false
+    },
+    {
+      "ref": "R709",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "AUX4_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "e29e364c-1605-51bd-b34c-e3baf1c2c891",
+      "dnp": false
+    },
+    {
+      "ref": "R710",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "AUX4_DRIVE",
+        "2": "AUX4_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "58f64612-1162-570d-b5e0-7e8a62a8cb81",
+      "dnp": false
+    },
+    {
+      "ref": "R711",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "AUX4_GATE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "071315d8-04c0-5fb3-99bd-e27413d7c065",
+      "dnp": false
+    },
+    {
+      "ref": "Q703",
+      "sheet": "aux_outputs",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "AUX4_GATE",
+        "2": "AUX4_OUT",
+        "3": "PGND"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench sink <=100mA; no per-channel electronic current protection",
+      "uuid": "1ebee986-0818-5c35-b64a-3b0074819a6d",
+      "dnp": false
+    },
+    {
+      "ref": "F703",
+      "sheet": "aux_outputs",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "AUX4_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "6fd983c1-2105-5abb-b9d3-5fdf3392abc5",
+      "dnp": false
+    },
+    {
+      "ref": "D703",
+      "sheet": "aux_outputs",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "AUX4_SUPPLY",
+        "2": "AUX4_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "",
+      "uuid": "30e65a47-97db-5f86-8acf-e7ba024a7921",
+      "dnp": false
+    },
+    {
+      "ref": "J703",
+      "sheet": "aux_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "AUX4 BENCH LOAD",
+      "pins": {
+        "1": "AUX4_SUPPLY",
+        "2": "AUX4_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "50554b71-50f9-5bc5-9802-1609682c5cd8",
+      "dnp": false
+    },
+    {
+      "ref": "TP703",
+      "sheet": "aux_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "AUX4_OUT",
+      "pins": {
+        "1": "AUX4_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure AUX4_OUT relative to PGND",
+      "uuid": "3e11065d-4a49-5d3b-9613-67a0bbca7899",
+      "dnp": false
+    },
+    {
+      "ref": "R712",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100k",
+      "pins": {
+        "1": "RELAY_CMD",
+        "2": "GND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "101b6c34-91fb-5736-879e-0cb67af6e421",
+      "dnp": false
+    },
+    {
+      "ref": "R713",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "100",
+      "pins": {
+        "1": "RELAY_DRIVE",
+        "2": "RELAY_GATE"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-07100RL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "cbb494d5-2d18-555b-b1a8-c8102ba47a69",
+      "dnp": false
+    },
+    {
+      "ref": "R714",
+      "sheet": "aux_outputs",
+      "libid": "Device:R",
+      "value": "10k",
+      "pins": {
+        "1": "RELAY_GATE",
+        "2": "PGND"
+      },
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "mpn": "RC0805FR-0710KL",
+      "manufacturer": "Yageo",
+      "note": "",
+      "uuid": "776445b4-3dcf-5d9b-9905-1e6e5e7729f8",
+      "dnp": false
+    },
+    {
+      "ref": "Q704",
+      "sheet": "aux_outputs",
+      "libid": "Transistor_FET:IRLZ44N",
+      "value": "IRLZ44NPBF",
+      "pins": {
+        "1": "RELAY_GATE",
+        "2": "RELAY_OUT",
+        "3": "PGND"
+      },
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "mpn": "IRLZ44NPBF",
+      "manufacturer": "Infineon",
+      "note": "Bench sink <=100mA; no per-channel electronic current protection",
+      "uuid": "8a38bfbe-3a48-5c77-b736-2cfcb610c437",
+      "dnp": false
+    },
+    {
+      "ref": "F704",
+      "sheet": "aux_outputs",
+      "libid": "Device:Fuse",
+      "value": "500mA",
+      "pins": {
+        "1": "+12V_ACT",
+        "2": "RELAY_SUPPLY"
+      },
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "mpn": "0467.500NR",
+      "manufacturer": "Littelfuse",
+      "note": "Fast fuse; verify interrupt rating and coordination",
+      "uuid": "f2057eab-b652-5d0e-9b1b-b7c45630ed92",
+      "dnp": false
+    },
+    {
+      "ref": "D704",
+      "sheet": "aux_outputs",
+      "libid": "Device:D_Schottky",
+      "value": "SS34",
+      "pins": {
+        "1": "RELAY_SUPPLY",
+        "2": "RELAY_OUT"
+      },
+      "footprint": "Diode_SMD:D_SMA",
+      "mpn": "SS34",
+      "manufacturer": "Vishay",
+      "note": "",
+      "uuid": "185faca6-ede3-5dff-99b2-e82d35d7e9c6",
+      "dnp": false
+    },
+    {
+      "ref": "J704",
+      "sheet": "aux_outputs",
+      "libid": "Connector_Generic:Conn_01x02",
+      "value": "RELAY BENCH LOAD",
+      "pins": {
+        "1": "RELAY_SUPPLY",
+        "2": "RELAY_OUT"
+      },
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "mpn": "1715721",
+      "manufacturer": "Phoenix Contact",
+      "note": "Board-local bench connector; pin numbers are NOT OEM cavities",
+      "uuid": "04362612-20fb-51a0-9a6f-48334d03c8a9",
+      "dnp": false
+    },
+    {
+      "ref": "TP704",
+      "sheet": "aux_outputs",
+      "libid": "Connector:TestPoint",
+      "value": "RELAY_OUT",
+      "pins": {
+        "1": "RELAY_OUT"
+      },
+      "footprint": "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm",
+      "mpn": "5010",
+      "manufacturer": "Keystone",
+      "note": "Measure RELAY_OUT relative to PGND",
+      "uuid": "9f559ee8-4133-53bc-ba20-3fd29fedd634",
+      "dnp": false
+    }
+  ]
+}

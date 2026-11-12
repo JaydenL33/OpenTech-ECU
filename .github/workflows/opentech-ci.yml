@@ -1,0 +1,84 @@
+name: OpenTech-ECU CI
+
+on:
+  push:
+    paths:
+      - "ecu/**"
+      - ".github/workflows/opentech-ci.yml"
+  pull_request:
+    paths:
+      - "ecu/**"
+      - ".github/workflows/opentech-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Rust core, simulator and service
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ecu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: thumbv7em-none-eabihf
+      - name: Format check
+        run: cargo fmt --all -- --check
+      - name: Clippy (deny warnings)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Tests
+        run: cargo test --workspace
+      - name: Core no_std checks
+        run: cargo check -p ecu-types -p ecu-fuel -p ecu-ignition -p ecu-scheduler --no-default-features
+      - name: Firmware no_std target check
+        run: cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features
+      - name: Deterministic simulator evidence
+        run: |
+          cargo run -q -p ecu-sim-cli -- run --scenario mixture_sweep --out runs/ci --check-determinism
+          cargo run -q -p ecu-sim-cli -- analyze --log runs/ci/log.json --cal runs/ci/calibration.json --out runs/ci/report.json --min-samples 12
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opentech-simulation-evidence
+          path: |
+            ecu/runs/ci/log.json
+            ecu/runs/ci/log.csv
+            ecu/runs/ci/report.json
+            ecu/runs/ci/calibration.json
+          if-no-files-found: error
+
+  ui:
+    name: React tuning studio
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ecu/apps/tuning-studio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ecu/apps/tuning-studio/package-lock.json
+      - run: npm ci
+      - name: TypeScript + production build
+        run: npm run build
+
+  copilot:
+    name: Mastra copilot typecheck
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ecu/apps/tuning-copilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ecu/apps/tuning-copilot/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit

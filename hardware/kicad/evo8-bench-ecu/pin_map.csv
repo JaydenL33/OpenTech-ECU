@@ -1,0 +1,175 @@
+Reference,Pin,Pin name,Net,Function / constraint,OEM assignment
+J100,1,Pin_1,VIN_BENCH,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J100,2,Pin_2,PGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J101,1,Pin_1,+12V_PROTECTED,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J101,2,Pin_2,ACT_FEED,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J101,3,Pin_3,ESTOP_SEND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J101,4,Pin_4,ESTOP_OK,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+U200,1,PE2,NC,,NONE - BENCH ONLY
+U200,2,PE3,NC,,NONE - BENCH ONLY
+U200,3,PE4,NC,,NONE - BENCH ONLY
+U200,4,PE5,NC,,NONE - BENCH ONLY
+U200,5,PE6,NC,,NONE - BENCH ONLY
+U200,6,VBAT,+3V3,,NONE - BENCH ONLY
+U200,7,PC13,ARMED,GPIO latch state input,NONE - BENCH ONLY
+U200,8,PC14,NC,,NONE - BENCH ONLY
+U200,9,PC15,NC,,NONE - BENCH ONLY
+U200,10,VSS,GND,,NONE - BENCH ONLY
+U200,11,VDD,+3V3,,NONE - BENCH ONLY
+U200,12,PH0,HSE_IN,,NONE - BENCH ONLY
+U200,13,PH1,HSE_OUT,,NONE - BENCH ONLY
+U200,14,NRST,NRST,,NONE - BENCH ONLY
+U200,15,PC0,ADC_IS1,ADC123_INP10,NONE - BENCH ONLY
+U200,16,PC1,ADC_IS2,ADC123_INP11,NONE - BENCH ONLY
+U200,17,PC2_C,NC,,NONE - BENCH ONLY
+U200,18,PC3_C,NC,,NONE - BENCH ONLY
+U200,19,VSSA,AGND,,NONE - BENCH ONLY
+U200,20,VREF+,VDDA,,NONE - BENCH ONLY
+U200,21,VDDA,VDDA,,NONE - BENCH ONLY
+U200,22,PA0,CRANK_DIG,TIM2_CH1 AF1 input capture,NONE - BENCH ONLY
+U200,23,PA1,CAM_DIG,TIM2_CH2 AF1 input capture,NONE - BENCH ONLY
+U200,24,PA2,UART_TX,USART2_TX AF7,NONE - BENCH ONLY
+U200,25,PA3,UART_RX,USART2_RX AF7,NONE - BENCH ONLY
+U200,26,VSS,GND,,NONE - BENCH ONLY
+U200,27,VDD,+3V3,,NONE - BENCH ONLY
+U200,28,PA4,ADC_AN1,ADC12_INP18,NONE - BENCH ONLY
+U200,29,PA5,ADC_AN2,ADC12_INP19,NONE - BENCH ONLY
+U200,30,PA6,ADC_AN3,ADC12_INP3,NONE - BENCH ONLY
+U200,31,PA7,ADC_AN4,ADC12_INP7,NONE - BENCH ONLY
+U200,32,PC4,ADC_IS3,ADC12_INP4,NONE - BENCH ONLY
+U200,33,PC5,ADC_IS4,ADC12_INP8,NONE - BENCH ONLY
+U200,34,PB0,RELAY_CMD,GPIO push-pull active high,NONE - BENCH ONLY
+U200,35,PB1,MCU_ENABLE,GPIO active high; firmware must default low,NONE - BENCH ONLY
+U200,36,PB2,WD_KICK,GPIO software falling edge heartbeat; do not use autonomous PWM,NONE - BENCH ONLY
+U200,37,PE7,NC,,NONE - BENCH ONLY
+U200,38,PE8,NC,,NONE - BENCH ONLY
+U200,39,PE9,INJ1_CMD,TIM1_CH1 AF1,NONE - BENCH ONLY
+U200,40,PE10,NC,,NONE - BENCH ONLY
+U200,41,PE11,INJ2_CMD,TIM1_CH2 AF1,NONE - BENCH ONLY
+U200,42,PE12,NC,,NONE - BENCH ONLY
+U200,43,PE13,INJ3_CMD,TIM1_CH3 AF1,NONE - BENCH ONLY
+U200,44,PE14,INJ4_CMD,TIM1_CH4 AF1,NONE - BENCH ONLY
+U200,45,PE15,NC,,NONE - BENCH ONLY
+U200,46,PB10,NC,,NONE - BENCH ONLY
+U200,47,PB11,NC,,NONE - BENCH ONLY
+U200,48,VCAP,VCAP48,,NONE - BENCH ONLY
+U200,49,VSS,GND,,NONE - BENCH ONLY
+U200,50,VDD,+3V3,,NONE - BENCH ONLY
+U200,51,PB12,NC,,NONE - BENCH ONLY
+U200,52,PB13,NC,,NONE - BENCH ONLY
+U200,53,PB14,NC,,NONE - BENCH ONLY
+U200,54,PB15,NC,,NONE - BENCH ONLY
+U200,55,PD8,NC,,NONE - BENCH ONLY
+U200,56,PD9,NC,,NONE - BENCH ONLY
+U200,57,PD10,NC,,NONE - BENCH ONLY
+U200,58,PD11,NC,,NONE - BENCH ONLY
+U200,59,PD12,IGN1_CMD,TIM4_CH1 AF2,NONE - BENCH ONLY
+U200,60,PD13,IGN2_CMD,TIM4_CH2 AF2,NONE - BENCH ONLY
+U200,61,PD14,IGN3_CMD,TIM4_CH3 AF2,NONE - BENCH ONLY
+U200,62,PD15,IGN4_CMD,TIM4_CH4 AF2,NONE - BENCH ONLY
+U200,63,PC6,AUX1_CMD,TIM3_CH1 AF2,NONE - BENCH ONLY
+U200,64,PC7,AUX2_CMD,TIM3_CH2 AF2,NONE - BENCH ONLY
+U200,65,PC8,AUX3_CMD,TIM3_CH3 AF2,NONE - BENCH ONLY
+U200,66,PC9,AUX4_CMD,TIM3_CH4 AF2,NONE - BENCH ONLY
+U200,67,PA8,NC,,NONE - BENCH ONLY
+U200,68,PA9,USB_VBUS_SENSE,GPIO VBUS sense; see USB firmware requirements,NONE - BENCH ONLY
+U200,69,PA10,NC,,NONE - BENCH ONLY
+U200,70,PA11,USB_DM,USB_OTG_FS_DM AF10,NONE - BENCH ONLY
+U200,71,PA12,USB_DP,USB_OTG_FS_DP AF10,NONE - BENCH ONLY
+U200,72,PA13,SWDIO,SWD AF0,NONE - BENCH ONLY
+U200,73,VCAP,VCAP73,,NONE - BENCH ONLY
+U200,74,VSS,GND,,NONE - BENCH ONLY
+U200,75,VDD,+3V3,,NONE - BENCH ONLY
+U200,76,PA14,SWCLK,SWD AF0,NONE - BENCH ONLY
+U200,77,PA15,NC,,NONE - BENCH ONLY
+U200,78,PC10,NC,,NONE - BENCH ONLY
+U200,79,PC11,NC,,NONE - BENCH ONLY
+U200,80,PC12,NC,,NONE - BENCH ONLY
+U200,81,PD0,NC,,NONE - BENCH ONLY
+U200,82,PD1,NC,,NONE - BENCH ONLY
+U200,83,PD2,ESTOP_OK,GPIO E-stop state input,NONE - BENCH ONLY
+U200,84,PD3,NC,,NONE - BENCH ONLY
+U200,85,PD4,NC,,NONE - BENCH ONLY
+U200,86,PD5,NC,,NONE - BENCH ONLY
+U200,87,PD6,NC,,NONE - BENCH ONLY
+U200,88,PD7,NC,,NONE - BENCH ONLY
+U200,89,PB3,SWO,TRACE_SWO AF0,NONE - BENCH ONLY
+U200,90,PB4,NC,,NONE - BENCH ONLY
+U200,91,PB5,NC,,NONE - BENCH ONLY
+U200,92,PB6,NC,,NONE - BENCH ONLY
+U200,93,PB7,NC,,NONE - BENCH ONLY
+U200,94,BOOT0,BOOT0,,NONE - BENCH ONLY
+U200,95,PB8,CAN_RX,"FDCAN1_RX AF9, classic CAN only",NONE - BENCH ONLY
+U200,96,PB9,CAN_TX,FDCAN1_TX AF9,NONE - BENCH ONLY
+U200,97,PE0,NC,,NONE - BENCH ONLY
+U200,98,PE1,NC,,NONE - BENCH ONLY
+U200,99,VSS,GND,,NONE - BENCH ONLY
+U200,100,VDD,+3V3,,NONE - BENCH ONLY
+JP200,1,A,+3V3,Normally open; bootloader is not authenticated,NONE - BENCH ONLY
+JP200,2,B,BOOT0,Normally open; bootloader is not authenticated,NONE - BENCH ONLY
+J300,1,Pin_1,INJ1_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J300,2,Pin_2,INJ1_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J301,1,Pin_1,INJ2_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J301,2,Pin_2,INJ2_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J302,1,Pin_1,INJ3_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J302,2,Pin_2,INJ3_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J303,1,Pin_1,INJ4_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J303,2,Pin_2,INJ4_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J400,1,Pin_1,IGN1_LOGIC,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J400,2,Pin_2,GND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J401,1,Pin_1,IGN2_LOGIC,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J401,2,Pin_2,GND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J402,1,Pin_1,IGN3_LOGIC,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J402,2,Pin_2,GND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J403,1,Pin_1,IGN4_LOGIC,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J403,2,Pin_2,GND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J404,1,Pin_1,+12V_ACT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J404,2,Pin_2,PGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J500,1,Pin_1,AN1_INPUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J500,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J501,1,Pin_1,AN2_INPUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J501,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J502,1,Pin_1,AN3_INPUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J502,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J503,1,Pin_1,AN4_INPUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J503,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J504,1,Pin_1,CRANK_INPUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J504,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J505,1,Pin_1,CAM_INPUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J505,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J506,1,Pin_1,+5V,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J506,2,Pin_2,AGND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+JP600,1,A,CAN_TERM,Fit shunt only at bus endpoint,NONE - BENCH ONLY
+JP600,2,B,CAN_L,Fit shunt only at bus endpoint,NONE - BENCH ONLY
+J600,1,Pin_1,CAN_H,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J600,2,Pin_2,CAN_L,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J600,3,Pin_3,GND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J601,1,VBUS,USB_VBUS,VBUS does not power board; do not attach USB until board powered,NONE - BENCH ONLY
+J601,2,D-,USB_CONN_DM,VBUS does not power board; do not attach USB until board powered,NONE - BENCH ONLY
+J601,3,D+,USB_CONN_DP,VBUS does not power board; do not attach USB until board powered,NONE - BENCH ONLY
+J601,4,ID,NC,VBUS does not power board; do not attach USB until board powered,NONE - BENCH ONLY
+J601,5,GND,GND,VBUS does not power board; do not attach USB until board powered,NONE - BENCH ONLY
+J601,6,Shield,GND,VBUS does not power board; do not attach USB until board powered,NONE - BENCH ONLY
+J602,1,Pin_1,+3V3,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,2,Pin_2,SWDIO,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,3,Pin_3,GND,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,4,Pin_4,SWCLK,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,5,Pin_5,GND,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,6,Pin_6,SWO,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,7,Pin_7,NC,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,8,Pin_8,NC,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,9,Pin_9,GND,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J602,10,Pin_10,NRST,"Pin1 target VREF output, not power input; pin7 key, pin8 NC",NONE - BENCH ONLY
+J603,1,Pin_1,UART_TX,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J603,2,Pin_2,UART_RX,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J603,3,Pin_3,GND,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J700,1,Pin_1,AUX1_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J700,2,Pin_2,AUX1_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J701,1,Pin_1,AUX2_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J701,2,Pin_2,AUX2_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J702,1,Pin_1,AUX3_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J702,2,Pin_2,AUX3_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J703,1,Pin_1,AUX4_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J703,2,Pin_2,AUX4_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J704,1,Pin_1,RELAY_SUPPLY,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY
+J704,2,Pin_2,RELAY_OUT,Board-local bench connector; pin numbers are NOT OEM cavities,NONE - BENCH ONLY

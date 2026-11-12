@@ -1,0 +1,12 @@
+[package]
+name = "ecu-scheduler"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = ["std"]
+std = []
+
+[dependencies]
+serde = { workspace = true }
