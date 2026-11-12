@@ -1,3 +1,5 @@
+Current round: [Rust trigger waveform evidence — round 2](RUST_TRIGGER_WAVEFORM_EVIDENCE.md), based on `82f466a021e4b98af8931b5b3da9a3ba237a069b`. The round 1 evidence below is historical and retained intact.
+
 # Rust host output timing evidence — round 1
 
 Date: 2026-11-13 Australia/Sydney (2026-11-12 UTC). Base commit: `d73d5481b7b01ffc39ae176cf80e7c2fcfa1751e`, branch `swarm/rust-20261112T222821Z`. Evidence is for the changes accompanying this document; the source SHA-256 manifest identifies the tested Rust snapshot. Older `TEST_EVIDENCE.md` and `FIRMWARE_TIMING_ANALYSIS.md` describe earlier snapshots and do not include this change.

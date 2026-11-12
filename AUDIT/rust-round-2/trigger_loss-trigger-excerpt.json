@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "simulation_only": true,
+  "timing_model": "Ideal conditioned crank/cam edges at linear plant-angle crossings in 1 ms steps; fractional input microseconds truncated. No electrical waveform, capture latency or stochastic trigger jitter. TriggerDropout suppresses both inputs.",
+  "metadata": {
+    "schema_version": 1,
+    "software_version": "0.1.0",
+    "scenario_id": "trigger_loss",
+    "scenario_name": "Crank signal loss",
+    "seed": 43,
+    "calibration_id": "cal-1-556e4c0748d6",
+    "calibration_revision": 1,
+    "calibration_checksum": "fee184185181fd28e9c9ab68ae615e067c572b8f05e631adaaf0e96dc34922bf",
+    "started_unix_ms": 0,
+    "sample_hz": 50,
+    "notes": []
+  },
+  "config": {
+    "teeth": 36,
+    "missing": 1,
+    "cam_required": true,
+    "sync_offset_deg": 0.0,
+    "timeout_ms": 250
+  },
+  "cam_phase_from_tooth_zero_deg": 690.0,
+  "captured_until_us": 22000000,
+  "events_emitted": 7321,
+  "events_dropped": 0,
+  "first_three_retained_inputs": [
+    {
+      "sequence": 0,
+      "edge": {
+        "time_us": 1853,
+        "angle_deg": 10.0,
+        "input": "crank"
+      },
+      "decoder": {
+        "state": "unsynced",
+        "rpm": 0.0,
+        "crank_angle_deg": null,
+        "cycle_angle_deg": null,
+        "tooth_index": 0,
+        "expected_interval_us": 0.0,
+        "last_error": null,
+        "error_count": 0,
+        "gap_count": 0,
+        "cam_seen": false,
+        "cam_phase_rejected": false
+      }
+    },
+    {
+      "sequence": 1,
+      "edge": {
+        "time_us": 3710,
+        "angle_deg": 20.0,
+        "input": "crank"
+      },
+      "decoder": {
+        "state": "unsynced",
+        "rpm": 0.0,
+        "crank_angle_deg": null,
+        "cycle_angle_deg": null,
+        "tooth_index": 1,
+        "expected_interval_us": 1857.0,
+        "last_error": null,
+        "error_count": 0,
+        "gap_count": 0,
+        "cam_seen": false,
+        "cam_phase_rejected": false
+      }
+    },
+    {
+      "sequence": 2,
+      "edge": {
+        "time_us": 5569,
+        "angle_deg": 30.0,
+        "input": "crank"
+      },
+      "decoder": {
+        "state": "unsynced",
+        "rpm": 0.0,
+        "crank_angle_deg": null,
+        "cycle_angle_deg": null,
+        "tooth_index": 2,
+        "expected_interval_us": 1857.5,
+        "last_error": null,
+        "error_count": 0,
+        "gap_count": 0,
+        "cam_seen": false,
+        "cam_phase_rejected": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+$ git archive 82f466a021e4b98af8931b5b3da9a3ba237a069b ecu
+EXIT=0; archive SHA256=00bf631a46d6b2c1c497a1fef650654ceef58e27cb7d19e12079703312078296
+$ cargo run --offline --locked --manifest-path /tmp/ecu-trigger-reference-wu9pc8oy/ecu/Cargo.toml --target-dir /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/target -q -p ecu-sim-cli -- run --scenario trigger_loss --seed 43 --out /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/runs/trigger-reference
+scenario: trigger_loss
+frames:   1144
+duration: 22.0s
+rpm mean/max: 541 / 1296
+coolant max: 89.1 C
+lambda mean: 1.671 (1144 samples)
+faults:   ["P0335", "P0133"]
+outputs:  541 emitted, 541 retained, 0 dropped (simulation only)
+wrote:    /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/runs/trigger-reference
+EXIT=0

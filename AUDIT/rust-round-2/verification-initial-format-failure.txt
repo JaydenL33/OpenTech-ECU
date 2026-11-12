@@ -1,0 +1,55 @@
+cwd: /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu
+PATH: /tmp/ecu-rust-round1-toolchain/bin:/home/jlee/.codex/packages/standalone/releases/0.167.1-x86_64-unknown-linux-musl/codex-path:/home/jlee/.local/bin:/home/jlee/.codex/tmp/arg0-linux/codex-arg0cTVssW:/home/jlee/.codex/packages/standalone/releases/0.167.1-x86_64-unknown-linux-musl/codex-path:/home/jlee/.local/bin:/home/jlee/.cargo/bin:/home/jlee/.opencode/bin:/home/jlee/.local/bin:/home/jlee/.nvm/versions/node/v24.14.1/bin:/home/jlee/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+$ git rev-parse HEAD
+82f466a021e4b98af8931b5b3da9a3ba237a069b
+
+EXIT=0
+
+$ rustc --version
+rustc 1.99.1 (58cf8f9c3 2026-10-13)
+
+EXIT=0
+
+$ cargo --version
+cargo 1.99.1 (5f94df478 2026-08-27)
+
+EXIT=0
+
+$ cc --version
+x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+EXIT=0
+
+$ cargo fmt --all -- --check
+Diff in /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/crates/ecu-simulator/tests/trigger_waveform.rs:96:
+     let mut decoder = MissingToothDecoder::new(cfg).unwrap();
+     decoder.set_cam_window(Some((340.0, 355.0))).unwrap();
+     for cycle in 0..4 {
+[31m-        let edges = waveform.edges(0.0, 720.0, 1000 + cycle * 120_000, 120_000).unwrap();
+[m[31m-        assert_eq!(edges.iter().filter(|e| e.input == TriggerInput::Crank).count(), 116);
+[m[32m+        let edges = waveform
+[m[32m+            .edges(0.0, 720.0, 1000 + cycle * 120_000, 120_000)
+[m[32m+            .unwrap();
+[m[32m+        assert_eq!(
+[m[32m+            edges
+[m[32m+                .iter()
+[m[32m+                .filter(|e| e.input == TriggerInput::Crank)
+[m[32m+                .count(),
+[m[32m+            116
+[m[32m+        );
+[m         for edge in edges {
+             match edge.input {
+[31m-                TriggerInput::Crank => { decoder.on_tooth(edge.time_us); }
+[m[32m+                TriggerInput::Crank => {
+[m[32m+                    decoder.on_tooth(edge.time_us);
+[m[32m+                }
+[m                 TriggerInput::Cam => {
+                     decoder.on_cam(edge.time_us);
+                     assert_eq!(decoder.state(), SyncState::Sequential);
+
+EXIT=1

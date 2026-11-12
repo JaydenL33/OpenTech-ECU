@@ -49,7 +49,7 @@ enum Command {
         /// Override the deterministic scenario seed (decimal u64).
         #[arg(long)]
         seed: Option<u64>,
-        /// Run twice and compare serialized telemetry and output traces.
+        /// Run twice and compare serialized telemetry, output and input traces.
         #[arg(long)]
         check_determinism: bool,
     },
@@ -197,8 +197,10 @@ fn run_scenario(
     engine.run_to_end();
     let log = engine.log_file();
     let output_trace = engine.simulated_output_trace();
+    let trigger_trace = engine.simulated_trigger_trace();
     write_json(&out.join("log.json"), &log)?;
     write_json(&out.join("outputs.json"), &output_trace)?;
+    write_json(&out.join("triggers.json"), &trigger_trace)?;
     fs::write(out.join("log.csv"), log.to_csv())?;
     let summary = session_summary(&log.frames);
     write_json(&out.join("summary.json"), &summary)?;
@@ -210,11 +212,13 @@ fn run_scenario(
         if serde_json::to_vec(&log)? != serde_json::to_vec(&engine2.log_file())?
             || serde_json::to_vec(&output_trace)?
                 != serde_json::to_vec(&engine2.simulated_output_trace())?
+            || serde_json::to_vec(&trigger_trace)?
+                != serde_json::to_vec(&engine2.simulated_trigger_trace())?
         {
-            bail!("determinism check FAILED: repeated telemetry or output trace differs");
+            bail!("determinism check FAILED: repeated telemetry, output or input trace differs");
         }
         println!(
-            "determinism: PASS ({} frames and output trace byte-identical)",
+            "determinism: PASS ({} frames, output and input traces byte-identical)",
             log.frames.len()
         );
     }
@@ -243,6 +247,12 @@ fn run_scenario(
         output_trace.events_dropped
     );
     println!("wrote:    {}", out.display());
+    println!(
+        "inputs:   {} emitted, {} retained, {} dropped (simulation only)",
+        trigger_trace.events_emitted,
+        trigger_trace.inputs.len(),
+        trigger_trace.events_dropped
+    );
     Ok(())
 }
 

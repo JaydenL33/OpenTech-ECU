@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reproduce host output-timing checks and retain commands, exit codes and hashes.
+"""Reproduce host output/trigger timing checks, commands, exit codes and hashes.
 
 Run from any directory with a working Rust + C linker toolchain on PATH.
 Artifacts under ecu/runs are generated; the evidence directory is caller-selected.
@@ -24,9 +24,11 @@ commands = [
     ["cargo", "--version"],
     ["cc", "--version"],
     ["cargo", "fmt", "--all", "--", "--check"],
-    ["cargo", "clippy", "--workspace", "--all-targets", "--", "-D", "warnings"],
-    ["cargo", "test", "--workspace"],
-    ["cargo", "check", "-p", "ecu-types", "-p", "ecu-fuel", "-p", "ecu-ignition",
+    ["cargo", "clippy", "--locked", "--workspace", "--all-targets", "--", "-D", "warnings"],
+    ["cargo", "test", "--locked", "--workspace"],
+    ["cargo", "test", "--locked", "-p", "ecu-simulator", "--test", "trigger_waveform",
+     "full_cycles_match_independent_f64_wheel_vectors", "--", "--nocapture"],
+    ["cargo", "check", "--locked", "-p", "ecu-types", "-p", "ecu-fuel", "-p", "ecu-ignition",
      "-p", "ecu-trigger", "-p", "ecu-scheduler", "-p", "ecu-protection", "--no-default-features"],
 ]
 for scenario, seed in [("mixture_sweep", "42"), ("trigger_loss", "43")]:
@@ -52,13 +54,20 @@ with (evidence / "verification.txt").open("w") as record:
 artifacts = {}
 for scenario in ["mixture_sweep", "trigger_loss"]:
     directory = workspace / "runs/output-timing" / scenario
-    for name in ["calibration.json", "log.json", "outputs.json", "summary.json"]:
+    for name in ["calibration.json", "log.json", "outputs.json", "triggers.json", "summary.json"]:
         path = directory / name
         artifacts[str(path.relative_to(repository))] = hashlib.sha256(path.read_bytes()).hexdigest()
     trace = json.loads((directory / "outputs.json").read_text())
     excerpt = {key: value for key, value in trace.items() if key != "outputs"}
     excerpt["first_three_retained_outputs"] = trace["outputs"][:3]
     (evidence / f"{scenario}-trace-excerpt.json").write_text(json.dumps(excerpt, indent=2) + "\n")
+    inputs = json.loads((directory / "triggers.json").read_text())
+    assert inputs["simulation_only"] is True
+    assert inputs["events_emitted"] == inputs["events_dropped"] + len(inputs["inputs"])
+    assert inputs["inputs"][0]["sequence"] == inputs["events_dropped"]
+    excerpt = {key: value for key, value in inputs.items() if key != "inputs"}
+    excerpt["first_three_retained_inputs"] = inputs["inputs"][:3]
+    (evidence / f"{scenario}-trigger-excerpt.json").write_text(json.dumps(excerpt, indent=2) + "\n")
 
 source_paths = sorted(
     path for directory in [workspace / "crates", workspace / "apps/ecu-sim-cli", workspace / "apps/studio-service", workspace / "firmware/stm32"]

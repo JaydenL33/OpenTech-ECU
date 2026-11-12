@@ -1,0 +1,33 @@
+$ cargo clean -p ecu-trigger -p ecu-simulator -p ecu-sim-cli
+     Removed 1836 files, 531.8MiB total
+
+EXIT=0
+$ cargo run --locked -q -p ecu-sim-cli -- run --scenario trigger_loss --seed 43 --out runs/output-timing/trigger_loss --check-determinism
+determinism: PASS (1144 frames, output and input traces byte-identical)
+scenario: trigger_loss
+frames:   1144
+duration: 22.0s
+rpm mean/max: 541 / 1296
+coolant max: 89.1 C
+lambda mean: 1.671 (1144 samples)
+faults:   ["P0335", "P0133"]
+outputs:  541 emitted, 541 retained, 0 dropped (simulation only)
+wrote:    runs/output-timing/trigger_loss
+inputs:   7321 emitted, 7321 retained, 0 dropped (simulation only)
+
+EXIT=0
+$ ./target/debug/ecu-sim-cli run --help
+Run a scenario and write a log, CSV and calibration snapshot
+
+Usage: ecu-sim-cli run [OPTIONS]
+
+Options:
+      --scenario <SCENARIO>  [default: idle_warmup]
+      --out <OUT>            [default: runs/latest]
+      --cal <CAL>            Optional calibration JSON. A starter simulator calibration is created when omitted
+      --seed <SEED>          Override the deterministic scenario seed (decimal u64)
+      --check-determinism    Run twice and compare serialized telemetry, output and input traces
+  -h, --help                 Print help
+
+EXIT=0
+All 10 candidate artifact hashes still match the final verification manifest.

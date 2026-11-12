@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 pub mod scenario;
+pub mod trigger_waveform;
 
 use std::collections::VecDeque;
 use std::string::String;
@@ -27,6 +28,7 @@ use ecu_types::{
 use serde::{Deserialize, Serialize};
 
 use crate::scenario::{DeterministicRng, FaultWindow, Scenario, SimFault};
+use crate::trigger_waveform::{TriggerEdge, TriggerInput, TriggerWaveform, DEFAULT_CAM_PHASE_DEG};
 
 const AIR_R: f32 = 287.05;
 const LHV_J_PER_KG: f32 = 43.5e6;
@@ -101,6 +103,31 @@ pub struct SimulatedOutputTrace {
     pub outputs: Vec<SimulatedOutputEvent>,
 }
 
+pub const SIMULATED_TRIGGER_EVENT_CAPACITY: usize = 8192;
+
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SimulatedTriggerEvent {
+    pub sequence: u64,
+    pub edge: TriggerEdge,
+    /// Decoder state immediately after this input edge, before control-loop tick.
+    pub decoder: ecu_trigger::DecoderStatus,
+}
+
+/// Bounded tail of delivered ideal input edges for offline tuning clients.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SimulatedTriggerTrace {
+    pub schema_version: u16,
+    pub simulation_only: bool,
+    pub timing_model: String,
+    pub metadata: LogMetadata,
+    pub config: MissingToothConfig,
+    pub cam_phase_from_tooth_zero_deg: f32,
+    pub captured_until_us: u64,
+    pub events_emitted: u64,
+    pub events_dropped: u64,
+    pub inputs: Vec<SimulatedTriggerEvent>,
+}
+
 pub struct SimEngine {
     pub scenario: Scenario,
     pub calibration: Calibration,
@@ -144,6 +171,7 @@ pub struct SimEngine {
 
     // Trigger and scheduling
     decoder: MissingToothDecoder,
+    trigger_waveform: TriggerWaveform,
     schedule: EventSchedule,
     injections_this_cycle: u32,
     sparks_this_cycle: u32,
@@ -187,6 +215,8 @@ pub struct SimEngine {
     cylinder_slots: Vec<CylinderSlot>,
     simulated_outputs: VecDeque<SimulatedOutputEvent>,
     output_events_emitted: u64,
+    simulated_triggers: VecDeque<SimulatedTriggerEvent>,
+    trigger_events_emitted: u64,
     cycle_count: u64,
 }
 
@@ -233,8 +263,10 @@ impl SimEngine {
             timeout_ms: motor_cfg.tooth_timeout_ms,
         })
         .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
-        // advance_trigger emits the synthetic cam at 690 degrees, after the
-        // crank gap at 360: 330 degrees from the gap, with a 10-degree margin.
+        let trigger_waveform = TriggerWaveform::new(decoder.config(), DEFAULT_CAM_PHASE_DEG)
+            .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
+        // Independent cam edge at tooth-zero-relative 690 degrees, 330 degrees
+        // after the second gap. Window remains gap-relative for all offsets.
         decoder
             .set_cam_window(Some((320.0, 340.0)))
             .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
@@ -289,6 +321,7 @@ impl SimEngine {
             lambda_delay_target: 1.0,
             exhaust_delayed: false,
             decoder,
+            trigger_waveform,
             schedule: EventSchedule::empty(),
             injections_this_cycle: 0,
             sparks_this_cycle: 0,
@@ -327,6 +360,8 @@ impl SimEngine {
             cylinder_slots,
             simulated_outputs: VecDeque::new(),
             output_events_emitted: 0,
+            simulated_triggers: VecDeque::new(),
+            trigger_events_emitted: 0,
             cycle_count: 0,
             scenario,
             calibration,
@@ -395,6 +430,21 @@ impl SimEngine {
             events_emitted: self.output_events_emitted,
             events_dropped: self.output_events_emitted - self.simulated_outputs.len() as u64,
             outputs: self.simulated_output_events(),
+        }
+    }
+
+    pub fn simulated_trigger_trace(&self) -> SimulatedTriggerTrace {
+        SimulatedTriggerTrace {
+            schema_version: 1,
+            simulation_only: true,
+            timing_model: "Ideal conditioned crank/cam edges at linear plant-angle crossings in 1 ms steps; fractional input microseconds truncated. No electrical waveform, capture latency or stochastic trigger jitter. TriggerDropout suppresses both inputs.".into(),
+            metadata: self.log_metadata(),
+            config: self.decoder.config(),
+            cam_phase_from_tooth_zero_deg: DEFAULT_CAM_PHASE_DEG,
+            captured_until_us: self.time_us,
+            events_emitted: self.trigger_events_emitted,
+            events_dropped: self.trigger_events_emitted - self.simulated_triggers.len() as u64,
+            inputs: self.simulated_triggers.iter().copied().collect(),
         }
     }
 
@@ -760,31 +810,29 @@ impl SimEngine {
             .scenario
             .fault_active(SimFault::TriggerDropout, self.time_ms());
         if !dropout && advance_deg > 0.0 {
-            let mut events: Vec<(f32, u64, bool)> = Vec::new();
-            for rev in 0..2 {
-                for tooth in 0..(self.decoder.config().teeth as usize) {
-                    let pos = rev as f32 * 360.0
-                        + tooth as f32 * (360.0 / self.decoder.config().teeth as f32);
-                    if tooth
-                        == (self.decoder.config().teeth - self.decoder.config().missing) as usize
-                    {
-                        continue;
+            let edges = self
+                .trigger_waveform
+                .edges(old, advance_deg, step_start_us, 1000)
+                .expect("plant step must be finite, monotonic and at most 720 degrees");
+            for edge in edges {
+                match edge.input {
+                    TriggerInput::Crank => {
+                        self.decoder.on_tooth(edge.time_us);
                     }
-                    if crossed(old, new, pos) {
-                        let offset = (pos - old).rem_euclid(720.0);
-                        let t = step_start_us + ((offset / advance_deg.max(1e-6)) * 1000.0) as u64;
-                        events.push((pos, t, pos == 690.0));
+                    TriggerInput::Cam => {
+                        self.decoder.on_cam(edge.time_us);
                     }
                 }
-            }
-            events.sort_by_key(|e| e.1);
-            for (_pos, ts, cam) in events {
-                // A cam edge may coincide with a crank tooth; both inputs must be
-                // delivered. Dropping the crank tooth would break sync.
-                self.decoder.on_tooth(ts);
-                if cam {
-                    self.decoder.on_cam(ts);
+                let record = SimulatedTriggerEvent {
+                    sequence: self.trigger_events_emitted,
+                    edge,
+                    decoder: self.decoder.status(),
+                };
+                self.trigger_events_emitted += 1;
+                if self.simulated_triggers.len() == SIMULATED_TRIGGER_EVENT_CAPACITY {
+                    self.simulated_triggers.pop_front();
                 }
+                self.simulated_triggers.push_back(record);
             }
         }
         self.true_angle_deg = new;
@@ -1469,17 +1517,6 @@ fn push_simulated_output(buf: &mut VecDeque<SimulatedOutputEvent>, ev: Simulated
         buf.pop_front();
     }
     buf.push_back(ev);
-}
-
-fn crossed(old: f32, new: f32, event: f32) -> bool {
-    let o = old.rem_euclid(720.0);
-    let n = new.rem_euclid(720.0);
-    let e = event.rem_euclid(720.0);
-    if o <= n {
-        e > o && e <= n
-    } else {
-        e > o || e <= n
-    }
 }
 
 #[cfg(test)]
