@@ -61,6 +61,25 @@ impl MissingToothConfig {
     pub fn tooth_spacing_deg(&self) -> f32 {
         360.0 / self.teeth as f32
     }
+
+    /// With `sync_offset_deg == 0.0` the argument equals the decoder cycle angle.
+    pub fn tooth_reference(&self, angle_from_tooth0_deg: f32) -> Option<ToothReference> {
+        let angle = angle_from_tooth0_deg;
+        if self.validate().is_err() || !angle.is_finite() || !(0.0..720.0).contains(&angle) {
+            return None;
+        }
+        let spacing = self.tooth_spacing_deg();
+        let mut pos = ((angle / spacing) as u16).min(2 * self.teeth - 1);
+        let in_rev = pos % self.teeth;
+        let first_missing = self.teeth - self.missing;
+        if in_rev >= first_missing {
+            pos = pos - in_rev + first_missing - 1;
+        }
+        Some(ToothReference {
+            tooth: pos,
+            offset_deg: angle - pos as f32 * spacing,
+        })
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -70,6 +89,15 @@ pub enum TriggerConfigError {
     InvalidOffset,
     InvalidTimeout,
     InvalidCamWindow,
+}
+
+/// Last physically present tooth at or before an angle (D6).
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ToothReference {
+    /// cycle position 0..2*teeth; 0 = first tooth after the gap in the cam-phase revolution
+    pub tooth: u16,
+    /// degrees from that tooth edge to the angle
+    pub offset_deg: f32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -824,5 +852,50 @@ mod tests {
         let s = d.status();
         let a = s.cycle_angle_deg.unwrap();
         assert!((0.0..720.0).contains(&a));
+    }
+
+    #[test]
+    fn tooth_reference_on_tooth_edges() {
+        let cfg = MissingToothConfig::default();
+        for (angle, tooth) in [
+            (0.0, 0),
+            (10.0, 1),
+            (180.0, 18),
+            (360.0, 36),
+            (540.0, 54),
+            (700.0, 70),
+        ] {
+            let reference = cfg.tooth_reference(angle).unwrap();
+            assert_eq!(reference.tooth, tooth);
+            assert!(reference.offset_deg.abs() < 1e-4);
+        }
+    }
+
+    #[test]
+    fn tooth_reference_skips_missing_positions() {
+        let cfg = MissingToothConfig::default();
+        for (angle, tooth, offset) in [
+            (345.0, 34, 5.0),
+            (350.0, 34, 10.0),
+            (355.0, 34, 15.0),
+            (715.0, 70, 15.0),
+            (719.5, 70, 19.5),
+        ] {
+            let reference = cfg.tooth_reference(angle).unwrap();
+            assert_eq!(reference.tooth, tooth);
+            assert!((reference.offset_deg - offset).abs() < 1e-4);
+        }
+    }
+
+    #[test]
+    fn tooth_reference_rejects_out_of_range() {
+        let cfg = MissingToothConfig::default();
+        for angle in [720.0, -0.1, f32::NAN, f32::INFINITY] {
+            assert_eq!(cfg.tooth_reference(angle), None);
+        }
+        assert_eq!(
+            MissingToothConfig { teeth: 0, ..cfg }.tooth_reference(0.0),
+            None
+        );
     }
 }
