@@ -1,0 +1,5 @@
+You own the HARDWARE workstream in this isolated Git worktree. The main user's full revised prompt is in PROJECT_DIRECTIVE.md. Read it. Read AGENTS.md, and inspect current source and open audit findings. Take the next highest-priority UNBLOCKED action for H0-H3, and implement it.
+
+Focus: preserve original Speeduino upstream revision and exact provenance, evaluate v0.4 vs alternatives, select a routed baseline, generate/verify native KiCad exports and honest ERC/DRC evidence, BOM/sourceability (AUD target), bench breakout/test points and review package. Do not redesign an unneeded board from scratch. Maintain future Nexus/Link hardware expansion requirements separately. Do not fabricate, buy, or power anything.
+
+For this round: make at least one real verifiable change; run appropriate commands if possible; attach raw command results and reproducible evidence; update relevant HARDWARE_BLOCKERS.md and AUDIT entries; commit coherent work to your own branch if possible. Do not stop after another generic warning or roadmap. If blocked, advance a different H0-H3 task and record the blocker precisely. Do not modify Rust simulator or tuning UI files.

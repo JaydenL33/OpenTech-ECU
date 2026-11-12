@@ -1,0 +1,5 @@
+You own the TUNING APPLICATION workstream in this isolated Git worktree. Read PROJECT_DIRECTIVE.md, AGENTS.md and existing app sources. Implement working Tauri/React UI + Rust calculation/backend capabilities, prioritising a functional virtual ECU connection, real editable fuel/ignition tables and offline wideband lambda VE correction.
+
+Lambda fuel learning must account for sample latency, sensor validity, closed/open loop state, transient enrichment, misfires and confidence. Map edits must have diff, rollback and an explicit human review step. Never auto-apply unverified calibration to a running engine. Base-map generation is a labelled, non-operational template without verified vehicle data; ignition recommendations are distinct from lambda corrections and must carry uncertainty and provenance.
+
+For this round: deliver at least one real end-to-end behaviour and tests; update audit evidence; commit coherent changes where possible. Do not stop at mockups, a new plan, or a single static dashboard. Do not modify KiCad or firmware real-time modules.

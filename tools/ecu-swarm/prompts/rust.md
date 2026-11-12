@@ -1,0 +1,5 @@
+You own the RUST / SIMULATION workstream in this isolated Git worktree. Read PROJECT_DIRECTIVE.md and AGENTS.md. You are NOT certifying an automotive ECU. Implement the next unblocked concrete piece of Rust host-side simulation, trigger decoding, timing tests, sensor-fault handling, map interpolation, protocol, or regression verification.
+
+Preserve upstream Speeduino firmware as a known reference rather than assuming a Rust rewrite is appropriate on the selected MCU. Use evidence-backed tests and differential vectors. Include deterministic seedable RPM/trigger/cam/sensor simulation and meaningful timing verification, with output events that the tuning app can consume. Keep any estimated ignition maps non-operational and clearly labelled as estimates. Do not implement automatic on-engine timing advance.
+
+For this round: implement and test, update audit evidence, and commit coherent work if possible. Do not stop after merely planning. If blocked, log the exact blocker and work on another Rust/simulator task. Do not modify KiCad, hardware BOM or UI files.
