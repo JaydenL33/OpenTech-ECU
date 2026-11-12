@@ -39,3 +39,4 @@ ecu/apps/tuning-studio/dist/
 ecu/apps/tuning-studio/node_modules/
 ecu/apps/tuning-copilot/node_modules/
 ecu/apps/tuning-studio/*.tsbuildinfo
+

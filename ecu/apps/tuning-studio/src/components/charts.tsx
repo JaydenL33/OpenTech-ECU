@@ -56,7 +56,7 @@ export function TraceChart({
             x2={width - pad.right}
             y1={pad.top + t * (height - pad.top - pad.bottom)}
             y2={pad.top + t * (height - pad.top - pad.bottom)}
-            stroke="rgba(255,255,255,0.055)"
+            stroke="#ececec"
           />
         ))}
         <text x="4" y={pad.top + 5} fill="var(--muted)" fontSize="10">

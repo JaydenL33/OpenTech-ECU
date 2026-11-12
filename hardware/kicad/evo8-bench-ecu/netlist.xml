@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <export version="E">
   <design>
-    <source>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/evo8-bench-ecu.kicad_sch</source>
+    <source>hardware/kicad/evo8-bench-ecu/evo8-bench-ecu.kicad_sch</source>
     <date>2026-11-12T16:41:01+1100</date>
     <tool>Eeschema 9.0.9-9.0.9~ubuntu24.04.1</tool>
     <textvar name="PROTOTYPE_STATUS">UNREVIEWED BENCH ONLY</textvar>
@@ -7981,61 +7981,61 @@
   </libparts>
   <libraries>
     <library logical="74xx">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/74xx.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/74xx.kicad_sym</uri>
     </library>
     <library logical="Comparator">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Comparator.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Comparator.kicad_sym</uri>
     </library>
     <library logical="Connector">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Connector.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Connector.kicad_sym</uri>
     </library>
     <library logical="Connector_Generic">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Connector_Generic.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Connector_Generic.kicad_sym</uri>
     </library>
     <library logical="Device">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Device.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Device.kicad_sym</uri>
     </library>
     <library logical="Diode">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Diode.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Diode.kicad_sym</uri>
     </library>
     <library logical="Interface_CAN_LIN">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Interface_CAN_LIN.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Interface_CAN_LIN.kicad_sym</uri>
     </library>
     <library logical="Jumper">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Jumper.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Jumper.kicad_sym</uri>
     </library>
     <library logical="MCU_ST_STM32H7">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/MCU_ST_STM32H7.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/MCU_ST_STM32H7.kicad_sym</uri>
     </library>
     <library logical="Mechanical">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Mechanical.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Mechanical.kicad_sym</uri>
     </library>
     <library logical="Power_Management">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Power_Management.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Power_Management.kicad_sym</uri>
     </library>
     <library logical="Power_Protection">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Power_Protection.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Power_Protection.kicad_sym</uri>
     </library>
     <library logical="Power_Supervisor">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Power_Supervisor.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Power_Supervisor.kicad_sym</uri>
     </library>
     <library logical="Reference_Voltage">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Reference_Voltage.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Reference_Voltage.kicad_sym</uri>
     </library>
     <library logical="Regulator_Linear">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Regulator_Linear.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Regulator_Linear.kicad_sym</uri>
     </library>
     <library logical="Regulator_Switching">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Regulator_Switching.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Regulator_Switching.kicad_sym</uri>
     </library>
     <library logical="Switch">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Switch.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Switch.kicad_sym</uri>
     </library>
     <library logical="Transistor_BJT">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Transistor_BJT.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Transistor_BJT.kicad_sym</uri>
     </library>
     <library logical="Transistor_FET">
-      <uri>/tmp/opencode/evo-hardware/hardware/kicad/evo8-bench-ecu/libraries/symbols/Transistor_FET.kicad_sym</uri>
+      <uri>hardware/kicad/evo8-bench-ecu/libraries/symbols/Transistor_FET.kicad_sym</uri>
     </library>
   </libraries>
   <nets>

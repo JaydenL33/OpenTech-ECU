@@ -14,8 +14,8 @@ function cellColor(value: number, table: Table, kind: string): string {
   const t = Math.max(0, Math.min(1, (value - table.value_min) / (table.value_max - table.value_min || 1)));
   const [h1, h2] = KIND_HUES[kind] ?? [200, 40];
   const hue = h1 + (h2 - h1) * t;
-  const light = 14 + 46 * t;
-  const sat = 45 + 35 * t;
+  const light = 66 + 26 * t;
+  const sat = 38 + 34 * t;
   return `hsl(${hue} ${sat}% ${light}%)`;
 }
 
@@ -23,13 +23,19 @@ export function MapEditor({
   table,
   kind,
   onSaved,
+  initialValues,
+  onValuesChange,
 }: {
   table: Table;
   kind: "fuel" | "target" | "ignition";
   onSaved?: () => void;
+  /** View values supplied by a named map set. */
+  initialValues?: number[];
+  /** Called for every local edit so a map-set draft can follow the view. */
+  onValuesChange?: (values: number[]) => void;
 }) {
   const app = useApp();
-  const [values, setValues] = useState<number[]>(table.values);
+  const [values, setValues] = useState<number[]>(() => (initialValues ? initialValues.slice() : table.values));
   const [selected, setSelected] = useState({ row: 0, col: 0 });
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -45,11 +51,15 @@ export function MapEditor({
   const cols = table.axes[1]?.breakpoints.length ?? 0;
 
   useEffect(() => {
-    setValues(table.values);
+    setValues(initialValues ? initialValues.slice() : table.values);
     setDirty(false);
     undo.current = [];
     redo.current = [];
-  }, [table.id, table.revision, table.values]);
+  }, [table.id, table.revision]);
+
+  useEffect(() => {
+    onValuesChange?.(values);
+  }, [values]);
 
   if (rank !== 2) {
     return <p className="muted">This editor currently renders 2D tables. This table has rank {rank}.</p>;

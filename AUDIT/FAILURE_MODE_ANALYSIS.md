@@ -5,7 +5,7 @@
 | Document ID | AUD-02 |
 | Status | Independent audit draft; qualitative FMEA, not a quantitative FMEDA or safety validation |
 | Audit date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `9837ba88...` |
+| Evidence cut-off | 2026-11-13, working tree; source manifest `a262e995...` |
 | Scope | Host-side Rust trigger, lambda, fuel, ignition, sensor, calibration, service/UI, protocol, scheduler, processor/watchdog, power assumptions, and the no_std firmware skeleton |
 | Out of scope | Physical PCB, harness, MCU HAL/timer/driver implementation, EMC, thermal, vehicle installation |
 | Related | AUD-01, AUD-03, AUD-04, AUD-05, AUD-08 |
@@ -28,9 +28,9 @@
 | FM-TRG-02 | Missing normal tooth | Damaged tooth, sensor dropout, noise | `ToothDropped` -> `Lost`; fuel/spark cut | Sudden cut/stall; possible wrong event before detection | 1 | 3 | 1 | `ratio > 1.25 && <1.45` fail; test `dropped_tooth_is_not_guessed` | Immediate cut on first anomaly; no extrapolation; confirm with cam |
 | FM-TRG-03 | Extra tooth / noise edge | EMI, VR ringing, damaged wheel | Treated as normal tooth; angle advances one tooth; next gap count mismatch -> `Lost` | One or more events at wrong angle before gap check | 1 | 3 | 3 | Gap tooth-count check only at next gap; no too-short-interval rejection | Reject intervals below a minimum ratio; debounce/blanking; hardware filter |
 | FM-TRG-04 | False gap on deceleration | Normal tooth interval stretches past 1.45× expected | Gap accepted if count matches; possible wrong index | Wrong phase/angle; spark at wrong time | 1 | 2 | 3 | Gap ratio and tooth count; test only acceleration | Deceleration tests; speed-dependent gap threshold; cam cross-check |
-| FM-TRG-05 | First-gap false sync | Noise creates a gap-like interval before a real gap | First gap has no tooth-count check; state `Sequential` if cam seen | Wrong tooth index by one or more teeth | 1 | 2 | 3 | `gap_count > 0` check only after first gap | Require two consecutive valid gaps before sequential; verify offset |
+| FM-TRG-05 | First-gap false sync | Noise creates a gap-like interval before a real gap | First gap has no tooth-count check; when cam is required, `Sequential` now also requires a cam edge inside an explicit window | Wrong tooth index by one or more teeth | 1 | 2 | 3 | `gap_count > 0` check only after first gap; cam-window validation fixed in host code (FM-TRG-07 tests) | Require two consecutive valid gaps before sequential; verify offset |
 | FM-TRG-06 | Cam signal lost after phase latch | Cam sensor/connector failure | `cam_phase_known` remains true; state stays `Sequential`; parity toggles on gaps | 360° phase error; sequential fuel/spark on wrong stroke | 1 | 3 | 4 | No cam timeout or cam-loss DTC | Add cam edge timeout/plausibility; degrade to wasted spark/batch or cut |
-| FM-TRG-07 | False/spurious cam edge | Noise, wrong cam pattern, double edge | `cam_seen_since_gap` set; parity reset to 0 | 360° phase shift; wrong stroke | 1 | 3 | 4 | No cam pattern validation; comment says timing not validated | Validate cam window/pattern; require cam only in expected crank window |
+| FM-TRG-07 | False/spurious cam edge | Noise, wrong cam pattern, double edge | When cam is required, absent/outside window rejects phase, exposes `cam_phase_rejected` and leaves a synced decoder `CrankSynced`; an inside-window edge validates phase | In-window spurious edge or wrong physical window can still give wrong stroke | 1 | 3 | 4 | Cam-window gap fixed in host code: `cam_inside_window_gives_sequential`, `cam_outside_window_is_rejected`, `cam_without_window_is_rejected`, `cam_rejection_revokes_validated_phase`; `cam_not_required_keeps_sequential_without_window` preserves optional-cam behaviour | Physical Evo cam pattern/window and TDC offset remain unverified and open; validate recorded crank/cam traces; cam-loss detection remains open |
 | FM-TRG-08 | Crank signal loss | Broken sensor/connector, wheel damage | Decoder remains `Sequential` until `tick()` timeout (250 ms default); angle extrapolated | At 7000 rpm ~29 revolutions of open-loop fuel/spark before cut | 1 | 3 | 2 | `timeout_ms`; `CrankSyncLost`; test `timeout_declares_lost_sync` | Speed-dependent missing-tooth timeout; cut on first missing expected edge; bound extrapolation |
 | FM-TRG-09 | Timestamp rollback / zero interval | Timer wrap, bad capture, software bug | `TimestampWentBackwards`/`ZeroInterval` -> `Lost` | Cut/stall; possible missed event | 2 | 2 | 1 | `on_tooth` checks; error count | Use 32/64-bit monotonic capture; wrap tests; fail-closed |
 | FM-TRG-10 | RPM stale during acceleration | RPM updated only at gap | Angle extrapolation uses last revolution's RPM | Timing error during hard acceleration/deceleration | 2 | 3 | 3 | No per-tooth RPM; test `acceleration_tracks_rpm_without_false_gap` only checks final RPM | Per-tooth speed estimate; angle error budget; bench scope |
@@ -213,7 +213,7 @@
 
 | Interaction | Why it matters | Current evidence | Required action |
 |---|---|---|---|
-| False lean + protection cut | A misfire/exhaust leak can read lean; `LeanUnderLoad` may cut fuel and latch, worsening the fault | Gate flags exist; protection uses same lambda | Distinguish sensor/combustion faults; require confirmation; do not latch on a single sample |
+| False lean + protection cut | A misfire/exhaust leak can read lean; `LeanUnderLoad` may cut fuel and latch, worsening the fault | Gate flags exist; protection uses same lambda; sensor-threshold latch confirmation fixed in host code (tests in §14), default N=3 | Distinguish sensor/combustion faults; validate limits and confirmation timing; cut reactions remain immediate |
 | Stuck MAP + fuel + protection | Stuck MAP 55 kPa can produce plausible fuel; protection only derates, no fallback | Simulator `MapSensorStuck`; `sensor_plausible` derate | Plausibility vs TPS/RPM; default load; cut/limp strategy |
 | Brownout + watchdog + calibration | Low voltage can corrupt flash and reset MCU; watchdog may not run | No hardware | UVLO, dual-bank flash, reset supervisor, safe outputs |
 | Calibration tamper + ignition policy | Unkeyed hash + metadata-only "verified" policy | `seal`/`verify`; `IgnitionPolicy` | Signature/trust anchor; policy/table cross-check |
@@ -229,13 +229,14 @@
 | Trigger gap mismatch/dropped tooth | `extra_missing_tooth_causes_sync_loss`, `dropped_tooth_is_not_guessed`, `extra_tooth_between_gaps_is_rejected` | Good for eventual loss; not for wrong event before detection |
 | Trigger acceleration | `acceleration_tracks_rpm_without_false_gap` | Acceleration only; no deceleration, no noise, no cam loss |
 | Trigger timeout | `timeout_declares_lost_sync` | Passes; does not test high-RPM extrapolation |
+| Trigger cam-window validation | `cam_inside_window_gives_sequential`, `cam_outside_window_is_rejected`, `cam_without_window_is_rejected`, `cam_rejection_revokes_validated_phase` | Fixed in host code; explicit window required when cam is required; physical Evo cam-pattern verification remains open |
 | Wideband stuck | `stuck_wideband_is_detected_and_no_proposal_issued` | Simulator exact-constant case; noisy stuck sensor not covered |
 | Wideband gate | `every_invalidity_is_explained`, `cold_engine_and_stale_sensor_are_explained` | Good gate-reason coverage; flags are synthetic |
 | Fuel pulse/dead time/duty | 9 `ecu-fuel` unit tests + 2 Speeduino parity integration tests | Good unit coverage; no bench data; parity is formula-only |
 | Mixture Map | 12 tests, all pass in current snapshot | Broad; trim term is verified with `max_cell_correction=0.20`; default 5% cap still binds |
 | Ignition evidence | `missing_reference...`, `synthetic_or_unknown...`, `verified_reference...` | Good policy tests; no forged-policy test |
 | Knock retard | `knock_produces_bounded_retard_not_fuel_learning` | Single-step; does not catch double application |
-| Protection latching/recovery | 10 tests | Good state-machine coverage; no debounce/noise tests |
+| Protection latching/recovery | 14 tests; new `single_sample_overtemp_does_not_latch`, `n_consecutive_samples_latch`, `clearing_before_n_samples_resets_confirmation`, `crc_mismatch_latches_on_first_evaluation` | Sensor-threshold latch confirmation fixed in host code; overtemperature tests cover one sample, N samples and count reset; existing overtemperature/oil latch tests feed N samples; existing CRC test unchanged; hardware noise/fault-injection validation remains open |
 | Scheduler | 6 tests | Good angle/cut tests; no overflow/overlap test |
 | Protocol | 7 tests | Good CRC/version tests; no header corruption/auth |
 | Calibration | 22 tests including vehicle profile | Good checksum/revision; no signature/durability |
@@ -246,7 +247,7 @@
 ## 15. Highest-priority FMEA actions
 
 1. **Trigger integrity:** speed-dependent timeout, immediate cut on missing expected edge, cam-loss detection, extra-edge rejection, deceleration tests.
-2. **Protection confirmation:** debounce/confirmation counts for coolant, oil, fuel pressure, lambda, MAP; define false-trip vs missed-trip targets.
+2. **Protection confirmation fixed in host code (A3):** coolant over-temperature, low oil pressure, lean under load, overboost and low battery voltage are sensor-threshold faults; their latching cut conditions require N consecutive evaluations per DTC (`ProtectionLimits::latch_confirmation_samples`, default 3; zero treated as one). A clear or derate-only sample resets confirmation. Tests are listed in §14; `overtemp_latches_and_requires_explicit_clear` and `low_oil_pressure_cuts_and_latches` now feed N samples. Calibration checksum/CRC and watchdog are deterministic integrity faults and retain immediate first-evaluation latching; the unchanged `calibration_crc_failure_latches_a_cut` and new `crc_mismatch_latches_on_first_evaluation` cover CRC. All cut/derate reactions remain immediate; non-latching faults including low fuel pressure are unchanged. Thresholds are unchanged placeholders; define false-trip vs missed-trip targets and validate confirmation timing and sensors physically.
 3. **Calibration trust:** keyed signature/HMAC, policy/table provenance cross-check, durable audit log, actor identity.
 4. **Service security:** authentication/authorization/CSRF, restrict CORS, never expose beyond localhost, transactional apply.
 5. **Knock path:** fix double retard, add test, implement real knock signal processing and validation.

@@ -52,7 +52,7 @@ These claims are about the current code and design. They are not claims of engin
 | H7: Prompt injection via logs or notes | Adversarial text in telemetry/log/calibration text | Unauthorized proposal or action | Copilot is read-only; system prompt treats tool/log text as untrusted data; Zod output; no write tool. | No prompt-injection eval suite; model output is not programmatically cross-checked against the Rust proposal; no durable audit. Must be tested before exposure. |
 | H8: Protection bypass or silent recovery | Latched fault cleared automatically, threshold disabled | Operation after low oil pressure, overtemp, overboost, or sync loss | Independent state machine; latching; explicit clear; freeze frames; cut/derate reactions | Thresholds are placeholders; no hardware fault injection. |
 | H9: User treats an estimate as validated | Synthetic ignition, generic VE, target lambda presented without context | Engine damage or poor driveability | Provenance fields; preflight; visible UI warnings on synthetic ignition and estimated tables; status labels; timing-light requirement | The UI exists but warnings can be ignored; there is no authenticated release gate or external safety review. |
-| H10: Unverified build/test state | No independent CI run attestation; copilot behavioral evals missing; core no_std checks pass but no target hardware runs them | Undetected regression | `cargo fmt`, `cargo clippy`, `cargo test --workspace` (128/0), firmware target check, CLI determinism/analyze/apply, UI build, copilot tsc/offline query, and service smoke tests pass; CI workflow exists | CI run evidence, behavioral copilot evals, and hardware validation are still missing. This is a release blocker for any stronger claim. |
+| H10: Unverified build/test state | No independent CI run attestation; copilot behavioral evals missing; core no_std checks pass but no target hardware runs them | Undetected regression | `cargo fmt`, `cargo clippy`, `cargo test --workspace` (130/0), firmware target check, CLI determinism/analyze/apply, UI build, copilot tsc/offline query, and service smoke tests pass; CI workflow exists | CI run evidence, behavioral copilot evals, and hardware validation are still missing. This is a release blocker for any stronger claim. |
 
 ## 4. Evidence status
 
@@ -61,9 +61,9 @@ These claims are about the current code and design. They are not claims of engin
 | Source inspection of all Rust crates | Done for this documentation pass. |
 | `cargo check` on library crates, test targets, and the CLI/service binaries | Passed on 2026-11-12 in the documentation environment. |
 | `cargo fmt --all -- --check` / `cargo clippy --workspace --all-targets -- -D warnings` | Both pass on 2026-11-12. |
-| `cargo test --workspace` | 128 passed, 0 failed on 2026-11-12. |
+| `cargo test --workspace` | 130 passed, 0 failed on 2026-11-12. |
 | Firmware target check | `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` passes; compile-only, not timing validation. |
-| Unit/property tests | Included in the 128-test pass. |
+| Unit/property tests | Included in the 130-test pass. |
 | CLI scenario + determinism | `mixture_sweep` completed; `--check-determinism` passed with 2184 byte-identical frames. |
 | CLI Mixture Map | `analyze` produced a three-cell proposal (1348 accepted / 836 rejected); `apply --approve` created revision 2. |
 | Tuning studio build | `npm run typecheck` and `npm run build` passed. |

@@ -442,4 +442,16 @@ mod tests {
         let b = blended_load(80.0, 40.0, LoadStrategy::Blended { alpha_percent: 50 }).unwrap();
         assert!((b - 60.0).abs() < 1e-5);
     }
+
+    #[test]
+    fn air_mass_per_cylinder_scales_with_cylinder_count() {
+        let base = air_mass_mg(100.0, 293.15, 100.0, 1998.0, 1).unwrap();
+        for n in 1..=8 {
+            assert!(
+                (air_mass_mg(100.0, 293.15, 100.0, 1998.0, n).unwrap() * n as f32 - base).abs()
+                    / base
+                    < 1e-5
+            );
+        }
+    }
 }

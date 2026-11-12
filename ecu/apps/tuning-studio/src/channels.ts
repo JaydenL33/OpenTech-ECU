@@ -1,0 +1,411 @@
+import type { TelemetryFrame } from "./types";
+
+export type ChannelSource = "telemetry" | "not_connected";
+
+export interface ChannelDefinition {
+  key: string;
+  label: string;
+  unit: string;
+  /** Suggested display range for gauges and traces. */
+  min: number;
+  max: number;
+  decimals: number;
+  group: string;
+  source: ChannelSource;
+  read: (frame: TelemetryFrame) => number | null;
+}
+
+const finite = (value: number): number | null => (Number.isFinite(value) ? value : null);
+
+/** Numeric channels present in the service's TelemetryFrame. */
+export const CHANNELS: ChannelDefinition[] = [
+  {
+    key: "rpm",
+    label: "Engine speed",
+    unit: "rpm",
+    min: 0,
+    max: 8000,
+    decimals: 0,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.rpm),
+  },
+  {
+    key: "map_kpa",
+    label: "Manifold pressure",
+    unit: "kPa",
+    min: 0,
+    max: 260,
+    decimals: 0,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.map_kpa),
+  },
+  {
+    key: "tps_pct",
+    label: "Throttle position",
+    unit: "%",
+    min: 0,
+    max: 100,
+    decimals: 1,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.tps_pct),
+  },
+  {
+    key: "throttle_commanded_pct",
+    label: "Commanded throttle",
+    unit: "%",
+    min: 0,
+    max: 100,
+    decimals: 1,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.throttle_commanded_pct),
+  },
+  {
+    key: "iat_c",
+    label: "Intake air temperature",
+    unit: "°C",
+    min: -20,
+    max: 100,
+    decimals: 1,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.iat_c),
+  },
+  {
+    key: "clt_c",
+    label: "Coolant temperature",
+    unit: "°C",
+    min: -20,
+    max: 120,
+    decimals: 1,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.clt_c),
+  },
+  {
+    key: "oil_pressure_kpa",
+    label: "Oil pressure",
+    unit: "kPa",
+    min: 0,
+    max: 700,
+    decimals: 0,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.oil_pressure_kpa),
+  },
+  {
+    key: "battery_v",
+    label: "Battery voltage",
+    unit: "V",
+    min: 8,
+    max: 16,
+    decimals: 2,
+    group: "Electrical",
+    source: "telemetry",
+    read: (f) => finite(f.battery_v),
+  },
+  {
+    key: "lambda_measured",
+    label: "Measured lambda",
+    unit: "λ",
+    min: 0.6,
+    max: 1.3,
+    decimals: 3,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => (f.lambda_ready ? finite(f.lambda_measured) : null),
+  },
+  {
+    key: "lambda_target",
+    label: "Target lambda",
+    unit: "λ",
+    min: 0.6,
+    max: 1.3,
+    decimals: 3,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.lambda_target),
+  },
+  {
+    key: "lambda_age_ms",
+    label: "Lambda sample age",
+    unit: "ms",
+    min: 0,
+    max: 1000,
+    decimals: 0,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.lambda_age_ms),
+  },
+  {
+    key: "exhaust_delay_ms",
+    label: "Exhaust transport delay",
+    unit: "ms",
+    min: 0,
+    max: 500,
+    decimals: 0,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.exhaust_delay_ms),
+  },
+  {
+    key: "stft",
+    label: "Short-term fuel trim",
+    unit: "%",
+    min: -50,
+    max: 50,
+    decimals: 1,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.stft * 100),
+  },
+  {
+    key: "ltft",
+    label: "Long-term fuel trim",
+    unit: "%",
+    min: -50,
+    max: 50,
+    decimals: 1,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.ltft * 100),
+  },
+  {
+    key: "ve",
+    label: "Volumetric efficiency",
+    unit: "%",
+    min: 0,
+    max: 130,
+    decimals: 1,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.ve),
+  },
+  {
+    key: "injector_pw_ms",
+    label: "Injector pulse width",
+    unit: "ms",
+    min: 0,
+    max: 25,
+    decimals: 3,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.injector_pw_ms),
+  },
+  {
+    key: "injector_duty_pct",
+    label: "Injector duty",
+    unit: "%",
+    min: 0,
+    max: 100,
+    decimals: 1,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.injector_duty_pct),
+  },
+  {
+    key: "fuel_pressure_kpa",
+    label: "Fuel pressure",
+    unit: "kPa",
+    min: 0,
+    max: 600,
+    decimals: 0,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.fuel_pressure_kpa),
+  },
+  {
+    key: "ignition_advance_deg",
+    label: "Spark advance",
+    unit: "°",
+    min: -10,
+    max: 50,
+    decimals: 1,
+    group: "Ignition",
+    source: "telemetry",
+    read: (f) => finite(f.ignition_advance_deg),
+  },
+  {
+    key: "dwell_ms",
+    label: "Dwell",
+    unit: "ms",
+    min: 0,
+    max: 10,
+    decimals: 2,
+    group: "Ignition",
+    source: "telemetry",
+    read: (f) => finite(f.dwell_ms),
+  },
+  {
+    key: "knock_level",
+    label: "Knock level",
+    unit: "level",
+    min: 0,
+    max: 10,
+    decimals: 2,
+    group: "Ignition",
+    source: "telemetry",
+    read: (f) => finite(f.knock_level),
+  },
+  {
+    key: "boost_kpa",
+    label: "Boost",
+    unit: "kPa",
+    min: 0,
+    max: 250,
+    decimals: 1,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.boost_kpa),
+  },
+  {
+    key: "cycle_angle_deg",
+    label: "Cycle angle",
+    unit: "°",
+    min: 0,
+    max: 720,
+    decimals: 1,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.cycle_angle_deg),
+  },
+  {
+    key: "speed_kph",
+    label: "Vehicle speed",
+    unit: "km/h",
+    min: 0,
+    max: 250,
+    decimals: 0,
+    group: "Vehicle",
+    source: "telemetry",
+    read: (f) => finite(f.speed_kph),
+  },
+  {
+    key: "gear",
+    label: "Gear",
+    unit: "gear",
+    min: 0,
+    max: 8,
+    decimals: 0,
+    group: "Vehicle",
+    source: "telemetry",
+    read: (f) => finite(f.gear),
+  },
+  {
+    key: "ethanol_pct",
+    label: "Ethanol content",
+    unit: "%",
+    min: 0,
+    max: 100,
+    decimals: 1,
+    group: "Fuel",
+    source: "telemetry",
+    read: (f) => finite(f.ethanol_pct),
+  },
+  {
+    key: "dyno_load_nm",
+    label: "Dyno load",
+    unit: "Nm",
+    min: 0,
+    max: 500,
+    decimals: 0,
+    group: "Vehicle",
+    source: "telemetry",
+    read: (f) => finite(f.dyno_load_nm),
+  },
+  {
+    key: "scenario_time_ms",
+    label: "Scenario time",
+    unit: "ms",
+    min: 0,
+    max: 600000,
+    decimals: 0,
+    group: "Engine",
+    source: "telemetry",
+    read: (f) => finite(f.scenario_time_ms),
+  },
+  {
+    key: "wideband_pumping_ma",
+    label: "Wideband pumping current",
+    unit: "mA",
+    min: -10,
+    max: 10,
+    decimals: 3,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.wideband?.pumping_current_ma),
+  },
+  {
+    key: "wideband_temp_c",
+    label: "Wideband sensor temperature",
+    unit: "°C",
+    min: 0,
+    max: 900,
+    decimals: 0,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.wideband?.sensor_temperature_c),
+  },
+  {
+    key: "wideband_tau_ms",
+    label: "Wideband response time constant",
+    unit: "ms",
+    min: 0,
+    max: 1000,
+    decimals: 0,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.wideband?.response_tau_ms),
+  },
+  {
+    key: "wideband_transport_ms",
+    label: "Wideband transport delay",
+    unit: "ms",
+    min: 0,
+    max: 1000,
+    decimals: 0,
+    group: "Lambda",
+    source: "telemetry",
+    read: (f) => finite(f.wideband?.transport_delay_ms),
+  },
+];
+
+/**
+ * Channels a per-cylinder implementation would need. The current
+ * TelemetryFrame carries engine-wide injector values only, so these are
+ * explicitly marked as not connected rather than synthesised per cylinder.
+ */
+export const PER_CYLINDER_CHANNELS: ChannelDefinition[] = Array.from({ length: 8 }, (_, index) => {
+  const cylinder = index + 1;
+  return {
+    key: `cyl${cylinder}_injector_pw_ms`,
+    label: `Cylinder ${cylinder} injector pulse width`,
+    unit: "ms",
+    min: 0,
+    max: 25,
+    decimals: 3,
+    group: "Per-cylinder (not reported)",
+    source: "not_connected" as const,
+    read: () => null,
+  };
+});
+
+export const ALL_CHANNELS: ChannelDefinition[] = [...CHANNELS, ...PER_CYLINDER_CHANNELS];
+
+export const CHANNEL_BY_KEY: Record<string, ChannelDefinition> = Object.fromEntries(
+  ALL_CHANNELS.map((channel) => [channel.key, channel]),
+);
+
+export function formatChannelValue(channel: ChannelDefinition, value: number | null): string {
+  if (value === null || !Number.isFinite(value)) return "—";
+  return value.toFixed(channel.decimals);
+}
+
+export function readChannel(channel: ChannelDefinition, frame: TelemetryFrame | null): number | null {
+  if (!frame || channel.source !== "telemetry") return null;
+  const value = channel.read(frame);
+  return value !== null && Number.isFinite(value) ? value : null;
+}

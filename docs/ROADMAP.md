@@ -14,7 +14,7 @@ Status: planning document. No dates and no delivery promises. Phases are ordered
 
 **Goal:** make the existing host core reproducible and reviewable.
 
-Status: verification is green on the native toolchain. `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace` (128 passed, 0 failed) pass; the STM32 `thumbv7em-none-eabihf` skeleton check passes; the CLI, local service, browser build, and offline copilot were exercised on 2026-11-12. The CI workflow exists but no CI run attestation is included.
+Status: verification is green on the native toolchain. `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace` (130 passed, 0 failed) pass; the STM32 `thumbv7em-none-eabihf` skeleton check passes; the CLI, local service, browser build, and offline copilot were exercised on 2026-11-12. The CI workflow exists but no CI run attestation is included.
 
 - Commit the Rust workspace and documentation.
 - Run `cargo fmt --check`, `cargo clippy`, and a clean `cargo test --workspace` on a normal Rust host; record exact commands and results.

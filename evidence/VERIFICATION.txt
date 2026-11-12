@@ -59,7 +59,7 @@ rpm mean/max: 2769 / 4566
 coolant max: 89.6 C
 lambda mean: 0.977 (2184 samples)
 faults:   ["P0335", "P0133"]
-wrote:    /tmp/opencode/final-evidence
+wrote:    runs/final-evidence
 
 $ analyze
 samples used/rejected: 1378/806  cells proposed: 3  hard faults: []
@@ -69,13 +69,13 @@ proposal: mix-4d0eee3710e1660a (3 cells, requires approval)
    2100 rpm   50 kPa  VE 59.16 -> 62.12  (+5.0%, n=431, conf=0.85)
    2900 rpm   60 kPa  VE 66.13 -> 69.44  (+5.0%, n=259, conf=0.92)
 ignition untouched: true
-wrote: /tmp/opencode/final-evidence/report.json
+wrote: runs/final-evidence/report.json
 
 $ apply --approve
 applied 3 cells; revision 1 -> 2; checksum f6bf1ba3d7939900
 diff: 3 cells, max |delta| 3.31 VE points
-undo snapshot is the input calibration: /tmp/opencode/final-evidence/calibration.json
-wrote: /tmp/opencode/final-evidence/calibration-r2.json
+undo snapshot is the input calibration: runs/final-evidence/calibration.json
+wrote: runs/final-evidence/calibration-r2.json
 
 $ curl /api/health
 {"interlock":"PHYSICAL_OUTPUT_INTERLOCK_ENGAGED","note":"Virtual ECU only. No injector or ignition hardware path exists.","physical_outputs":false,"protocol_version":1,"service":"opentech-ecu-studio","status":"ok","version":"0.1.0"}

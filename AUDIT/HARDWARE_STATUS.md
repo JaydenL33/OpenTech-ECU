@@ -5,8 +5,8 @@
 | Document ID | AUD-10 |
 | Status | Hardware status and requirements only; **no manufacturing-ready hardware exists** |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree |
-| Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
+| Evidence cut-off | 2026-11-13, working tree |
+| Source manifest | `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
 > **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It includes an unrouted PCB placement draft, but DRC reports **14 violations (13 dangling vias + 1 clearance) and 499 unconnected items**; there are no gerbers, thermal/EMC validation or independent engineering review. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.
@@ -16,7 +16,7 @@
 | Artefact | Exists in audited repo? | Evidence / note |
 |---|---|---|
 | Hardware status README | Yes | `hardware/README.md`; explicitly states no manufacturing-ready board and bench-prototype boundaries |
-| Rust host control code | Yes | `ecu/crates/*`; 128 tests pass |
+| Rust host control code | Yes | `ecu/crates/*`; 130 tests pass |
 | Virtual ECU / simulator | Yes | `ecu-simulator`; six scenarios |
 | `no_std` firmware skeleton | Yes | `ecu/firmware/stm32`; target check passes; no HAL/timer/driver |
 | MCU HAL / board support | No | No vendor HAL, pin map, clock tree, linker image, startup code |
@@ -33,7 +33,8 @@
 | Gerbers/drill | No | No `.gbr`/`.drl` found |
 | Assembly drawing | No | Not present |
 | Enclosure/mechanical | No | Not present |
-| Harness/adapter | No | Not present; Evo connector unverified |
+| Bench harness manifest | Yes, unreviewed source | `config/harness/opentech-bench-harness.json`; 29 bench connectors, 54 test points; no OEM cavities |
+| Harness/adapter for vehicle | No | Not present; Evo connector unverified |
 | Bench fixture | No | AUD-09 is a plan only |
 | EMC/thermal test data | No | Not present |
 | Evo ECU part number/connector/pinout | No | `vehicle.rs`: `None`/`false`; all unverified |

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { api } from "../api";
 import { useApp } from "../context";
-import { Panel, Gauge, Stat, Badge } from "../components/ui";
+import { Panel, Gauge, Stat, Badge, SummaryCard, SummaryRow, MoreLink } from "../components/ui";
 import { TraceChart, MiniTrace } from "../components/charts";
+import { evaluateWarnings, useWarningLimits } from "../warnings";
 
 export function DashboardPage() {
   const app = useApp();
   const frame = app.live.frame;
   const history = app.live.history ?? [];
+  const warningLimits = useWarningLimits();
+  const activeWarnings = evaluateWarnings(frame, warningLimits);
+  const warningFor = (key: string) => activeWarnings.some((warning) => warning.key === key);
   const [scenarioId, setScenarioId] = useState("idle_warmup");
   const [busy, setBusy] = useState(false);
 
@@ -38,10 +41,51 @@ export function DashboardPage() {
     frame && frame.lambda_ready && Math.abs(frame.lambda_measured - frame.lambda_target) > 0.08
       ? "warn"
       : "good";
+  const ignitionPolicy = app.calibration?.ignition_policy.kind.replaceAll("_", " ") ?? "loading";
 
   return (
     <div className="page dashboard">
-      {app.error && <div className="alert danger">{app.error}</div>}
+      <div className="summary-grid">
+        <SummaryCard
+          icon={<span className="summary-glyph">λ</span>}
+          title="Engine & trigger"
+          subtitle={frame ? `${frame.engine_state} · ${frame.sync} sync` : "Waiting for telemetry"}
+          action={<MoreLink onClick={() => app.setPage("diagnostics")}>Open diagnostics</MoreLink>}
+        >
+          <SummaryRow label="Engine speed" value={frame ? `${frame.rpm.toFixed(0)} rpm` : "—"} />
+          <SummaryRow label="Protection" value={<Badge tone={protectionTone}>{frame?.protection ?? "—"}</Badge>} />
+          <SummaryRow label="Active DTCs" value={frame?.active_faults?.length ?? 0} tone={(frame?.active_faults?.length ?? 0) > 0 ? "warn" : "good"} />
+          <SummaryRow label="Crank angle" value={frame ? `${frame.cycle_angle_deg.toFixed(1)}°` : "—"} />
+          <SummaryRow label="Scenario" value={app.scenarios.find((s) => s.id === scenarioId)?.name ?? "—"} />
+        </SummaryCard>
+
+        <SummaryCard
+          icon={<span className="summary-glyph">F</span>}
+          title="Fuel & lambda"
+          subtitle="Closed-loop state and injector delivery"
+          action={<MoreLink onClick={() => app.setPage("mixture")}>Review Mixture Map</MoreLink>}
+        >
+          <SummaryRow label="Measured λ" value={frame?.lambda_ready ? frame.lambda_measured.toFixed(3) : "not ready"} tone={lambdaTone === "warn" ? "warn" : ""} />
+          <SummaryRow label="Target λ" value={frame ? frame.lambda_target.toFixed(3) : "—"} />
+          <SummaryRow label="STFT / LTFT" value={frame ? `${(frame.stft * 100).toFixed(1)}% / ${(frame.ltft * 100).toFixed(1)}%` : "—"} />
+          <SummaryRow label="Injector duty" value={frame ? `${frame.injector_duty_pct.toFixed(0)}%` : "—"} tone={(frame?.injector_duty_pct ?? 0) > 90 ? "warn" : ""} />
+          <SummaryRow label="Closed loop" value={frame?.closed_loop ? "active" : "off"} />
+        </SummaryCard>
+
+        <SummaryCard
+          icon={<span className="summary-glyph">C</span>}
+          title="Calibration"
+          subtitle={app.calibration ? `${app.calibration.id} · revision ${app.calibration.revision}` : "Loading…"}
+          action={<MoreLink onClick={() => app.setPage("calibration")}>Open calibration audit</MoreLink>}
+        >
+          <SummaryRow label="Engine" value={app.calibration?.engine.name ?? "—"} />
+          <SummaryRow label="Checksum" value={<span className="mono">{app.calibration?.checksum.slice(0, 12) ?? "—"}…</span>} />
+          <SummaryRow label="Ignition policy" value={ignitionPolicy} tone={app.calibration?.ignition_policy.kind === "verified_reference" ? "good" : "warn"} />
+          <SummaryRow label="Virtual preflight" value={app.preflight?.virtual_run_allowed ? "allowed" : "blocked"} tone={app.preflight?.virtual_run_allowed ? "good" : "danger"} />
+          <SummaryRow label="Physical export" value="interlocked" tone="danger" />
+        </SummaryCard>
+      </div>
+
       <Panel
         title="Virtual engine"
         subtitle={
@@ -101,22 +145,22 @@ export function DashboardPage() {
       </Panel>
 
       <div className="gauge-row">
-        <Gauge label="Engine speed" value={frame?.rpm ?? null} min={0} max={8000} unit="rpm" decimals={0} />
-        <Gauge label="Manifold pressure" value={frame?.map_kpa ?? null} min={0} max={260} unit="kPa" color="#6dd3c7" decimals={0} />
-        <Gauge label="Measured lambda" value={frame?.lambda_ready ? frame.lambda_measured : null} min={0.6} max={1.3} unit="λ" color="#e8c46a" decimals={2} warning={lambdaTone === "warn"} />
-        <Gauge label="Target lambda" value={frame?.lambda_target ?? null} min={0.6} max={1.3} unit="λ" color="#b49cf0" decimals={2} />
-        <Gauge label="Spark advance" value={frame?.ignition_advance_deg ?? null} min={-10} max={45} unit="°" color="#f08a5d" decimals={1} />
-        <Gauge label="Injector duty" value={frame?.injector_duty_pct ?? null} min={0} max={100} unit="%" color="#89b4fa" decimals={0} warning={(frame?.injector_duty_pct ?? 0) > 90} />
+        <Gauge label="Engine speed" value={frame?.rpm ?? null} min={0} max={8000} unit="rpm" decimals={0} color="#1d1d1d" warning={warningFor("rpm")} />
+        <Gauge label="Manifold pressure" value={frame?.map_kpa ?? null} min={0} max={260} unit="kPa" color="#2f6f9f" decimals={0} warning={warningFor("map_kpa")} />
+        <Gauge label="Measured lambda" value={frame?.lambda_ready ? frame.lambda_measured : null} min={0.6} max={1.3} unit="λ" color="#d19a00" decimals={2} warning={warningFor("lambda_measured") || lambdaTone === "warn"} />
+        <Gauge label="Target lambda" value={frame?.lambda_target ?? null} min={0.6} max={1.3} unit="λ" color="#7a5aa6" decimals={2} warning={warningFor("lambda_target")} />
+        <Gauge label="Spark advance" value={frame?.ignition_advance_deg ?? null} min={-10} max={45} unit="°" color="#c05a2a" decimals={1} warning={warningFor("ignition_advance_deg")} />
+        <Gauge label="Injector duty" value={frame?.injector_duty_pct ?? null} min={0} max={100} unit="%" color="#4b7f52" decimals={0} warning={warningFor("injector_duty_pct") || (frame?.injector_duty_pct ?? 0) > 90} />
       </div>
 
       <div className="dashboard-grid">
-        <Panel title="Live traces" subtitle="RPM · MAP · lambda vs target · advance last 300 frames" className="wide">
+        <Panel title="Live traces" subtitle="RPM · MAP · lambda vs target · advance, last 300 frames" className="wide">
           <div className="chart-block">
             <TraceChart
               frames={history}
               series={[
-                { key: "rpm", label: "RPM", color: "#6da8ff" },
-                { key: "map_kpa", label: "MAP kPa", color: "#5fd1c0" },
+                { key: "rpm", label: "RPM", color: "#1d1d1d" },
+                { key: "map_kpa", label: "MAP kPa", color: "#2f6f9f" },
               ]}
             />
           </div>
@@ -124,9 +168,9 @@ export function DashboardPage() {
             <TraceChart
               frames={history}
               series={[
-                { key: "lambda_measured", label: "measured λ", color: "#e8c46a" },
-                { key: "lambda_target", label: "target λ", color: "#b49cf0" },
-                { key: "stft", label: "STFT fraction", color: "#f08a5d" },
+                { key: "lambda_measured", label: "measured λ", color: "#d19a00" },
+                { key: "lambda_target", label: "target λ", color: "#7a5aa6" },
+                { key: "stft", label: "STFT fraction", color: "#c05a2a" },
               ]}
               fixedMin={-0.25}
               fixedMax={1.35}
@@ -158,7 +202,7 @@ export function DashboardPage() {
             <Stat label="Lambda age" value={String(frame?.lambda_age_ms ?? "—")} unit="ms" />
             <Stat label="Wideband" value={frame?.wideband?.controller_id ?? "—"} />
           </div>
-          <MiniTrace frames={history} accessor={(f) => f.lambda_measured} color="#e8c46a" />
+          <MiniTrace frames={history} accessor={(f) => f.lambda_measured} color="#d19a00" />
         </Panel>
 
         <Panel title="Active faults" subtitle="Protection is independent of fuel learning" className="wide">

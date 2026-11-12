@@ -5,12 +5,12 @@
 | Document ID | AUD-05 |
 | Status | Evidence record for the audited host snapshot; not a certification, not a physical-safety approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree |
-| Repository | `/home/jlee/OpenTech-ECU` |
-| Git HEAD | `fdf25420bb6925389f17a0e2d1fa365159acba3d` |
-| Rust source manifest | SHA-256 `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
-| Cargo lock | SHA-256 `71ecae98186c1bc59d46293bae54f3dc2db3cca86bba79c0e77f9b837a2f329e` |
-| Test result | **128 tests (126 unit + 2 integration): 128 passed, 0 failed**; 0 doc-tests |
+| Evidence cut-off | 2026-11-13, working tree |
+| Repository | `OpenTech-ECU` |
+| Git HEAD | `a262e99529ccc8411f250d4eac5ccd0a7269af4a` |
+| Rust source manifest | SHA-256 `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Cargo lock | SHA-256 `0f2ed5f361ba48f97d9fad75db2214644d5dba6655579f0f8a853c37f2f1e79d` |
+| Test result | **130 tests (128 unit + 2 integration): 130 passed, 0 failed**; 0 doc-tests |
 | Formatting | `cargo fmt --all -- --check` passed |
 | Linting | `cargo clippy --workspace --all-targets -- -D warnings` passed |
 | Firmware target check | `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` passed |
@@ -19,7 +19,7 @@
 
 > **Scope.** This evidence supports host-side software behaviour only. It does not establish engine safety, timing accuracy, EMC, electrical safety, or Evo VIII compatibility. Gate 0 pass means "the implemented host behaviour has reproducible evidence", not "the ECU is safe or ready".
 
-> **Source-control note.** Source commit `041be84f` is the code revision used for this evidence; current HEAD `fdf25420` contains documentation/audit commits only. The Rust source tree was clean at cut-off (`git status --short ecu` empty). The manifest hash above matches that tree. Re-hash the source after any source change.
+> **Source-control note.** This evidence is from local branch `feature/support-ui-harness` at commit `a262e99529ccc8411f250d4eac5ccd0a7269af4a`. The branch is not pushed. The Rust source tree was clean at cut-off. The manifest hash above matches that tree. Re-hash the source after any source change.
 
 ## 1. Environment
 
@@ -44,7 +44,7 @@
 |---:|---|---:|---|
 | 1 | `cargo fmt --all -- --check` | 0 | Clean |
 | 2 | `cargo clippy --workspace --all-targets -- -D warnings` | 0 | Clean, including the firmware skeleton |
-| 3 | `cargo test --workspace` | 0 | 128 passed, 0 failed, 0 ignored; 0 doc-tests, including two Speeduino formula-parity tests |
+| 3 | `cargo test --workspace` | 0 | 130 passed, 0 failed, 0 ignored; 0 doc-tests, including two Speeduino formula-parity tests |
 | 4 | `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` | 0 | Passes; skeleton only, no HAL/timer/driver |
 | 5 | `cargo check -p ecu-types -p ecu-fuel -p ecu-ignition -p ecu-trigger -p ecu-scheduler -p ecu-protection --no-default-features` | 0 | Core no_std checks pass |
 | 6 | `cargo run -q -p ecu-sim-cli -- run --scenario mixture_sweep --out ... --check-determinism` | 0 | Determinism PASS, 2184 frames byte-identical |
@@ -52,7 +52,7 @@
 | 8 | `cargo run -q -p ecu-sim-cli -- apply ... --approve` | 0 | Applied 3 cells; revision 1 -> 2 |
 | 9 | `cargo run -q -p ecu-sim-cli -- apply ...` without `--approve` | 1 | Refused, as designed |
 | 10 | `npm run typecheck` in `apps/tuning-studio` | 0 | Pass |
-| 11 | `npm run build` in `apps/tuning-studio` | 0 | Vite build, 44 modules, `dist/` produced |
+| 11 | `npm run build` in `apps/tuning-studio` | 0 | Vite build; black/yellow support-style shell and Harness page included |
 | 12 | `npm run build` in `apps/tuning-copilot` (`tsc --noEmit`) | 0 | Pass |
 | 13 | Local `studio-service` smoke test | 0 | Health/preflight/status; physical outputs false |
 | 14 | KiCad schematic ERC + PCB DRC on `hardware/kicad/evo8-bench-ecu` | 0 / 5 | Unreviewed 7-sheet schematic, 0 ERC; PCB draft 14 DRC violations + 499 unconnected; no gerbers |
@@ -65,6 +65,7 @@
 |---|---:|---:|---:|---|
 | `ecu-calibration` | 22 | 22 | 0 | Includes vehicle profile tests |
 | `ecu-diagnostics` | 4 | 4 | 0 | |
+| `ecu-harness` | 2 | 2 | 0 | Manifest validation tests |
 | `ecu-fuel` | 11 | 11 | 0 | 9 unit + 2 Speeduino parity integration tests |
 | `ecu-ignition` | 7 | 7 | 0 | |
 | `ecu-lambda` | 28 | 28 | 0 | Includes trim/Mixture Map tests |
@@ -78,7 +79,7 @@
 | `ecu-sim-cli` | 0 | 0 | 0 | Binary; no unit tests |
 | `studio-service` | 0 | 0 | 0 | Binary; no unit tests |
 | Doc-tests | 0 | 0 | 0 | No doc-tests |
-| **Total** | **128** | **128** | **0** | |
+| **Total** | **130** | **130** | **0** | |
 
 ### 3.2 Mixture Map trim behaviour
 
@@ -311,7 +312,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 | ECS-SR-020: UI warnings | UI build; source inspection | Partial | No browser/Electron test; DTC bug |
 | ECS-SR-021: timing light/knock | None | **Blocked** | Gate 4 |
 | ECS-SR-022: Evo data | `vehicle.rs`; `/api/vehicles` | **Unverified** | Gate 3 |
-| Gate 0 host software | 128 tests, fmt, clippy, UI build, copilot typecheck, firmware target check, two narrow Speeduino formula-parity tests | **Pass, scoped** | Not a certification; not physical; no full Speeduino oracle build |
+| Gate 0 host software | 130 tests, fmt, clippy, UI build, copilot typecheck, firmware target check, two narrow Speeduino formula-parity tests | **Pass, scoped** | Not a certification; not physical; no full Speeduino oracle build |
 | Gate 1 | Hardware package | **Blocked** | Unreviewed schematic/netlist/BOM and PCB draft; DRC fails; no gerbers/review |
 | Gate 2 | Powered bench | **Blocked** | No firmware image/timing/fixture |
 | Gate 3-5 | Vehicle/engine/road | **Blocked** | No Evo evidence/engine/legal |
@@ -321,7 +322,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 | Item | Why it matters | Status |
 |---|---|---|
 | Electron launch | The desktop shell may fail even if Vite builds | Not run |
-| Browser interaction / replay UI | UI may be unusable or show stale data | Headless Chromium smoke test: dashboard, map, setup, Mixture Map apply, replay start; visual review limited |
+| Browser interaction / replay UI | UI may be unusable or show stale data | Headless Chromium smoke test: dashboard, map, Harness page, setup, Mixture Map apply, replay start; visual review limited |
 | Live Mastra/LLM call | Copilot may fail, leak, or exceed authority | Not run |
 | Copilot tool approval boundary | Untrusted output must not write | Not tested |
 | WebSocket lag/reconnect | Operator may see stale data | Not tested |
@@ -344,7 +345,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 
 ## 12. Reproduction commands
 
-From `/home/jlee/OpenTech-ECU/ecu`:
+From `OpenTech-ECU/ecu`:
 
 ```bash
 cargo fmt --all -- --check
@@ -369,10 +370,10 @@ Expected: all listed commands pass at this snapshot, including the core `no_std`
 
 ## 13. Raw evidence locations
 
-- `/tmp/opencode/final-test.log` — 128-test run.
-- `/home/jlee/OpenTech-ECU/evidence/VERIFICATION.txt` — companion verification record with the same final counts; re-check hashes before relying on it.
-- `/tmp/opencode/audit-current/` — log, CSV, summary, calibration, report, applied calibration.
-- `/tmp/opencode/studio-final.log` — local service smoke log.
-- `/tmp/opencode/cli3-run.log`, `/tmp/opencode/cli3-analyze.log` — CLI output.
+- `local cargo test log` — 130-test run.
+- `OpenTech-ECU/evidence/VERIFICATION.txt` — companion verification record with the same final counts; re-check hashes before relying on it.
+- `runs/audit-current/` — log, CSV, summary, calibration, report, applied calibration.
+- `local studio service smoke log` — local service smoke log.
+- `local CLI run log`, `local CLI analyze log` — CLI output.
 
 These are ephemeral copies outside the repository. Re-run the commands; do not rely on a screenshot or a single log line.
