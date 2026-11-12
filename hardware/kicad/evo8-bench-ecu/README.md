@@ -83,7 +83,7 @@ The files were generated with a local KiCad 9 installation fetched into an
 isolated workspace. The generator script is retained under `tools/` for review,
 but it depends on local KiCad libraries and is not a manufacturing build system.
 The ERC JSON is in `reports/erc.json`. A DRC run on the unrouted placement draft
-is in `reports/drc.json`: **14 violations and 499 unconnected items**. It is not
+is in `reports/drc.json`: **14 violations (13 dangling vias + 1 clearance) and 499 unconnected items**. It is not
 a routable/manufacturable board and must not be fabricated.
 
 Do not claim Gate 1 or Gate 2 from this package. See

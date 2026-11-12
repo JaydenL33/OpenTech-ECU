@@ -32,7 +32,7 @@
 | npm | `11.11.0` |
 | `rustfmt` | Available and passing |
 | `clippy` | Available and passing with `-D warnings` |
-| KiCad / `kicad-cli` | Not installed on the host PATH; an isolated Codex toolchain produced ERC (0) and DRC (14 violations, 499 unconnected) on the unreviewed schematic/PCB draft. Not independently reviewed. |
+| KiCad / `kicad-cli` | Not installed on the host PATH; an isolated Codex toolchain produced ERC (0) and DRC (14 violations (13 dangling vias + 1 clearance), 499 unconnected) on the unreviewed schematic/PCB draft. Not independently reviewed. |
 | Electron | Dependency present; **application launch not exercised** in this headless audit |
 | WebKit/Tauri | Not used by the current Electron shell; no Tauri validation; Electron launch untested |
 | Physical hardware | **None**; no assembled board/PCB, harness, sensors, injectors, coils, or vehicle; unreviewed schematic only |

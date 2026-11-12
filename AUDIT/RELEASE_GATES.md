@@ -88,13 +88,13 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 - Schematic, PCB, BOM, gerbers, drill, assembly drawing, build notes.
 - ERC/DRC report with rule set, exceptions and reviewer rationale.
 - Board revision/serial number; assembly inspection record.
-- An unreviewed bench-prototype schematic package exists at `hardware/kicad/evo8-bench-ecu/`; it has an unrouted PCB draft with 14 DRC violations and 499 unconnected items; it cannot be used as Gate 1 evidence until reviewed and completed.
+- An unreviewed bench-prototype schematic package exists at `hardware/kicad/evo8-bench-ecu/`; it has an unrouted PCB draft with 14 DRC violations (13 dangling vias + 1 clearance) and 499 unconnected items; it cannot be used as Gate 1 evidence until reviewed and completed.
 
 ### 3.3 Exit criteria
 
 | # | Criterion | Required evidence | Current status |
 |---:|---|---|---|
-| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **BLOCKED**: unreviewed schematic/BOM; PCB draft has 14 DRC violations and 499 unconnected items; no gerbers |
+| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **BLOCKED**: unreviewed schematic/BOM; PCB draft has 14 DRC violations (13 dangling vias + 1 clearance) and 499 unconnected items; no gerbers |
 | 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC JSON exists (0 violations from generator) but not independently reviewed; no DRC |
 | 1.3 | BOM derating/lifecycle review | BOM review | **BLOCKED** |
 | 1.4 | Visual inspection | Photos/checklist | **BLOCKED** |
@@ -104,7 +104,7 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 | 1.8 | Outputs default off with no power | Schematic review; measurement | **BLOCKED** |
 | 1.9 | Independent electrical review | Signed record | **MISSING** |
 
-**Gate 1 decision: BLOCKED.** An unreviewed bench schematic/BOM and an unrouted PCB draft exist, but DRC fails (14 violations, 499 unconnected), there are no gerbers/assembly, and there is no independent review. It does not satisfy Gate 1.
+**Gate 1 decision: BLOCKED.** An unreviewed bench schematic/BOM and an unrouted PCB draft exist, but DRC fails (14 violations (13 dangling vias + 1 clearance), 499 unconnected), there are no gerbers/assembly, and there is no independent review. It does not satisfy Gate 1.
 
 ## 4. Gate 2 — Powered bench verification
 

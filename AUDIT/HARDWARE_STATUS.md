@@ -9,7 +9,7 @@
 | Source manifest | `9837ba880320ae30dc4913a7e077b6b1b5f2b19b528e0630ab1d069ea9dec724` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
-> **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It includes an unrouted PCB placement draft, but DRC reports **14 violations and 499 unconnected items**; there are no gerbers, thermal/EMC validation or independent engineering review. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.
+> **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It includes an unrouted PCB placement draft, but DRC reports **14 violations (13 dangling vias + 1 clearance) and 499 unconnected items**; there are no gerbers, thermal/EMC validation or independent engineering review. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.
 
 ## 1. Hardware artefacts: exists vs absent
 
@@ -126,7 +126,7 @@ Until then: **requirements only, no manufacturing claim, no vehicle connection.*
 ## 7. Explicit non-claims
 
 - No manufacturing-ready PCB, gerbers or assembly exists; the schematic/BOM are unreviewed drafts.
-- An ERC report exists (0 violations; re-run with the isolated toolchain), but it has not been independently reviewed. A PCB placement draft exists, but DRC reports 14 violations and 499 unconnected items; it is not manufacturable.
+- An ERC report exists (0 violations; re-run with the isolated toolchain), but it has not been independently reviewed. A PCB placement draft exists, but DRC reports 14 violations (13 dangling vias + 1 clearance) and 499 unconnected items; it is not manufacturable.
 - The Codex KiCad attempt has not been validated; every value/net/protection choice is unreviewed.
 - No MCU/HAL/timer/driver/watchdog firmware implementation exists.
 - No electrical safety, EMC, thermal, vibration, IP or automotive qualification is claimed.
