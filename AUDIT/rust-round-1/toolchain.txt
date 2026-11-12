@@ -1,0 +1,24 @@
+$ date -u +%Y-%m-%dT%H:%M:%SZ
+2026-11-12T22:56:58Z
+EXIT=0
+
+$ /tmp/ecu-rust-round1-toolchain/bin/ld.lld --version
+LLD 23.1.1 (/checkout/src/llvm-project/llvm 1b9c0d5ff9bbe7634aead059efe6b11a7eeba145) (compatible with GNU linkers)
+EXIT=0
+
+$ dpkg-deb -f /tmp/ecu-rust-round1-toolchain/gcc-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb Package Version
+Package: gcc-13-x86-64-linux-gnu
+Version: 13.3.0-6ubuntu2~24.04.1
+EXIT=0
+
+$ dpkg-deb -f /tmp/ecu-rust-round1-toolchain/libgcc-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb Package Version
+Package: libgcc-13-dev
+Version: 13.3.0-6ubuntu2~24.04.1
+EXIT=0
+
+SHA256 gcc-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb a134b0319a82d14581b3a14820d2832af4ec9778ed8b9b4ddaeecfb0555ec325
+SHA256 libgcc-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb cd689db2691edaa10f37329307292796bb599e722e0505c79e14caaa1fe9a93a
+
+Local cc wrapper:
+#!/bin/sh
+exec /tmp/ecu-rust-round1-toolchain/root/usr/bin/x86_64-linux-gnu-gcc-13 -B/tmp/ecu-rust-round1-toolchain/bin/ -B/tmp/ecu-rust-round1-toolchain/root/usr/lib/gcc/x86_64-linux-gnu/13/ -fuse-ld=lld "$@"

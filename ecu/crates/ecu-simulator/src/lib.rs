@@ -69,17 +69,36 @@ pub const SIMULATED_OUTPUT_EVENT_CAPACITY: usize = 4096;
 
 /// One simulated injector or coil event applied to the plant model.
 /// Simulation record only; nothing here drives hardware.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SimulatedOutputEvent {
+    /// Monotonic event number, starting at zero; gaps expose buffer eviction.
+    pub sequence: u64,
     pub time_us: u64,
     /// completed 720-degree plant cycles when the event fired
     pub cycle: u64,
     pub cylinder: u8,
-    /// InjectionStart or Spark; DwellStart is not recorded
+    /// Command marker only, not an electrical edge or pulse completion.
     pub kind: EventKind,
     /// ScheduledEvent::output_channel
     pub channel: u8,
     pub angle_deg: f32,
+    /// Requested schedule duration; not a measured pulse or dwell duration.
+    pub requested_duration_ms: f32,
+}
+
+/// Versioned, bounded output trace for offline tuning clients. This is separate
+/// from the existing telemetry schema. No physical output path exists.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SimulatedOutputTrace {
+    pub schema_version: u16,
+    pub simulation_only: bool,
+    pub timing_model: String,
+    pub metadata: LogMetadata,
+    pub ignition_policy: ecu_calibration::IgnitionPolicy,
+    pub captured_until_us: u64,
+    pub events_emitted: u64,
+    pub events_dropped: u64,
+    pub outputs: Vec<SimulatedOutputEvent>,
 }
 
 pub struct SimEngine {
@@ -167,6 +186,7 @@ pub struct SimEngine {
     cycle_wrapped: bool,
     cylinder_slots: Vec<CylinderSlot>,
     simulated_outputs: VecDeque<SimulatedOutputEvent>,
+    output_events_emitted: u64,
     cycle_count: u64,
 }
 
@@ -306,6 +326,7 @@ impl SimEngine {
             cycle_wrapped: false,
             cylinder_slots,
             simulated_outputs: VecDeque::new(),
+            output_events_emitted: 0,
             cycle_count: 0,
             scenario,
             calibration,
@@ -361,6 +382,20 @@ impl SimEngine {
 
     pub fn simulated_output_events(&self) -> Vec<SimulatedOutputEvent> {
         self.simulated_outputs.iter().copied().collect()
+    }
+
+    pub fn simulated_output_trace(&self) -> SimulatedOutputTrace {
+        SimulatedOutputTrace {
+            schema_version: 1,
+            simulation_only: true,
+            timing_model: "Linear plant-angle crossing within each 1 ms step, rounded to nearest microsecond. Command markers only; no pulse-end execution, capture latency, driver delay or hardware jitter model.".into(),
+            metadata: self.log_metadata(),
+            ignition_policy: self.calibration.ignition_policy.clone(),
+            captured_until_us: self.time_us,
+            events_emitted: self.output_events_emitted,
+            events_dropped: self.output_events_emitted - self.simulated_outputs.len() as u64,
+            outputs: self.simulated_output_events(),
+        }
     }
 
     pub fn snapshot(&self) -> SimSnapshot {
@@ -429,6 +464,7 @@ impl SimEngine {
     fn step_once(&mut self) {
         const DT_S: f32 = 0.001;
         let step_start_us = self.time_us;
+        let step_start_angle = self.true_angle_deg;
         let phase = self.scenario.phase_at(self.time_ms()).clone();
         self.step_count += 1;
         self.cycle_wrapped = false;
@@ -450,7 +486,7 @@ impl SimEngine {
         self.decoder.tick(self.time_us);
         self.compute_ecu_outputs();
         self.evaluate_protection();
-        self.apply_events(step_start_us);
+        self.apply_events(step_start_us, step_start_angle);
         self.update_wideband(DT_S);
         self.track_fault_events();
         self.time_us += 1000;
@@ -1094,14 +1130,14 @@ impl SimEngine {
         }
     }
 
-    fn apply_events(&mut self, _step_start_us: u64) {
+    fn apply_events(&mut self, step_start_us: u64, prev_angle: f32) {
         let now_angle = self.true_angle_deg;
-        let prev_angle = (now_angle - self.true_rpm * 6.0 * 0.001).rem_euclid(720.0);
+        let advance_deg = self.true_rpm * 6.0 * 0.001;
         for e in self.schedule.events_crossed(prev_angle, now_angle) {
             if !self.decoder.is_sequential() {
                 continue;
             }
-            match e.kind {
+            let emitted = match e.kind {
                 EventKind::InjectionStart => {
                     if !self.fuel_cut && e.duration_ms > 0.0 {
                         let inj = &self.calibration.engine.injectors[0];
@@ -1127,33 +1163,46 @@ impl SimEngine {
                         self.fuel_cycle_kg += (mg * actual_blind * injector_factor) as f64 * 1e-6;
                         self.injections_this_cycle += 1;
                         self.last_injection_angle = e.angle_deg;
-                        let ev = SimulatedOutputEvent {
-                            time_us: self.time_us,
-                            cycle: self.cycle_count,
-                            cylinder: e.cylinder,
-                            kind: e.kind,
-                            channel: e.output_channel,
-                            angle_deg: e.angle_deg,
-                        };
-                        push_simulated_output(&mut self.simulated_outputs, ev);
+                        true
+                    } else {
+                        false
                     }
                 }
                 EventKind::Spark => {
                     if !self.spark_cut {
                         self.sparks_this_cycle += 1;
                         self.last_spark_angle = e.angle_deg;
-                        let ev = SimulatedOutputEvent {
-                            time_us: self.time_us,
-                            cycle: self.cycle_count,
-                            cylinder: e.cylinder,
-                            kind: e.kind,
-                            channel: e.output_channel,
-                            angle_deg: e.angle_deg,
-                        };
-                        push_simulated_output(&mut self.simulated_outputs, ev);
+                        true
+                    } else {
+                        false
                     }
                 }
-                EventKind::DwellStart => {}
+                EventKind::DwellStart => !self.spark_cut,
+            };
+            if emitted {
+                let offset_deg = (e.angle_deg as f64 - prev_angle as f64).rem_euclid(720.0);
+                let offset_us = (offset_deg / advance_deg as f64 * 1000.0)
+                    .round()
+                    .clamp(0.0, 1000.0) as u64;
+                // advance_trigger has already completed the plant cycle. Events
+                // on the pre-wrap side still belong to the preceding cycle.
+                let cycle = if self.cycle_wrapped && e.angle_deg > prev_angle {
+                    self.cycle_count - 1
+                } else {
+                    self.cycle_count
+                };
+                let ev = SimulatedOutputEvent {
+                    sequence: self.output_events_emitted,
+                    time_us: step_start_us + offset_us,
+                    cycle,
+                    cylinder: e.cylinder,
+                    kind: e.kind,
+                    channel: e.output_channel,
+                    angle_deg: e.angle_deg,
+                    requested_duration_ms: e.duration_ms,
+                };
+                self.output_events_emitted += 1;
+                push_simulated_output(&mut self.simulated_outputs, ev);
             }
         }
     }
@@ -1432,6 +1481,9 @@ fn crossed(old: f32, new: f32, event: f32) -> bool {
         e > o || e <= n
     }
 }
+
+#[cfg(test)]
+mod timing_tests;
 
 #[cfg(test)]
 mod tests {
