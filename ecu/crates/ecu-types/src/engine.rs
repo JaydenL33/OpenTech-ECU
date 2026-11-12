@@ -1,7 +1,11 @@
+use alloc::format;
 use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
 use serde::{Deserialize, Serialize};
+
+/// One simulated injector channel and one simulated coil channel per cylinder (D4).
+pub const MAX_SEQUENTIAL_CYLINDERS: u8 = 8;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -61,8 +65,9 @@ pub struct InjectorConfig {
     pub dead_time_curve: Vec<(f32, f32)>,
     pub min_pw_ms: f32,
     pub max_duty: f32,
-    /// Cylinder indices (1-based) served by this injector. More than one means
-    /// semi-sequential / batch. Staged arrangements use multiple entries.
+    /// Cylinders (1-based) fitted with this injector specification, one physical
+    /// injector per listed cylinder. Sequential profiles list every cylinder
+    /// exactly once (`INJ_COVERAGE`).
     pub cylinders: Vec<u8>,
 }
 
@@ -177,6 +182,21 @@ pub struct IoConfig {
     pub notes: String,
 }
 
+/// Derived sequential assignment for one cylinder (D1-D3). Never stored in a calibration.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct CylinderAssignment {
+    /// 1-based cylinder number
+    pub cylinder: u8,
+    /// 1-based index into firing_order
+    pub firing_position: u8,
+    /// compression TDC in 0..720; firing_order[0] is 0.0
+    pub tdc_deg: f32,
+    /// simulated injector channel; equals cylinder
+    pub injector_channel: u8,
+    /// simulated coil channel; equals cylinder
+    pub coil_channel: u8,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EngineConfig {
     pub name: String,
@@ -220,12 +240,53 @@ impl EngineConfig {
         }
     }
 
+    /// Synthetic simulator profile for sequencing tests; not an engine calibration.
+    pub fn virtual_sequential(cylinders: u8) -> Option<Self> {
+        let firing_order = default_firing_order(cylinders)?;
+        let mut engine = Self::default_inline4();
+        engine.name = format!("OpenTech virtual {cylinders}-cylinder simulation");
+        engine.cylinders = cylinders;
+        engine.firing_order = firing_order;
+        engine.cylinder_banks = vec![1; cylinders as usize];
+        engine.injectors[0].cylinders = (1..=cylinders).collect();
+        Some(engine)
+    }
+
     pub fn displacement_per_cylinder_cc(&self) -> f32 {
         if self.cylinders == 0 {
             0.0
         } else {
             self.displacement_cc / self.cylinders as f32
         }
+    }
+
+    pub fn cylinder_layout(&self) -> Option<Vec<CylinderAssignment>> {
+        if !(1..=MAX_SEQUENTIAL_CYLINDERS).contains(&self.cylinders)
+            || self.firing_order.len() != self.cylinders as usize
+        {
+            return None;
+        }
+        let mut seen = [false; MAX_SEQUENTIAL_CYLINDERS as usize + 1];
+        for &c in &self.firing_order {
+            if c == 0 || c > self.cylinders || seen[c as usize] {
+                return None;
+            }
+            seen[c as usize] = true;
+        }
+        let spacing = 720.0 / self.cylinders as f32;
+        Some(
+            self.firing_order
+                .iter()
+                .enumerate()
+                .map(|(i, &cylinder)| CylinderAssignment {
+                    cylinder,
+                    firing_position: i as u8 + 1,
+                    tdc_deg: i as f32 * spacing,
+                    injector_channel: cylinder,
+                    coil_channel: cylinder,
+                })
+                .collect(),
+        )
     }
 
     pub fn validate(&self) -> Vec<ValidationIssue> {
@@ -241,11 +302,11 @@ impl EngineConfig {
             };
         }
 
-        if !(1..=12).contains(&self.cylinders) {
+        if !(1..=MAX_SEQUENTIAL_CYLINDERS).contains(&self.cylinders) {
             push!(
                 "ENG_CYLINDERS",
                 "cylinders",
-                "Cylinder count must be 1..=12",
+                "Cylinder count must be 1..=8",
                 Severity::Error,
             );
         }
@@ -365,8 +426,58 @@ impl EngineConfig {
                 Severity::Error,
             );
         }
+        if !self.trigger.cam_required {
+            push!(
+                "ENG_SEQUENTIAL_CAM",
+                "trigger.cam_required",
+                "Sequential fuel and ignition require cam phase; set trigger.cam_required = true",
+                Severity::Error,
+            );
+        }
+        if self.injectors.len() != 1 {
+            push!(
+                "INJ_DEFINITIONS",
+                "injectors",
+                "Exactly one injector definition is supported and it must list every cylinder",
+                Severity::Error,
+            );
+        }
+        let n = self.cylinders.min(MAX_SEQUENTIAL_CYLINDERS);
+        let mut counts = [0u8; MAX_SEQUENTIAL_CYLINDERS as usize + 1];
+        let mut out_of_range = false;
+        for inj in &self.injectors {
+            for &c in &inj.cylinders {
+                if c == 0 || c > n {
+                    out_of_range = true;
+                } else {
+                    counts[c as usize] = counts[c as usize].saturating_add(1);
+                }
+            }
+        }
+        if out_of_range || (1..=n).any(|c| counts[c as usize] != 1) {
+            push!(
+                "INJ_COVERAGE",
+                "injectors.cylinders",
+                "Every cylinder 1..=cylinders must be listed exactly once across injector definitions",
+                Severity::Error,
+            );
+        }
         issues
     }
+}
+
+pub fn default_firing_order(cylinders: u8) -> Option<Vec<u8>> {
+    Some(match cylinders {
+        1 => vec![1],
+        2 => vec![1, 2],
+        3 => vec![1, 2, 3],
+        4 => vec![1, 3, 4, 2],
+        5 => vec![1, 2, 4, 5, 3],
+        6 => vec![1, 5, 3, 6, 2, 4],
+        7 => vec![1, 3, 5, 7, 2, 4, 6],
+        8 => vec![1, 8, 4, 3, 6, 5, 7, 2],
+        _ => return None,
+    })
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -455,5 +566,103 @@ mod tests {
             ..Default::default()
         };
         assert!(!validate_fuel_config(&f).is_empty());
+    }
+
+    #[test]
+    fn default_firing_orders_match_decision_table() {
+        let orders: [&[u8]; 8] = [
+            &[1],
+            &[1, 2],
+            &[1, 2, 3],
+            &[1, 3, 4, 2],
+            &[1, 2, 4, 5, 3],
+            &[1, 5, 3, 6, 2, 4],
+            &[1, 3, 5, 7, 2, 4, 6],
+            &[1, 8, 4, 3, 6, 5, 7, 2],
+        ];
+        for n in 1..=8 {
+            assert_eq!(default_firing_order(n).unwrap(), orders[n as usize - 1]);
+        }
+        assert_eq!(default_firing_order(0), None);
+        assert_eq!(default_firing_order(9), None);
+    }
+
+    #[test]
+    fn virtual_sequential_profiles_validate_for_one_to_eight() {
+        for n in 1..=8 {
+            let issues = EngineConfig::virtual_sequential(n).unwrap().validate();
+            assert!(issues.is_empty(), "n={n}: {issues:?}");
+        }
+        assert!(EngineConfig::virtual_sequential(0).is_none());
+        assert!(EngineConfig::virtual_sequential(9).is_none());
+    }
+
+    #[test]
+    fn layout_is_even_fire_with_one_channel_per_cylinder() {
+        for n in 1..=8 {
+            let engine = EngineConfig::virtual_sequential(n).unwrap();
+            let layout = engine.cylinder_layout().unwrap();
+            assert_eq!(layout.len(), n as usize);
+            for (i, slot) in layout.iter().enumerate() {
+                assert_eq!(slot.cylinder, engine.firing_order[i]);
+                assert_eq!(slot.firing_position, i as u8 + 1);
+                assert_eq!(slot.tdc_deg, i as f32 * (720.0 / n as f32));
+                assert_eq!(slot.injector_channel, slot.cylinder);
+                assert_eq!(slot.coil_channel, slot.cylinder);
+            }
+        }
+    }
+
+    #[test]
+    fn default_inline4_layout_is_unchanged() {
+        let pairs: Vec<_> = EngineConfig::default_inline4()
+            .cylinder_layout()
+            .unwrap()
+            .iter()
+            .map(|s| (s.cylinder, s.tdc_deg))
+            .collect();
+        assert_eq!(pairs, vec![(1, 0.0), (3, 180.0), (4, 360.0), (2, 540.0)]);
+    }
+
+    #[test]
+    fn cylinder_count_above_eight_rejected() {
+        let mut engine = EngineConfig::default_inline4();
+        engine.cylinders = 9;
+        engine.firing_order = (1..=9).collect();
+        engine.cylinder_banks = vec![1; 9];
+        engine.injectors[0].cylinders = (1..=9).collect();
+        assert!(engine.validate().iter().any(|i| i.code == "ENG_CYLINDERS"));
+        assert!(engine.cylinder_layout().is_none());
+    }
+
+    #[test]
+    fn injector_coverage_enforced() {
+        for cylinders in [vec![1, 2, 3], vec![1, 2, 3, 4, 4], vec![1, 2, 3, 5]] {
+            let mut engine = EngineConfig::default_inline4();
+            engine.injectors[0].cylinders = cylinders;
+            assert!(engine.validate().iter().any(|i| i.code == "INJ_COVERAGE"));
+        }
+    }
+
+    #[test]
+    fn multiple_injector_definitions_rejected() {
+        let mut engine = EngineConfig::default_inline4();
+        let mut second = engine.injectors[0].clone();
+        second.cylinders = vec![];
+        engine.injectors.push(second);
+        assert!(engine
+            .validate()
+            .iter()
+            .any(|i| i.code == "INJ_DEFINITIONS"));
+    }
+
+    #[test]
+    fn sequential_requires_cam_phase() {
+        let mut engine = EngineConfig::default_inline4();
+        engine.trigger.cam_required = false;
+        assert!(engine
+            .validate()
+            .iter()
+            .any(|i| i.code == "ENG_SEQUENTIAL_CAM"));
     }
 }
