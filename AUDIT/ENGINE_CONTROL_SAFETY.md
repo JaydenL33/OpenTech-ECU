@@ -5,10 +5,10 @@
 | Document ID | AUD-01 |
 | Status | Independent audit draft. Not a certification, not a safety case for an engine, not an approval to connect hardware. |
 | Audit date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree |
+| Evidence cut-off | 2026-11-13, working tree |
 | Repository | `OpenTech-ECU` |
-| Git HEAD | `27b91df90695eb7d1a8870b552befe3fcb400577` (local branch `feature/haltech-ui-harness`; not pushed; Rust tree clean at cut-off) |
-| Rust source manifest | SHA-256 `733355ccfefcc18b31806f1493b9d7b8de8f4504b841e4bb0a83335690c82397` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Git HEAD | `a262e99529ccc8411f250d4eac5ccd0a7269af4a` (local branch `feature/support-ui-harness`; not pushed; Rust tree clean at cut-off) |
+| Rust source manifest | SHA-256 `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `0f2ed5f361ba48f97d9fad75db2214644d5dba6655579f0f8a853c37f2f1e79d` |
 | Test status at cut-off | 130 tests (128 unit + 2 integration): 130 passed, 0 failed; `cargo fmt` and clippy pass; firmware no_std skeleton target check passes. See AUD-05. Gate 0 host software evidence is **PASS, scoped**; not a certification |
 | Related documents | AUD-02 through AUD-10; `docs/SAFETY-CASE.md`; `docs/FORMULAS.md`; `ECU_MASTER_BRIEF.md` |

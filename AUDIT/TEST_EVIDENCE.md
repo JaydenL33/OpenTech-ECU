@@ -5,10 +5,10 @@
 | Document ID | AUD-05 |
 | Status | Evidence record for the audited host snapshot; not a certification, not a physical-safety approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree |
+| Evidence cut-off | 2026-11-13, working tree |
 | Repository | `OpenTech-ECU` |
-| Git HEAD | `27b91df90695eb7d1a8870b552befe3fcb400577` |
-| Rust source manifest | SHA-256 `733355ccfefcc18b31806f1493b9d7b8de8f4504b841e4bb0a83335690c82397` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
+| Git HEAD | `a262e99529ccc8411f250d4eac5ccd0a7269af4a` |
+| Rust source manifest | SHA-256 `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` over all `.rs` files under `ecu/crates`, `ecu/apps/ecu-sim-cli`, `ecu/apps/studio-service`, `ecu/firmware/stm32` |
 | Cargo lock | SHA-256 `0f2ed5f361ba48f97d9fad75db2214644d5dba6655579f0f8a853c37f2f1e79d` |
 | Test result | **130 tests (128 unit + 2 integration): 130 passed, 0 failed**; 0 doc-tests |
 | Formatting | `cargo fmt --all -- --check` passed |
@@ -19,7 +19,7 @@
 
 > **Scope.** This evidence supports host-side software behaviour only. It does not establish engine safety, timing accuracy, EMC, electrical safety, or Evo VIII compatibility. Gate 0 pass means "the implemented host behaviour has reproducible evidence", not "the ECU is safe or ready".
 
-> **Source-control note.** This evidence is from local branch `feature/haltech-ui-harness` at commit `27b91df90695eb7d1a8870b552befe3fcb400577`. The branch is not pushed. The Rust source tree was clean at cut-off. The manifest hash above matches that tree. Re-hash the source after any source change.
+> **Source-control note.** This evidence is from local branch `feature/support-ui-harness` at commit `a262e99529ccc8411f250d4eac5ccd0a7269af4a`. The branch is not pushed. The Rust source tree was clean at cut-off. The manifest hash above matches that tree. Re-hash the source after any source change.
 
 ## 1. Environment
 

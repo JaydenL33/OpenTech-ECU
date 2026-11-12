@@ -5,8 +5,8 @@
 | Document ID | AUD-10 |
 | Status | Hardware status and requirements only; **no manufacturing-ready hardware exists** |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree |
-| Source manifest | `733355ccfefcc18b31806f1493b9d7b8de8f4504b841e4bb0a83335690c82397` |
+| Evidence cut-off | 2026-11-13, working tree |
+| Source manifest | `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
 > **Plain statement.** No manufacturing-ready PCB, gerber, drill file, assembly drawing, enclosure or harness exists. There is an **UNREVIEWED bench-prototype KiCad schematic package** at `hardware/kicad/evo8-bench-ecu/`: seven hierarchical sheets, a BOM, netlist, pin map, test points and an ERC report (0 violations reported by the generator). It includes an unrouted PCB placement draft, but DRC reports **14 violations (13 dangling vias + 1 clearance) and 499 unconnected items**; there are no gerbers, thermal/EMC validation or independent engineering review. It must not be treated as valid, manufacturable, electrically safe, or Gate 1 evidence until reviewed.

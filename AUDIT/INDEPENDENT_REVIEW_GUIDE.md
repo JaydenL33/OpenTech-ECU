@@ -5,7 +5,7 @@
 | Document ID | AUD-07 |
 | Status | Reviewer instructions; not itself an independent review |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree; source manifest `733355cc...` |
+| Evidence cut-off | 2026-11-13, working tree; source manifest `a262e995...` |
 | Audience | Automotive controls engineer, embedded Rust reviewer, PCB reviewer, functional-safety reviewer, project owner |
 | Related | AUD-01 through AUD-10 |
 
@@ -164,7 +164,7 @@ A reviewer should mark each item as **provided**, **missing**, or **not applicab
 - [x] Fresh-generation determinism (starter calibration timestamp is zero; repeat checksums match).
 - [ ] Service auth/CSRF or explicit "local-only development" restriction (missing).
 - [ ] CI run attestation (workflow defined; not observed running).
-- [x] Source committed with a reproducible hash (Git HEAD `27b91df9`; Rust tree clean; local branch not pushed).
+- [x] Source committed with a reproducible hash (Git HEAD `a262e995`; Rust tree clean; local branch not pushed).
 - [ ] Independent software review (missing).
 
 ### Gate 1 — unpowered hardware

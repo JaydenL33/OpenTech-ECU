@@ -5,8 +5,8 @@
 | Document ID | AUD-08 |
 | Status | Gate definitions and current status; not a release approval |
 | Date | 2026-11-12 |
-| Evidence cut-off | 2026-11-12T05:45Z, working tree |
-| Source manifest | `733355ccfefcc18b31806f1493b9d7b8de8f4504b841e4bb0a83335690c82397` |
+| Evidence cut-off | 2026-11-13, working tree |
+| Source manifest | `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` |
 | Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
 | Related | AUD-01 through AUD-10 |
 
@@ -63,7 +63,7 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 | 0.17 | Invariants INV-01..INV-20 reviewed | Review record | Partial; see AUD-07 |
 | 0.18 | Known gaps/limitations documented | AUD set | Present |
 | 0.19 | Independent software review | Signed record | **MISSING** |
-| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: local branch source commit `27b91df90695eb7d1a8870b552befe3fcb400577`; Rust tree clean; tested manifest hash recorded in AUD-05 |
+| 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: local branch source commit `a262e995`; Rust tree clean; tested manifest hash recorded in AUD-05 |
 
 **Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 130 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: headless Chromium only (Electron not launched), no live LLM test, and no independent review. It does **not** authorise Gate 1+.
 

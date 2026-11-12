@@ -56,3 +56,8 @@ Public tree checks:
 - No vendor map archive or extracted vendor calibration data is tracked.
 - No API keys, private keys or .env files are tracked.
 - No absolute developer paths remain in tracked documentation or source.
+
+Final source manifest SHA-256: 93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a
+Cargo.lock SHA-256: 0f2ed5f361ba48f97d9fad75db2214644d5dba6655579f0f8a853c37f2f1e79d
+Git HEAD: a262e99529ccc8411f250d4eac5ccd0a7269af4a
+Branch is local only; no remote push.
