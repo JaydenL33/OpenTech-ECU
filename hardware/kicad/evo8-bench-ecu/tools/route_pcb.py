@@ -16,6 +16,7 @@ import itertools
 import json
 import math
 from pathlib import Path
+import re
 import sys
 import uuid
 
@@ -27,6 +28,7 @@ GRID = 0.1
 LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
 EPS = 1e-8
 BIN = 2.0
+MAX_REROUTE_PASSES = 12
 NAMESPACE = uuid.UUID("343c648e-e194-5b48-bc11-178b461ec25f")
 
 
@@ -73,6 +75,8 @@ class Obstacle:
     clearance: float
     # NPTH holes additionally constrain via drilling, even on the same net.
     hole: bool = False
+    removable: bool = False
+    drill_bounds: tuple = None
 
 
 class RuleBook:
@@ -137,6 +141,9 @@ class Geometry:
         self.outline = outline
         self.rules = rules
         self.bins = defaultdict(list)
+        self.obstacles = []
+        self.ignore_copper = False
+        self.blockers = None
         self.search_gap = max(rules.hole, *(r.clearance for r in rules.by_net.values()))
 
     @staticmethod
@@ -147,8 +154,16 @@ class Geometry:
                 yield (x, y)
 
     def add(self, obstacle):
+        self.obstacles.append(obstacle)
         for key in self.bins_for(obstacle.bounds):
             self.bins[key].append(obstacle)
+
+    def remove_nets(self, nets):
+        retained = [o for o in self.obstacles if not (o.removable and o.net in nets)]
+        self.bins.clear()
+        self.obstacles = []
+        for obstacle in retained:
+            self.add(obstacle)
 
     def free(self, net, layers, bounds, via=False):
         edge = self.rules.edge
@@ -170,14 +185,35 @@ class Geometry:
                 seen.add(ident)
                 if not any(layer in obstacle.layers for layer in layers):
                     continue
+                collision = False
+                if via and obstacle.drill_bounds is not None:
+                    drill = self.rules.by_net[net].drill / 2
+                    cx, cy = (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2
+                    # Reuse an existing plated hole instead of drilling again.
+                    ox = (obstacle.bounds[0] + obstacle.bounds[2]) / 2
+                    oy = (obstacle.bounds[1] + obstacle.bounds[3]) / 2
+                    reuse = (obstacle.net == net and not obstacle.hole
+                             and abs(cx - ox) < EPS and abs(cy - oy) < EPS)
+                    collision = not reuse and overlap(
+                        box(cx, cy, drill, drill), obstacle.drill_bounds, self.rules.hole)
                 if obstacle.net == net and not obstacle.hole:
-                    continue
-                gap = max(clearance, obstacle.clearance)
-                if via and obstacle.hole:
+                    copper_collision = False
+                else:
+                    gap = max(clearance, obstacle.clearance)
                     # Via copper checked against the hole envelope is stricter
                     # than checking only the via drill against hole clearance.
-                    gap = max(gap, self.rules.hole)
-                if overlap(bounds, obstacle.bounds, gap):
+                    if via and obstacle.hole:
+                        gap = max(gap, self.rules.hole)
+                    copper_collision = overlap(bounds, obstacle.bounds, gap)
+                if not (collision or copper_collision):
+                    continue
+                if obstacle.removable and obstacle.net != net:
+                    if self.blockers is not None:
+                        self.blockers.add(obstacle.net)
+                        continue
+                    if self.ignore_copper:
+                        continue
+                if collision or copper_collision:
                     return False
         return True
 
@@ -237,7 +273,17 @@ def collect(board, geometry):
             hole = pad[2] == "np_thru_hole"
             clearance = float(child(pad, "clearance", [None, 0])[1])
             clearance = max(clearance, geometry.rules.by_net[net].clearance)
-            geometry.add(Obstacle(net, layers, box(x, y, hx, hy), clearance, hole))
+            drill = child(pad, "drill")
+            drill_bounds = None
+            if drill:
+                dimensions = [float(v) for v in drill[1:]
+                              if not isinstance(v, list) and v != "oval"]
+                dx, dy = dimensions[0], dimensions[-1]
+                dhx = (abs(dx * math.cos(pa)) + abs(dy * math.sin(pa))) / 2
+                dhy = (abs(dx * math.sin(pa)) + abs(dy * math.cos(pa))) / 2
+                drill_bounds = box(x, y, dhx, dhy)
+            geometry.add(Obstacle(net, layers, box(x, y, hx, hy), clearance,
+                                  hole, drill_bounds=drill_bounds))
             if net and not hole:
                 terminals[net].append(Terminal(net, number(x), number(y), layers,
                                               f"{ref}.{pad[1]}"))
@@ -251,13 +297,15 @@ def collect(board, geometry):
         geometry.add(Obstacle(net, (layer,),
                               (min(a[0], b[0]) - radius, min(a[1], b[1]) - radius,
                                max(a[0], b[0]) + radius, max(a[1], b[1]) + radius),
-                              geometry.rules.by_net[net].clearance))
+                              geometry.rules.by_net[net].clearance, removable=True))
     for via in children(board, "via"):
         x, y = xy(via, "at")
         net = int(child(via, "net")[1])
         radius = float(child(via, "size")[1]) / 2
+        drill = float(child(via, "drill")[1]) / 2
         geometry.add(Obstacle(net, LAYERS, box(x, y, radius, radius),
-                              geometry.rules.by_net[net].clearance))
+                              geometry.rules.by_net[net].clearance, removable=True,
+                              drill_bounds=box(x, y, drill, drill)))
         if net:
             terminals[net].append(Terminal(net, x, y, LAYERS,
                                           "via:" + str(child(via, "uuid")[1])))
@@ -271,7 +319,7 @@ def ports(terminal, geometry):
             if geometry.track_free(terminal.net, layer, a, b)]
 
 
-def find_path(net, starts, goals, geometry):
+def find_path(net, starts, goals, geometry, budget=1, forbidden_vias=()):
     """Bounded deterministic A*, with increasing search windows.
 
     All vertices are on the 0.1 mm grid. Longer steps accelerate open areas;
@@ -309,7 +357,7 @@ def find_path(net, starts, goals, geometry):
             distance[start] = 0
             heapq.heappush(queue, (estimate(start), 0, next(sequence), start))
         expanded = 0
-        while queue and expanded < max_expansions:
+        while queue and expanded < max_expansions * budget:
             _, cost, _, state = heapq.heappop(queue)
             if cost != distance.get(state):
                 continue
@@ -320,6 +368,8 @@ def find_path(net, starts, goals, geometry):
                     result.append(state)
                 return list(reversed(result))
             expanded += 1
+            if expanded % 100000 == 0:
+                print(f"  search net={net} margin={margin} expanded={expanded}", flush=True)
             x, y, layer = state
             # Alternate horizontal/vertical preferences, with deterministic ties.
             directions = ((1, 0), (-1, 0), (0, 1), (0, -1))
@@ -339,7 +389,8 @@ def find_path(net, starts, goals, geometry):
                         preferred = (dy == 0) if layer % 2 == 0 else (dx == 0)
                         candidates.append(((nx, ny, layer), step * (1.0 if preferred else 1.05)))
             if (x, y) not in via_cache:
-                via_cache[x, y] = geometry.via_free(net, x * GRID, y * GRID)
+                via_cache[x, y] = ((x, y) not in forbidden_vias
+                                   and geometry.via_free(net, x * GRID, y * GRID))
             if via_cache[x, y]:
                 candidates.extend(((x, y, other), 80)
                                   for other in range(len(LAYERS)) if other != layer)
@@ -359,6 +410,15 @@ class Router:
         self.geometry = geometry
         self.additions = []
         self.existing = set()
+        self.removed_original_nets = set()
+        self.displaced = set()
+
+    def rip_up(self, nets):
+        self.geometry.remove_nets(nets)
+        self.additions = [item for item in self.additions
+                          if int(child(item, "net")[1]) not in nets]
+        self.existing = {key for key in self.existing if key[1] not in nets}
+        self.removed_original_nets.update(nets)
 
     def add(self, net, a, b, layer):
         a, b = tuple(map(number, a)), tuple(map(number, b))
@@ -376,11 +436,17 @@ class Router:
         r = rule.width / 2
         self.geometry.add(Obstacle(net, (layer,),
                                   (min(a[0], b[0]) - r, min(a[1], b[1]) - r,
-                                   max(a[0], b[0]) + r, max(a[1], b[1]) + r), rule.clearance))
+                                   max(a[0], b[0]) + r, max(a[1], b[1]) + r),
+                                  rule.clearance, removable=True))
 
     def via(self, net, point):
         x, y = map(number, point)
         rule = self.geometry.rules.by_net[net]
+        if any(o.net == net and not o.hole and o.drill_bounds is not None
+               and abs((o.bounds[0] + o.bounds[2]) / 2 - x) < EPS
+               and abs((o.bounds[1] + o.bounds[3]) / 2 - y) < EPS
+               for o in self.geometry.bins.get((math.floor(x / BIN), math.floor(y / BIN)), ())):
+            return
         key = ("via", net, x, y, rule.via, rule.drill)
         if key in self.existing:
             return
@@ -391,14 +457,69 @@ class Router:
                                    node("net", net),
                                    node("uuid", str(uuid.uuid5(NAMESPACE, repr(key))))))
         self.geometry.add(Obstacle(net, LAYERS, box(x, y, rule.via / 2, rule.via / 2),
-                                  rule.clearance))
+                                  rule.clearance, removable=True,
+                                  drill_bounds=box(x, y, rule.drill / 2, rule.drill / 2)))
 
-    def connect(self, source, target):
+    def connect(self, source, target, budget=1, rip_up=False):
         net = source.net
-        path = find_path(net, ports(source, self.geometry), ports(target, self.geometry),
-                         self.geometry)
+        forbidden = set()
+        # A failed-net probe may cross removable copper, but never fixed pads.
+        # Only nets intersecting the chosen path are ripped, in fixed order.
+        self.geometry.ignore_copper = rip_up
+        try:
+            while True:
+                path = find_path(net, ports(source, self.geometry), ports(target, self.geometry),
+                                 self.geometry, budget, forbidden)
+                if path is None:
+                    break
+                vias = []
+                conflict = None
+                drill = self.geometry.rules.by_net[net].drill / 2
+                for a, b in zip(path, path[1:]):
+                    if a[2] == b[2] or a[:2] in vias:
+                        continue
+                    x, y = a[0] * GRID, a[1] * GRID
+                    if any(overlap(box(x, y, drill, drill),
+                                   box(vx * GRID, vy * GRID, drill, drill),
+                                   self.geometry.rules.hole) for vx, vy in vias):
+                        conflict = a[:2]
+                        break
+                    vias.append(a[:2])
+                if conflict is None:
+                    break
+                forbidden.add(conflict)
+        finally:
+            self.geometry.ignore_copper = False
         if path is None:
             return False
+        if rip_up:
+            blockers = set()
+            self.geometry.blockers = blockers
+            try:
+                # Include the short off-grid terminal leads in blocker discovery.
+                first, last = path[0], path[-1]
+                clear = self.geometry.track_free(net, LAYERS[first[2]],
+                                                (source.x, source.y),
+                                                (first[0] * GRID, first[1] * GRID))
+                clear &= self.geometry.track_free(net, LAYERS[last[2]],
+                                                 (last[0] * GRID, last[1] * GRID),
+                                                 (target.x, target.y))
+                for a, b in zip(path, path[1:]):
+                    if a[2] != b[2]:
+                        clear &= self.geometry.via_free(net, a[0] * GRID, a[1] * GRID)
+                    else:
+                        clear &= self.geometry.track_free(net, LAYERS[a[2]],
+                                                         (a[0] * GRID, a[1] * GRID),
+                                                         (b[0] * GRID, b[1] * GRID))
+            finally:
+                self.geometry.blockers = None
+            if not clear:
+                return False
+            if blockers:
+                print(f"  rip net={net}: blocking nets {','.join(map(str, sorted(blockers)))}",
+                      flush=True)
+                self.rip_up(blockers)
+                self.displaced.update(blockers)
         # Merge collinear grid edges before writing, without changing geometry.
         points = [(x * GRID, y * GRID, LAYERS[layer]) for x, y, layer in path]
         self.add(net, (source.x, source.y), points[0][:2], points[0][2])
@@ -425,6 +546,60 @@ class Router:
         return True
 
 
+def without_ripped_originals(text, nets):
+    """Remove only top-level tracks/vias, preserving all other source bytes."""
+    if not nets:
+        return text
+    depth = 0
+    start = None
+    spans = []
+    for token in re.finditer(r'"(?:\\.|[^"\\])*"|[()]|[^\s()]+', text):
+        value = token.group()
+        if value == "(":
+            if depth == 1:
+                start = token.start()
+            depth += 1
+        elif value == ")":
+            depth -= 1
+            if depth == 1 and start is not None:
+                fragment = text[start:token.end()]
+                if re.match(r'\((segment|via)\s', fragment):
+                    item = parse(fragment)
+                    if int(child(item, "net")[1]) in nets:
+                        spans.append((start, token.end()))
+    for start, end in reversed(spans):
+        text = text[:start] + text[end:]
+    return text
+
+
+def route_net(router, net, terminals, name, budget=1, rip_up=False):
+    pending = sorted((p for p in terminals[net]
+                      if net not in router.removed_original_nets or not p.label.startswith("via:")),
+                     key=lambda p: (p.x, p.y, p.label))
+    total = len(pending)
+    if not pending:
+        return []
+    connected = [pending.pop(0)]
+    attempts = 0
+    # Prim ordering connects nearest pads first, with deterministic retries.
+    while pending:
+        pairs = sorted((abs(a.x - b.x) + abs(a.y - b.y), i, j)
+                       for i, a in enumerate(connected) for j, b in enumerate(pending))
+        success = False
+        for _, i, j in pairs:
+            attempts += 1
+            if router.connect(connected[i], pending[j], budget, rip_up):
+                connected.append(pending.pop(j))
+                success = True
+                break
+            if attempts >= (6 if rip_up else 3) * total:
+                break
+        if not success:
+            break
+    print(f"{name}: {len(connected)}/{total} terminals connected", flush=True)
+    return [p.label for p in pending]
+
+
 def route(source, destination):
     if source.resolve() == destination.resolve():
         raise ValueError("output must differ from input; in-place routing is forbidden")
@@ -437,40 +612,58 @@ def route(source, destination):
     geometry = Geometry(outline_bounds(board), rules)
     terminals = collect(board, geometry)
     router = Router(geometry)
-    failures = []
-    for net in sorted(terminals, key=lambda n: (net_order(names[n]), names[n], n)):
-        pending = sorted(terminals[net], key=lambda p: (p.x, p.y, p.label))
-        connected = [pending.pop(0)]
-        attempts = 0
-        # Prim ordering connects nearest pads first; failed edges can retry
-        # through another terminal as the net's spanning tree grows.
-        while pending:
-            pairs = sorted(((abs(a.x - b.x) + abs(a.y - b.y), i, j)
-                            for i, a in enumerate(connected) for j, b in enumerate(pending)))
-            success = False
-            for _, i, j in pairs:
-                attempts += 1
-                if router.connect(connected[i], pending[j]):
-                    connected.append(pending.pop(j))
-                    success = True
-                    break
-                # Bound work for an obstructed net, deterministically.
-                if attempts >= 3 * len(terminals[net]):
-                    break
-            if not success:
-                failures.append((names[net], [p.label for p in pending]))
-                break
-        print(f"{names[net]}: {len(connected)}/{len(terminals[net])} terminals connected",
+    order = lambda n: (net_order(names[n]), names[n], n)
+    failures = {}
+    print("Initial routing pass", flush=True)
+    for net in sorted(terminals, key=order):
+        pending = route_net(router, net, terminals, names[net])
+        if pending:
+            failures[net] = pending
+    passes = 0
+    print(f"Initial pass: {len(failures)} incomplete nets", flush=True)
+    while failures and passes < MAX_REROUTE_PASSES:
+        passes += 1
+        print(f"Rip-up pass {passes}/{MAX_REROUTE_PASSES}: {len(failures)} incomplete nets",
               flush=True)
+        failed_first = sorted(failures, key=order)
+        failures = {}
+        router.displaced.clear()
+        # Failed nets get the open corridors before displaced nets are retried.
+        # Increasing budgets are fixed by pass number, never time or randomness.
+        budget = 2 + (passes - 1) // 4
+        for net in failed_first:
+            router.rip_up({net})
+            pending = route_net(router, net, terminals, names[net], budget, rip_up=True)
+            router.displaced.discard(net)
+            if pending:
+                failures[net] = pending
+        for net in sorted(router.displaced, key=order):
+            pending = route_net(router, net, terminals, names[net], budget)
+            if pending:
+                failures[net] = pending
+            else:
+                failures.pop(net, None)
+        print(f"Rip-up pass {passes} complete: {len(failures)} incomplete nets", flush=True)
     # Preserve original bytes for all existing objects and all warning labels.
+    text = without_ripped_originals(text, router.removed_original_nets)
     closing = text.rfind(")")
     rendered = "".join("\n  " + dump(item) for item in router.additions)
     destination.write_text(text[:closing] + rendered + "\n" + text[closing:])
     print(f"Added {len(router.additions)} copper objects; wrote {destination}", flush=True)
     if failures:
-        print(f"INCOMPLETE: {len(failures)} unrouted nets:", file=sys.stderr)
-        for name, pads in failures:
-            print(f"  {name}: {', '.join(pads)}", file=sys.stderr)
+        print(f"INCOMPLETE after {passes} rip-up passes: {len(failures)} unrouted nets:",
+              file=sys.stderr)
+        lines = []
+        for net in sorted(failures, key=order):
+            line = f"{names[net]}: {', '.join(failures[net])}"
+            print(f"  {line}", file=sys.stderr)
+            lines.append("- " + line)
+        blocked = Path(__file__).resolve().parents[4] / "BLOCKED.md"
+        blocked.write_text(
+            "# BLOCKED — UNREVIEWED bench-prototype PCB\n\n"
+            f"A3 exhausted {passes} rip-up and reroute passes after the initial pass.\n"
+            f"{len(failures)} nets remain incomplete. Partial outputs must not replace the board.\n\n"
+            + "\n".join(lines) + "\n")
         return 2
     print("Grid routing completed; KiCad DRC and zone fill checks are still required.")
     return 0
