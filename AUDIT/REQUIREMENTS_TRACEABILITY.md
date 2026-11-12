@@ -249,7 +249,7 @@ The following are **not** requirements satisfied by code. They are evidence item
 | Gate | Definition | Current status | Blocking evidence |
 |---|---|---|---|
 | Gate 0 | Software simulation | **PASS, scoped** | 128/128 tests; fmt/clippy pass; firmware skeleton target check; UI build; copilot typecheck. Not a certification |
-| Gate 1 | Unpowered hardware verification | **Blocked** | No reviewed manufacturing-ready PCB/BOM/gerbers/assembly |
+| Gate 1 | Unpowered hardware verification | **Blocked** | Unreviewed schematic/BOM; no PCB/DRC/gerbers/assembly/review |
 | Gate 2 | Powered bench verification | **Blocked** | No HAL/timer/driver firmware image, bench fixture, dummy loads, E-stop |
 | Gate 3 | Vehicle electrical compatibility | **Blocked / Unverified** | No Evo pinout/connector/trigger/harness evidence |
 | Gate 4 | Controlled engine testing | **Blocked** | No bench engine, timing light, knock instrumentation, supervision |
@@ -272,7 +272,7 @@ A numeric percentage would be misleading because requirements differ in scope, e
 | Calibration | Tables, checksum revisions, wizard, preflight | Unkeyed hash; warnings not blocking; no durable audit trail |
 | Protocol/UI | CRC frame tests; UI typecheck/build; copilot typecheck | No auth/CSRF; header not CRC-covered; no Electron/browser/live LLM test |
 | Firmware | no_std skeleton target check; 5 tests | No HAL/timer/driver/watchdog; not a controller |
-| Hardware | Requirements only | No reviewed schematic/PCB/BOM/gerbers/bench |
+| Hardware | Unreviewed schematic/BOM/ERC; no PCB/DRC/gerbers | No manufacturing package, thermal/EMC, bench |
 | Evo evidence | Fail-closed `vehicle.rs` profile | All 15 items unverified; physical configuration refused |
 
 The dominant pattern is: **host software exists for the core algorithms; hardware, vehicle evidence, security, timing and independent review are absent.**
