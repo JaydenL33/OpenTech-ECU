@@ -141,6 +141,15 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 .hint { font-size: 0.7rem; color: #748596; line-height: 1.55; margin: 10px 0 0; }
 .global-error { display: flex; justify-content: space-between; gap: 12px; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.35); color: #ffc4c4; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.8rem; }
 .global-error button { border: 0; background: transparent; color: inherit; text-decoration: underline; }
+.warning-banner { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.warning-list { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.72rem; }
+.warning-list span { display: inline-flex; align-items: center; gap: 6px; }
+.warning-footnote { font-size: 0.66rem; color: #d8a3a3; }
+.warning-summary { margin-bottom: 12px; }
+.warning-table-wrap { margin-top: 12px; }
+.warning-table input { width: 104px; padding: 5px 6px; font-size: 0.72rem; font-family: ui-monospace, monospace; }
+.warning-group-row td { background: #0c1219; color: #7f93a6; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: inherit; }
+.warning-row-crossed td { background: rgba(255,107,107,0.045); }
 
 .map-sets-bar { background: linear-gradient(180deg, rgba(20,27,36,0.96), rgba(13,18,24,0.98)); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
 .map-sets-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }

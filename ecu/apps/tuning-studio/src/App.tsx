@@ -14,6 +14,8 @@ import { CalibrationPage } from "./pages/Calibration";
 import { LogsPage } from "./pages/Logs";
 import { LogViewerPage } from "./pages/LogViewer";
 import { CopilotPage } from "./pages/Copilot";
+import { WarningsPage } from "./pages/Warnings";
+import { WarningBanner } from "./components/WarningBanner";
 import { Badge } from "./components/ui";
 
 type PageId =
@@ -29,6 +31,7 @@ type PageId =
   | "calibration"
   | "logs"
   | "logviewer"
+  | "warnings"
   | "copilot";
 
 const NAV: { id: PageId; label: string; group: string }[] = [
@@ -44,6 +47,7 @@ const NAV: { id: PageId; label: string; group: string }[] = [
   { id: "calibration", label: "Calibration audit", group: "Service" },
   { id: "logs", label: "Logs & evidence", group: "Service" },
   { id: "logviewer", label: "Log viewer", group: "Service" },
+  { id: "warnings", label: "Warning limits", group: "Service" },
   { id: "copilot", label: "Tuning Copilot", group: "Assist" },
 ];
 
@@ -208,6 +212,7 @@ export default function App() {
                 : page === "calibration" ? "Calibration audit"
                 : page === "logs" ? "Evidence & logs"
                 : page === "logviewer" ? "Log viewer"
+                : page === "warnings" ? "Channel warning limits"
                 : page === "copilot" ? "Tuning Copilot"
                 : "Live engine overview"
               }</h1>
@@ -225,6 +230,7 @@ export default function App() {
             </div>
           </header>
           {error && <div className="global-error"><span>{error}</span><button onClick={() => setError(null)}>dismiss</button></div>}
+          <WarningBanner />
           {page === "dashboard" && <DashboardPage />}
           {page === "designer" && <DashboardDesignerPage />}
           {page === "cylinders" && <CylindersPage />}
@@ -237,6 +243,7 @@ export default function App() {
           {page === "calibration" && <CalibrationPage />}
           {page === "logs" && <LogsPage />}
           {page === "logviewer" && <LogViewerPage />}
+          {page === "warnings" && <WarningsPage />}
           {page === "copilot" && <CopilotPage />}
           <footer className="app-footer">
             OpenTech-ECU is an independent Rust platform based on Speeduino. Speeduino C++ is retained as the
