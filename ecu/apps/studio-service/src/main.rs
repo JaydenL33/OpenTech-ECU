@@ -370,7 +370,13 @@ async fn edit_table(
     if !pre.virtual_run_allowed {
         return Err(ApiError::bad(pre.summary));
     }
+    // The running/paused engine owns a snapshot. Rebuild it so a resumed run
+    // actually uses the newly sealed map instead of stale table data.
+    let new_engine = SimEngine::new(next.clone(), session.scenario.clone())
+        .map_err(|e| ApiError::internal(e.to_string()))?;
     session.calibration = next;
+    session.engine = new_engine;
+    session.frame_cursor = 0;
     let snapshot = session.calibration.clone();
     session.history.push(snapshot);
     Ok(Json(json!({

@@ -67,6 +67,13 @@ export function MixturePage() {
       setError("Select at least one proposed cell.");
       return;
     }
+    if (
+      !window.confirm(
+        `Apply ${selected.size} fuel-cell corrections as a new sealed revision?\n\nThis changes the virtual calibration only. The maps remain unvalidated; no physical outputs exist.`,
+      )
+    ) {
+      return;
+    }
     setBusy("Pausing engine and applying selected cells…");
     setError(null);
     try {
