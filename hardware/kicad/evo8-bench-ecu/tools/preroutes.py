@@ -34,6 +34,8 @@ PREROUTES = (
          size=0.6, drill=0.3),
     dict(id='P15', net='GND', layer='F.Cu', start=(159.50, 130.95),
          end=(156.30, 130.95), width=0.2),
+    dict(id='P16', net='GND', layer='F.Cu', start=(23.70, 90.225),
+         end=(24.925, 90.775), width=0.2),
 )
 
 SERVED_PADS = (
@@ -41,4 +43,5 @@ SERVED_PADS = (
     ('U200', '74'), ('U200', '99'), ('U104', '3'),
     ('Y200', '4'),
     ('C201', '2'),
+    ('U104', '5'),
 )

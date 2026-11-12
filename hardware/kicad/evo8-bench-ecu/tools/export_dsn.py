@@ -44,7 +44,7 @@ def matches(item, route):
 def check_wiring(wiring):
     """Require the sixteen protected items, with their exact DSN geometry."""
     wires, vias = children(wiring, 'wire'), children(wiring, 'via')
-    assert len(wires) == 10 and len(vias) == 6, 'pre-route DSN counts'
+    assert len(wires) == 11 and len(vias) == 6, 'pre-route DSN counts'
     actual = Counter()
     for item in wires + vias:
         assert children(item, 'type') == [[Atom('type'), Atom('protect')]], 'unprotected pre-route'
@@ -170,7 +170,7 @@ def main():
     args.out.write_text(dump(tree) + '\n')
     print({'layers': len(layers), 'placements': 305, 'multi_pad_nets': len(multi),
            'exported_nets': len(exported_nets),
-           'prerouted_wires': 10, 'prerouted_vias': 6}, flush=True)
+           'prerouted_wires': 11, 'prerouted_vias': 6}, flush=True)
 
 
 if __name__ == '__main__':
