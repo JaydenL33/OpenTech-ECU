@@ -150,6 +150,8 @@ export interface TelemetryFrame {
   fuel_cut: boolean;
   spark_cut: boolean;
   knock_level: number;
+  /** Extra fuel from accel enrichment (%); 0 from the simulator, real from imported logs. */
+  accel_enrich_pct?: number;
   boost_kpa: number;
   speed_kph: number;
   gear: number;
@@ -330,6 +332,43 @@ export interface IgnitionRecommendationResponse {
   writes_calibration: false;
   advisory_only: true;
   notice: string;
+}
+
+export interface ImportOptions {
+  source_name?: string;
+  stoich_afr?: number;
+  exhaust_delay_ms?: number;
+  bank?: number;
+  assume_open_loop?: boolean;
+  assume_sequential_sync?: boolean;
+  assume_pressures_ok?: boolean;
+  confirm_recorded_with_loaded_calibration?: boolean;
+  max_ve_mismatch?: number;
+}
+
+export interface VeIdentityCheck {
+  compared_rows: number;
+  median_abs_rel_diff: number;
+  p75_abs_rel_diff: number;
+  max_abs_rel_diff: number;
+  tolerance: number;
+}
+
+/** What the CSV importer assumed or could not verify. Shown before any proposal is trusted. */
+export interface ImportReport {
+  source_name: string;
+  delimiter: string;
+  rows_read: number;
+  rows_imported: number;
+  rows_skipped: number;
+  skipped_examples: string[];
+  median_sample_interval_ms: number;
+  columns_mapped: Record<string, string>;
+  columns_ignored: string[];
+  assumptions: string[];
+  warnings: string[];
+  ve_identity: VeIdentityCheck | null;
+  content_sha256: string;
 }
 
 export interface MixtureMapReport {

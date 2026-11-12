@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use anyhow::Context;
 use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
-use axum::extract::{Query, State};
+use axum::extract::{DefaultBodyLimit, Query, State};
 use axum::http::{header, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
@@ -304,6 +304,11 @@ fn build_router(state: AppState, static_dir: &std::path::Path) -> Router {
         .route(
             "/api/mixture/analyze-current",
             post(mixture_analyze_current),
+        )
+        .route(
+            "/api/mixture/import-csv",
+            // Real datalogs are larger than axum's 2 MB JSON default.
+            post(mixture_import_csv).layer(DefaultBodyLimit::max(IMPORT_BODY_LIMIT)),
         )
         .route("/api/mixture/preview", post(mixture_preview))
         .route("/api/mixture/apply", post(mixture_apply))
@@ -855,6 +860,73 @@ async fn mixture_analyze_current(
     session.last_report = Some(report.clone());
     session.last_analysis_log = Some(log.clone());
     Ok(Json(json!({ "report": report })))
+}
+
+/// Largest accepted import request body (CSV text inside JSON).
+const IMPORT_BODY_LIMIT: usize = 48 * 1024 * 1024;
+
+#[derive(Deserialize)]
+struct ImportCsvRequest {
+    csv: String,
+    #[serde(default)]
+    import: ecu_lambda::ImportOptions,
+    #[serde(default)]
+    analysis: AnalyzeOptions,
+}
+
+/// Offline analysis of an *external* wideband datalog. The CSV is converted to
+/// the analyser's input with every assumption listed (`import_report`), checked
+/// against the loaded calibration's VE table, then analysed exactly like a
+/// simulator log. The result is stored as the current report, so the usual
+/// preview -> explicit approval -> apply -> undo chain applies unchanged.
+/// Nothing is written to the calibration here.
+async fn mixture_import_csv(
+    State(state): State<AppState>,
+    Json(body): Json<ImportCsvRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let cal = {
+        let session = state
+            .inner
+            .lock()
+            .map_err(|_| ApiError::internal("state poisoned"))?;
+        session.calibration.clone()
+    };
+    let opts = MixtureMapOptions {
+        min_samples_per_cell: body.analysis.min_samples.unwrap_or(20),
+        max_cell_correction: body.analysis.max_cell_correction.unwrap_or(0.05),
+        allow_wot: body.analysis.allow_wot,
+        ..MixtureMapOptions::default()
+    };
+    let import_opts = body.import;
+    let csv = body.csv;
+    let (log, import_report, report) = tokio::task::spawn_blocking(move || {
+        let imported = ecu_lambda::import_csv(&csv, &cal, &import_opts)?;
+        let report = analyze_log(&cal, &imported.log, &opts).map_err(|e| e.to_string())?;
+        Ok::<_, Box<dyn std::error::Error + Send + Sync>>((imported.log, imported.report, report))
+    })
+    .await
+    .map_err(|e| ApiError::internal(e.to_string()))?
+    .map_err(|e| ApiError::bad(e.to_string()))?;
+    let mut session = state
+        .inner
+        .lock()
+        .map_err(|_| ApiError::internal("state poisoned"))?;
+    // The calibration may have been edited while the analysis ran; a proposal
+    // against a stale base would be refused at apply time anyway, but say so now.
+    if session.calibration.checksum != report.calibration_checksum {
+        return Err(ApiError::conflict(
+            "calibration changed during import; re-run the import against the current calibration",
+        ));
+    }
+    session.last_report = Some(report.clone());
+    session.last_analysis_log = Some(log.clone());
+    Ok(Json(json!({
+        "report": report,
+        "import_report": import_report,
+        "log": { "metadata": log.metadata, "frames": log.frames.len(), "events": log.events.len() },
+        "notice": "External log analysed offline. Nothing was applied. Review the assumptions, \
+                   then preview and explicitly approve any proposal.",
+    })))
 }
 
 #[derive(Deserialize)]
@@ -1951,6 +2023,226 @@ mod http_tests {
             assert_eq!(status, StatusCode::OK, "{undone}");
         }
         assert_eq!(checksum(&app).await, base, "rollback must restore base");
+    }
+
+    async fn get_text(app: &Router, uri: &str) -> String {
+        let response = app
+            .clone()
+            .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let bytes = axum::body::to_bytes(response.into_body(), 64 * 1024 * 1024)
+            .await
+            .unwrap();
+        String::from_utf8(bytes.to_vec()).unwrap()
+    }
+
+    /// External-datalog path over HTTP: the CSV a user downloads is posted back
+    /// as if it came from another logger. Import assumptions are reported, the
+    /// VE identity is checked against the loaded table, and the same
+    /// review -> approval -> apply -> undo chain protects the calibration.
+    #[tokio::test]
+    async fn external_csv_import_review_apply_rollback_and_refusals_over_http() {
+        let (app, state) = test_app();
+        let base = checksum(&app).await;
+        let (status, _) = call(
+            &app,
+            "POST",
+            "/api/sim/start",
+            Some(json!({ "scenario_id": "mixture_dwell" })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK);
+        state.inner.lock().unwrap().engine.run_to_end();
+        let csv = get_text(&app, "/api/log.csv").await;
+        let delay = by_id("mixture_dwell").unwrap().exhaust_delay_ms;
+        assert_eq!(checksum(&app).await, base);
+
+        // --- refusal 1: no VE column to verify and no explicit confirmation.
+        // Dropping the ve column from the CSV leaves a log the importer cannot
+        // tie to the loaded table.
+        let header = csv.lines().next().unwrap();
+        let ve_idx = header.split(',').position(|h| h == "ve").unwrap();
+        let strip_ve = |text: &str| -> String {
+            text.lines()
+                .map(|l| {
+                    l.split(',')
+                        .enumerate()
+                        .filter(|(i, _)| *i != ve_idx)
+                        .map(|(_, c)| c)
+                        .collect::<Vec<_>>()
+                        .join(",")
+                })
+                .collect::<Vec<_>>()
+                .join("\n")
+        };
+        let no_ve = strip_ve(&csv);
+        let (status, err) = call(
+            &app,
+            "POST",
+            "/api/mixture/import-csv",
+            Some(json!({ "csv": no_ve, "import": { "exhaust_delay_ms": delay } })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::BAD_REQUEST, "{err}");
+        assert!(err["message"].to_string().contains("no VE column"), "{err}");
+        assert!(state.inner.lock().unwrap().last_report.is_none());
+
+        // --- refusal 2: wrong VE table in the log.
+        let doctored: String = csv
+            .lines()
+            .enumerate()
+            .map(|(n, l)| {
+                if n == 0 {
+                    return l.to_string();
+                }
+                l.split(',')
+                    .enumerate()
+                    .map(|(i, c)| {
+                        if i == ve_idx {
+                            format!("{:.2}", c.parse::<f32>().unwrap() * 1.2)
+                        } else {
+                            c.to_string()
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join(",")
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
+        let (status, err) = call(
+            &app,
+            "POST",
+            "/api/mixture/import-csv",
+            Some(json!({ "csv": doctored, "import": { "exhaust_delay_ms": delay } })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::BAD_REQUEST, "{err}");
+        assert!(
+            err["message"].to_string().contains("different table"),
+            "{err}"
+        );
+
+        // --- unverifiable log accepted only with the explicit assertion, and the
+        // assertion is recorded as unverified.
+        let (status, asserted) = call(
+            &app,
+            "POST",
+            "/api/mixture/import-csv",
+            Some(json!({
+                "csv": no_ve,
+                "import": { "exhaust_delay_ms": delay,
+                            "confirm_recorded_with_loaded_calibration": true },
+                "analysis": { "min_samples": 12 }
+            })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "{asserted}");
+        assert!(asserted["import_report"]["ve_identity"].is_null());
+        assert!(asserted["import_report"]["assumptions"]
+            .to_string()
+            .contains("NOT verified"));
+
+        // --- verified import.
+        let (status, res) = call(
+            &app,
+            "POST",
+            "/api/mixture/import-csv",
+            Some(json!({
+                "csv": csv,
+                "import": { "source_name": "bench-run-1.csv", "exhaust_delay_ms": delay },
+                "analysis": { "min_samples": 12 }
+            })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "{res}");
+        assert_eq!(
+            checksum(&app).await,
+            base,
+            "import must not touch the calibration"
+        );
+        let ir = &res["import_report"];
+        assert!(ir["ve_identity"]["median_abs_rel_diff"].as_f64().unwrap() < 0.01);
+        assert_eq!(ir["rows_skipped"], 0);
+        assert_eq!(ir["content_sha256"].as_str().unwrap().len(), 64);
+        let report = &res["report"];
+        assert_eq!(report["hard_faults"].as_array().unwrap().len(), 0);
+        assert!(report["closed_loop_samples_used"].as_u64().unwrap() > 0);
+        assert!(report["open_loop_samples_used"].as_u64().unwrap() > 0);
+        let proposal = report["proposal"].clone();
+        assert!(proposal.is_object(), "{report}");
+        assert_eq!(proposal["source_scenario"], "external-csv:bench-run-1.csv");
+        assert_eq!(proposal["requires_approval"], true);
+        eprintln!(
+            "e2e-import: rows={} used={} (closed={} open={}) cells={} ve_median_diff={:.5}",
+            ir["rows_imported"],
+            report["samples_used"],
+            report["closed_loop_samples_used"],
+            report["open_loop_samples_used"],
+            proposal["cells"].as_array().unwrap().len(),
+            ir["ve_identity"]["median_abs_rel_diff"].as_f64().unwrap()
+        );
+
+        // Imported analysis is the "current report": engine is still running
+        // the scenario session, so apply is refused until paused; and approval
+        // is mandatory.
+        let (status, _) = call(
+            &app,
+            "POST",
+            "/api/mixture/apply",
+            Some(json!({ "proposal": proposal, "approve": true })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::CONFLICT);
+        call(&app, "POST", "/api/sim/pause", None).await;
+        let (status, preview) = call(
+            &app,
+            "POST",
+            "/api/mixture/preview",
+            Some(json!({ "proposal": proposal })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "{preview}");
+        assert_eq!(checksum(&app).await, base);
+        let (status, _) = call(
+            &app,
+            "POST",
+            "/api/mixture/apply",
+            Some(json!({ "proposal": proposal })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::BAD_REQUEST);
+        assert_eq!(checksum(&app).await, base);
+        let (status, applied) = call(
+            &app,
+            "POST",
+            "/api/mixture/apply",
+            Some(json!({ "proposal": proposal, "approve": true })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "{applied}");
+        assert_eq!(applied["diff"], preview["diff"]);
+        assert_ne!(checksum(&app).await, base);
+
+        // The same external log is now stale against the edited table.
+        let (status, stale) = call(
+            &app,
+            "POST",
+            "/api/mixture/import-csv",
+            Some(json!({ "csv": csv, "import": { "exhaust_delay_ms": delay } })),
+        )
+        .await;
+        eprintln!("e2e-import: re-import after apply -> {status} {stale}");
+        assert_eq!(status, StatusCode::BAD_REQUEST, "{stale}");
+        assert!(
+            stale["message"].to_string().contains("different table"),
+            "{stale}"
+        );
+
+        let (status, _) = call(&app, "POST", "/api/calibration/undo", None).await;
+        assert_eq!(status, StatusCode::OK);
+        assert_eq!(checksum(&app).await, base, "rollback restores base exactly");
     }
 
     #[tokio::test]

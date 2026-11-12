@@ -591,3 +591,134 @@ cargo test -p studio-service dwell_scenario -- --nocapture
 7. No verified Evo VIII data; starter map stays a labelled non-operational template.
 8. Review request: the variance-statistic change (defect 2) alters gate semantics and needs an
    independent look before it is treated as settled.
+
+## Round 7 (2026-11-13, orchestrator "execution round 3") — external wideband datalog import, accel-enrichment channel
+
+Scope: `ecu-types` (one new frame field), `ecu-lambda` (new `log_import` module, one analyser check),
+`ecu-simulator` (tests + one `0.0` field), `studio-service` (one endpoint), `tuning-studio` UI. No KiCad,
+firmware real-time or hardware file touched. Simulation/offline only; no gate status changes.
+
+### Starting point (read from disk)
+Round-6 open items 2 (σ column not displayed) and 3 (no accel-enrichment channel), plus a gap the earlier
+rounds never listed: **offline analysis only accepted logs produced by the built-in simulator**
+(`/api/mixture/analyze*` run a scenario or the live session). A user's own wideband datalog could not be
+analysed at all, which is the point of "offline lambda VE correction".
+
+### Changes
+1. `ecu-types`: `TelemetryFrame.accel_enrich_pct` (`#[serde(default)]`, percent extra fuel, 0 = none). The
+   simulator does not model enrichment and always writes 0.0.
+2. `ecu-lambda::mixture_map`: new option `max_accel_enrich_pct` (default 0.5, **unvalidated guess**). Any frame
+   in the latency window with enrichment above it (or non-finite = unknown) rejects the sample as
+   `WINDOW_ACCEL_ENRICH`. Previously transient enrichment was inferred from TPS/MAP/RPM rates only.
+3. `ecu-lambda::log_import` (new, `import_csv`): CSV/TSV/`;` datalog → `LogFile` for the existing analyser.
+   - Alias-based header mapping (time ms or s, rpm, map, tps, clt, lambda or AFR, target, stft/ltft,
+     closed_loop, sync, pressures, accel_enrich_pct, misfire/faults, ve, …); units/comment rows skipped and counted.
+   - **Never fills a gap silently.** Hard refusals: no coolant column; no closed-loop flag unless
+     `assume_open_loop`; closed-loop rows without trim columns; time going backwards; calibration identity
+     not established (below). Anything else missing is either an explicit user assertion
+     (`assume_sequential_sync`, `assume_pressures_ok`) or leaves the learning gate rejecting rows. Each
+     substitution is returned in `ImportReport.assumptions`; limits (no fault columns, no AE column,
+     coarse sampling) in `warnings`.
+   - **Calibration identity.** A VE correction is a ratio against the table that was running. If the log has a
+     `ve` column it is compared with the loaded table (75th-percentile |ratio − 1| ≤ 2 %, else refused). With no
+     `ve` column the human must set `confirm_recorded_with_loaded_calibration`; the report then says
+     "NOT verified".
+4. `studio-service`: `POST /api/mixture/import-csv` (48 MB body limit). Result is stored as the current
+   report, so the unchanged preview → explicit approval → apply (paused only) → undo chain applies.
+   Import never writes the calibration.
+5. UI (`Mixture.tsx`): collapsible import panel (file, stoich AFR, exhaust delay, the four assertions as
+   labelled checkboxes), an import report block (VE-identity result or "NOT verified", warnings, assumptions,
+   column mapping, SHA-256), and the previously missing raw/corrected σ columns. A refused import clears any
+   earlier report so stale results cannot look like this file's result.
+
+### Defect found while testing (and fixed)
+The first identity statistic was the **median** with a 3 % tolerance. In the HTTP test, re-importing the old
+log after a 5 %-per-cell correction was applied was refused only because the median came out 3.1 % vs 3.0 % —
+a coin-flip margin. Changed to the 75th percentile with 2 % tolerance; the same case now measures p75 3.2 %
+vs 2.0 %. Both numbers are simulator data. The 2 % figure is still a guess: it must stay above integer-VE
+rounding of real ECU logs (≈1 % at VE 50) and has not been checked against any real log.
+
+### Regression caught by the existing suite
+`ecu-simulator/tests/cylinder_counts.rs::inline4_outputs_match_pre_change_baseline` failed after adding the
+frame field (it hashes the whole pretty-printed log). Rather than re-baselining, the test now asserts every
+`accel_enrich_pct` is exactly `0.0`, removes that line (and the comma it leaves), and requires the
+**original, unchanged** baseline hash to match. It does, so simulator output is otherwise byte-identical.
+
+### Observed results (this session; cargo 1.99.1, same lld shim as round 5 — no system C linker)
+| Command | Result |
+|---|---|
+| `cargo fmt --all -- --check` (ecu/) | rc 0 |
+| `cargo clippy --workspace --all-targets --locked --offline -- -D warnings` | no warnings |
+| `cargo test --workspace --locked --offline` | **205 passed, 0 failed** (192 before + 13 new) |
+| `npx tsc --noEmit` / `npx vite build` | rc 0 / ok (348.7 kB js) |
+
+New tests: `ecu-lambda` ×11 (10 importer: lean log → proposal with `external-csv:` provenance; AFR→λ with
+stoich as a real input; refusal without loop state; closed-loop-without-trim refusal; identity confirmed /
+verified / 10 %-mismatch refused; backwards time and missing coolant; units+comment rows; logged AE blocks
+samples and NaN AE is "unknown"; missing sync/pressure assertions reject rows instead of passing them;
+stuck wideband still caught on imported data; plus 1 analyser AE test); `ecu-simulator` ×1
+(`exported_csv_round_trips_through_external_import_to_the_same_proposal`); `studio-service` ×1
+(`external_csv_import_review_apply_rollback_and_refusals_over_http`).
+
+Raw numbers (`cargo test … -- --nocapture`):
+```
+roundtrip (sim mixture_dwell -> to_csv -> import_csv -> analyze): direct used=941 cells=5 | imported used=941 cells=5
+   same cell set; every proposed VE within 1 % of the direct analysis
+HTTP import of the same CSV: rows=2913 used=937 (closed=384 open=553) cells=5 ve_median_diff=0.00003
+HTTP re-import after applying the proposal: 400, p75 3.2 % > 2.0 % "different table"
+```
+(937 vs 941 used: the importer has no `lambda_age`/`bank`/wideband-state fields from the CSV, so 4 samples
+differ at the edges; the proposal is the same.)
+
+### HTTP behaviours asserted
+CSV without `ve` and without confirmation → 400, no report stored · VE column ×1.2 → 400 "different table" ·
+same CSV with explicit confirmation → 200, `ve_identity` null and "NOT verified" in assumptions · verified
+import → 200, calibration checksum unchanged, `source_scenario = external-csv:<name>` · apply while running
+→ 409 · apply without `approve` → 400 · approved apply → diff identical to the reviewed preview · undo →
+exact original checksum.
+
+### What this does and does not show
+- **Shows (simulation):** the import path is wired end to end and its refusals work; the CSV the app itself
+  exports survives the external path with no user assertions; provenance of the imported source is carried
+  into the proposal.
+- **Does not show:** that any *real* datalog imports. No real wideband/Speeduino/Link log exists in the
+  repository and none was invented — header aliases (`ALIASES` in `log_import.rs`) are guesses at common
+  names, not verified against MegaLogViewer/TunerStudio/other exports. The round trip is self-consistency of
+  our own format. `stft`/`ltft` are assumed fractions (percent columns would be misread by 100×; no unit
+  detection exists — see blockers). Time and MAP units are assumed (s/ms, kPa).
+- Not rendered in a browser (typecheck + build only); file-input flow untested. Gate thresholds unchanged and
+  unvalidated (250 ms, 0.06, 0.30, 5 %, 0.5 % AE, 2 % VE-identity).
+
+### Proposed traceability rows (for the orchestrator to merge; shared file not edited by this workstream)
+| ID | Requirement | Evidence | Status | Residual risk |
+|---|---|---|---|---|
+| LAM-014 | Offline lambda correction from an external datalog with explicit assumptions | `ecu-lambda/src/log_import.rs` (10 tests), sim round-trip test, HTTP e2e | Partial (host, sim data) | No real log tried; header aliases and trim/MAP units assumed |
+| LAM-015 | Correction only against the VE table the log was recorded with | VE-identity check + explicit unverified confirmation, HTTP refusal tests | Partial | 2 % p75 tolerance is a guess; unverifiable when log lacks VE |
+| LAM-016 | Accel enrichment excludes samples | `max_accel_enrich_pct`, `WINDOW_ACCEL_ENRICH` tests | Partial | Simulator has no AE model; only imported/unit-test data exercises it |
+
+### Gate status
+Unchanged. No H4+ approval implied; AI cannot grant any.
+
+### Reproduction
+```bash
+cd ecu
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo test --workspace --locked
+cargo test -p ecu-simulator round_trips -- --nocapture
+cargo test -p studio-service external_csv -- --nocapture
+(cd apps/tuning-studio && npx tsc --noEmit && npx vite build)
+```
+
+### Remaining blockers / next tasks (tuning)
+1. Reproduce on a machine with a normal C toolchain (still the lld shim).
+2. **Needs a human:** supply one real datalog (any ECU + wideband) with its calibration to prove header
+   mapping, units and the 2 % identity tolerance; until then the importer is only self-tested.
+3. Importer unit handling: percent trims, psi/bar MAP, AFR-vs-lambda ambiguity in unlabelled columns; a
+   Speeduino/TunerStudio `.msl` header (units row, `Time` in s) is handled only by the generic skip rule.
+4. UI never rendered in a browser; file upload flow untested (needs Playwright/browser session).
+5. Thresholds need real logs. Ticker/WebSocket/concurrency still untested.
+6. Tauri vs Electron (human decision); no `src-tauri`.
+7. No verified Evo VIII data; starter map stays a labelled non-operational template.
+8. Review request: the variance-statistic change (round 6) and the VE-identity statistic (this round) both
+   alter acceptance semantics and need an independent look.

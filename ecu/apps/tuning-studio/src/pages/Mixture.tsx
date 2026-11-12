@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { api } from "../api";
 import { useApp } from "../context";
-import type { MixtureMapReport, MixturePreview } from "../types";
+import type { ImportOptions, ImportReport, MixtureMapReport, MixturePreview } from "../types";
 import { Panel, Badge, Stat } from "../components/ui";
 
 const statusTone: Record<string, "good" | "warn" | "danger" | "neutral" | "info"> = {
@@ -28,6 +28,17 @@ export function MixturePage() {
   // diff for the cells that would be applied.
   const [review, setReview] = useState<MixturePreview | null>(null);
   const [reviewAck, setReviewAck] = useState(false);
+  // External-log import: the file text and the assertions the human makes about it.
+  const [importFile, setImportFile] = useState<{ name: string; text: string } | null>(null);
+  const [importOpts, setImportOpts] = useState<ImportOptions>({
+    stoich_afr: 14.7,
+    exhaust_delay_ms: 60,
+    assume_open_loop: false,
+    assume_sequential_sync: false,
+    assume_pressures_ok: false,
+    confirm_recorded_with_loaded_calibration: false,
+  });
+  const [importReport, setImportReport] = useState<ImportReport | null>(null);
 
   const clearReview = () => {
     setReview(null);
@@ -39,7 +50,8 @@ export function MixturePage() {
     clearReview();
   };
 
-  const takeReport = (r: MixtureMapReport) => {
+  const takeReport = (r: MixtureMapReport, imported: ImportReport | null = null) => {
+    setImportReport(imported);
     setReport(r);
     setSelected(new Set((r.proposal?.cells ?? []).map((c) => `${c.row},${c.col}`)));
     setUndoAvailable(false);
@@ -98,6 +110,44 @@ export function MixturePage() {
       setBusy(null);
     }
   };
+
+  const pickFile = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      setImportFile({ name: file.name, text: await file.text() });
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const runImport = async () => {
+    if (!importFile) return;
+    setBusy("Importing the datalog and applying the learning gates (nothing is stored)…");
+    setError(null);
+    try {
+      const result = await api.mixtureImportCsv(
+        importFile.text,
+        { ...importOpts, source_name: importFile.name },
+        { min_samples: 20, max_cell_correction: 0.05, allow_wot: allowWot },
+      );
+      takeReport(result.report, result.import_report);
+      setMessage(
+        `Imported ${result.import_report.rows_imported} rows from ${importFile.name}: ${result.report.samples_used} accepted / ${result.report.samples_rejected} rejected samples.`,
+      );
+    } catch (e) {
+      // A refusal (missing assumptions, wrong VE table, ...) must not leave a
+      // previous report looking like the result of this file.
+      setReport(null);
+      setImportReport(null);
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const setOpt = <K extends keyof ImportOptions>(key: K, value: ImportOptions[K]) =>
+    setImportOpts((o) => ({ ...o, [key]: value }));
 
   const apply = async () => {
     if (!report?.proposal) return;
@@ -180,6 +230,67 @@ export function MixturePage() {
           <input type="checkbox" checked={allowWot} onChange={(e) => setAllowWot(e.target.checked)} />
           Include high-load / WOT cells (explicit trust-boundary override; still approval-gated)
         </label>
+        <details className="import-panel" data-testid="mixture-import">
+          <summary>Analyze an external datalog (CSV)</summary>
+          <p className="hint">
+            Offline only. Needs columns for time, rpm, map, tps, coolant and lambda (or AFR). Anything the file
+            does not contain must be asserted below, and each assertion is recorded in the report as an
+            unverified assumption. A <code>ve</code> column lets the tool check the log was recorded with the
+            loaded VE table; without one you must confirm that yourself.
+          </p>
+          <div className="button-row">
+            <input
+              type="file"
+              accept=".csv,.tsv,.txt,.msl,text/csv"
+              aria-label="Datalog file"
+              onChange={(e) => void pickFile(e.target.files?.[0])}
+            />
+            <label>
+              Stoich AFR{" "}
+              <input
+                type="number"
+                step="0.01"
+                value={importOpts.stoich_afr}
+                onChange={(e) => setOpt("stoich_afr", Number(e.target.value))}
+                style={{ width: 70 }}
+              />
+            </label>
+            <label>
+              Exhaust delay ms{" "}
+              <input
+                type="number"
+                value={importOpts.exhaust_delay_ms}
+                onChange={(e) => setOpt("exhaust_delay_ms", Number(e.target.value))}
+                style={{ width: 70 }}
+              />
+            </label>
+          </div>
+          {(
+            [
+              ["assume_open_loop", "Log has no closed-loop flag: the engine was in open loop (no lambda trim) the whole time"],
+              ["assume_sequential_sync", "Log has no sync column: assume sequential sync throughout"],
+              ["assume_pressures_ok", "Log has no fuel/oil pressure: assume pressures were healthy (low pressure will not be detected)"],
+              [
+                "confirm_recorded_with_loaded_calibration",
+                "Log has no VE column: I confirm it was recorded with exactly the VE table currently loaded (not verified by the tool)",
+              ],
+            ] as [keyof ImportOptions, string][]
+          ).map(([key, label]) => (
+            <label className="checkbox" key={key}>
+              <input
+                type="checkbox"
+                checked={!!importOpts[key]}
+                onChange={(e) => setOpt(key, e.target.checked)}
+              />
+              {label}
+            </label>
+          ))}
+          <div className="button-row">
+            <button className="button primary" onClick={runImport} disabled={!!busy || !importFile}>
+              Import and analyze{importFile ? ` ${importFile.name}` : ""}
+            </button>
+          </div>
+        </details>
         {busy && <div className="inline-status">{busy}</div>}
         {error && <div className="alert danger">{error}</div>}
         {message && <div className="alert info">{message}</div>}
@@ -206,6 +317,44 @@ export function MixturePage() {
               <Stat label="Ignition" value={report.ignition_untouched ? "untouched" : "CHANGED"} tone="good" />
             </div>
 
+            {importReport && (
+              <div className="alert warn" data-testid="mixture-import-report">
+                <strong>
+                  External log {importReport.source_name}: {importReport.rows_imported}/{importReport.rows_read} rows
+                  imported, median interval {importReport.median_sample_interval_ms.toFixed(0)} ms
+                </strong>
+                <div className="muted">
+                  {importReport.ve_identity
+                    ? `VE identity checked: p75 |Δ| ${(importReport.ve_identity.p75_abs_rel_diff * 100).toFixed(2)}% vs ${(importReport.ve_identity.tolerance * 100).toFixed(1)}% tolerance over ${importReport.ve_identity.compared_rows} rows.`
+                    : "VE identity NOT verified — you asserted this log matches the loaded table."}{" "}
+                  SHA-256 {importReport.content_sha256.slice(0, 12)}…
+                </div>
+                {importReport.warnings.length > 0 && (
+                  <ul>
+                    {importReport.warnings.map((w) => (
+                      <li key={w}>{w}</li>
+                    ))}
+                  </ul>
+                )}
+                <details>
+                  <summary>Assumptions made on your behalf ({importReport.assumptions.length})</summary>
+                  <ul>
+                    {importReport.assumptions.map((a) => (
+                      <li key={a}>{a}</li>
+                    ))}
+                  </ul>
+                </details>
+                <details>
+                  <summary>Column mapping</summary>
+                  <div className="muted">
+                    {Object.entries(importReport.columns_mapped).map(([k, v]) => `${k} ← ${v}`).join(" · ")}
+                    {importReport.columns_ignored.length > 0 && (
+                      <> · ignored: {importReport.columns_ignored.join(", ")}</>
+                    )}
+                  </div>
+                </details>
+              </div>
+            )}
             {report.hard_faults.length > 0 && (
               <div className="alert danger">
                 <strong>Hard fault — no proposal issued.</strong> {report.hard_faults.join(", ")}.
@@ -352,7 +501,7 @@ export function MixturePage() {
                 <thead>
                   <tr>
                     <th>Map</th><th>RPM</th><th>Seen</th><th>Used</th><th>Dwell s</th><th>λ mean</th>
-                    <th>Target</th><th>Trim</th><th>Window drops</th><th>Rejected for</th>
+                    <th>Target</th><th>Trim</th><th>σ raw</th><th>σ corr.</th><th>Window drops</th><th>Rejected for</th>
                     <th>Conf.</th><th>Status</th><th>Correction</th>
                   </tr>
                 </thead>
@@ -367,6 +516,8 @@ export function MixturePage() {
                       <td>{c.mean_lambda?.toFixed(3) ?? "—"}</td>
                       <td>{c.mean_target_lambda?.toFixed(3) ?? "—"}</td>
                       <td>{c.mean_total_trim !== null ? `${(c.mean_total_trim * 100).toFixed(1)}%` : "—"}</td>
+                      <td>{c.lambda_stddev.toFixed(4)}</td>
+                      <td>{c.corrected_lambda_stddev !== undefined ? c.corrected_lambda_stddev.toFixed(4) : "—"}</td>
                       <td>{c.window_rejected_samples ?? 0}</td>
                       <td className="muted">
                         {Object.entries(c.exclusion_reasons)

@@ -1402,6 +1402,7 @@ impl SimEngine {
             dyno_load_nm: self.load_torque_nm,
             scenario_time_ms: self.time_ms(),
             log_note: self.scenario.phase_at(self.time_ms()).note.clone(),
+            accel_enrich_pct: 0.0,
         };
         self.frames.push(f);
         self.seq += 1;
@@ -1537,6 +1538,88 @@ mod tests {
         let applied = ecu_lambda::apply_proposal(&calibration, &proposal, None, 42).unwrap();
         assert!(applied.calibration.verify());
         assert!(applied.applied_cells >= 3);
+    }
+
+    #[test]
+    fn exported_csv_round_trips_through_external_import_to_the_same_proposal() {
+        // The CSV a user would download (`LogFile::to_csv`) is re-imported
+        // through the *external* path, which sees only the CSV text: no
+        // transport delay, bank, lambda age or pressure assumptions except
+        // those it is told. Rounding in the CSV (4 dp lambda/trim) is real.
+        let calibration = cal();
+        let scenario = by_id("mixture_dwell").unwrap();
+        let delay = scenario.exhaust_delay_ms;
+        let mut s = SimEngine::new(calibration.clone(), scenario).unwrap();
+        s.run_to_end();
+        let direct_log = s.log_file();
+        let opts = ecu_lambda::MixtureMapOptions::default();
+        let direct = ecu_lambda::analyze_log(&calibration, &direct_log, &opts).unwrap();
+        let direct_p = direct.proposal.clone().expect("direct proposal");
+
+        let csv = direct_log.to_csv();
+        let imp = ecu_lambda::import_csv(
+            &csv,
+            &calibration,
+            &ecu_lambda::ImportOptions {
+                source_name: "roundtrip.csv".into(),
+                exhaust_delay_ms: delay,
+                ..ecu_lambda::ImportOptions::default()
+            },
+        )
+        .expect("export must be importable with no user assertions");
+        // The export carries loop state, trims, sync, pressures, VE: nothing
+        // had to be asserted by the user, and the VE column was verified.
+        assert!(imp.report.ve_identity.is_some());
+        assert!(imp
+            .report
+            .assumptions
+            .iter()
+            .all(|a| !a.contains("user option") && !a.contains("NOT verified")));
+        assert_eq!(imp.report.rows_imported, direct_log.frames.len());
+        let rep = ecu_lambda::analyze_log(&calibration, &imp.log, &opts).unwrap();
+        let p = rep.proposal.clone().expect("imported proposal");
+        eprintln!(
+            "roundtrip: direct used={} cells={} | imported used={} cells={}",
+            direct.samples_used,
+            direct_p.cells.len(),
+            rep.samples_used,
+            p.cells.len()
+        );
+        let key = |c: &ecu_lambda::ProposedVeCell| (c.row, c.col);
+        let mut a: Vec<_> = direct_p.cells.iter().map(key).collect();
+        let mut b: Vec<_> = p.cells.iter().map(key).collect();
+        a.sort();
+        b.sort();
+        assert_eq!(a, b, "same cells must be proposed");
+        for dc in &direct_p.cells {
+            let ic = p.cells.iter().find(|c| key(c) == key(dc)).unwrap();
+            let rel = (ic.proposed_ve / dc.proposed_ve - 1.0).abs();
+            assert!(
+                rel < 0.01,
+                "cell {:?}: direct {} imported {}",
+                key(dc),
+                dc.proposed_ve,
+                ic.proposed_ve
+            );
+        }
+        assert_eq!(p.source_scenario, "external-csv:roundtrip.csv");
+        assert!(p.requires_approval);
+
+        // Same CSV against a *different* VE table is refused by the identity check.
+        let scaled: Vec<f32> = calibration
+            .table("ve")
+            .unwrap()
+            .values
+            .iter()
+            .map(|v| v * 1.15)
+            .collect();
+        let other = calibration.with_table_values("ve", scaled, 1).unwrap();
+        let err = ecu_lambda::import_csv(&csv, &other, &ecu_lambda::ImportOptions::default())
+            .unwrap_err();
+        assert!(
+            matches!(err, ecu_lambda::ImportError::CalibrationMismatch(_)),
+            "{err}"
+        );
     }
 
     #[test]

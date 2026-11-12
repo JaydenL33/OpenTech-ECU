@@ -45,6 +45,16 @@ pub struct MixtureMapOptions {
     /// guess, not a calibrated figure.
     #[serde(default = "default_max_trim_swing")]
     pub max_trim_swing: f32,
+    /// Accel enrichment above this many percent, anywhere in the latency
+    /// window, invalidates the sample (`WINDOW_ACCEL_ENRICH`). Uses the logged
+    /// `accel_enrich_pct` channel directly rather than inferring it from
+    /// TPS/MAP rates. Unvalidated engineering guess.
+    #[serde(default = "default_max_accel_enrich_pct")]
+    pub max_accel_enrich_pct: f32,
+}
+
+fn default_max_accel_enrich_pct() -> f32 {
+    0.5
 }
 
 fn default_transient_holdoff_ms() -> u32 {
@@ -72,6 +82,7 @@ impl Default for MixtureMapOptions {
             time_align_exhaust: true,
             transient_holdoff_ms: default_transient_holdoff_ms(),
             max_trim_swing: default_max_trim_swing(),
+            max_accel_enrich_pct: default_max_accel_enrich_pct(),
         }
     }
 }
@@ -344,6 +355,7 @@ pub fn analyze(
     const EV_TRANSIENT: u8 = 1;
     const EV_MISFIRE: u8 = 2;
     const EV_CUT: u8 = 4;
+    const EV_ACCEL_ENRICH: u8 = 8;
     let event_flags: Vec<u8> = frames
         .iter()
         .enumerate()
@@ -370,6 +382,12 @@ pub fn analyze(
             }
             if fr.fuel_cut || fr.spark_cut {
                 flags |= EV_CUT;
+            }
+            // Non-finite enrichment is treated as active: unknown is not zero.
+            if !fr.accel_enrich_pct.is_finite()
+                || fr.accel_enrich_pct > options.max_accel_enrich_pct
+            {
+                flags |= EV_ACCEL_ENRICH;
             }
             flags
         })
@@ -524,6 +542,9 @@ pub fn analyze(
         }
         if window_flags & EV_CUT != 0 {
             window_reasons.push("WINDOW_FUEL_OR_SPARK_CUT");
+        }
+        if window_flags & EV_ACCEL_ENRICH != 0 {
+            window_reasons.push("WINDOW_ACCEL_ENRICH");
         }
         if !trim_finite || trim_max - trim_min > options.max_trim_swing {
             window_reasons.push("WINDOW_TRIM_UNSTABLE");
@@ -710,7 +731,7 @@ pub fn analyze(
         "Measured cells only; unvisited cells are not fabricated or interpolated.".into(),
         "Proportional VE correction is a starting estimate and requires validation.".into(),
         "No ignition advance is proposed or implied. Lambda cannot establish safe timing.".into(),
-        "Samples are rejected if a transient, misfire, fuel/spark cut, trim change or loop-state change occurred inside the exhaust-delay + holdoff window; accel enrichment is inferred from TPS/MAP/RPM rates only.".into(),
+        "Samples are rejected if a transient, misfire, fuel/spark cut, trim change or loop-state change occurred inside the exhaust-delay + holdoff window; accel enrichment is taken from the logged `accel_enrich_pct` channel when present (the simulator always reports 0), and is otherwise only inferred from TPS/MAP/RPM rates.".into(),
     ];
 
     Ok(MixtureMapReport {
@@ -1309,6 +1330,43 @@ mod tests {
         assert!(report
             .gate_reason_counts
             .contains_key("WINDOW_FUEL_OR_SPARK_CUT"));
+    }
+
+    #[test]
+    fn logged_accel_enrichment_inside_window_rejects_following_samples() {
+        let c = cal();
+        // Throttle/MAP/RPM stay perfectly flat: only the logged enrichment
+        // channel shows the disturbance, so the rate-based proxy cannot see it.
+        let mut frames = delayed_log(80);
+        frames[30].accel_enrich_pct = 12.0;
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        assert!(
+            report
+                .gate_reason_counts
+                .get("WINDOW_ACCEL_ENRICH")
+                .copied()
+                .unwrap_or(0)
+                >= 15,
+            "{:?}",
+            report.gate_reason_counts
+        );
+        assert!(!report.gate_reason_counts.contains_key("WINDOW_TRANSIENT"));
+
+        // Enrichment at or below the threshold is tolerated.
+        let mut frames = delayed_log(80);
+        frames[30].accel_enrich_pct = 0.2;
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        assert!(!report
+            .gate_reason_counts
+            .contains_key("WINDOW_ACCEL_ENRICH"));
+
+        // Unknown (NaN) enrichment is treated as active, not as zero.
+        let mut frames = delayed_log(80);
+        frames[30].accel_enrich_pct = f32::NAN;
+        let report = analyze(&c, &frames, &window_opts()).unwrap();
+        assert!(report
+            .gate_reason_counts
+            .contains_key("WINDOW_ACCEL_ENRICH"));
     }
 
     #[test]

@@ -134,6 +134,17 @@ export const api = {
       body: JSON.stringify(opts),
     }),
 
+  /** Offline analysis of an external CSV datalog. Stores nothing in the calibration. */
+  mixtureImportCsv: (
+    csv: string,
+    importOptions: import("./types").ImportOptions,
+    analysis: { min_samples?: number; max_cell_correction?: number; allow_wot?: boolean },
+  ) =>
+    request<{ report: MixtureMapReport; import_report: import("./types").ImportReport; notice: string }>(
+      "/api/mixture/import-csv",
+      { method: "POST", body: JSON.stringify({ csv, import: importOptions, analysis }) },
+    ),
+
   /** Read-only: the exact diff apply would produce. Stores nothing. */
   mixturePreview: (
     proposal: import("./types").VeProposal,
