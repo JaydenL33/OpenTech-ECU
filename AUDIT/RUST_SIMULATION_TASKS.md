@@ -287,3 +287,38 @@ that changes with the intentional acquisition delay. This is an integration
 blocker outside assigned file ownership; no golden hash was replaced. All-exit-0
 acceptance is NOT achieved. Authoritative raw logs: rust-round-4/final-0.log
 through final-3.log. Earlier workspace failure also occurs in check-5.log.
+
+
+## RUST-TRG-002 baseline reconciliation — STOP: non-convergent outputs
+Compared source archive 3b4d6b1c against the isolated reconciliation branch
+(master c7102387 plus requested no-ff merge of 91dcfad8).
+Master differs from requested base only in TASKS.md; no production differences.
+
+Export: temporary ecu-simulator example constructs generate_starter(
+WizardRequest::default_inline4(), 1), SimEngine with by_id("idle_warmup"),
+run_to_end(), then serializes log_file() and simulated_output_events().
+Commands from each ecu directory with PATH=/home/jlee/tools/bin:$PATH:
+cargo run -q -p ecu-simulator --example baseline_export --locked
+Both exit 0. Raw exports: baseline-old.log, baseline-new.log; exhaustive
+field differences: baseline-diff.log under AUDIT/rust-round-4/.
+
+Both runs contain 1300 frames; 1289 differ. First divergence index 11:
+sync crank_synced -> unsynced, all other fields equal. However final frame
+1299 still differs: RPM 832.812805 -> 940.011597,
+injector pulse 2.497403 -> 1.875752 ms, advance 14.951553 -> 8.682552 deg,
+dwell 3.018496 -> 3.020562 ms, cycle angle 236.455963 -> 247.117767 deg.
+Output events total 2127 -> 2091. First output time 565714 -> 783579 us;
+requested injection duration 2.219516 -> 2.707669 ms.
+Therefore acquisition delay is NOT the only observed schedule/value change.
+Root cause is not established; closed-loop simulation may amplify delay.
+This is a blocking defect against the requested convergence acceptance.
+
+Old normalized hash ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a
+is retained. Reported candidate hash
+9bc9b970cb5558432f692cd3615920bd11050260072b389b937453661a09f418
+is NOT accepted. No golden/test normalization changes made.
+Per explicit STOP instruction, suite/reconciliation work halted; no new
+passing suite counts claimed. One-revolution confirmation reduces false-lock
+risk at the cost of startup latency, but persistent downstream differences
+require investigation before baseline acceptance. Host evidence only;
+H0–H9 dispositions unchanged.
