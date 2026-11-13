@@ -37,13 +37,15 @@ export function MapEditor({
   const app = useApp();
   const [values, setValues] = useState<number[]>(() => (initialValues ? initialValues.slice() : table.values));
   const [selected, setSelected] = useState({ row: 0, col: 0 });
+  const [anchor, setAnchor] = useState({ row: 0, col: 0 });
+  const [entry, setEntry] = useState<{ mode: "value" | "percent"; text: string } | null>(null);
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [rpmPoints, setRpmPoints] = useState(table.axes[1]?.breakpoints.length ?? 16);
   const [loadPoints, setLoadPoints] = useState(table.axes[0]?.breakpoints.length ?? 16);
   const undo = useRef<number[][]>([]);
   const redo = useRef<number[][]>([]);
-  const clipboard = useRef<number | null>(null);
+  const clipboard = useRef<number[][] | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const rank = table.axes.length;
@@ -53,6 +55,9 @@ export function MapEditor({
   useEffect(() => {
     setValues(initialValues ? initialValues.slice() : table.values);
     setDirty(false);
+    setSelected({ row: 0, col: 0 });
+    setAnchor({ row: 0, col: 0 });
+    setEntry(null);
     undo.current = [];
     redo.current = [];
   }, [table.id, table.revision]);
@@ -117,21 +122,58 @@ export function MapEditor({
     }
   };
 
+  const top = Math.min(anchor.row, selected.row), bottom = Math.max(anchor.row, selected.row);
+  const left = Math.min(anchor.col, selected.col), right = Math.max(anchor.col, selected.col);
+  const bounded = (value: number) => Number(Math.max(table.value_min, Math.min(table.value_max, value)).toFixed(table.decimals));
+  const rangeEdit = (fn: (r: number, c: number) => number) => {
+    const next = values.slice();
+    for (let r = top; r <= bottom; r++) for (let c = left; c <= right; c++) next[r * cols + c] = bounded(fn(r, c));
+    commit(next);
+  };
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLElement).tagName === "INPUT") return;
+    if ((event.target as HTMLElement).closest("input, textarea, select, [contenteditable=true]")) return;
     const movement: Record<string, [number, number]> = {
       ArrowUp: [-1, 0],
       ArrowDown: [1, 0],
       ArrowLeft: [0, -1],
       ArrowRight: [0, 1],
     };
+    const ctrl = event.ctrlKey || event.metaKey;
     if (movement[event.key]) {
       event.preventDefault();
       const [dr, dc] = movement[event.key];
-      setSelected((s) => ({
-        row: Math.max(0, Math.min(rows - 1, s.row + dr)),
-        col: Math.max(0, Math.min(cols - 1, s.col + dc)),
-      }));
+      if (ctrl && !event.shiftKey) {
+        setAnchor({ row: anchor.row + (dr && anchor.row !== selected.row ? Math.sign(selected.row - anchor.row) : 0), col: anchor.col + (dc && anchor.col !== selected.col ? Math.sign(selected.col - anchor.col) : 0) });
+        return;
+      }
+      const next = { row: Math.max(0, Math.min(rows - 1, selected.row + dr)), col: Math.max(0, Math.min(cols - 1, selected.col + dc)) };
+      if (ctrl && event.shiftKey) setCell(next.row, next.col, selectedValue);
+      setSelected(next);
+      if (!event.shiftKey || ctrl) setAnchor(next);
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      const next = { ...selected, col: event.key === "Home" ? 0 : cols - 1 };
+      setSelected(next); setAnchor(next);
+    } else if (event.key === " ") {
+      event.preventDefault();
+      const frame = app.live.frame;
+      if (ctrl) setAnchor(selected);
+      else if (table.id === "ve" && frame && frame.ve_row >= 0 && frame.ve_row < rows && frame.ve_col >= 0 && frame.ve_col < cols) {
+        const next = { row: frame.ve_row, col: frame.ve_col }; setSelected(next); setAnchor(next);
+      }
+    } else if (ctrl && event.key.toLowerCase() === "a") {
+      event.preventDefault(); setAnchor({ row: 0, col: 0 }); setSelected({ row: rows - 1, col: cols - 1 });
+    } else if (event.key === "PageUp" || event.key === "PageDown") {
+      event.preventDefault(); setCell(selected.row, selected.col, bounded(selectedValue + (event.key === "PageUp" ? 1 : -1) * step * (ctrl ? 1 : event.shiftKey ? 100 : 10)));
+    } else if (!ctrl && /^[0-9]$/.test(event.key)) {
+      event.preventDefault(); setEntry({ mode: "value", text: event.key });
+    } else if (!ctrl && event.key.toLowerCase() === "p") {
+      event.preventDefault(); setEntry({ mode: "percent", text: "" });
+    } else if (!ctrl && event.key.toLowerCase() === "l") {
+      event.preventDefault();
+      rangeEdit((r, c) => right > left
+        ? values[r * cols + left] + (values[r * cols + right] - values[r * cols + left]) * (c - left) / (right - left)
+        : bottom > top ? values[top * cols + c] + (values[bottom * cols + c] - values[top * cols + c]) * (r - top) / (bottom - top) : selectedValue);
     } else if (event.key === "+" || event.key === "=") {
       event.preventDefault();
       setCell(selected.row, selected.col, selectedValue + step * (event.shiftKey ? 5 : 1));
@@ -156,10 +198,16 @@ export function MapEditor({
         }
       }
     } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
-      clipboard.current = selectedValue;
+      event.preventDefault();
+      clipboard.current = Array.from({ length: bottom - top + 1 }, (_, r) => values.slice((top + r) * cols + left, (top + r) * cols + right + 1));
     } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "v") {
       if (clipboard.current !== null) {
-        setCell(selected.row, selected.col, clipboard.current);
+        event.preventDefault();
+        const next = values.slice();
+        clipboard.current.forEach((line, r) => line.forEach((value, c) => {
+          if (selected.row + r < rows && selected.col + c < cols) next[(selected.row + r) * cols + selected.col + c] = bounded(value);
+        }));
+        commit(next);
       }
     }
   };
@@ -233,6 +281,16 @@ export function MapEditor({
           </button>
         </div>
       </div>
+      {entry && <label> {entry.mode === "percent" ? "Percentage change" : "Cell value"}
+        <input autoFocus value={entry.text} onChange={e => setEntry({ ...entry, text: e.target.value })} onKeyDown={e => {
+          e.stopPropagation();
+          if (e.key === "Escape") { setEntry(null); gridRef.current?.focus(); }
+          if (e.key === "Enter" && entry.text.trim() && Number.isFinite(Number(entry.text))) {
+            if (entry.mode === "percent") rangeEdit((r, c) => values[r * cols + c] * (1 + Number(entry.text) / 100));
+            else setCell(selected.row, selected.col, Number(entry.text));
+            setEntry(null); gridRef.current?.focus();
+          }
+        }} /></label>}
       {status && <div className="inline-status">{status}</div>}
       <div className="map-scroll" tabIndex={0} onKeyDown={onKeyDown} ref={gridRef}>
         <table className="map-grid">
@@ -255,10 +313,11 @@ export function MapEditor({
                   return (
                     <td key={rpm}>
                       <button
-                        className={`map-cell ${selected.row === row && selected.col === col ? "selected" : ""} ${active ? "active-cell" : ""}`}
+                        className={`map-cell ${row >= top && row <= bottom && col >= left && col <= right ? "selected" : ""} ${active ? "active-cell" : ""}`}
                         style={{ background: cellColor(value, table, kind) }}
                         onClick={() => {
                           setSelected({ row, col });
+                          setAnchor({ row, col });
                           gridRef.current?.focus();
                         }}
                         title={`${load.toFixed(0)} ${table.axes[0].unit} / ${rpm.toFixed(0)} ${table.axes[1].unit}: ${value.toFixed(table.decimals)} ${table.unit}`}
@@ -274,7 +333,7 @@ export function MapEditor({
         </table>
       </div>
       <p className="hint">
-        Arrow keys move · +/− adjusts · Shift accelerates · Ctrl/Cmd+C/V copies · Ctrl/Cmd+Z undoes.
+        Arrows/Home/End move · Shift+Arrow selects · Ctrl+Arrow shrinks · Ctrl+Space collapses · Ctrl+A all · PgUp/Dn adjusts (Ctrl small, Shift large) · digits enter, Enter commits, Escape cancels · P percent · L linearise rows (single column vertically) · Ctrl+C/V rectangle · Ctrl+Shift+Arrow copies adjacent · Space live · Ctrl+Z undo. Selection {bottom - top + 1} × {right - left + 1}.
         The blue live marker is available for the VE table only; other tables have no table-specific live indices. Applying pauses the virtual engine
         and seals a new checksummed revision.
       </p>
