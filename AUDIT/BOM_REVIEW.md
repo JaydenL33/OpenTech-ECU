@@ -99,3 +99,7 @@ These are review rules, not final substitutions:
 
 No price is stated in this document because none has been quoted yet. This is
 deliberate: inventing a price would violate the project's provenance rules.
+
+## HW-BOM-01/02 sourcing follow-up — 2026-11-13
+
+Still OPEN. See docs/JLCPCB_ASSEMBLY.md and docs/HARDWARE_COST.md. No verified LCSC mappings or completed AUD quote; no parts substituted. Harwin M20-9990545 (J1/J6/J7), M20-9990645 (J2), M20-9990445 (J5), M20-9990345 (J8) are candidates only. Manufacturer product information reproduced at https://www.farnell.com/datasheets/4376834.pdf gives 3-position nominal length 7.62 mm but explicitly says End Stackable: No. Drawing/tolerance confirmation remains required before accepting header courtyard exclusions. No approved alternatives. A1 Pololu item 2133 is a customer plug-in; board-side sockets remain unresolved. JP6–JP11 are copper features, not purchased placements. IC3, J3, keyed J4 and mating cable socket, XA1 header set remain unsourced. H3/H4 unchanged.
