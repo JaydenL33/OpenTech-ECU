@@ -1,31 +1,80 @@
-# JLCPCB assembly review — 2026-11-13
+# PCBA assembly review — JLCPCB / PCBWay
 
-Incomplete sourcing package; no upload, quote, DFM acceptance or H3/H4 approval obtained.
+2026-11-13. This is a review package, not a quote, DFM acceptance or H3/H4
+approval. The same BOM/CPL/gerber pack can be quoted by JLCPCB, PCBWay or
+another assembler.
 
-JLCPCB supports mixed SMT/THT assembly according to https://jlcpcb.com/capabilities/pcb-assembly-capabilities and https://jlcpcb.com/help/article/pcb-assembly-faqs . This does not establish acceptance of these specific parts.
+## What is machine-assembled
 
-Assembly intent: place 123 top SMT components and solder the board-side THT connectors, socket, switch and MAP sensor through a contracted assembly service. Owner hand placement is not an acceptable completion path. Arduino Mega and Pololu DRV8825 carrier are customer-supplied plug-ins, not reflow placements. Arduino Mega is not a purchased item in this board BOM. A1 needs separate board-side socket/header sourcing; XA1 represents the shield mating headers, not the Mega itself. IC3 is a purchased DIP-8 socket; its plug-in trigger conditioner needs separate identification. JP6–JP11 are bare-board copper features, no purchased parts or assembly operation. Preserve their existing bridges.
+- **139 machine placements**, all top-side: 123 SMT parts plus ordinary
+  through-hole connectors/socket (J1–J8, IC3). The pack is
+  `hardware/prototype-v1/manufacturing/jlcpcb/`.
+- **BOM** `bom-jlcpcb.csv`: Comment, Designator, Footprint, MPN, LCSC Part #.
+  LCSC is blank for rows that already have an MPN; the assembler's BOM tool is
+  expected to map it to its own library. Nine connector/socket rows have no
+  verified MPN yet and are listed in `bom-unresolved.csv`.
+- **CPL** `cpl-jlcpcb.csv`: Designator, Mid X, Mid Y, Layer, Rotation. Every
+  origin is inside the 100.05 mm outline. All placements are Top.
 
-Missing verified library mappings must use exact-part sourcing or a confirmed consignment route; availability and fees are unresolved. Do not approve a substitute for power, analogue, trigger or output circuitry merely because its pins fit.
+## What is not machine-assembled
 
-Existing review inputs (relative to hardware/prototype-v1): manufacturing/gerbers/* and manufacturing/drill/v0.4.4d.drl; manufacturing/assembly/v0.4.4d-bom.csv and v0.4.4d-pos.csv. These are NOT yet upload-ready JLC files. Produce a filtered BOM with Comment, Designator, Footprint and LCSC Part #; CPL needs Designator, Mid X, Mid Y, Layer, Rotation in mm. Exclude modules, copper jumpers, holes and proto pads; include the separately sourced board-side headers. Verify coordinates, bottom convention, rotations and pin 1 against assembly drawings before upload. Guide: https://jlcpcb.com/help/article/advice-for-bom-and-cpl-files-preparation . No converted files are released here.
+- **XA1 shield headers**: one 24-pad row, one 28-pad row and one 2x17 column.
+  The composite footprint has no single physical placement and its origin was
+  outside the outline. These are a small hand-solder kit; see
+  `bom-hand-solder.csv` and `docs/CONNECTOR_DECISIONS.md`.
+- **A1 carrier sockets**: two 1x8 sockets for the Pololu DRV8825 carrier; the
+  carrier itself is customer-supplied and plugs in.
+- **Arduino Mega 2560**: customer-supplied plug-in; not a BOM item.
+- **JP6–JP11**: bare copper solder jumpers, no parts and no assembly operation.
+  JP11 is bridged 1–2 and must be cut before external MAP is connected.
+- **H1–H3 mounting holes and REF\*\* proto pads**: board-only features.
 
-DFM questions for reviewer and assembler:
+This split is a deliberate, documented compromise so the manufacturer does not
+receive a fake composite placement. It is not a circuit change. If the assembler
+offers a header-kitting service, XA1 can be moved back into the machine BOM
+later with a per-strip breakdown.
 
-- Confirm actual minimum annulus against the project 0.05 mm rule and fabrication capability.
-- Quote actual 100.05 × 100.05 mm outline; do not assume a 100 × 100 promotion or trim the design.
-- Confirm adjacent J1/J5/J6/J8 housing end tolerances, solder access and installed fit.
-- Confirm mixed SMT/THT process, selective/manual labour, module sockets, Mega header stack, MAP mounting and complete assembly without owner soldering.
-- Select J4 keyed IDC40 header and real mating ribbon socket as a pair; verify notch and pin-1 triangle against PCB pad 1 and cable stripe using drawings and continuity. No vehicle connector or pin mapping is specified.
+## Cost and DFM
 
-## Converted pack and upload sequence
+No delivered AUD total is claimed. The quote must include PCB fabrication,
+parts, setup, stencil, SMT joints, manual/THT labour, feeder loading, freight and
+applicable tax. The owner's target is below A$250 per completed board at a
+5-board prototype quantity; that is a target, not a quote.
 
-`hardware/prototype-v1/manufacturing/jlcpcb/` now contains BOM, CPL, unresolved CSV and reconciliation README. **Not upload-ready**: every LCSC mapping remains unverified; XA1 must be decomposed into actual header placements and A1 sockets are absent from the schematic BOM. See `CONNECTOR_DECISIONS.md`. Do not upload the composite XA1 placement as an actual component.
+Ask both manufacturers to confirm:
 
-1. EE chooses connector ordering codes and approves fit; correct A1/XA1 assembly metadata under review, then regenerate and reconcile individual placements.
-2. Resolve every blank row using exact JLC library matches or assembler-confirmed sourcing/consignment. Preserve approved electrical MPNs; obtain explicit approval for substitutions.
-3. After review and human fabrication approval, select PCB assembly in JLCPCB ordering, upload existing Gerbers and drill package, enter actual 100.05 mm square dimensions and approved stack/finish. Confirm mixed THT service and complete assembly without owner soldering.
-4. Upload bom-jlcpcb.csv as BOM and cpl-jlcpcb.csv as CPL (mm). Map the named columns, resolve every library mapping and inspect every pin-1/polarity/rotation in the assembly preview against top drawing. Confirm negative page-origin Y coordinates are correctly aligned; stop if offset or mirrored.
-5. Obtain reviewable DFM and itemized quote; review labour, sourcing, freight, tax and AUD conversion before any order. No quote or DFM approval is represented here.
+- actual 100.05 × 100.05 mm outline pricing (do not trim the design to assume a
+  100 mm promotion);
+- DFM against the 0.05 mm via annular ring and 0.20 mm track / 0.30 mm via rules;
+- mixed SMT + THT process and selective/manual soldering;
+- whether the nine connector choices are in stock, need an alternative, or must
+  be consigned;
+- assembly preview for pin 1, polarity, rotation and the negative-Y page-origin
+  convention against the top assembly drawing.
 
-Do not assemble: Arduino Mega, Pololu DRV8825 carrier, JP6–JP11 copper bridges, H1–H3, REF** proto pads and other board-only features. Include approved board-side sockets/headers once their metadata is resolved. No owner soldering fallback.
+## Upload sequence
+
+1. EE approves the nine machine connector choices and the two hand-solder
+   items in `docs/CONNECTOR_DECISIONS.md`.
+2. Update `bom-jlcpcb.csv` MPNs for those nine rows; regenerate and reconcile
+   with `generate.py`.
+3. Quote with Gerbers/drill + `bom-jlcpcb.csv` + `cpl-jlcpcb.csv` at 5 boards,
+   top-side assembly. Mark the Mega and DRV8825 carrier as customer-supplied /
+   not assembled. The hand-solder items are not in the CPL.
+4. Review the assembly preview and DFM report. Do not approve substitutions for
+   power, analogue, trigger or output parts on pin compatibility alone.
+5. Only after the EE review is recorded and the owner explicitly approves H4 may
+   a board be ordered. No order, purchase or fabrication has occurred here.
+
+## Files
+
+- `hardware/prototype-v1/manufacturing/gerbers/`
+- `hardware/prototype-v1/manufacturing/drill/`
+- `hardware/prototype-v1/manufacturing/jlcpcb/bom-jlcpcb.csv`
+- `hardware/prototype-v1/manufacturing/jlcpcb/cpl-jlcpcb.csv`
+- `hardware/prototype-v1/manufacturing/jlcpcb/bom-hand-solder.csv`
+- `hardware/prototype-v1/manufacturing/jlcpcb/bom-unresolved.csv`
+- `hardware/prototype-v1/manufacturing/assembly/v0.4.4d-assembly-top.pdf`
+- `hardware/prototype-v1/FABRICATION_NOTES.md`
+- `docs/CONNECTOR_DECISIONS.md`
+- `docs/BROTHER_REVIEW.md`

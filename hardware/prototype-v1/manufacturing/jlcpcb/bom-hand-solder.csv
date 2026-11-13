@@ -1,0 +1,7 @@
+Item,Description,Footprint,Quantity/Core,Candidate,Decision
+XA1,Arduino Mega shield header set,Shields:Arduino_Mega2560_Shield_IO_Only,3 groups: 24-pad row, 28-pad row, 2x17 column,Samtec TSW/HTSW male header family (candidate; exact segments/gender/tail length TBD),EE choose exact strips, gender and stack height against the real Mega; hand-solder after machine assembly
+A1-SOCKET,Pololu DRV8825 carrier sockets,Module:Pololu_Breakout-16_15.2x20.3mm,2 x 1x8, 2.54 mm,Samtec SSQ-108-01-F-S (candidate; two 1x8 sockets) or equivalent,EE confirm row spacing/orientation/stack height; hand-solder two 1x8 sockets; carrier remains plug-in
+
+Bare copper jumpers (no part)
+JP6-JP10,SolderJumper_2_Bridged,5,bare copper, bridged by default, no part
+JP11,Jumper_3_Bridged12,1,bare copper, 1-2 bridged by default; cut before external MAP
