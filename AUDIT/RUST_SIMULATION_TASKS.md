@@ -242,3 +242,121 @@ New findings recorded rather than hidden:
 
 Integrated on `master` by merge `b710d2b9`. Host simulation only; no MCU,
 physical capture, engine, vehicle or gate claim.
+
+## RUST-TRG-002 implementation candidate (2026-11-13)
+
+Policy: first plausible gap establishes a private candidate reference only; state
+remains Unsynced and angle accessors remain unavailable. The next gap must pass
+the existing exact intervening tooth-count check before publishing crank sync.
+No public API/config serialization changes, heap allocation or std dependency.
+Clean acquisition adds exactly one crank revolution. Required cam input is
+validated only after crank confirmation, so sequential acquisition can wait for
+the next valid cam window (up to a further 720 degrees depending on phase).
+Crank timeout remains edge-relative and unchanged; 100 rpm noise vectors pass,
+but the existing absolute timeout cap still limits extremely slow captures.
+
+Noise regression covers five injection fractions (0.2, 0.25, 0.3, 0.35, 0.4)
+at four speeds (100, 300, 1000, 6000 rpm); every published sync must occur at
+real tooth zero and final crank acquisition is required. Disabling the candidate
+guard reproduces a false lock at 0.3p/100 rpm (mutation.log, exit 101).
+Existing cam assertions now explicitly allow the initial unconfirmed revolution;
+the phase extrapolation fixture runs two extra revolutions to establish phase.
+All original 29 tests remain, plus one parameterized noise regression.
+
+A minimum-four-baseline attempt failed at 0.2p/300 rpm; retained in
+initial-trigger.log. second-trigger.log retains old acquisition-assumption test
+failures before fixture updates. check-* captures the initial verification run;
+a mutation experiment overlapped that run, so final-* is authoritative and was
+started after source restoration. Commands run from ecu using
+PATH=/home/jlee/tools/bin:$PATH. Tool versions: check-0 through check-2.
+
+Residual limits: structured/repeated noise that reproduces both plausible gap
+ratios and the expected intervening count can still false-sync. A dropped edge
+can delay acquisition; this policy is not a general electrical noise filter.
+No claim of exhaustive reproduction of the reviewer's 136 probes. No upstream
+Speeduino parity, MCU, physical capture, engine or vehicle validation. H0–H9
+status unchanged. Implementation commit is the commit containing this section;
+resolve with git log on ecu/crates/ecu-trigger/src/lib.rs. Lead integration and
+independent review remain pending; task ledger state is unchanged by delegate.
+
+Final verification: fmt exit 0; strict workspace Clippy exit 0; trigger
+nocapture exit 0 (30 passed). Workspace exit 101 (151 passed before halt,
+1 failed): ecu-simulator/tests/cylinder_counts.rs
+inline4_outputs_match_pre_change_baseline retains a pre-change telemetry hash
+that changes with the intentional acquisition delay. This is an integration
+blocker outside assigned file ownership; no golden hash was replaced. All-exit-0
+acceptance is NOT achieved. Authoritative raw logs: rust-round-4/final-0.log
+through final-3.log. Earlier workspace failure also occurs in check-5.log.
+
+
+## RUST-TRG-002 baseline reconciliation — STOP: non-convergent outputs
+Compared source archive 3b4d6b1c against the isolated reconciliation branch
+(master c7102387 plus requested no-ff merge of 91dcfad8).
+Master differs from requested base only in TASKS.md; no production differences.
+
+Export: temporary ecu-simulator example constructs generate_starter(
+WizardRequest::default_inline4(), 1), SimEngine with by_id("idle_warmup"),
+run_to_end(), then serializes log_file() and simulated_output_events().
+Commands from each ecu directory with PATH=/home/jlee/tools/bin:$PATH:
+cargo run -q -p ecu-simulator --example baseline_export --locked
+Both exit 0. Raw exports: baseline-old.log, baseline-new.log; exhaustive
+field differences: baseline-diff.log under AUDIT/rust-round-4/.
+
+Both runs contain 1300 frames; 1289 differ. First divergence index 11:
+sync crank_synced -> unsynced, all other fields equal. However final frame
+1299 still differs: RPM 832.812805 -> 940.011597,
+injector pulse 2.497403 -> 1.875752 ms, advance 14.951553 -> 8.682552 deg,
+dwell 3.018496 -> 3.020562 ms, cycle angle 236.455963 -> 247.117767 deg.
+Output events total 2127 -> 2091. First output time 565714 -> 783579 us;
+requested injection duration 2.219516 -> 2.707669 ms.
+Therefore acquisition delay is NOT the only observed schedule/value change.
+Root cause is not established; closed-loop simulation may amplify delay.
+This is a blocking defect against the requested convergence acceptance.
+
+Old normalized hash ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a
+is retained. Reported candidate hash
+9bc9b970cb5558432f692cd3615920bd11050260072b389b937453661a09f418
+is NOT accepted. No golden/test normalization changes made.
+Per explicit STOP instruction, suite/reconciliation work halted; no new
+passing suite counts claimed. One-revolution confirmation reduces false-lock
+risk at the cost of startup latency, but persistent downstream differences
+require investigation before baseline acceptance. Host evidence only;
+H0–H9 dispositions unchanged.
+
+
+## RUST-TRG-002 accepted closed-loop rebaseline (2026-11-13)
+Merged t3/reconcile-simulator-golden e0d3406a into isolated master c7102387.
+Old normalized transcript SHA-256:
+ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a.
+New post-RUST-TRG-002 SHA-256:
+9bc9b970cb5558432f692cd3615920bd11050260072b389b937453661a09f418.
+Lead analysis of preserved baseline-old/new/diff evidence: first Sequential
+frame 17 / 340 ms old, frame 28 / 540 ms new; zero post-sync dropouts both.
+Old states: 1283 sequential, 11 unsynced, 6 crank_synced; new: 1272, 17, 11.
+Accepted trade-off: confirming acquisition takes one additional revolution.
+Fuel cut while non-sequential changes torque, idle PI, warm-up and throttle in
+the closed-loop plant. Final throttle 20.17% vs 1.04%, RPM 832.81 vs 940.01,
+pulse 2.497 vs 1.876 ms are supplied lead measurements, not sync loss or
+evidence of a fuel/ignition/protection regression.
+Focused test locally confirms 540 ms acquisition (bound <=600 ms), zero
+post-sync dropouts, non-empty frames, identical repeat full-log hashes and
+the full normalized transcript hash; calibration hash remains pinned.
+
+Raw verification: rust-round-4/check-7..12.log, PATH=/home/jlee/tools/bin:$PATH,
+Cargo commands from ecu. check-7 records compiler/tool versions.
+check-8 cargo fmt --all -- --check: exit 0.
+check-9 cargo clippy --workspace --all-targets --locked -- -D warnings: exit 0.
+check-10 cargo test --workspace --locked: exit 101, 156 passed / 2 failed
+before Cargo stopped; NOT a green 245-test workspace.
+Failures: trigger_waveform::cam_in_missing_region_decodes_without_a_synthetic_crank_tooth
+and decoder_matches_independent_offset_and_phase_vectors assume earlier acquisition.
+Actionable acceptance blocker: owning worker must reconcile these independent
+vector acquisition expectations with confirmed-gap semantics, retaining their
+post-acquisition angle checks, then rerun the full workspace. These files are
+outside this task's explicit edit ownership; no production behavior was changed.
+check-11 cargo test -p ecu-trigger --locked -- --nocapture: exit 0, 30 passed.
+check-12 cargo test -p ecu-simulator --test cylinder_counts --locked -- --nocapture:
+exit 0, 4 passed. Historical evidence preserved.
+Rebaseline is verified; full-workspace acceptance remains blocked by those two
+tests. Host simulation only; no MCU, physical, vehicle or Speeduino binary
+parity claim. H0–H9 dispositions unchanged; no fabrication approval granted.
