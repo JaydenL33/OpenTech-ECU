@@ -92,6 +92,16 @@ export const api = {
       }[];
     }>("/api/calibration/history"),
 
+  /** Durable, read-only revision + audit trail (TUNE-AUD-01). */
+  revisions: () =>
+    request<{ store: StoreSummary; revisions: StoredRevision[] }>("/api/calibration/revisions"),
+  audit: () =>
+    request<{ store: StoreSummary; total: number; entries: AuditEntry[] }>("/api/calibration/audit"),
+  verifyStore: () =>
+    request<{ ok: boolean; error?: string; report?: { revisions: number; audit_entries: number } }>(
+      "/api/calibration/store/verify",
+    ),
+
   undo: () =>
     request<{ calibration: Calibration; preflight: PreflightReport }>(
       "/api/calibration/undo",
@@ -236,4 +246,44 @@ export function wsUrl(): string {
   }
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
   return `${protocol}://${window.location.host}/api/ws?name=tuning-studio`;
+}
+
+export interface StoreSummary {
+  persistent: boolean;
+  note?: string;
+  directory?: string;
+  revisions?: number;
+  audit_entries?: number;
+  head_checksum?: string | null;
+  warnings?: string[];
+  notice?: string;
+  identity_note?: string;
+}
+
+export interface StoredRevision {
+  seq: number;
+  revision_id: string;
+  revision: number;
+  checksum: string;
+  parent_checksum: string | null;
+  stored_unix_ms: number;
+  source: string;
+  actor: { label: string; supplied: boolean };
+  reason: string;
+  current: boolean;
+  in_active_lineage: boolean;
+}
+
+export interface AuditEntry {
+  seq: number;
+  timestamp_unix_ms: number;
+  action: string;
+  outcome: "applied" | "rejected" | "info";
+  actor: { label: string; supplied: boolean };
+  approval: { required: boolean; granted: boolean; mechanism: string };
+  reason: string;
+  before_checksum: string | null;
+  after_checksum: string | null;
+  new_revision_checksum: string | null;
+  detail: string;
 }
