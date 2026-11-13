@@ -1,0 +1,69 @@
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.08s
+     Running unittests src/main.rs (target/debug/deps/studio_service-32a96178ef5dcff9)
+
+running 42 tests
+test http_tests::ignition_recommendation_over_http_is_advisory_and_stores_nothing ... ok
+test http_tests::table_edit_requires_pause_and_is_rolled_back_over_http ... ok
+test persistence_tests::operator_label_header_and_no_persist_mode ... ok
+test persistence_tests::explicit_cal_from_another_lineage_is_refused_not_silently_switched ... ok
+write-failure test: HTTP 500 x2, head unchanged fee184185181, restart OK and edit applies
+test persistence_tests::store_write_failure_returns_500_and_leaves_calibration_unchanged ... ok
+audit paging test: count probe, newest window, older window, past-end all OK
+test persistence_tests::audit_paging_supports_count_probe_and_bounded_windows_over_http ... ok
+test store::tests::actor_label_is_never_invented ... ok
+startup-refusal: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-http-tamper-136559-1794539334396148240-5/revisions.jsonl line 1: record_hash does not match record contents. The file has been left untouched for inspection; the service will not serve this store.
+test persistence_tests::tampered_store_is_refused_at_startup_and_flagged_while_running ... ok
+test store::tests::append_only_ordering_chain_and_prefix_preserved ... ok
+test store::tests::concurrent_openers_race_exactly_one_wins ... ok
+test store::tests::checksum_verification_every_stored_payload ... ok
+test store::tests::data_dir_flag_wins_and_is_never_cwd ... ok
+test store::tests::lock_marker_edge_cases_empty_is_fresh_garbage_is_stale ... ok
+test store::tests::creation_fsyncs_metadata_and_parent_directories ... ok
+test store::tests::meta_write_leaves_no_partial_file_and_stale_temp_is_overwritten ... ok
+process-crash(SIGKILL) test: reloaded head 64c83b63453d; NOT a power-loss test
+test store::tests::process_crash_sigkill_after_ack_store_reloads_verified ... ok
+test store::tests::relative_env_data_dirs_are_refused_not_resolved_against_cwd ... ok
+test store::tests::missing_meta_or_one_sided_store_is_refused ... ok
+restart-recovery: reloaded 3 revisions, head=f202feb2c306b7656181df735e532b8a10940873ef5e5f967f71306885545d15 lineage_depth=3
+test store::tests::restart_recovery_reloads_latest_revision_and_lineage ... ok
+test store::tests::second_opener_in_same_process_is_refused_and_writes_nothing ... ok
+test store::tests::stale_recovery_does_not_bypass_tamper_or_torn_tail_checks ... ok
+tamper-refusal[revisions.jsonl]: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-tamper-edit-136559-1794539334681372564-18/revisions.jsonl line 2: record_hash does not match record contents. The file has been left untouched for inspection; the service will not serve this store.
+test store::tests::tamper_edited_payload_is_refused_and_file_preserved ... ok
+tamper-refusal[revisions.jsonl]: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-tamper-payload-136559-1794539334705777759-19/revisions.jsonl line 2: calibration payload SHA-256 does not match its checksum. The file has been left untouched for inspection; the service will not serve this store.
+test store::tests::tamper_payload_with_recomputed_record_hash_still_fails_calibration_checksum ... ok
+tamper-refusal[audit.jsonl]: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-tamper-remove-136559-1794539334732161846-20/audit.jsonl line 2: seq 2 != expected 1. The file has been left untouched for inspection; the service will not serve this store.
+cross-process lock test: child pid 136704 refused, killed, stale refused, recovered once
+test store::tests::two_processes_cannot_both_hold_the_directory_and_kill_leaves_visible_stale_lock ... ok
+test tests::cylinder_count_outside_one_to_eight_is_rejected ... ok
+test tests::default_form_still_generates_inline4 ... ok
+test tests::ignition_attested_reference_gives_bounded_caller_asserted_recommendation ... ok
+test tests::ignition_claim_of_verification_without_attestation_is_downgraded ... ok
+test tests::ignition_mismatched_fuel_lowers_confidence ... ok
+test tests::ignition_non_verified_reference_never_yields_a_number ... ok
+test tests::ignition_rejects_out_of_range_inputs ... ok
+test tests::ignition_without_reference_is_insufficient_evidence_and_not_applied ... ok
+test tests::invalid_explicit_firing_order_fails_generation ... ok
+tamper-refusal[revisions.jsonl]: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-tamper-torn-136559-1794539334784793346-22/revisions.jsonl line 3: file does not end with a newline (torn or truncated last record). The file has been left untouched for inspection; the service will not serve this store.
+test tests::omitted_firing_order_uses_default_for_one_to_eight ... ok
+test tests::preview_refuses_stale_and_unknown_cell_selections ... ok
+test tests::preview_shows_exact_diff_without_changing_the_calibration ... ok
+test tests::previewed_diff_is_the_diff_apply_produces ... ok
+tamper-refusal[audit.jsonl]: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-tamper-audit-136559-1794539334821472760-23/audit.jsonl line 1: record_hash does not match record contents. The file has been left untouched for inspection; the service will not serve this store.
+tamper-refusal[audit.jsonl]: calibration store is corrupt or tampered: /tmp/opentech-ecu-store-test-tamper-ws-136559-1794539334857409518-24/audit.jsonl line 1: record is not in canonical form (edited outside the service). The file has been left untouched for inspection; the service will not serve this store.
+test store::tests::tamper_removed_record_truncation_and_audit_edit_are_refused ... ok
+e2e-summary: frames=2185 used=315 (closed_loop=315 open_loop=0) rejected=1870 proposed_cells=2
+e2e-gate-reasons: {"CRITICAL_DTC":12,"ENGINE_NOT_RUNNING":13,"FUEL_CUT":13,"LAMBDA_IMPLAUSIBLE":33,"LAMBDA_NOT_READY":33,"LAMBDA_STATUS":33,"MAP_TRANSIENT":196,"RPM_LOW":5,"RPM_TRANSIENT":451,"SYNC_NOT_SEQUENTIAL":8,"TPS_TRANSIENT":206,"WINDOW_TRANSIENT":988,"WINDOW_TRIM_UNSTABLE":471,"WOT_BOUNDARY":411}
+e2e-diff: changed_cells=2 max_abs_delta=3.3065338134765625 mean_abs_delta=3.1322994232177734
+test http_tests::virtual_ecu_lambda_correction_review_apply_and_rollback_over_http ... ok
+persistence-e2e: restart#1 head==post-undo fc37d8ac8889; restart#2 head==baseline fee184185181; revisions=4 audit_entries=12 verify=true
+test persistence_tests::restart_recovery_append_only_audit_and_undo_persistence_over_http ... ok
+e2e-import: rows=2913 used=937 (closed=384 open=553) cells=5 ve_median_diff=0.00003
+e2e-import: re-import after apply -> 400 Bad Request {"code":"bad_request","message":"logged VE differs from the loaded VE table (p75 |diff| 3.2 %, median 3.1 %, max 4.4 % over 2908 rows, tolerance 2.0 %): the log was recorded with a different table, so a correction computed against the loaded table would be wrong"}
+test http_tests::external_csv_import_review_apply_rollback_and_refusals_over_http ... ok
+e2e-dwell pass0: frames=2913 used=937 (closed=384 open=553) rejected=1976 cells=5
+e2e-dwell converge: mean raw error per pass = [0.07814106124397249, 0.04376547338814207, 0.01434334559240975]
+test http_tests::dwell_scenario_passes_converge_over_http_and_full_rollback_restores_base ... ok
+
+test result: ok. 42 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.06s
+
