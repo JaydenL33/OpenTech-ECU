@@ -1,0 +1,1 @@
+33fc27095cb492509e175132a3f612ca995129e4cce3e7f4401d406c93df89da  ecu/tools/compare-trigger-reference.py

@@ -1,0 +1,11 @@
+$ python3 --version
+Python 3.12.3
+EXIT=0
+$ git diff --check
+EXIT=0
+$ git diff --name-only -- speeduino test hardware ecu/apps/tuning-studio ecu/apps/tuning-copilot
+EXIT=0
+sources_sha256: all 36 recorded hashes match on-disk files
+artifacts_sha256: all 10 recorded hashes match on-disk files
+New reference comparator SHA256=33fc27095cb492509e175132a3f612ca995129e4cce3e7f4401d406c93df89da
+All 11 recorded verification commands exited 0

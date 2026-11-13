@@ -46,7 +46,10 @@ enum Command {
         /// when omitted.
         #[arg(long)]
         cal: Option<PathBuf>,
-        /// Run the scenario twice and verify byte-identical telemetry.
+        /// Override the deterministic scenario seed (decimal u64).
+        #[arg(long)]
+        seed: Option<u64>,
+        /// Run twice and compare serialized telemetry, output and input traces.
         #[arg(long)]
         check_determinism: bool,
     },
@@ -97,8 +100,9 @@ fn main() -> Result<()> {
             scenario,
             out,
             cal,
+            seed,
             check_determinism,
-        } => run_scenario(&scenario, &out, cal.as_deref(), check_determinism),
+        } => run_scenario(&scenario, &out, cal.as_deref(), seed, check_determinism),
         Command::Analyze {
             log,
             cal,
@@ -168,10 +172,14 @@ fn run_scenario(
     scenario_id: &str,
     out: &Path,
     cal_path: Option<&Path>,
+    seed: Option<u64>,
     check_determinism: bool,
 ) -> Result<()> {
-    let scenario =
+    let mut scenario =
         by_id(scenario_id).with_context(|| format!("unknown scenario '{scenario_id}'"))?;
+    if let Some(seed) = seed {
+        scenario.seed = seed;
+    }
     let cal = match cal_path {
         Some(p) => load_cal(p)?,
         None => generate_starter(&WizardRequest::default_inline4(), 1)
@@ -188,7 +196,11 @@ fn run_scenario(
     let mut engine = SimEngine::new(cal, scenario.clone()).map_err(|e| anyhow::anyhow!("{e}"))?;
     engine.run_to_end();
     let log = engine.log_file();
+    let output_trace = engine.simulated_output_trace();
+    let trigger_trace = engine.simulated_trigger_trace();
     write_json(&out.join("log.json"), &log)?;
+    write_json(&out.join("outputs.json"), &output_trace)?;
+    write_json(&out.join("triggers.json"), &trigger_trace)?;
     fs::write(out.join("log.csv"), log.to_csv())?;
     let summary = session_summary(&log.frames);
     write_json(&out.join("summary.json"), &summary)?;
@@ -197,12 +209,16 @@ fn run_scenario(
         let mut engine2 = SimEngine::new(engine.calibration.clone(), scenario)
             .map_err(|e| anyhow::anyhow!("{e}"))?;
         engine2.run_to_end();
-        let frames2 = engine2.frames();
-        if log.frames != frames2 {
-            bail!("determinism check FAILED: repeated run differs");
+        if serde_json::to_vec(&log)? != serde_json::to_vec(&engine2.log_file())?
+            || serde_json::to_vec(&output_trace)?
+                != serde_json::to_vec(&engine2.simulated_output_trace())?
+            || serde_json::to_vec(&trigger_trace)?
+                != serde_json::to_vec(&engine2.simulated_trigger_trace())?
+        {
+            bail!("determinism check FAILED: repeated telemetry, output or input trace differs");
         }
         println!(
-            "determinism: PASS ({} frames byte-identical)",
+            "determinism: PASS ({} frames, output and input traces byte-identical)",
             log.frames.len()
         );
     }
@@ -224,7 +240,19 @@ fn run_scenario(
         summary.lambda_samples
     );
     println!("faults:   {:?}", summary.fault_codes);
+    println!(
+        "outputs:  {} emitted, {} retained, {} dropped (simulation only)",
+        output_trace.events_emitted,
+        output_trace.outputs.len(),
+        output_trace.events_dropped
+    );
     println!("wrote:    {}", out.display());
+    println!(
+        "inputs:   {} emitted, {} retained, {} dropped (simulation only)",
+        trigger_trace.events_emitted,
+        trigger_trace.inputs.len(),
+        trigger_trace.events_dropped
+    );
     Ok(())
 }
 

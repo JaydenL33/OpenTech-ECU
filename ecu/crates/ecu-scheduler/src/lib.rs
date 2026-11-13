@@ -102,7 +102,9 @@ impl EventSchedule {
     }
 
     /// Iterate events crossed when crank advances from `prev` to `now`.
-    /// Angles wrap at 720. Used by the simulator and by scheduler tests.
+    /// Angles wrap at 720. Results follow traversal order, including across
+    /// the wrap. The interval is (prev, now]; equal endpoints mean no movement.
+    /// Callers must advance less than one full cycle per call.
     pub fn events_crossed(
         &self,
         prev_deg: f32,
@@ -110,14 +112,15 @@ impl EventSchedule {
     ) -> impl Iterator<Item = &ScheduledEvent> {
         let p = wrap_angle(prev_deg);
         let n = wrap_angle(now_deg);
-        self.events().iter().filter(move |e| {
-            let a = wrap_angle(e.angle_deg);
-            if p <= n {
-                a > p && a <= n
-            } else {
-                a > p || a <= n
-            }
-        })
+        let before_wrap = self
+            .events()
+            .iter()
+            .filter(move |e| e.angle_deg > p && (p > n || e.angle_deg <= n));
+        let after_wrap = self
+            .events()
+            .iter()
+            .filter(move |e| p > n && e.angle_deg <= n);
+        before_wrap.chain(after_wrap)
     }
 }
 
@@ -444,6 +447,33 @@ mod tests {
             build_schedule(&[], &req()).unwrap_err(),
             ScheduleError::NoCylinders
         );
+    }
+
+    #[test]
+    fn wrapped_traversal_is_chronological_and_half_open() {
+        let mut schedule = EventSchedule::empty();
+        for angle in [0.0, 2.0, 719.0] {
+            schedule.push(ScheduledEvent {
+                cylinder: 1,
+                output_channel: 1,
+                kind: EventKind::Spark,
+                angle_deg: angle,
+                duration_deg: 0.0,
+                duration_ms: 0.0,
+            });
+        }
+        let angles = |prev, now| {
+            schedule
+                .events_crossed(prev, now)
+                .map(|event| event.angle_deg)
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(angles(718.0, 2.0), [719.0, 0.0, 2.0]);
+        assert_eq!(angles(718.0, 719.0), [719.0]);
+        assert_eq!(angles(719.0, 0.0), [0.0]);
+        assert_eq!(angles(0.0, 2.0), [2.0]);
+        assert!(angles(2.0, 718.0).is_empty());
+        assert!(angles(2.0, 2.0).is_empty());
     }
 
     #[test]

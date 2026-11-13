@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 pub mod scenario;
+pub mod trigger_waveform;
 
 use std::collections::VecDeque;
 use std::string::String;
@@ -27,6 +28,7 @@ use ecu_types::{
 use serde::{Deserialize, Serialize};
 
 use crate::scenario::{DeterministicRng, FaultWindow, Scenario, SimFault};
+use crate::trigger_waveform::{TriggerEdge, TriggerInput, TriggerWaveform, DEFAULT_CAM_PHASE_DEG};
 
 const AIR_R: f32 = 287.05;
 const LHV_J_PER_KG: f32 = 43.5e6;
@@ -69,17 +71,61 @@ pub const SIMULATED_OUTPUT_EVENT_CAPACITY: usize = 4096;
 
 /// One simulated injector or coil event applied to the plant model.
 /// Simulation record only; nothing here drives hardware.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SimulatedOutputEvent {
+    /// Monotonic event number, starting at zero; gaps expose buffer eviction.
+    pub sequence: u64,
     pub time_us: u64,
     /// completed 720-degree plant cycles when the event fired
     pub cycle: u64,
     pub cylinder: u8,
-    /// InjectionStart or Spark; DwellStart is not recorded
+    /// Command marker only, not an electrical edge or pulse completion.
     pub kind: EventKind,
     /// ScheduledEvent::output_channel
     pub channel: u8,
     pub angle_deg: f32,
+    /// Requested schedule duration; not a measured pulse or dwell duration.
+    pub requested_duration_ms: f32,
+}
+
+/// Versioned, bounded output trace for offline tuning clients. This is separate
+/// from the existing telemetry schema. No physical output path exists.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SimulatedOutputTrace {
+    pub schema_version: u16,
+    pub simulation_only: bool,
+    pub timing_model: String,
+    pub metadata: LogMetadata,
+    pub ignition_policy: ecu_calibration::IgnitionPolicy,
+    pub captured_until_us: u64,
+    pub events_emitted: u64,
+    pub events_dropped: u64,
+    pub outputs: Vec<SimulatedOutputEvent>,
+}
+
+pub const SIMULATED_TRIGGER_EVENT_CAPACITY: usize = 8192;
+
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SimulatedTriggerEvent {
+    pub sequence: u64,
+    pub edge: TriggerEdge,
+    /// Decoder state immediately after this input edge, before control-loop tick.
+    pub decoder: ecu_trigger::DecoderStatus,
+}
+
+/// Bounded tail of delivered ideal input edges for offline tuning clients.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SimulatedTriggerTrace {
+    pub schema_version: u16,
+    pub simulation_only: bool,
+    pub timing_model: String,
+    pub metadata: LogMetadata,
+    pub config: MissingToothConfig,
+    pub cam_phase_from_tooth_zero_deg: f32,
+    pub captured_until_us: u64,
+    pub events_emitted: u64,
+    pub events_dropped: u64,
+    pub inputs: Vec<SimulatedTriggerEvent>,
 }
 
 pub struct SimEngine {
@@ -125,6 +171,7 @@ pub struct SimEngine {
 
     // Trigger and scheduling
     decoder: MissingToothDecoder,
+    trigger_waveform: TriggerWaveform,
     schedule: EventSchedule,
     injections_this_cycle: u32,
     sparks_this_cycle: u32,
@@ -167,6 +214,9 @@ pub struct SimEngine {
     cycle_wrapped: bool,
     cylinder_slots: Vec<CylinderSlot>,
     simulated_outputs: VecDeque<SimulatedOutputEvent>,
+    output_events_emitted: u64,
+    simulated_triggers: VecDeque<SimulatedTriggerEvent>,
+    trigger_events_emitted: u64,
     cycle_count: u64,
 }
 
@@ -213,8 +263,10 @@ impl SimEngine {
             timeout_ms: motor_cfg.tooth_timeout_ms,
         })
         .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
-        // advance_trigger emits the synthetic cam at 690 degrees, after the
-        // crank gap at 360: 330 degrees from the gap, with a 10-degree margin.
+        let trigger_waveform = TriggerWaveform::new(decoder.config(), DEFAULT_CAM_PHASE_DEG)
+            .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
+        // Independent cam edge at tooth-zero-relative 690 degrees, 330 degrees
+        // after the second gap. Window remains gap-relative for all offsets.
         decoder
             .set_cam_window(Some((320.0, 340.0)))
             .map_err(|e| SimError::CalibrationInvalid(format!("{e:?}")))?;
@@ -269,6 +321,7 @@ impl SimEngine {
             lambda_delay_target: 1.0,
             exhaust_delayed: false,
             decoder,
+            trigger_waveform,
             schedule: EventSchedule::empty(),
             injections_this_cycle: 0,
             sparks_this_cycle: 0,
@@ -306,6 +359,9 @@ impl SimEngine {
             cycle_wrapped: false,
             cylinder_slots,
             simulated_outputs: VecDeque::new(),
+            output_events_emitted: 0,
+            simulated_triggers: VecDeque::new(),
+            trigger_events_emitted: 0,
             cycle_count: 0,
             scenario,
             calibration,
@@ -361,6 +417,35 @@ impl SimEngine {
 
     pub fn simulated_output_events(&self) -> Vec<SimulatedOutputEvent> {
         self.simulated_outputs.iter().copied().collect()
+    }
+
+    pub fn simulated_output_trace(&self) -> SimulatedOutputTrace {
+        SimulatedOutputTrace {
+            schema_version: 1,
+            simulation_only: true,
+            timing_model: "Linear plant-angle crossing within each 1 ms step, rounded to nearest microsecond. Command markers only; no pulse-end execution, capture latency, driver delay or hardware jitter model.".into(),
+            metadata: self.log_metadata(),
+            ignition_policy: self.calibration.ignition_policy.clone(),
+            captured_until_us: self.time_us,
+            events_emitted: self.output_events_emitted,
+            events_dropped: self.output_events_emitted - self.simulated_outputs.len() as u64,
+            outputs: self.simulated_output_events(),
+        }
+    }
+
+    pub fn simulated_trigger_trace(&self) -> SimulatedTriggerTrace {
+        SimulatedTriggerTrace {
+            schema_version: 1,
+            simulation_only: true,
+            timing_model: "Ideal conditioned crank/cam edges at linear plant-angle crossings in 1 ms steps; fractional input microseconds truncated. No electrical waveform, capture latency or stochastic trigger jitter. TriggerDropout suppresses both inputs.".into(),
+            metadata: self.log_metadata(),
+            config: self.decoder.config(),
+            cam_phase_from_tooth_zero_deg: DEFAULT_CAM_PHASE_DEG,
+            captured_until_us: self.time_us,
+            events_emitted: self.trigger_events_emitted,
+            events_dropped: self.trigger_events_emitted - self.simulated_triggers.len() as u64,
+            inputs: self.simulated_triggers.iter().copied().collect(),
+        }
     }
 
     pub fn snapshot(&self) -> SimSnapshot {
@@ -429,6 +514,7 @@ impl SimEngine {
     fn step_once(&mut self) {
         const DT_S: f32 = 0.001;
         let step_start_us = self.time_us;
+        let step_start_angle = self.true_angle_deg;
         let phase = self.scenario.phase_at(self.time_ms()).clone();
         self.step_count += 1;
         self.cycle_wrapped = false;
@@ -450,7 +536,7 @@ impl SimEngine {
         self.decoder.tick(self.time_us);
         self.compute_ecu_outputs();
         self.evaluate_protection();
-        self.apply_events(step_start_us);
+        self.apply_events(step_start_us, step_start_angle);
         self.update_wideband(DT_S);
         self.track_fault_events();
         self.time_us += 1000;
@@ -724,31 +810,29 @@ impl SimEngine {
             .scenario
             .fault_active(SimFault::TriggerDropout, self.time_ms());
         if !dropout && advance_deg > 0.0 {
-            let mut events: Vec<(f32, u64, bool)> = Vec::new();
-            for rev in 0..2 {
-                for tooth in 0..(self.decoder.config().teeth as usize) {
-                    let pos = rev as f32 * 360.0
-                        + tooth as f32 * (360.0 / self.decoder.config().teeth as f32);
-                    if tooth
-                        == (self.decoder.config().teeth - self.decoder.config().missing) as usize
-                    {
-                        continue;
+            let edges = self
+                .trigger_waveform
+                .edges(old, advance_deg, step_start_us, 1000)
+                .expect("plant step must be finite, monotonic and at most 720 degrees");
+            for edge in edges {
+                match edge.input {
+                    TriggerInput::Crank => {
+                        self.decoder.on_tooth(edge.time_us);
                     }
-                    if crossed(old, new, pos) {
-                        let offset = (pos - old).rem_euclid(720.0);
-                        let t = step_start_us + ((offset / advance_deg.max(1e-6)) * 1000.0) as u64;
-                        events.push((pos, t, pos == 690.0));
+                    TriggerInput::Cam => {
+                        self.decoder.on_cam(edge.time_us);
                     }
                 }
-            }
-            events.sort_by_key(|e| e.1);
-            for (_pos, ts, cam) in events {
-                // A cam edge may coincide with a crank tooth; both inputs must be
-                // delivered. Dropping the crank tooth would break sync.
-                self.decoder.on_tooth(ts);
-                if cam {
-                    self.decoder.on_cam(ts);
+                let record = SimulatedTriggerEvent {
+                    sequence: self.trigger_events_emitted,
+                    edge,
+                    decoder: self.decoder.status(),
+                };
+                self.trigger_events_emitted += 1;
+                if self.simulated_triggers.len() == SIMULATED_TRIGGER_EVENT_CAPACITY {
+                    self.simulated_triggers.pop_front();
                 }
+                self.simulated_triggers.push_back(record);
             }
         }
         self.true_angle_deg = new;
@@ -1094,14 +1178,14 @@ impl SimEngine {
         }
     }
 
-    fn apply_events(&mut self, _step_start_us: u64) {
+    fn apply_events(&mut self, step_start_us: u64, prev_angle: f32) {
         let now_angle = self.true_angle_deg;
-        let prev_angle = (now_angle - self.true_rpm * 6.0 * 0.001).rem_euclid(720.0);
+        let advance_deg = self.true_rpm * 6.0 * 0.001;
         for e in self.schedule.events_crossed(prev_angle, now_angle) {
             if !self.decoder.is_sequential() {
                 continue;
             }
-            match e.kind {
+            let emitted = match e.kind {
                 EventKind::InjectionStart => {
                     if !self.fuel_cut && e.duration_ms > 0.0 {
                         let inj = &self.calibration.engine.injectors[0];
@@ -1127,33 +1211,46 @@ impl SimEngine {
                         self.fuel_cycle_kg += (mg * actual_blind * injector_factor) as f64 * 1e-6;
                         self.injections_this_cycle += 1;
                         self.last_injection_angle = e.angle_deg;
-                        let ev = SimulatedOutputEvent {
-                            time_us: self.time_us,
-                            cycle: self.cycle_count,
-                            cylinder: e.cylinder,
-                            kind: e.kind,
-                            channel: e.output_channel,
-                            angle_deg: e.angle_deg,
-                        };
-                        push_simulated_output(&mut self.simulated_outputs, ev);
+                        true
+                    } else {
+                        false
                     }
                 }
                 EventKind::Spark => {
                     if !self.spark_cut {
                         self.sparks_this_cycle += 1;
                         self.last_spark_angle = e.angle_deg;
-                        let ev = SimulatedOutputEvent {
-                            time_us: self.time_us,
-                            cycle: self.cycle_count,
-                            cylinder: e.cylinder,
-                            kind: e.kind,
-                            channel: e.output_channel,
-                            angle_deg: e.angle_deg,
-                        };
-                        push_simulated_output(&mut self.simulated_outputs, ev);
+                        true
+                    } else {
+                        false
                     }
                 }
-                EventKind::DwellStart => {}
+                EventKind::DwellStart => !self.spark_cut,
+            };
+            if emitted {
+                let offset_deg = (e.angle_deg as f64 - prev_angle as f64).rem_euclid(720.0);
+                let offset_us = (offset_deg / advance_deg as f64 * 1000.0)
+                    .round()
+                    .clamp(0.0, 1000.0) as u64;
+                // advance_trigger has already completed the plant cycle. Events
+                // on the pre-wrap side still belong to the preceding cycle.
+                let cycle = if self.cycle_wrapped && e.angle_deg > prev_angle {
+                    self.cycle_count - 1
+                } else {
+                    self.cycle_count
+                };
+                let ev = SimulatedOutputEvent {
+                    sequence: self.output_events_emitted,
+                    time_us: step_start_us + offset_us,
+                    cycle,
+                    cylinder: e.cylinder,
+                    kind: e.kind,
+                    channel: e.output_channel,
+                    angle_deg: e.angle_deg,
+                    requested_duration_ms: e.duration_ms,
+                };
+                self.output_events_emitted += 1;
+                push_simulated_output(&mut self.simulated_outputs, ev);
             }
         }
     }
@@ -1422,16 +1519,8 @@ fn push_simulated_output(buf: &mut VecDeque<SimulatedOutputEvent>, ev: Simulated
     buf.push_back(ev);
 }
 
-fn crossed(old: f32, new: f32, event: f32) -> bool {
-    let o = old.rem_euclid(720.0);
-    let n = new.rem_euclid(720.0);
-    let e = event.rem_euclid(720.0);
-    if o <= n {
-        e > o && e <= n
-    } else {
-        e > o || e <= n
-    }
-}
+#[cfg(test)]
+mod timing_tests;
 
 #[cfg(test)]
 mod tests {

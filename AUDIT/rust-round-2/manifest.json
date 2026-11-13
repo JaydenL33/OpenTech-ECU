@@ -1,0 +1,191 @@
+{
+  "commands": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "rustc",
+        "--version"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "--version"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--workspace"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "ecu-simulator",
+        "--test",
+        "trigger_waveform",
+        "full_cycles_match_independent_f64_wheel_vectors",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "check",
+        "--locked",
+        "-p",
+        "ecu-types",
+        "-p",
+        "ecu-fuel",
+        "-p",
+        "ecu-ignition",
+        "-p",
+        "ecu-trigger",
+        "-p",
+        "ecu-scheduler",
+        "-p",
+        "ecu-protection",
+        "--no-default-features"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "-q",
+        "-p",
+        "ecu-sim-cli",
+        "--",
+        "run",
+        "--scenario",
+        "mixture_sweep",
+        "--seed",
+        "42",
+        "--out",
+        "runs/output-timing/mixture_sweep",
+        "--check-determinism"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "-q",
+        "-p",
+        "ecu-sim-cli",
+        "--",
+        "run",
+        "--scenario",
+        "trigger_loss",
+        "--seed",
+        "43",
+        "--out",
+        "runs/output-timing/trigger_loss",
+        "--check-determinism"
+      ],
+      "exit": 0
+    }
+  ],
+  "sources_sha256": {
+    "ecu/apps/ecu-sim-cli/src/main.rs": "49c632e6c8106cf503ffa8414e8b3a87908cd1265b76f77a82a2faccac833c6c",
+    "ecu/apps/studio-service/src/main.rs": "2e1f1e3ce40832d57a94801c28a1f26d779238296ca1192cf9a1991b4f22c4bc",
+    "ecu/crates/ecu-calibration/src/lib.rs": "70b13b31cde701d8b7795ff99ed32af3ad1ef83f673127916cc27c434ec824a0",
+    "ecu/crates/ecu-calibration/src/preflight.rs": "d0c5ca8989b47457ce79555571a532ee7a101013008b9c06a5c6301188b11393",
+    "ecu/crates/ecu-calibration/src/table.rs": "198b0f11e75dbfd93a141ca620a79a686c9728fe4d33beef4568a28662b69b04",
+    "ecu/crates/ecu-calibration/src/vehicle.rs": "68b3e9deba6bebef47e239a36082e782870d4521532381f263b7f8566784985e",
+    "ecu/crates/ecu-calibration/src/wizard.rs": "eea47e305cd272f91f0d12ba5bf4a280e13bf679b95459ffddee70c6cc7a512f",
+    "ecu/crates/ecu-diagnostics/src/lib.rs": "b252f381395aa87c4a497bd9992c5a3a09c8bc24c975064733fab47f3741a146",
+    "ecu/crates/ecu-fuel/src/lib.rs": "9de69cbf079e371119fb859579475247580c615cb2fa83b5be1112edc08c51cc",
+    "ecu/crates/ecu-fuel/tests/speeduino_parity.rs": "37d060369aa3f60c8e2f4bc7290e3fe16a32a8faf88347455083b17491274949",
+    "ecu/crates/ecu-harness/src/lib.rs": "344b5317cdababc9442c6f60e323c9e34463b4f509962dcc2599a7bfb94f260d",
+    "ecu/crates/ecu-ignition/src/lib.rs": "5be8d08e8471a909c42ef60cea7baeb53ae4e1ae0ca81e9786584fedc22f7bbf",
+    "ecu/crates/ecu-lambda/src/closed_loop.rs": "a20908ab71c3e70ef80117f39b661cdea7e24465624657b6ee4390512ea4985f",
+    "ecu/crates/ecu-lambda/src/gate.rs": "f092c78c6d2e2d6d14f3e07104273503c1e24cdd7607307eda2386c3451e9fc0",
+    "ecu/crates/ecu-lambda/src/lib.rs": "6f37ceb3380ade235bf382d332b7be561402c27e63d82c93394530f0facbae5a",
+    "ecu/crates/ecu-lambda/src/long_term.rs": "3b4ff6ffbac62c1669b7e845c038ad99ae145c7c86f52c7ddaa8830d4a496ee9",
+    "ecu/crates/ecu-lambda/src/mixture_map.rs": "7bab927737c7c59b77fc0f368206634155afc507e9d348e0e937094943244fc6",
+    "ecu/crates/ecu-protection/src/lib.rs": "7266f13b7b71710d071262e3bfb35ef64c3d56210e0b7b5daa0cf01c4e4c9cd0",
+    "ecu/crates/ecu-protocol/src/lib.rs": "dd32327376f41db6059fc7c4717012a255edccc4864a9e4df8994565a0464618",
+    "ecu/crates/ecu-scheduler/src/lib.rs": "57831099b5e53db0769dd90f311c28b24531611dd593252784e22c196e0488c3",
+    "ecu/crates/ecu-simulator/src/lib.rs": "7da1fba7397b15b8262fcf0ee12b481e69fee8d55b07df8344c49c24eb99eb26",
+    "ecu/crates/ecu-simulator/src/scenario.rs": "4e298fb827446f9b9e62e7672c99e041c622fda3ac51141e1b1f7b6e5c6dcaa9",
+    "ecu/crates/ecu-simulator/src/timing_tests.rs": "349637dc1b50a8fba8d08d10eb81a133d100ebf888782013bd3b0e1769337b80",
+    "ecu/crates/ecu-simulator/src/trigger_waveform.rs": "9eed869a45f3834f9ad288bc45d8a776d81b0b72390ee7f7c0e6b09c8ffb0e2c",
+    "ecu/crates/ecu-simulator/tests/cylinder_counts.rs": "fc6f39cbb78d83d5bd6bb799924b8d7642269db2ba7c1a52072773746a5f17b2",
+    "ecu/crates/ecu-simulator/tests/trigger_waveform.rs": "8bca62666fce91281b34d25e1769f2988c7175dd666cf9e3469093a3430cb2e8",
+    "ecu/crates/ecu-trigger/src/lib.rs": "4d5d09e06bc97760c4428323664d9b9e724ea3b260010efdf6f312fd20eb62dd",
+    "ecu/crates/ecu-types/src/engine.rs": "535546043d6f68763bcd357eee6655371fdcb120db871200822d7acf289a5ee3",
+    "ecu/crates/ecu-types/src/lib.rs": "5b8282dc611dc99fb6467442307df53aa0417c3c080b1eb42d7ce009cd73ebda",
+    "ecu/crates/ecu-types/src/provenance.rs": "99ac615af03e1bd728d1b205469da6bd0e33a61a665925c51161ede844813552",
+    "ecu/crates/ecu-types/src/sensor.rs": "08d6c364488c76ee62179391f00b34e66a17aee81c2dcb13941aefa7b8f847cf",
+    "ecu/crates/ecu-types/src/telemetry.rs": "26800d0dab53c8ddaea18115c5cb44643ceecac8dcb9042afead8a0eb9fddacb",
+    "ecu/crates/ecu-types/src/units.rs": "366515230cc1ac48818d12a7989a0e15bca7ad28f40062894a95aef184082893",
+    "ecu/firmware/stm32/src/lib.rs": "813e45c0cf2d71617dcb9a7326b366db5c4044603470e79101838bbad758bf19",
+    "ecu/Cargo.lock": "0f2ed5f361ba48f97d9fad75db2214644d5dba6655579f0f8a853c37f2f1e79d",
+    "ecu/tools/verify-output-timing.py": "e44ff4a6c1b5ab0fb8e399bd77e8361e4147bf818c9086d015816fe4ddb2625a"
+  },
+  "artifacts_sha256": {
+    "ecu/runs/output-timing/mixture_sweep/calibration.json": "d9ddcdf2ef600a610ae319698b97eedacbad94291e67c8bf7099edb9ae5e5a89",
+    "ecu/runs/output-timing/mixture_sweep/log.json": "e0617b81e352ee5cd3285884a8f6682eed464c2b4a19b15bd844c283ab7ede94",
+    "ecu/runs/output-timing/mixture_sweep/outputs.json": "59a2d624866fe12baa7501432171645af7ec2120ea785cd0436b303bfb5d46dc",
+    "ecu/runs/output-timing/mixture_sweep/triggers.json": "b4e5ecdeec84daa611a0071e9b0ad6e352f94c7fa8bfd07943e85323f0f3fcd3",
+    "ecu/runs/output-timing/mixture_sweep/summary.json": "bf8a23cb44ea5c85693eb6562a88d2e68bba4ca28eb1a1d839bc34965b9a93bf",
+    "ecu/runs/output-timing/trigger_loss/calibration.json": "d9ddcdf2ef600a610ae319698b97eedacbad94291e67c8bf7099edb9ae5e5a89",
+    "ecu/runs/output-timing/trigger_loss/log.json": "c30708c5a05e636c702ea563815f59ac12ea8cbfd32d952de85e2fa6b19e0fdd",
+    "ecu/runs/output-timing/trigger_loss/outputs.json": "af8dc4e781e0ea87f4ebf5e2e930078a82419444d3aa048e71025981957116c2",
+    "ecu/runs/output-timing/trigger_loss/triggers.json": "8f9ba6e98228e1f6d9ae108eddd25a41d05351bb19a4ede83fb5349c9d8058ae",
+    "ecu/runs/output-timing/trigger_loss/summary.json": "13c217621939aa86b13792680ccc6cb90b5832b60136e945d83d0b73660fa255"
+  }
+}
