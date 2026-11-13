@@ -1,0 +1,10 @@
+$ cd ecu && PATH=/home/jlee/tools/bin:$PATH cargo clippy --workspace --all-targets --locked -- -D warnings
+
+    Checking ecu-trigger v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-e42d012c-94b88ee6a91492fa/ecu/crates/ecu-trigger)
+    Checking ecu-simulator v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-e42d012c-94b88ee6a91492fa/ecu/crates/ecu-simulator)
+    Checking opentech-firmware-stm32 v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-e42d012c-94b88ee6a91492fa/ecu/firmware/stm32)
+    Checking studio-service v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-e42d012c-94b88ee6a91492fa/ecu/apps/studio-service)
+    Checking ecu-sim-cli v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-e42d012c-94b88ee6a91492fa/ecu/apps/ecu-sim-cli)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 1.12s
+
+exit_code=0
