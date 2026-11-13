@@ -176,7 +176,7 @@ and the owner explicitly approves H4.
 | Acceptance | Release BOM has no blank MPN or placeholder; every price has a dated source URL; arithmetic checked; no safety-critical substitution justified by pin compatibility alone; no purchase made; BOM still matches the schematic/netlist |
 | Verification | Regenerate BOM via the pinned KiCad image; audit rows against `AUDIT/BOM_REVIEW.md`; cross-check quantities and references |
 | Safety | Read-only web research; no purchases, fabrication or energising |
-| State | **PARTIAL.** Assembly pack now has 139 machine placements, nine connector/socket decisions and a documented hand-solder split (`aad859d3`, integrated `90eacdbe`). Exact MPNs/LCSC, verified stock and a delivered quote remain open. |
+| State | **PARTIAL / BLOCKED.** 139 machine placements, nine connector/socket decisions, two hand-solder items and quoted CSV output are in place (`a5896b6d`). The 5-board estimate is A$160.79/board expected. Five EOL/zero-stock lines (MPX4250AP, LED, 0.22uF, MOSFET, switch) and the fuse/IDC/socket sourcing block a turnkey order. No quote. |
 
 ### RUST-TRG-002 — Pre-sync noise false first-gap lock
 
@@ -239,7 +239,7 @@ and the owner explicitly approves H4.
 | Scope | Tri-pane shell, menu/toolbar, collapsible nav tree, page tabs, dark theme, dense tables, keyboard workflow, live engine marker, 3D surface, gauge/dash designer, logging/playback controls, explicit disabled states for absent hardware features |
 | Acceptance | `npx tsc --noEmit`, `npx vite build`, existing Rust tests, any backend change tested; no mock controls; browser smoke screenshots; host-only |
 | Safety | No physical output path, no approval bypass, no fake PDM/oscilloscope/firmware features |
-| State | CLAIMED — delegated to Codex |
+| State | **PARTIAL.** Nexus shell and open-page tabs merged (`9a73d0d4`); VE-only live marker fixed (`40cc1a5e`). Core table selection/keyboard, shared 3D live tracking, dash settings and logging shortcuts remain. Next task is narrowed to MapEditor selection/keyboard only. |
 
 ### COST-01 — Real AUD cost model and quote preparation
 
@@ -253,7 +253,7 @@ and the owner explicitly approves H4.
 | Scope | Itemised 5-board estimate for bare PCB, JLCPCB and PCBWay assembly, parts, setup/stencil/joints/manual labour, freight/GST; FX date; per-board range; explicit unknowns; comparison with buying an assembled board |
 | Acceptance | Arithmetic checked; every price has a dated source URL; estimates clearly separated from quotes; no invented stock/prices; no purchase |
 | Safety | Read-only research; no fabrication, purchase or vehicle connection |
-| State | CLAIMED — delegated to DeepSeek |
+| State | **DONE (estimate, not a quote).** Integrated `abd7a42d`. Expected A$160.79/board assembled, range A$127.70–196.57; A$220.56 with Mega/DRV8825. Identifies MPX4250AP EOL, zero-stock lines and feeder loading as the main risks. A real JLCPCB/PCBWay quote still needs the nine connector choices and stock substitutions. |
 
 ### Cleanup record
 
