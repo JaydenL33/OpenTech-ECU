@@ -176,7 +176,7 @@ and the owner explicitly approves H4.
 | Acceptance | Release BOM has no blank MPN or placeholder; every price has a dated source URL; arithmetic checked; no safety-critical substitution justified by pin compatibility alone; no purchase made; BOM still matches the schematic/netlist |
 | Verification | Regenerate BOM via the pinned KiCad image; audit rows against `AUDIT/BOM_REVIEW.md`; cross-check quantities and references |
 | Safety | Read-only web research; no purchases, fabrication or energising |
-| State | CLAIMED — delegated in this cycle |
+| State | **PARTIAL.** Assembly pack now has 139 machine placements, nine connector/socket decisions and a documented hand-solder split (`aad859d3`, integrated `90eacdbe`). Exact MPNs/LCSC, verified stock and a delivered quote remain open. |
 
 ### RUST-TRG-002 — Pre-sync noise false first-gap lock
 
@@ -224,3 +224,40 @@ and the owner explicitly approves H4.
 | State | CLAIMED — delegated in this cycle |
 
 - 2026-11-13 hardware assembly metadata: generated 140-reference JLC BOM/CPL and unresolved list; verification in AUDIT/jlcpcb-pack/. Upload blocked on exact sourcing and A1/XA1 metadata decisions; connector fit questions in docs/CONNECTOR_DECISIONS.md.
+
+## 9. Nexus UI and cost workstreams — 2026-11-13
+
+### UI-NEXUS-01 — Nexus-style tuning interface
+
+| Field | Value |
+|---|---|
+| Workstream | Tuning UI / backend implications |
+| Owner | `@ui-engineer` (Codex gpt-6.1-sol) |
+| Priority | P0 for the tuning product |
+| Depends on | Current master (252 tests); `docs/NEXUS_UI_SPEC.md` |
+| Owned files | `ecu/apps/tuning-studio/**`; `ecu/apps/studio-service/**` only where a real endpoint/state change is required and tested |
+| Scope | Tri-pane shell, menu/toolbar, collapsible nav tree, page tabs, dark theme, dense tables, keyboard workflow, live engine marker, 3D surface, gauge/dash designer, logging/playback controls, explicit disabled states for absent hardware features |
+| Acceptance | `npx tsc --noEmit`, `npx vite build`, existing Rust tests, any backend change tested; no mock controls; browser smoke screenshots; host-only |
+| Safety | No physical output path, no approval bypass, no fake PDM/oscilloscope/firmware features |
+| State | CLAIMED — delegated to Codex |
+
+### COST-01 — Real AUD cost model and quote preparation
+
+| Field | Value |
+|---|---|
+| Workstream | Hardware sourcing / cost |
+| Owner | `@cost-engineer` (DeepSeek) |
+| Priority | P0 for the owner's A$250/board decision |
+| Depends on | 139-placement assembly pack; nine connector decisions; hand-solder split |
+| Owned files | `docs/HARDWARE_COST.md`, `AUDIT/BOM_REVIEW.md`, new cost evidence files; read-only use of the BOM/CPL |
+| Scope | Itemised 5-board estimate for bare PCB, JLCPCB and PCBWay assembly, parts, setup/stencil/joints/manual labour, freight/GST; FX date; per-board range; explicit unknowns; comparison with buying an assembled board |
+| Acceptance | Arithmetic checked; every price has a dated source URL; estimates clearly separated from quotes; no invented stock/prices; no purchase |
+| Safety | Read-only research; no fabrication, purchase or vehicle connection |
+| State | CLAIMED — delegated to DeepSeek |
+
+### Cleanup record
+
+The 13 generated SVG/JSON report exports for the superseded legacy custom board
+were untracked; the three 97k–113k-line simulator baseline logs were gzipped and
+their references updated; STEP/gerber/drill/hex/DRC-JSON artefacts are marked
+non-diffable. The upstream Speeduino hardware/source provenance remains tracked.
