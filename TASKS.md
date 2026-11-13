@@ -67,7 +67,7 @@ after verifying their committed changes and evidence.
 | Acceptance | No fixed-wall-clock-only latching; deterministic recovery tests for cam loss and crank loss; tests fail before and pass after; no regressions in workspace suite |
 | Verification | `cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets --locked -- -D warnings`; `cargo test --workspace --locked`; targeted `ecu-trigger` tests with `--nocapture`; raw logs committed |
 | Safety | Host simulation only; no claim of hardware timing or Speeduino binary equivalence |
-| State | REVIEW — independent re-review in progress. Commit `bd6f1a17`; 226 workspace / 29 trigger tests; 0 post-acquisition cam drops at 150/250/400 rpm; clippy/fmt clean. Prior reviews found and this branch fixes the pre-sync half-rate lock and low-RPM cam expiry. |
+| State | **DONE (host) — integrated `b710d2b9`.** Independent re-review: ACCEPT WITH FINDINGS. Both blocking defects fixed (pre-sync half-rate lock, low-RPM wall-clock cam expiry); mutation tests fail on the old behavior. 226 workspace / 29 trigger tests; 0 post-acquisition cam drops at 150/250/400 rpm. Residual medium pre-sync noise false-gap behavior is pre-existing and queued as RUST-TRG-002. |
 
 ### TUNE-AUD-01 — Durable calibration audit and revision persistence
 
@@ -92,6 +92,7 @@ after verifying their committed changes and evidence.
 | HW-BOM-02 | Hardware | Dated AUD supplier quotes and purchase-vs-build comparison | Depends on BOM; no purchases |
 | HW-BENCH-01 | Hardware | IDC40 breakout schematic/assembly + safe power-up procedure | Design-only until H4 |
 | HW-MECH-01/02 | Hardware | Assembly drawing, stack-up, mounting holes | Folded into HW-H2-01 |
+| RUST-TRG-002 | Rust | Pre-sync noise false first-gap lock | Re-review measured 100/136 probe cases; require a minimum baseline-tooth count or confirmed second gap before first sync |
 | RUST-TIM-001 | Rust | Discrete-event timing/causality vectors | After TRG-001; no hardware needed |
 | RUST-REF-001 | Rust | Upstream differential testing | Needs reproducible upstream reference captures |
 | TUNE-LAM-017 | Tuning | Unit-aware importer for percent trims, psi/bar MAP, `.msl` headers | Needs real log sample for acceptance |
