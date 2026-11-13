@@ -7,7 +7,7 @@ use ecu_types::{EngineConfig, EngineState, SyncState};
 const BASELINE_CALIBRATION_SHA256: &str =
     "d9ddcdf2ef600a610ae319698b97eedacbad94291e67c8bf7099edb9ae5e5a89";
 const BASELINE_IDLE_WARMUP_LOG_SHA256: &str =
-    "ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a";
+    "9bc9b970cb5558432f692cd3615920bd11050260072b389b937453661a09f418";
 
 fn calibration_for(n: u8) -> Calibration {
     generate_starter(
@@ -182,7 +182,7 @@ fn layout_tdc_matches_scheduler_spark_angles() {
 }
 
 #[test]
-fn inline4_outputs_match_pre_change_baseline() {
+fn inline4_matches_post_rust_trg_002_baseline_with_stable_sync() {
     let cal = generate_starter(&WizardRequest::default_inline4(), 1).unwrap();
     assert_eq!(
         hex_sha256(&serde_json::to_vec_pretty(&cal).unwrap()),
@@ -190,10 +190,37 @@ fn inline4_outputs_match_pre_change_baseline() {
     );
     let mut engine = SimEngine::new(cal, by_id("idle_warmup").unwrap()).unwrap();
     engine.run_to_end();
+    assert!(!engine.frames().is_empty());
+    let first = engine
+        .frames()
+        .iter()
+        .position(|f| f.sync == SyncState::Sequential)
+        .expect("idle_warmup must acquire sequential sync");
+    let first_ms = engine.frames()[first].scenario_time_ms;
+    assert!(first_ms <= 600, "first sequential sync at {first_ms} ms");
+    let dropouts = engine.frames()[first..]
+        .iter()
+        .filter(|f| f.sync != SyncState::Sequential)
+        .count();
+    assert_eq!(dropouts, 0);
+    let mut repeat = SimEngine::new(
+        generate_starter(&WizardRequest::default_inline4(), 1).unwrap(),
+        by_id("idle_warmup").unwrap(),
+    )
+    .unwrap();
+    repeat.run_to_end();
+    assert_eq!(
+        hex_sha256(&serde_json::to_vec_pretty(&engine.log_file()).unwrap()),
+        hex_sha256(&serde_json::to_vec_pretty(&repeat.log_file()).unwrap())
+    );
+    println!("idle_warmup: first sequential frame {first}, {first_ms} ms; post-sync dropouts {dropouts}; repeat hash identical");
+    // Post-RUST-TRG-002 baseline: one extra acquisition revolution changes
+    // the closed-loop plant trajectory. Prior hash:
+    // ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a.
     // `accel_enrich_pct` was added to the frame after this baseline was taken.
     // The simulator never models enrichment, so it must be exactly 0.0 on every
     // frame; the line is then removed (with the comma it leaves behind on the
-    // preceding field) so the *original* pre-change hash still has to match.
+    // preceding field) so the post-RUST-TRG-002 normalized transcript hash must match.
     let pretty = String::from_utf8(serde_json::to_vec_pretty(&engine.log_file()).unwrap()).unwrap();
     let mut kept: Vec<&str> = Vec::new();
     let mut removed = 0usize;
