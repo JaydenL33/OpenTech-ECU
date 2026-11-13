@@ -1,5 +1,10 @@
 # Hardware
 
+> **Start here:** [`docs/START_HERE_HARDWARE.md`](../docs/START_HERE_HARDWARE.md).
+> The selected project is `prototype-v1/v0.4.4d.kicad_pro`. The older
+> `kicad/evo8-bench-ecu/` board is an **unrouted legacy draft** whose title block
+> says “DO NOT FABRICATE: UNROUTED”; it is not the prototype.
+
 There is **no manufacturing-approved OpenTech-ECU board** in this repository.
 The current candidate is a **bench prototype**, not a drop-in Mitsubishi Evo VIII
 ECU.

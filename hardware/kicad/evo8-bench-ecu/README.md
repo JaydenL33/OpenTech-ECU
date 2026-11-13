@@ -1,5 +1,10 @@
 # Evo VIII bench-prototype ECU — unreviewed KiCad schematic + PCB draft
 
+> **SUPERSEDED — DO NOT USE FOR THE PROTOTYPE.** The selected bench design is
+> `hardware/prototype-v1/v0.4.4d.kicad_pro` (Speeduino v0.4.4d SMD). This older
+> custom STM32 board is retained as an exploratory draft only. If KiCad shows
+> “UNROUTED” or “OpenTech-ECU REV A”, you are in this folder, not prototype-v1.
+>
 > **STATUS: UNREVIEWED BENCH SCHEMATIC + UNROUTED PCB DRAFT. NOT MANUFACTURABLE.
 > NOT AUTOMOTIVE-QUALIFIED. NOT AN EVO VIII PLUG-IN. DO NOT FABRICATE OR CONNECT TO A VEHICLE.**
 
