@@ -1,0 +1,4 @@
+$ cd ecu && PATH=/home/jlee/tools/bin:$PATH cargo fmt --all -- --check
+
+
+exit_code=0
