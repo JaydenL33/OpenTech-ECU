@@ -97,9 +97,36 @@ These are review rules, not final substitutions:
 7. **Purchase-vs-build comparison** (assembled v0.4.4d board vs bare PCB +
    parts), under the A$250 target if credible.
 
-No price is stated in this document because none has been quoted yet. This is
-deliberate: inventing a price would violate the project's provenance rules.
+No quoted price is stated in this document because none has been obtained. This
+is deliberate: inventing a price would violate the project's provenance rules.
+The catalogue prices in the appended sourcing note are not quotations.
 
 ## HW-BOM-01/02 sourcing follow-up — 2026-11-13
 
 Still OPEN. See docs/JLCPCB_ASSEMBLY.md and docs/HARDWARE_COST.md. No verified LCSC mappings or completed AUD quote; no parts substituted. Harwin M20-9990545 (J1/J6/J7), M20-9990645 (J2), M20-9990445 (J5), M20-9990345 (J8) are candidates only. Manufacturer product information reproduced at https://www.farnell.com/datasheets/4376834.pdf gives 3-position nominal length 7.62 mm but explicitly says End Stackable: No. Drawing/tolerance confirmation remains required before accepting header courtyard exclusions. No approved alternatives. A1 Pololu item 2133 is a customer plug-in; board-side sockets remain unresolved. JP6–JP11 are copper features, not purchased placements. IC3, J3, keyed J4 and mating cable socket, XA1 header set remain unsourced. H3/H4 unchanged.
+
+## Sourcing facts verified — 2026-11-13 (read-only catalogue check)
+
+Query: JLCPCB parts catalogue API, one lookup per BOM MPN
+(`POST https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList`).
+These are **catalogue prices and stock at that timestamp**, not quotations, and
+not approval of any part. Full table: `AUDIT/COST_ESTIMATE.md` §3.
+
+| Fact | Detail |
+|---|---|
+| Catalogue mapping | 34 of the 35 unique MPN values resolve to a catalogue part with an LCSC code. |
+| `VNLD5090-E` | The exact order code is not matched; `VNLD5090TR-E` (C222209) is, at USD 2.5326, stock 30. Tape/reel suffix difference needs EE confirmation. |
+| End-of-life | `MPX4250AP` (C2802676, USD 23.1821, stock 0) and `LH R974-LP-1` (C2899895, stock 0) are marked "no longer manufactured". |
+| Zero stock | `CL21B224KOCNNNC` (C296721), `SSM3K357R` (C7558097), `AYZ0202AGRLC` (C221564). |
+| Near-zero stock | `LM2940S-5.0/NOPB` (C133956) 1 unit; `S110FA` (C556397) 119; `VNLD5090TR-E` 30; `SP720ABTG` (C434726) 479. |
+| Not in library | `0ZCC0050FF2C` fuse: no exact match; the nearest `0ZCC…` parts all show stock 0. A keyed 2×20 IDC header and a 7.62 mm DIP-8 socket also have no stocked match (the generic DIP-8 hit is marked "no longer manufactured"). |
+| Basic library | Of the 35 machine MPNs, 33 are extended catalogue parts, one is **basic** (`CC0805KRX7R9BB104`, C49678) and one (the fuse) is absent from the library. |
+| Connector representatives | `Phoenix 1729018` C3820334 USD 0.5612, stock 81; `HTSW-105-07-G-S` C3337223 USD 0.6332, stock 16; `SSQ-108-01-F-S` C7019014 USD 1.4643, stock 3. These are cost representatives; the nine MPNs remain unapproved. |
+| Distributor cross-check | Not possible this round: Digi-Key, Mouser, Element14 and Octopart returned 403/access-denied; LCSC pages are client-rendered. |
+| File-format defect | The `J3` row has an unquoted comma in its footprint field, so a naive CSV parser shifts columns and reads `5-2-5.0-H_1x02_P5.00mm_Horizontal` as the MPN. Quote the field before any assembler upload. The row is still correctly an unresolved connector. |
+
+Consequence for `HW-BOM-01`: the BOM is still not releasable. A turnkey order
+cannot be placed as-is because five lines have zero stock and one line (the fuse)
+is absent from the assembler's library. Those need an approved alternative,
+pre-order or consignment before a quote. Cost consequence is in
+`docs/HARDWARE_COST.md`; no price here is a supplier commitment.
