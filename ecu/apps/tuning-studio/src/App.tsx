@@ -82,9 +82,9 @@ export default function App() {
   const [page, rawSetPage] = useState<PageId>("dashboard");
   const [history, setHistory] = useState<PageId[]>([]);
   const [sidebar, setSidebar] = useState(true);
-  const [tabs, setTabs] = useState(NAV.map(n => n.id));
+  const [tabs, setTabs] = useState<PageId[]>(["dashboard"]);
   const [theme, setTheme] = useState(() => localStorage.getItem("studio-theme") || "dark");
-  const setPage = (next: PageId) => { setHistory(h => [...h, page]); rawSetPage(next); };
+  const setPage = (next: PageId) => { setHistory(h => [...h, page]); setTabs(old => old.includes(next) ? old : [...old, next]); rawSetPage(next); };
   useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem("studio-theme", theme); }, [theme]);
   const [calibration, setCalibrationState] = useState<Calibration | null>(null);
   const [preflight, setPreflight] = useState<PreflightReport | null>(null);
@@ -261,7 +261,7 @@ export default function App() {
           </div>
         </div>
 
-        <main className="main"><div className="workspace-tabs">{tabs.map(id => <button key={id} draggable onDragStart={e => e.dataTransfer.setData("text/plain", id)} onDragOver={e => e.preventDefault()} onDrop={e => { const source = e.dataTransfer.getData("text/plain") as PageId; if (!tabs.includes(source)) return; setTabs(old => { const next = old.filter(x => x !== source); next.splice(next.indexOf(id), 0, source); return next; }); }} className={page === id ? "selected" : ""} onClick={() => setPage(id)}>{id === "dashboard" ? "Main" : NAV.find(n => n.id === id)?.label}</button>)}</div>
+        <main className="main"><div className="workspace-tabs" role="tablist" aria-label="Open pages">{tabs.map(id => <span key={id}><button role="tab" id={`tab-${id}`} aria-selected={page === id} tabIndex={page === id ? 0 : -1} onKeyDown={e => { const i = tabs.indexOf(id); let next: PageId | undefined; if (e.key === "ArrowRight") next = tabs[(i + 1) % tabs.length]; if (e.key === "ArrowLeft") next = tabs[(i + tabs.length - 1) % tabs.length]; if (e.key === "Home") next = tabs[0]; if (e.key === "End") next = tabs[tabs.length - 1]; if (next) { e.preventDefault(); setPage(next); document.getElementById(`tab-${next}`)?.focus(); } }} draggable onDragStart={e => e.dataTransfer.setData("text/plain", id)} onDragOver={e => e.preventDefault()} onDrop={e => { const source = e.dataTransfer.getData("text/plain") as PageId; if (source === id || !tabs.includes(source)) return; setTabs(old => { const next = old.filter(x => x !== source); next.splice(next.indexOf(id), 0, source); return next; }); }} className={page === id ? "selected" : ""} onClick={() => setPage(id)}>{id === "dashboard" ? "Main" : NAV.find(n => n.id === id)?.label}</button><button aria-label={`Close ${NAV.find(n => n.id === id)?.label}`} disabled={tabs.length === 1} onClick={() => { const remaining = tabs.filter(x => x !== id); setTabs(remaining); const next = page === id ? remaining[Math.min(tabs.indexOf(id), remaining.length - 1)] : page; rawSetPage(next); requestAnimationFrame(() => document.getElementById(`tab-${next}`)?.focus()); }}>×</button></span>)}</div>
           <div className="content">
             <div className="page-head">
               <div>
