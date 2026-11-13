@@ -1,5 +1,6 @@
 (fp_lib_table
-  (lib (name Connector_Automotive)(type KiCad)(uri ${KIPRJMOD}/lib/Connector_Automotive/Connector_Automotive.pretty)(options "")(descr ""))
-  (lib (name Misc)(type KiCad)(uri ${KIPRJMOD}/lib/Misc/Misc.pretty)(options "")(descr ""))
-  (lib (name Shields)(type KiCad)(uri ${KIPRJMOD}/lib/Shields/Shields.pretty)(options "")(descr ""))
+  (version 7)
+  (lib (name "Shields")(type "KiCad")(uri "${KIPRJMOD}/lib/Shields/Shields.pretty")(options "")(descr "Extracted from the routed v0.4.4d board (HW-H2-01 R-05)"))
+  (lib (name "Misc")(type "KiCad")(uri "${KIPRJMOD}/lib/Misc/Misc.pretty")(options "")(descr "Extracted from the routed v0.4.4d board (HW-H2-01 R-05)"))
+  (lib (name "Speeduino_Legacy")(type "KiCad")(uri "${KIPRJMOD}/lib/Speeduino_Legacy/Speeduino_Legacy.pretty")(options "")(descr "KiCad 5 footprint variants absent from KiCad 9 libraries (HW-H2-01 R-05)"))
 )
