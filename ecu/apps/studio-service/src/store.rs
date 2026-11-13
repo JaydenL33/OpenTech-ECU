@@ -329,6 +329,7 @@ impl LockMarker {
 struct DirLock {
     file: File,
     marker: LockMarker,
+    published: bool,
 }
 
 impl DirLock {
@@ -386,9 +387,11 @@ impl DirLock {
             pid: std::process::id(),
             started_unix_ms: now_unix_ms(),
         };
-        let lock = Self { file, marker };
-        lock.write_marker()
-            .map_err(|e| StoreError::Io(format!("{}: {e}", path.display())))?;
+        let lock = Self {
+            file,
+            marker,
+            published: false,
+        };
         Ok((lock, stale))
     }
 
@@ -409,8 +412,10 @@ impl Drop for DirLock {
         // Best effort. If this fails the marker stays `held` and the next
         // opener treats it as stale — the conservative outcome. The OS lock is
         // released when `file` closes.
-        self.marker.state = "released".into();
-        let _ = self.write_marker();
+        if self.published {
+            self.marker.state = "released".into();
+            let _ = self.write_marker();
+        }
         let _ = self.file.unlock();
     }
 }
@@ -607,7 +612,7 @@ impl CalibrationStore {
     pub fn open_with(dir: &Path, policy: LockPolicy) -> Result<Self, StoreError> {
         create_dir_all_durable(dir)
             .map_err(|e| StoreError::Io(format!("{}: {e}", dir.display())))?;
-        let (lock, stale) = DirLock::acquire(dir, policy)?;
+        let (mut lock, stale) = DirLock::acquire(dir, policy)?;
         let (revisions, audit, warnings) = if dir.join(META_FILE).exists() {
             Self::load(dir)?
         } else {
@@ -631,7 +636,7 @@ impl CalibrationStore {
             (Vec::new(), Vec::new(), Vec::new())
         };
         let mut warnings = warnings;
-        let lock_recovery = stale.map(|previous| {
+        let lock_recovery = stale.map(|previous| -> Result<String, StoreError> {
             let msg = format!(
                 "recovered a stale store lock deliberately (--recover-stale-lock); previous holder: {previous}. \
                  Full hash chain re-verified on this open."
@@ -642,17 +647,16 @@ impl CalibrationStore {
                 "recovering_pid": std::process::id(),
                 "previous_holder": previous,
             });
-            // Best effort: the warning above is the authoritative surface.
-            if let Ok(mut f) = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open(dir.join(LOCK_RECOVERY_LOG))
-            {
-                let _ = writeln!(f, "{line}");
-                let _ = f.sync_data();
-            }
-            msg
-        });
+            append_line(&dir.join(LOCK_RECOVERY_LOG), &line.to_string())?;
+            Ok(msg)
+        }).transpose()?;
+        // Publish only after verification and durable recovery evidence.
+        lock.write_marker()
+            .and_then(|_| sync_dir(dir))
+            .map_err(|e| {
+                StoreError::Io(format!("publish {}: {e}", dir.join(LOCK_FILE).display()))
+            })?;
+        lock.published = true;
         Ok(Self {
             lock,
             lock_recovery,
@@ -1700,6 +1704,7 @@ mod tests {
             serde_json::to_string(&marker).unwrap(),
         )
         .unwrap();
+        let prior = fs::read(dir.path().join(LOCK_FILE)).unwrap();
         let audit_path = dir.path().join(AUDIT_FILE);
         let mut t = fs::read_to_string(&audit_path).unwrap();
         t.pop(); // drop the trailing newline
@@ -1714,6 +1719,31 @@ mod tests {
             before,
             "file left untouched"
         );
+        assert_eq!(fs::read(dir.path().join(LOCK_FILE)).unwrap(), prior);
+    }
+
+    #[test]
+    fn recovery_log_failure_preserves_marker_and_success_releases() {
+        let (dir, _) = populated("recovery-log");
+        let path = dir.path().join(LOCK_FILE);
+        let prior = b"{\"state\":\"held\",\"pid\":4000000,\"started_unix_ms\":1}";
+        fs::write(&path, prior).unwrap();
+        let log = dir.path().join(LOCK_RECOVERY_LOG);
+        fs::create_dir(&log).unwrap();
+        assert!(matches!(
+            CalibrationStore::open_with(dir.path(), LockPolicy::RecoverStale),
+            Err(StoreError::Io(_))
+        ));
+        assert_eq!(fs::read(&path).unwrap(), prior);
+        fs::remove_dir(&log).unwrap();
+        let store = CalibrationStore::open_with(dir.path(), LockPolicy::RecoverStale).unwrap();
+        assert_eq!(fs::read_to_string(&log).unwrap().lines().count(), 1);
+        let marker: LockMarker = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        assert_eq!(marker.state, "held");
+        drop(store);
+        let marker: LockMarker = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        assert_eq!(marker.state, "released");
+        drop(CalibrationStore::open(dir.path()).unwrap());
     }
 
     #[test]

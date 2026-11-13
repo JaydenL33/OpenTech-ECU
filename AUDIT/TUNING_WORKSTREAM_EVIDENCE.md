@@ -959,3 +959,27 @@ next normal open clean), `lock_marker_edge_cases_empty_is_fresh_garbage_is_stale
 7. `GET /api/calibration/revisions` is still unpaginated (revision metadata only, no payloads); only the audit log is paged. Out of TUNE-UI-002 scope.
 8. UI paging/cancellation not run in a browser (see B).
 9. No gate advanced; no hardware, vehicle, or production-readiness claim.
+
+### Round 10 independent review fixes — TUNE-STORE-02 / TUNE-UI-002
+
+Based on master c7102387; merged t3/tuning-store-paging (fb999a1b) with the requested merge message. Implementation stays on t3/tuning-recovery-paging.
+
+* MEDIUM recovery logging: replaced ignored open/write/sync errors with append_line, which propagates path-specific StoreError::Io and fsyncs the file and newly created directory entry before publishing held.
+* MEDIUM stale evidence: acquiring the OS lock only reads the prior marker. Full load/chain verification and durable recovery logging precede held publication. DirLock tracks published state; drop writes released only after publication. Failed verification/logging preserves prior bytes. Same store.lock path and JSON format; no format change.
+* LOW paging: missing newer count is latest response total minus loaded final sequence plus one. All-loaded requires oldest sequence zero and no missing newer entries; missing newer entries display “N newer entries not loaded — Refresh”. Older paging and cancellation retained.
+
+Regression coverage: corrupt/torn store recovery now asserts prior marker byte identity; new blocked-log test asserts Io and byte identity, then successful recovery records one log line, publishes held, releases on drop and reopens normally. Existing same-process, cross-process, SIGKILL and signal tests retained.
+
+Raw outputs: AUDIT/tuning-round-10/review-fixes/. Commands from ecu with PATH=/home/jlee/tools/bin:$PATH:
+| Command | Exit | Result |
+|---|---|---|
+| cargo fmt --all -- --check | 0 | clean |
+| cargo clippy --workspace --all-targets --locked -- -D warnings | 0 | clean |
+| cargo test --workspace --locked | 0 | 251 passed, 0 failed |
+| cargo test -p studio-service --locked -- --nocapture | 0 | 43 passed, 0 failed |
+| cd apps/tuning-studio && npx tsc --noEmit | 0 | clean |
+| npx vite build | 0 | built |
+
+cc --version captured in toolchain.out (local gcc-13 wrapper). Initial UI output redirection used an incorrect relative path (commands did not execute); corrected runs found missing node_modules, captured in *-before-install.out. npm ci then succeeded (npm-ci.out) and both required UI checks passed. Prior Round 10 history preserved.
+
+Residual limits: durability verified through successful fsync code paths, not power-cut testing or injected fsync failure. Recovery sidecar remains unauthenticated. Advisory/local-filesystem and Windows runtime limits from Round 10 remain. UI typecheck/build only; no browser rendering claimed. Counts reflect the latest fetched total, not a live subscription. No approval, paused-engine, tamper, or physical-output semantics changed; no H gate advanced.

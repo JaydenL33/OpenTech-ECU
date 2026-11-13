@@ -96,6 +96,7 @@ export function AuditTrail({ refreshKey }: { refreshKey?: unknown }) {
   useEffect(() => () => inflight.current?.abort(), []);
 
   const older = entries.length > 0 ? entries[0].seq : 0;
+  const newer = Math.max(0, total - (entries.length ? entries[entries.length - 1].seq + 1 : 0));
   const newestFirst = [...entries].reverse();
 
   const runVerify = async () => {
@@ -156,7 +157,8 @@ export function AuditTrail({ refreshKey }: { refreshKey?: unknown }) {
       </div>
       <p className="hint" aria-live="polite">
         Audit log: showing {entries.length} of {total} entries (newest first)
-        {older > 0 ? ` — ${older} older not loaded.` : total > 0 ? " — all loaded." : "."}
+        {older > 0 ? ` — ${older} older not loaded.` : newer === 0 && entries[0]?.seq === 0 ? " — all loaded." : "."}
+        {newer > 0 ? ` — ${newer} newer entries not loaded — Refresh` : ""}
         {loading ? " Loading…" : ""}
       </p>
       <div className="table-scroll">
