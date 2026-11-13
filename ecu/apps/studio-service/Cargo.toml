@@ -3,6 +3,8 @@ name = "studio-service"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+# std::fs::File::try_lock (single-writer store lock) is stable from Rust 1.89.
+rust-version = "1.89"
 
 [dependencies]
 anyhow = { workspace = true }

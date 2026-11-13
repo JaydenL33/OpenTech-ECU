@@ -1,0 +1,17 @@
+# Real-binary smoke run (TUNE-STORE-02), 2026-11-13. Local only; no hardware; ports 18765-18767 on 127.0.0.1.
+# Transcribed from the terminal session; data-dir path shortened to <D>. Not a substitute for the unit tests.
+$ target/debug/studio-service --port 18765 --data-dir <D>/d &            # instance A
+$ target/debug/studio-service --port 18766 --data-dir <D>/d              # instance B, same dir
+Error: calibration store <D>/d is locked by another running instance (pid 131227, started unix_ms 1794539198408, state 'held'); refusing to open it a second time. Stop the other instance, or use a different --data-dir
+exit 1
+$ cat <D>/d/store.lock
+{"state":"held","pid":131227,"started_unix_ms":1794539198408}
+$ kill -9 A ; start B without flag
+Error: calibration store <D>/d was not released by its previous holder (pid 131227, started unix_ms 1794539198408, state 'held') — it exited or was killed without closing the store, possibly mid-write. No other instance holds it now. Start with --recover-stale-lock to deliberately reopen it (the full hash chain is re-verified and the recovery is logged)
+exit 1
+$ start B with --recover-stale-lock ; GET /api/calibration/revisions -> store.single_writer_lock.stale_lock_recovered = true ; store.warnings = ["recovered a stale store lock deliberately ..."]
+$ <D>/d/lock-recovery.jsonl
+{"previous_holder":"pid 131227, started unix_ms 1794539198408, state 'held'","recovered_unix_ms":1794539200941,"recovering_pid":131279}
+# Finding from this run (fixed in the same commit): a plain SIGINT used to leave the marker 'held' (no graceful shutdown), so every Ctrl-C would have required --recover-stale-lock. main now handles SIGINT/SIGTERM and releases the store.
+$ second run (smoke2): start; open a lingering TCP connection; kill -INT -> exit 0; store.lock = {"state":"released",...}
+$ restart without flag -> starts normally; kill -TERM -> exit 0; store.lock state "released"
