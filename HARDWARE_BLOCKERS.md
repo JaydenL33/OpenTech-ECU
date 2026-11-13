@@ -216,13 +216,13 @@
 |---|---|
 | Severity | S2 (blocks H3) |
 | Affected files | `hardware/prototype-v1/manufacturing/assembly/v0.4.4d-bom.csv` |
-| Problem | A1 (Pololu DRV8825 module), IC3 (DIP-8 socket), J1/J6/J7, J2, J3, J4 (IDC40), J5, J8, JP6–JP10, JP11 and XA1 have no MPN: 11 grouped rows covering 17 populated placements. The released BOM must not contain placeholders. Separately, 150 unannotated `REF**` proto-area pads are not BOM items but must be explained in the assembly drawing. |
-| Evidence | `v0.4.4d-bom.csv`: 47 grouped rows, 147 populated placements, 36 rows with MPN, 11 without. Detail in `AUDIT/BOM_REVIEW.md`. Upstream CSV gives MPNs for most passive/active parts but not these. |
-| Required action | Assign real, purchasable MPNs (connector series, socket, jumper, Arduino shield/module); record supplier and alternatives. |
+| Problem | The original 11 blank-MPN rows are now classified: JP6–JP11 are bare copper features (no part), A1/XA1 are the documented hand-solder split, and nine machine connector/socket references still need an EE ordering code. Separately, the JLCPCB catalogue has zero stock for MPX4250AP (discontinued), LH R974-LP-1 (discontinued), CL21B224KOCNNNC, SSM3K357R and AYZ0202AGRLC; LM2940S-5.0/NOPB has one unit and several others are under 500. A turnkey order cannot be placed as-is. |
+| Evidence | Assembly pack: 139 machine placements, 9 unresolved connector/socket rows, 2 hand-solder items, 6 bare jumpers. `docs/HARDWARE_COST.md` / `AUDIT/COST_ESTIMATE.md` (2026-11-13) give an expected A$160.79/board assembled estimate; stock/EOL facts are in §8. No manufacturer quote. Detail in `AUDIT/BOM_REVIEW.md`. |
+| Required action | EE selects the nine connector/socket codes; resolve or consign the five zero-stock/EOL lines and the fuse; map alternatives without pin-compatibility-only substitution. Then upload for a real quote. |
 | Owner | Hardware/BOM workstream |
 | Autonomous | Yes (research), purchases prohibited |
 | Verification | BOM audit: no blank MPN in release BOM; supplier links resolve |
-| Status | **OPEN** |
+| Status | **OPEN — sourcing/quote blocked; cost estimate exists.** |
 
 ### HW-BOM-02 — No dated AUD supplier quotes or cost comparison
 
