@@ -1,0 +1,54 @@
+Fuel_Ignition.kicad_sch: sha256 308e2ef34445 -> 94370060deae
+connector.kicad_sch: sha256 143d7cb00d81 -> 4f5bfa8d7bfb
+outputs.kicad_sch: sha256 2864cf84832b -> 527ca4de8b11
+power.kicad_sch: sha256 69ef4724fed2 -> e95a9507878d
+v0.4.4d.kicad_sch: sha256 8fa7663932ba -> 1edc3fa4dd63
+changes applied: 47
+  - R-07 Fuel_Ignition.kicad_sch: #FLG05 PWR_FLAG at (156.21, 125.73) for Vdrive after JP1
+  - R-07 connector.kicad_sch: #FLG01 PWR_FLAG at (222.25, 81.28) for GND at J3.1
+  - R-07 connector.kicad_sch: #FLG02 PWR_FLAG at (222.25, 86.36) for 12V-SW at J3.2
+  - R-08 outputs.kicad_sch: no-connect at (55.88, 46.99) U7 STATUS1 unused
+  - R-08 outputs.kicad_sch: no-connect at (55.88, 54.61) U7 STATUS2 unused
+  - R-08 outputs.kicad_sch: no-connect at (63.5, 149.86) J2 pin 6 unused
+  - R-08 outputs.kicad_sch: no-connect at (201.93, 46.99) U9 STATUS1 unused
+  - R-08 outputs.kicad_sch: no-connect at (201.93, 54.61) U9 STATUS2 unused
+  - R-08 outputs.kicad_sch: no-connect at (205.74, 102.87) A1 FLT unused
+  - R-08 outputs.kicad_sch: no-connect at (205.74, 123.19) A1 M0 unused (module pull-down)
+  - R-08 outputs.kicad_sch: no-connect at (205.74, 125.73) A1 M1 unused (module pull-down)
+  - R-08 outputs.kicad_sch: no-connect at (205.74, 128.27) A1 M2 unused (module pull-down)
+  - R-06 power.kicad_sch: Device:CP1 -> Device:C_Polarized_US (2 instances)
+  - R-08 power.kicad_sch: removed wire (193.04, 68.58)->(184.15, 68.58)
+  - R-08 power.kicad_sch: removed wire (193.04, 78.74)->(184.15, 78.74)
+  - R-08 power.kicad_sch: removed dangling no-connect 723a6674-9a27-4d4e-9b23-221427fb6369
+  - R-08 power.kicad_sch: no-connect at (180.34, 128.27) S1 NC_2 (second pole unused)
+  - R-08 power.kicad_sch: no-connect at (180.34, 130.81) S1 C_2 (second pole unused)
+  - R-08 power.kicad_sch: no-connect at (180.34, 133.35) S1 NO_2 (second pole unused)
+  - R-07 power.kicad_sch: #FLG03 PWR_FLAG at (139.7, 62.23) for VRegIn after D14
+  - R-07 power.kicad_sch: #FLG04 PWR_FLAG at (185.42, 54.61) for VDDA after F1
+  - R-05 power.kicad_sch: C19 footprint -> Speeduino_Legacy:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder
+  - R-08 v0.4.4d.kicad_sch: removed wire (147.32, 19.05)->(147.32, 20.32)
+  - R-08 v0.4.4d.kicad_sch: removed wire (149.86, 19.05)->(149.86, 20.32)
+  - R-08 v0.4.4d.kicad_sch: removed wire (152.4, 19.05)->(152.4, 20.32)
+  - R-08 v0.4.4d.kicad_sch: removed dangling global label ad759c24-e05f-4864-9df2-bfbcef93ae29
+  - R-08 v0.4.4d.kicad_sch: removed dangling global label a3bf5fce-09e3-4ac8-8e1a-a2242e3d18a7
+  - R-08 v0.4.4d.kicad_sch: removed dangling global label 11bc0b06-f255-4ce7-891d-8ff0fbbd9fac
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 57.15) XA1 SDA (shield pad unused; D20 used via J5)
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 59.69) XA1 SCL (shield pad unused; D21 used via J5)
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 92.71) XA1 A11 unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 95.25) XA1 A12 unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 97.79) XA1 A13 unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 100.33) XA1 A14 unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 102.87) XA1 A15 unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 105.41) XA1 AREF unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 113.03) XA1 IOREF unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 130.81) XA1 3V3 unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (120.65, 140.97) XA1 VIN unused
+  - R-08 v0.4.4d.kicad_sch: no-connect at (147.32, 20.32) XA1 ICSP MISO, no pad in IO_Only footprint
+  - R-08 v0.4.4d.kicad_sch: no-connect at (149.86, 20.32) XA1 ICSP MOSI, no pad in IO_Only footprint
+  - R-08 v0.4.4d.kicad_sch: no-connect at (152.4, 20.32) XA1 ICSP SCK, no pad in IO_Only footprint
+  - R-08 v0.4.4d.kicad_sch: no-connect at (154.94, 20.32) XA1 ICSP 5V, no pad in IO_Only footprint
+  - R-08 v0.4.4d.kicad_sch: no-connect at (157.48, 20.32) XA1 ICSP GND, no pad in IO_Only footprint
+  - R-08 v0.4.4d.kicad_sch: no-connect at (160.02, 20.32) XA1 ICSP RESET, no pad in IO_Only footprint
+  - R-05 rewrote sym-lib-table
+  - R-05 rewrote fp-lib-table
+exit=0

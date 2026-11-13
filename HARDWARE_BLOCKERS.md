@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | HW-BLOCKERS |
-| Status | Living register; H0 complete, H1 partial, H2/H3 open (R-01…R-03 cleared 9 DRC violations) |
+| Status | Living register. H0 complete. H1 partial (BOM MPNs). H2 checks complete with documented exceptions, pending independent acceptance. H3 not ready. HW-H2-01 (R-04…R-10) closed the mechanical, library and ERC items. |
 | Date | 2026-11-13 |
 | Workstream | Hardware |
 | Baseline | Speeduino v0.4.4d SMD, upstream commit `ee6a9242834891877744ff2137663b6ca8d79ed6` |
@@ -20,9 +20,9 @@
 | Gate | Status | Evidence / reason |
 |---|---|---|
 | **H0 — Verified upstream reference** | **PASS (hardware + build)** | Exact Speeduino Hardware commit, path, licence and hash manifest selected (`AUDIT/UPSTREAM_PROVENANCE.md`). Firmware tree commit `5d217bf4…` builds for `megaatmega2560` with PlatformIO 6.2.0; artifact hashes recorded (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`). Caveat: firmware is an in-tree snapshot, not a tagged upstream release; pin a tag in the review package. |
-| **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB, all 147 components have footprints, 0 unconnected items, closed outline, gerbers/drill/BOM/position generated; position file filtered to 141 real placements; R-01…R-03 PCB fixes applied. Missing: mounting holes, mechanical/assembly drawing, complete BOM MPNs, library-link cleanup. |
-| **H2 — Engineering checks completed** | **NOT PASSED** | ERC 101 violations (unchanged); DRC **600** (230 errors, 370 warnings), 0 unconnected; connectivity PASS. R-01…R-03 cleared all four starved thermals, the VDDA dangling stub and the two U5 padstack/annular pairs. Remaining errors: 199 courtyard overlaps + 31 intentional jumper bridges. Classified in `AUDIT/PCB_CHECK_RESULTS.md`. |
-| **H3 — Independent fabrication review candidate** | **NOT READY** | Review package exists but H2 exceptions, BOM and mechanical package are incomplete. |
+| **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB. All 147 components have footprints, 0 unconnected items, closed outline. Gerbers, drill (+ report), BOM, position (141 placements), IPC-D-356 and netlist generated. **Added by HW-H2-01:** 3 M3 NPTH mounting holes, top/bottom assembly drawings, fab drawing, `FABRICATION_NOTES.md` (stack-up and assumptions), repaired library links. **Still missing:** complete BOM MPNs (HW-BOM-01). |
+| **H2 — Engineering checks completed** | **COMPLETE WITH DOCUMENTED EXCEPTIONS — pending independent acceptance (not a pass)** | ERC **49 (4 errors, 45 warnings)**, every item dispositioned line by line. The 4 errors are U6 spare clamp channels. DRC **397 reported (31 errors, 366 warnings) + 199 per-item exclusions**, 0 unconnected. The 31 errors are the intentional JP6–JP11 jumpers, not excluded. Connectivity PASS 514/514. Mounting-hole check PASS. See `AUDIT/PCB_CHECK_RESULTS.md`. Warnings still open: 223 cosmetic silk, 143 footprint-library vintage. |
+| **H3 — Independent fabrication review candidate** | **NOT READY** | The mechanical/assembly package now exists. Still open: BOM MPNs (HW-BOM-01), footprint-library audit, reviewer acceptance of the H2 exceptions, and independent review (HW-REVIEW-01). |
 | **H4 — Fabrication approved** | **BLOCKED — human only** | Requires independent engineering review and explicit human approval. AI cannot grant. |
 | **H5 — Assembled hardware** | **NOT STARTED** | No board fabricated or populated. |
 | **H6 — Powered bench testing** | **NOT STARTED** | No power applied. |
@@ -87,7 +87,8 @@
 | Owner | Hardware workstream |
 | Autonomous | Yes |
 | Verification | Re-run `kicad-cli sch erc`; target 0 unexplained errors |
-| Status | **OPEN** |
+| Status | **CLOSED — 0 unexplained errors; 4 documented exceptions pending reviewer acceptance** |
+| Resolved by | HW-H2-01 R-07 (5 PWR_FLAGs) and R-08 (29 no-connects on unused pins; ICSP labels, 2 stubs and the dangling NC removed). ERC 101 (44 E / 57 W) → 49 (4 E / 45 W). The remaining errors are `pin_not_driven` on spare SP720 channels U6.7/12/13/15 (exceptions E-ERC-I7/I11/I12/I14). All 49 items are dispositioned in `AUDIT/PCB_CHECK_RESULTS.md` §3. Netlist partition unchanged. |
 
 ### HW-ERC-02 — Missing upstream library links
 
@@ -101,7 +102,8 @@
 | Owner | Hardware workstream |
 | Autonomous | Yes (network/source research) |
 | Verification | Re-run ERC; no missing-library warnings except documented legacy exceptions |
-| Status | **OPEN** |
+| Status | **CLOSED** |
+| Resolved by | HW-H2-01 R-05/R-06. Project-local `Shields`, `Misc` and `Speeduino_Legacy` footprint libraries were extracted from the board's embedded footprints. C19 is relinked to `Speeduino_Legacy:`. `Device:CP1` → `Device:C_Polarized_US` (identical pins). Dead `Connector_Automotive`/`IC_Automotive`/`Arduino`/`Connector`/`Misc` table entries were removed: no symbol used them, because every custom symbol resolves through `v0.4.4c-rescue`. ERC `footprint_link_issues` 4→0, `lib_symbol_issues` 2→0; DRC `lib_footprint_issues` 4→0. |
 
 ### HW-DRC-01 — 199 courtyard overlaps not mechanically reviewed
 
@@ -115,7 +117,8 @@
 | Owner | Hardware workstream + independent reviewer |
 | Autonomous | Partly (analysis); final mechanical sign-off needs human review |
 | Verification | Re-run DRC; visual/3D clearance review against assembly drawing |
-| Status | **OPEN** |
+| Status | **ANALYSIS COMPLETE — 199 per-item exclusions with justification; reviewer acceptance pending** |
+| Resolved by | HW-H2-01 R-09. 174 overlaps are proto pad ↔ proto pad and 22 are proto pad ↔ J1/J5/J6/J8. The other 3 are J1↔J5, J5↔J6 and J6↔J8: headers on one continuous 2.54 mm pitch that butt with zero gap. No overlap involves an SMD part, IC or module, and none is a physical clash. Each is excluded by its own marker key with a comment. No rule severity was changed. List: `hardware/prototype-v1/verification/drc_exclusions.csv`. Reviewer must confirm the header MPN housing pitch (HW-BOM-01). |
 
 ### HW-DRC-02 — 4 starved GND thermal spokes
 
@@ -159,7 +162,8 @@
 | Owner | Hardware workstream + reviewer |
 | Autonomous | Analysis yes; acceptance needs review |
 | Verification | Schematic/BOM cross-check of JP6–JP11; DRC exception list with justification |
-| Status | **ACCEPTED EXCEPTION — pending review** |
+| Status | **ACCEPTED EXCEPTION — pending review (verified, not excluded)** |
+| Verification record | HW-H2-01: all 12 `shorting_items` + 19 `solder_mask_bridge` lie on JP6 (140.00, 111.20), JP7 (140.00, 113.80), JP8 (140.00, 116.40), JP9 (140.00, 119.00), JP10 (140.00, 121.60) on B.Cu, and on JP11 (157.99, 116.33) on F.Cu. None is elsewhere. Defaults were cross-checked with the netlist. JP6–JP10 link Flex/FAN/FUELPUMP/TACHO/Clutch to PROTO-1…5 (IDC40 27/29/31/33/35, J7). JP11 links MAP-EXT (IDC40 21) to on-board sensor U5.1. Line-by-line table: `AUDIT/PCB_CHECK_RESULTS.md` §5.2. These items are left as visible DRC errors, deliberately not excluded or remodelled. |
 
 ### HW-DRC-05 — U5 mechanical mounting tabs flagged as pads
 
@@ -188,7 +192,8 @@
 | Owner | Hardware workstream + mechanical reviewer |
 | Autonomous | Analysis/placement yes; mechanical approval requires review |
 | Verification | DRC after hole placement; clearance to copper ≥ manufacturer rule; assembly drawing shows standoffs |
-| Status | **OPEN** |
+| Status | **CLOSED (3 holes) — 4th corner documented alternative; mechanical review pending** |
+| Resolved by | HW-H2-01 R-04. H1 (113.975, 40.475), H2 (113.975, 133.525) and H3 (207.025, 133.525) mm: 3.2 mm NPTH, no net, excluded from BOM/position, 3.8 mm F.Cu+B.Cu keep-out. Measured: discrete copper ≥ 5.11 mm, fill 3.80 mm, courtyards ≥ 9.76 mm. DRC adds 0 violations (`verification/mounting-holes.txt`). The top-right corner has no feasible site (0 of the grid points, J3 + VDD edge track). The alternative is Mega-standoff support + J3 cable strain relief (`hardware/prototype-v1/FABRICATION_NOTES.md` §3). Standoff length is to be measured on hardware. |
 
 ### HW-MECH-03 — Pick-and-place contains 150 unannotated proto pads
 
@@ -259,7 +264,8 @@
 | Owner | Hardware workstream |
 | Autonomous | Yes |
 | Verification | Independent reviewer can assemble from the package without guessing orientation |
-| Status | **OPEN** |
+| Status | **PACKAGE PRODUCED — independent verification pending** |
+| Resolved by | HW-H2-01. Outputs: `manufacturing/assembly/v0.4.4d-assembly-top.pdf` and `-bottom.pdf`; `manufacturing/drill/v0.4.4d-fab-drawing.pdf` (dimensions, actual-size drills, notes); `v0.4.4d-drill-report.txt`; `verification/board-bottom.png`; `hardware/prototype-v1/FABRICATION_NOTES.md`. The note covers 2-layer 1.6 mm from upstream evidence; FR-4, copper weight, finish and colours as ASSUMPTIONS; hole coordinates; drill summary; and reflow vs hand-solder intent. The criterion "reviewer can assemble without guessing" can only be met by an independent reviewer. |
 
 ### HW-FW-01 — Firmware build path (closed)
 
@@ -339,15 +345,14 @@ blocker.
 ## Order of work
 
 1. **HW-BOM-01 / HW-BOM-02** — make the purchasing case real and costed.
-2. **HW-ERC-01/02 and HW-DRC-01** — reduce the remaining H2 exceptions with
-   reproducible re-checks. The non-jumper DRC errors (starved thermals, VDDA
-   stub, U5 padstack) are now closed by `cc2ed0fd`; the open DRC error class is
-   199 courtyard overlaps plus the accepted JP6–JP11 bridges.
-3. **HW-BENCH-01 / HW-MECH-01 / HW-MECH-02** — complete the H3 review package,
-   including the IDC40 breakout, assembly drawing and mounting-hole decision.
-4. **HW-FW-02 (new, low priority)** — pin an official Speeduino firmware tag
+2. **HW-ERC-01/02, HW-DRC-01, HW-MECH-01/02** — done in HW-H2-01. Only
+   reviewer acceptance of the documented exceptions remains.
+3. **Footprint-library audit** (143 `lib_footprint_mismatch`) and cosmetic silk
+   cleanup — needed before H3.
+4. **HW-BENCH-01** — IDC40 breakout and safe power-up package.
+5. **HW-FW-02 (new, low priority)** — pin an official Speeduino firmware tag
    for the release package instead of the in-tree snapshot; re-run the build and
    record the tag/hash.
-5. **HW-REVIEW-01** — independent review, then human H4 decision.
+6. **HW-REVIEW-01** — independent review, then human H4 decision.
 
 HW-VEH-01 and HW-EXP-01 must not be used as excuses to stop H1–H3 bench work.
