@@ -18,7 +18,7 @@ Status: host-first v0.1. The Rust library crates, virtual ECU, headless CLI, loc
 |---|---|---|
 | Tuning Studio (React/TypeScript + Vite) | Yes, browser + Electron | Live dashboard, table editors, 3D surfaces, Mixture Map review, diagnostics, logs, Copilot client. Electron shell present; Tauri not used (WebKitGTK development libraries unavailable). |
 | Tuning Copilot (Mastra/TypeScript) | Yes, local | Read-only tools, structured answers, offline tool mode or optional LLM. |
-| `studio-service` (Rust) | Yes, local | HTTP/WebSocket service, live telemetry, calibration revisions, in-memory undo, preflight, analysis. No auth/TLS. |
+| `studio-service` (Rust) | Yes, local | HTTP/WebSocket service, live telemetry, calibration revisions, undo, local append-only revision/audit store, preflight, analysis. No auth/TLS. |
 | `ecu-protocol` | Yes, served locally | Versioned host protocol; JSON envelopes and binary CRC32 frames. |
 | `ecu-simulator` | Yes, host | Virtual engine, sensors, trigger, wideband, faults, protection integration, telemetry. |
 | Control crates | Yes, host | Types, calibration, fuel, ignition, trigger, scheduling, lambda learning, protection, diagnostics. |
@@ -74,7 +74,7 @@ The simulator advances in 1 ms ticks. The order in `SimEngine::step_once` is:
 
 This is a simulation harness, not a hard real-time scheduler. Event angles and durations are computed deterministically; their physical execution would require MCU timer hardware.
 
-The host service wraps this loop: a 20 ms Tokio tick advances the simulator by 20 ms and broadcasts telemetry frames over `/api/ws`; HTTP endpoints control the scenario, inspect/calibrate/resample tables, run the Mixture Map, start/stop log replay, read faults/logs, and serve the built Vite application. Replay re-broadcasts recorded frames over the WebSocket; start/stop was exercised (658 frames queued), but full WebSocket playback was not independently inspected. The service binds `127.0.0.1:8765`, uses permissive CORS, and has no authentication or TLS. Calibration history is an in-memory `Vec<Calibration>`; there is no durable store. The CLI wraps the same simulator without a server.
+The host service wraps this loop: a 20 ms Tokio tick advances the simulator by 20 ms and broadcasts telemetry frames over `/api/ws`; HTTP endpoints control the scenario, inspect/calibrate/resample tables, run the Mixture Map, start/stop log replay, read faults/logs, and serve the built Vite application. Replay re-broadcasts recorded frames over the WebSocket; start/stop was exercised (658 frames queued), but full WebSocket playback was not independently inspected. The service binds `127.0.0.1:8765`, uses permissive CORS, and has no authentication or TLS. The live undo stack is an in-memory `Vec<Calibration>`, mirrored by a local append-only, hash-chained revision/audit store (`apps/studio-service/src/store.rs`) that is verified on load; it is unsigned local evidence. The CLI wraps the same simulator without a server.
 
 ### 4.2 Fuel path
 
