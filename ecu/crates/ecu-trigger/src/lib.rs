@@ -343,6 +343,9 @@ impl MissingToothDecoder {
         let Some(last) = self.last_tooth_us else {
             self.last_tooth_us = Some(timestamp_us);
             self.tooth_index = 0;
+            if self.state == SyncState::Lost {
+                self.state = SyncState::Unsynced;
+            }
             return DecodeEvent::None;
         };
         if timestamp_us <= last {
@@ -358,6 +361,7 @@ impl MissingToothDecoder {
         }
         if matches!(self.tick(timestamp_us), DecodeEvent::SyncLost(_)) {
             self.last_tooth_us = Some(timestamp_us);
+            self.state = SyncState::Unsynced;
             return DecodeEvent::SyncLost(DecodeError::Timeout);
         }
         if self.state == SyncState::Lost {
@@ -1135,6 +1139,23 @@ mod tests {
         let offset = last + (20.0 * us_per_deg) as u64 - 1000;
         feed(&mut d, &generate(rpm, 2, true), offset);
         assert_eq!(d.state(), SyncState::Sequential);
+    }
+
+    #[test]
+    fn restart_uses_exactly_one_baseline_with_or_without_tick() {
+        for explicit_tick in [false, true] {
+            let mut d = decoder();
+            let last = feed(&mut d, &generate(1000.0, 2, false), 0);
+            let restart = last + 300_000;
+            if explicit_tick {
+                assert_eq!(d.tick(restart), DecodeEvent::SyncLost(DecodeError::Timeout));
+            }
+            d.on_tooth(restart);
+            assert_eq!(d.state(), SyncState::Unsynced);
+            d.on_tooth(restart + 1667);
+            assert_eq!(d.expected_interval_us, 1667.0);
+            assert_eq!(d.tooth_index, 1);
+        }
     }
 
     #[test]

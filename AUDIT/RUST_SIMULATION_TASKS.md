@@ -120,3 +120,39 @@ Remaining limits and review needs:
 - These are explicit Rust policies, not Speeduino binary equivalence. Physical
   timer capture, MCU compatibility and engine timing are **not** demonstrated.
 - H0–H9 hardware gate dispositions are unchanged; no physical or vehicle claim.
+
+
+### RUST-TRG-001 independent ownership review (2026-11-13)
+
+Candidate 14a14b0b/b2c7ac33 reviewed in the isolated rust-engineer checkout.
+Decision: reject unchanged candidate; accept the corrected host implementation
+subject to the verification recorded in check-10 through check-14.
+
+Found a real state-transition defect: after external tick() timeout cleared the
+timestamp, the first restart edge set a baseline but left state Lost; the second
+edge was consumed again by the Lost branch. Inline on_tooth timeout likewise
+left Lost after recording the baseline. Both paths now enter Unsynced on the
+first restart capture. The new restart_uses_exactly_one_baseline_with_or_without_tick
+test checks state, next measured interval and tooth index for both paths.
+
+Independently reviewed all five candidate vectors and existing extra/missing
+tooth tests. Runtime defaults are missing+3 crank intervals and six cam
+revolutions without a setter call. Deadline is capped by timeout_ms; comparison
+is strictly greater than the deadline. Cam age counts accepted captures, not
+nominal missing slots; expiry runs before gap parity/state selection. Wall time
+is also checked by tick/on_tooth, so missing cam cannot remain valid merely
+because edges stop (provided the caller services tick). Valid window cam resets
+age and parity; subsequent gap resets parity to zero. Crank loss clears phase
+and gap history. Counters saturate; serialized MissingToothConfig fields and
+derives are unchanged.
+
+Residual limits: six revolutions means accepted-edge count under a valid wheel,
+not a wall-time revolution measurement during faults. Callers must service tick
+for idle expiry; angle getters alone do not expire state. The 50% filter can
+reject legitimate abrupt acceleration/uneven cranking and needs measured input
+validation. Existing gradual acceleration does not establish that limit.
+These deadlines/filter/recovery policies differ explicitly from Speeduino;
+no upstream binary differential comparison was performed. Host simulation only,
+no MCU/capture/engine/vehicle evidence; H0–H9 dispositions unchanged.
+
+Independent final verification: check-10 compiler GCC 13.3.0; check-11 fmt exit 0; check-12 strict workspace Clippy exit 0; check-13 workspace tests exit 0 (223 passed, 0 failed); check-14 trigger nocapture exit 0 (26 passed, 0 failed). All Cargo commands ran from ecu with PATH=/home/jlee/tools/bin:$PATH. Historical check-2..4 retained. Corrected implementation accepted for host simulation.
