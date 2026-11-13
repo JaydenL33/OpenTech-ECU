@@ -1,0 +1,33 @@
+./connector.sch: OK
+./fp-lib-table: OK
+./Fuel_Ignition.sch: OK
+./gerbers/v0.4.4d-all.pos: OK
+./gerbers/v0.4.4d-B_Cu.gbl: OK
+./gerbers/v0.4.4d-B_Mask.gbs: OK
+./gerbers/v0.4.4d-B_Paste.gbp: OK
+./gerbers/v0.4.4d-B_SilkS.gbo: OK
+./gerbers/v0.4.4d.drl: OK
+./gerbers/v0.4.4d-Edge_Cuts.gm1: OK
+./gerbers/v0.4.4d-F_Cu.gtl: OK
+./gerbers/v0.4.4d-F_Mask.gts: OK
+./gerbers/v0.4.4d-F_Paste.gtp: OK
+./gerbers/v0.4.4d-F_SilkS.gto: OK
+./gerbers/v0.4.4d.zip: OK
+./inputs.sch: OK
+./outputs.sch: OK
+./power.sch: OK
+./proto.sch: OK
+./sym-lib-table: OK
+./v0.4.4c-cache.lib: OK
+./v0.4.4c-rescue.dcm: OK
+./v0.4.4c-rescue.lib: OK
+./v0.4.4d BOM.csv: OK
+./v0.4.4d-cache.lib: OK
+./v0.4.4d.kicad_pcb: OK
+./v0.4.4d.kicad_prl: OK
+./v0.4.4d.kicad_pro: OK
+./v0.4.4d.pdf: OK
+./v0.4.4d.pro: OK
+./v0.4.4d.sch: OK
+./v0.4.4d.stp: OK
+verify_upstream_baseline.sh exit code: 0

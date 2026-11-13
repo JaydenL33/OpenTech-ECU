@@ -1,0 +1,21 @@
+Fuel_Ignition.kicad_sch: sha256 94370060deae -> 94370060deae
+connector.kicad_sch: sha256 4f5bfa8d7bfb -> 4f5bfa8d7bfb
+outputs.kicad_sch: sha256 527ca4de8b11 -> 527ca4de8b11
+power.kicad_sch: sha256 e95a9507878d -> e95a9507878d
+v0.4.4d.kicad_sch: sha256 1edc3fa4dd63 -> 1edc3fa4dd63
+changes applied: 0
+R-05 XA1: lib/Shields/Shields.pretty/Arduino_Mega2560_Shield_IO_Only.kicad_mod already present
+R-05 U5: lib/Misc/Misc.pretty/MPX4250.kicad_mod already present
+R-05 S1: lib/Misc/Misc.pretty/AYZ0202AGRLC.kicad_mod already present
+R-05 C19: lib/Speeduino_Legacy/Speeduino_Legacy.pretty/C_0805_2012Metric_Pad1.15x1.40mm_HandSolder.kicad_mod already present
+R-05 C19: already relinked
+R-04 H1: already present
+R-04 H1_keepout: already present
+R-04 H2: already present
+R-04 H2_keepout: already present
+R-04 H3: already present
+R-04 H3_keepout: already present
+R-10: fab drawing annotations already present
+board sha256 05daa61acded5cd2061f4ec317a69a6001d93e649bcf974028653f2a36252452 -> 05daa61acded5cd2061f4ec317a69a6001d93e649bcf974028653f2a36252452
+changes applied: 0
+exit=0
