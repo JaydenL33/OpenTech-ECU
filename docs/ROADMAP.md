@@ -36,7 +36,7 @@ Status: largely implemented. The Axum service, live telemetry WebSocket, dashboa
 - [x] Live dashboard: RPM, MAP, TPS, lambda, target lambda, ignition, VE cell, STFT/LTFT, injector PW/duty, coolant/IAT, protection state, DTCs.
 - [x] Editable maps with axes, cell selection, interpolation, save, and 3D surface view.
 - [x] Log replay endpoint and UI control exist; start/stop was exercised (658 frames queued); [ ] full WebSocket playback was not independently inspected. CSV export exists via the service.
-- [x] Table diff and calibration revision browser (in-memory).
+- [x] Table diff and calibration revision browser; durable local revision/audit store with a read-only history panel.
 - [x] No mock controls; the UI uses the Rust service.
 
 **Exit criteria:** a new user can launch the studio, connect to the simulator, run `mixture_sweep`, edit and save a calibration revision, disconnect, and replay the log without a hidden mock path.
@@ -45,13 +45,13 @@ Status: largely implemented. The Axum service, live telemetry WebSocket, dashboa
 
 **Goal:** make the Mixture Map a first-class, reviewable UI workflow.
 
-Status: the main manual workflow exists. The UI runs a deterministic sweep or analyzes the current log, shows gate counts, coverage, confidence and proposed cells, then applies selected cells with `approve=true` and supports in-memory undo. Remaining: durable proposals/audit, proposal expiry/provenance, a permanent revision store, and bank/dual-wideband UX.
+Status: the main manual workflow exists. The UI runs a deterministic sweep or analyzes the current log, shows gate counts, coverage, confidence and proposed cells, then applies selected cells with `approve=true` and supports in-memory undo. Remaining: durable storage of *proposals* themselves, proposal expiry/provenance, signed/authenticated audit, and bank/dual-wideband UX. (Applied revisions and audit entries are now persisted locally.)
 
 - [x] Run/select a log; show gate coverage and exclusion reasons per cell.
 - [x] Show measured cells, unvisited cells, confidence, sample count, dwell, and trims.
 - [x] Preview the VE diff; select/deselect cells; apply per-cell/total bounds.
 - [ ] Apply through a service that creates a durable sealed revision and a persistent undo snapshot.
-- [x] Implement in-memory undo; [ ] compare arbitrary revisions and persist history.
+- [x] Implement undo; [x] persist history locally (append-only, tamper-evident); [ ] compare arbitrary revisions.
 - [ ] Add bank-aware and dual-wideband workflows only when sensor allocation is real; do not fabricate per-cylinder data.
 - [ ] Add full tests for stale checksums, tampered calibration, sparse coverage, and oscillations; the hard-fault abstention exists but the suite has not been executed here.
 - [x] Keep STFT, LTFT, and offline Mixture Map separate in the UI and the data model.

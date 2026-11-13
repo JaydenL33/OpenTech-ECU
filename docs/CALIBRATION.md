@@ -91,14 +91,24 @@ live simulation. Bank 2 requires its own sensor and controller.
 ## 8. Rollback and audit
 
 Each revision records parent, revision number, checksum and creation time.
-In-memory history is currently not durable across service restart; durable
-signed storage is planned. Export the calibration JSON before a service restart
-if the revision must be retained.
+The service also writes every sealed revision and every audit entry (apply,
+undo, axis resample, table edit, Mixture Map apply, and rejected attempts, each
+with before/after checksums, actor label and approval record) to a local
+append-only store (`revisions.jsonl`, `audit.jsonl`, `store.json`) in
+`--data-dir` / `OPENTECH_ECU_DATA_DIR` / the per-user data dir. It survives a
+restart (the latest revision and undo lineage are reloaded) and is hash-chained
+and SHA-256-verified on load; a corrupt or tampered store is refused and left
+untouched. It is **local evidence, not a signed certification**: actor labels
+are unauthenticated (default `local-operator`), there are no signatures, and
+removal of records from the end of a file is not detectable without an external
+copy of the tail hash. `--no-persist` restores in-memory-only behaviour. Read
+endpoints: `GET /api/calibration/revisions`, `/revisions/{checksum}`,
+`/audit`, `/store/verify`.
 
 ## 9. What is missing
 
 - vehicle-specific verified trigger/ignition/injector/sensor data;
-- hardware validation and durable calibration storage;
+- hardware validation and signed/authenticated calibration provenance (a local tamper-evident store exists);
 - staged injection and full per-cylinder bank assignments;
 - Evo OEM connector/pinout verification;
 - independent review and bench evidence.

@@ -722,3 +722,151 @@ cargo test -p studio-service external_csv -- --nocapture
 7. No verified Evo VIII data; starter map stays a labelled non-operational template.
 8. Review request: the variance-statistic change (round 6) and the VE-identity statistic (this round) both
    alter acceptance semantics and need an independent look.
+
+## Round 8 (2026-11-13, task TUNE-AUD-01) — durable, append-only calibration revision + audit store
+
+Scope: `ecu/apps/studio-service` (new `src/store.rs`; handler wiring in `src/main.rs`) and a read-only
+panel in `ecu/apps/tuning-studio`. No `ecu-trigger`, `hardware/**`, physical-output or vehicle path touched.
+Existing endpoints keep their request/response shapes and status codes (new fields are optional).
+
+### What was built
+* **Store** (`store.rs`, std + `serde_json` + `ecu_calibration::hex_sha256`; no new crates): data dir holds
+  `store.json` (format `opentech-ecu-calibration-store/1`), `revisions.jsonl`, `audit.jsonl`. Each line is one
+  canonical-JSON record with `seq`, `prev_hash` (hash chain; genesis = 64 zeros) and its own SHA-256
+  `record_hash`. Appends are `write + fsync`; files are never rewritten.
+* **Revision record**: revision id, revision number, parent id, `parent_checksum`, checksum, `stored_unix_ms`,
+  `source` (action), `actor`, `reason`, and the full calibration payload.
+* **Audit entry**: action (`baseline`, `table_edit`, `axis_resample`, `mixture_apply`, `undo`, `store_loaded`),
+  outcome (`applied`/`rejected`/`info`), actor, approval (`required`/`granted`/`mechanism`), reason,
+  `before_checksum`, `after_checksum`, `new_revision_checksum`, detail. **Rejected/failed attempts are recorded**
+  for table edit, resample, undo and Mixture Map apply (before == after).
+* **Persist-before-commit**: the store write happens before the in-memory session changes; a failed write
+  returns 500 and leaves the session untouched. A write failure poisons the store until restart.
+* **Undo** appends an audit entry that moves the head back; no revision is ever deleted. On load the undo
+  stack is rebuilt by walking `parent_checksum` from the head (the head is the `after_checksum` of the latest
+  non-rejected audit entry). The simulated-physics `truth` calibration is the lineage root.
+* **Load-time verification** (refuse, never repair; files untouched): `store.json` format; every line parses
+  and is byte-identical to its canonical re-serialisation; `record_hash`; `seq`; `prev_hash` chain;
+  `Calibration::verify()` SHA-256 of every payload; record metadata == payload; no duplicate checksum; parent
+  exists earlier; audit `before` continues from the previous `after`; every referenced checksum exists;
+  revisions/audit both empty or both non-empty; torn last line. Orphan revision (no audit entry) = warning.
+* **Actor/approval**: label = body `actor`, else `X-Operator-Label` header, else the explicit value
+  `local-operator` (`supplied:false`). Control characters stripped, 80 chars max. It is **unauthenticated**; no
+  identity is inferred. Apply approval is recorded as the request-body `approve=true` flag (the only approval
+  mechanism the service has).
+* **Startup**: `--data-dir` > `OPENTECH_ECU_DATA_DIR` > `$XDG_DATA_HOME|~/.local/share|~/Library/Application Support|%APPDATA%`
+  `/opentech-ecu/studio`; never the current directory. `--no-persist` keeps the old in-memory behaviour. A
+  non-empty store wins over the starter calibration; an explicit `--cal` that is not in the store is refused
+  (no silent lineage switch). A corrupt store aborts startup with a non-zero exit.
+* **Endpoints (all GET, read-only)**: `/api/calibration/revisions`, `/api/calibration/revisions/{checksum}`
+  (`?payload=true` adds the calibration), `/api/calibration/audit` (`offset`, `limit`≤1000),
+  `/api/calibration/store/verify` (re-verifies the files on disk now). Existing `/api/calibration/history`
+  unchanged. Optional new request fields: `actor`, `reason` on table edit / resample / apply / undo.
+* **UI**: `AuditTrail` component on the Calibration page (read-only; Refresh and Verify-on-disk buttons).
+
+### Environment
+cargo 1.99.1, node v24.14.1, Linux 6.8.0-147-generic. As in rounds 5-7 there is **no system C linker**; builds
+used the out-of-repo lld shim `/tmp/lldshim/cc` (`CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=/tmp/lldshim/cc
+CARGO_TARGET_DIR=/tmp/tuning-target`, `--offline`). Results should be reproduced on a normal toolchain.
+
+### Commands and observed results (from `ecu/`)
+| Command | Exit | Result |
+|---|---|---|
+| `cargo fmt --all -- --check` | 0 | clean |
+| `cargo clippy --workspace --all-targets --locked --offline -- -D warnings` | 0 | clean (a first run failed with `clippy::type_complexity` on `CalibrationStore::load`; fixed with a type alias, then re-run) |
+| `cargo test --workspace --locked --offline` | 0 | **230 passed, 0 failed** (217 before + 13 new) |
+| `cargo test -p studio-service --locked --offline store::tests -- --nocapture` | 0 | 9 passed |
+| `cargo test -p studio-service --locked --offline persistence_tests -- --nocapture` | 0 | 4 passed |
+| `cd apps/tuning-studio && npm ci --offline --ignore-scripts` | 0 | installed from lockfile |
+| `npx tsc --noEmit` | 0 | clean |
+| `npx vite build` | 0 | 57 modules, built |
+
+New tests: `store::tests::{restart_recovery_reloads_latest_revision_and_lineage,
+append_only_ordering_chain_and_prefix_preserved, checksum_verification_every_stored_payload,
+tamper_edited_payload_is_refused_and_file_preserved,
+tamper_payload_with_recomputed_record_hash_still_fails_calibration_checksum,
+tamper_removed_record_truncation_and_audit_edit_are_refused, missing_meta_or_one_sided_store_is_refused,
+actor_label_is_never_invented, data_dir_flag_wins_and_is_never_cwd}` and
+`persistence_tests::{restart_recovery_append_only_audit_and_undo_persistence_over_http,
+tampered_store_is_refused_at_startup_and_flagged_while_running,
+explicit_cal_from_another_lineage_is_refused_not_silently_switched, operator_label_header_and_no_persist_mode}`.
+Tests use `std::env::temp_dir()` directories removed on drop; `git status` after the full run shows only source edits.
+
+Key `--nocapture` lines (verbatim):
+```
+restart-recovery: reloaded 3 revisions, head=f202feb2c306b7656181df735e532b8a10940873ef5e5f967f71306885545d15 lineage_depth=3
+persistence-e2e: restart#1 head==post-undo 748b2c5e4888; restart#2 head==baseline fee184185181; revisions=4 audit_entries=12 verify=true
+startup-refusal: calibration store is corrupt or tampered: <tmp>/revisions.jsonl line 1: record_hash does not match record contents. The file has been left untouched for inspection; the service will not serve this store.
+tamper-refusal[revisions.jsonl]: ... line 2: calibration payload SHA-256 does not match its checksum. ...
+tamper-refusal[audit.jsonl]: ... line 2: seq 2 != expected 1. ...
+tamper-refusal[revisions.jsonl]: ... line 3: file does not end with a newline (torn or truncated last record). ...
+tamper-refusal[audit.jsonl]: ... line 1: record is not in canonical form (edited outside the service). ...
+```
+The HTTP persistence test covers: baseline audit; rejected apply (engine running → 409; no approval → 400);
+approved apply with supplied actor + reason; table edit with default `local-operator`; axis resample; undo;
+**restart** (head == post-undo checksum, undo stack rebuilt, undone revision still stored but
+`in_active_lineage:false`, old file bytes an exact prefix, earlier audit entries unchanged); undo across the
+restart down to the baseline; rejected undo at the baseline; second restart lands on the baseline.
+
+Real-binary smoke (scratchpad data dir, not the repo): start → pause → `POST /api/calibration/table`
+(`actor:"smoke-op"`) → kill → restart: head checksum identical
+(`a8708ef626beaeb84b17d2227727eb662c4e7fe3d08c2979af778b87ddba2c5a`), audit =
+`baseline:info, table_edit:applied (smoke-op), store_loaded:info`. After `sed`-forging `"source":"table_edit"`
+the binary exited 1 with the corruption error and `cmp` showed the bad file byte-identical.
+
+### Limits / honest caveats
+1. **Evidence, not certification.** Anyone with write access to the directory can rebuild a self-consistent
+   store. Removing records from the *end* of a file at a record boundary is **not** detectable without an
+   external anchor (keep a copy of `audit_tail_hash` from `/api/calibration/audit`, or commit it elsewhere).
+   No signatures, no key management.
+2. Actor labels are unauthenticated strings; the API has no auth/TLS (localhost only). `approve=true` is a flag,
+   not a verified human act.
+3. Single-writer assumption: no lock file; two services on one directory would interleave and the next load
+   would refuse the store.
+4. `Calibration.id` is **not unique** (re-editing the same parent after an undo reproduces the id), so lineage
+   is keyed by checksum. A genuine duplicate checksum (same content, same millisecond) is refused at write time.
+5. Rejected-attempt entries are best-effort and unbounded (a local client can grow the audit file by spamming
+   rejected requests); no rotation/compaction exists. Non-state-changing endpoints (analysis, preview,
+   import) are not audited.
+6. Crash window between the revision write and its audit write leaves a revision with no audit entry; load
+   reports a warning (not a refusal) and the head stays at the last audited state.
+7. Default data dir now exists on first run (`~/.local/share/opentech-ecu/studio`); a stale store wins over a
+   fresh starter calibration (use `--no-persist` or another `--data-dir` for a clean session).
+8. UI panel type-checked and built only; never rendered in a browser (same gap as round 7 item 4).
+9. This task is audit persistence only; it makes no claim about calibration validity.
+
+## Round 9 (2026-11-13, task TUNE-AUD-01 review-fix) — durable creation, absolute env paths, full audit paging, write-failure test
+
+Independent review (Codex) of ed44b77e: **REJECT pending durable store creation**. Findings retained verbatim
+below; resolutions follow. Base: `t3/calibration-audit-persistence` @ ed44b77e merged into this branch
+(merge `feef762d`). Tools: `cc` = gcc-13 local wrapper (`PATH=/home/jlee/tools/bin:$PATH`), cargo from `ecu/`.
+
+| # | Reviewer finding | Resolution |
+|---|---|---|
+| 1 BLOCKING | store.rs:341/:303 — `store.json` via unsynced `fs::write`; new record files fsynced but parent dir not; no crash test | `store.json` now temp-file → `sync_all` → `rename` → fsync parent dir (`write_file_durable`). Data-dir creation fsyncs each created dir and its parent (`create_dir_all_durable`). `append_line` creates with `create_new`; when it created the file it fsyncs the parent dir (revisions.jsonl / audit.jsonl first append). Tests: `creation_fsyncs_metadata_and_parent_directories` (records every dir fsync via a test-only hook and asserts the created chain, meta rename, and first-append syncs, and that plain appends do not re-sync), `meta_write_leaves_no_partial_file_and_stale_temp_is_overwritten`, `process_crash_sigkill_after_ack_store_reloads_verified` (child process acknowledges writes, parent SIGKILLs it, reloads verified store). **The SIGKILL test is a process-crash test only, not power-loss evidence.** |
+| 2 NON-BLOCKING | store.rs:666 — relative `OPENTECH_ECU_DATA_DIR`/`XDG_DATA_HOME` resolve against cwd; symlinks followed | Env-provided `OPENTECH_ECU_DATA_DIR`, `XDG_DATA_HOME`, `HOME`, `APPDATA` must be absolute else `StoreError::Invalid` (clear message, startup aborts). Explicit `--data-dir` is used as given. Test `relative_env_data_dirs_are_refused_not_resolved_against_cwd`. **No `O_NOFOLLOW`**: symlink following is documented in the module docs as a limitation. |
+| 3 NON-BLOCKING | api.ts:98 — UI fetched only first 1,000 audit entries | `api.audit()` now pages (`offset`/`limit=1000`) until `total` is reached (stops on an empty page). UI stays read-only. Type-check/build only; **not exercised in a browser and not tested against >1,000 entries.** |
+| 4 NON-BLOCKING | main.rs:746 — no regression test for failed write / 500 | `store_write_failure_returns_500_and_leaves_calibration_unchanged`: replaces `revisions.jsonl` with a directory, POSTs a paused table edit → HTTP 500 (`code:"internal"`, "NOT applied"); asserts in-memory checksum + table value + stored revision count unchanged; store is poisoned so a second attempt (file restored) also 500s with no audit entry; restart loads the baseline and a fresh edit applies. |
+
+### Raw commands (cwd `ecu/` unless noted; PATH includes /home/jlee/tools/bin)
+| Command | Exit | Result |
+|---|---|---|
+| `cargo fmt --all -- --check` | 0 | clean |
+| `cargo clippy --workspace --all-targets --locked -- -D warnings` | 0 | no warnings |
+| `cargo test --workspace --locked` | 0 | 235 passed, 0 failed (summed from all `test result:` lines) |
+| `cargo test -p studio-service --locked -- --nocapture` | 0 | 36 passed, 0 failed |
+| `cd apps/tuning-studio && npm ci` | 0 | node_modules was absent in this worktree (lockfile install; npm audit warnings not addressed) |
+| `npx tsc --noEmit` | 0 | clean |
+| `npx vite build` | 0 | built, `index-TN8CdnYI.js` 352.80 kB |
+
+Output captured under the session scratchpad only (`ws.out`, `ss.out`); not committed.
+
+### Remaining limits (unchanged unless stated)
+1. Local evidence, not certification: no signatures; tail removal at a record boundary is undetectable without an external anchor (`audit_tail_hash`).
+2. Actor labels unauthenticated; `approve=true` is a flag; API has no auth/TLS.
+3. Single-writer assumption, no lock file.
+4. Durability is the standard POSIX fsync recipe, validated by code-path + SIGKILL tests only. Disk write-cache, filesystem and hardware behaviour under real power loss are **untested**. Directory fsync is a no-op on non-Unix targets.
+5. Symlinks in the data dir are followed (no `O_NOFOLLOW`). An explicit relative `--data-dir` is still honoured as given.
+6. Crash between revision write and audit write still leaves a revision without an audit entry (load warns).
+7. A stale `store.json.tmp` from a crash before rename is overwritten on next create; it is never read.
+8. UI audit paging type-checked and built only.
