@@ -95,7 +95,9 @@ fn cam_in_missing_region_decodes_without_a_synthetic_crank_tooth() {
     let waveform = TriggerWaveform::new(cfg, 707.5).unwrap();
     let mut decoder = MissingToothDecoder::new(cfg).unwrap();
     decoder.set_cam_window(Some((340.0, 355.0))).unwrap();
-    for cycle in 0..4 {
+    // The first cycle supplies the candidate gap; the next gap confirms it.
+    // Retain four complete post-acquisition cam checks.
+    for cycle in 0..5 {
         let edges = waveform
             .edges(0.0, 720.0, 1000 + cycle * 120_000, 120_000)
             .unwrap();
@@ -113,6 +115,11 @@ fn cam_in_missing_region_decodes_without_a_synthetic_crank_tooth() {
                 }
                 TriggerInput::Cam => {
                     decoder.on_cam(edge.time_us);
+                    if cycle == 0 {
+                        assert_eq!(decoder.state(), SyncState::Unsynced);
+                        assert!(decoder.cycle_angle_at(edge.time_us).is_none());
+                        continue;
+                    }
                     assert_eq!(decoder.state(), SyncState::Sequential);
                     assert!((decoder.cycle_angle_at(edge.time_us).unwrap() - 707.5).abs() < 0.01);
                 }
@@ -161,7 +168,7 @@ fn decoder_matches_independent_offset_and_phase_vectors() {
             // Independent integer-degree / timestamp source, not TriggerWaveform.
             // At 1000 rpm exactly 500/3 us per degree. Cam at relative 690°.
             let mut reference = Vec::new();
-            for rev in 0..8_u64 {
+            for rev in 0..10_u64 {
                 for tooth in 0..u64::from(teeth - missing) {
                     let angle = offset + rev * 360 + tooth * 360 / u64::from(teeth);
                     reference.push((angle, TriggerInput::Crank));
@@ -182,7 +189,9 @@ fn decoder_matches_independent_offset_and_phase_vectors() {
                     }
                 }
                 let status = decoder.status();
-                if angle >= offset + 720 {
+                // Gaps at 360/720 confirm crank; the first eligible cam is
+                // at 1410. Two extra revolutions retain the original check span.
+                if angle >= offset + 1440 {
                     assert_eq!(
                         status.state,
                         SyncState::Sequential,

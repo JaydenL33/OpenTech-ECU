@@ -1,0 +1,25 @@
+$ cd ecu; PATH=/home/jlee/tools/bin:$PATH cargo test -p ecu-simulator --test trigger_waveform decoder_matches --locked -- --nocapture
+   Compiling ecu-simulator v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c3fd02b-60f04128c8f4ed8c/ecu/crates/ecu-simulator)
+    Finished `test` profile [optimized + debuginfo] target(s) in 1.02s
+     Running tests/trigger_waveform.rs (target/debug/deps/trigger_waveform-c9baa663413f87ef)
+
+running 1 test
+before cam angle=690 DecoderStatus { state: Unsynced, rpm: 999.80005, crank_angle_deg: None, cycle_angle_deg: None, tooth_index: 33, expected_interval_us: 1666.7568, last_error: None, error_count: 0, gap_count: 1, cam_seen: false, cam_phase_rejected: false } extrap=None
+
+thread 'decoder_matches_independent_offset_and_phase_vectors' (151437) panicked at crates/ecu-simulator/tests/trigger_waveform.rs:196:21:
+assertion `left == right` failed: MissingToothConfig { teeth: 36, missing: 1, cam_required: true, sync_offset_deg: 0.0, timeout_ms: 250 } angle=1410 DecoderStatus { state: CrankSynced, rpm: 1000.0, crank_angle_deg: Some(330.0), cycle_angle_deg: None, tooth_index: 33, expected_interval_us: 1666.7568, last_error: None, error_count: 0, gap_count: 3, cam_seen: true, cam_phase_rejected: true }
+  left: CrankSynced
+ right: Sequential
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test decoder_matches_independent_offset_and_phase_vectors ... FAILED
+
+failures:
+
+failures:
+    decoder_matches_independent_offset_and_phase_vectors
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ecu-simulator --test trigger_waveform`
+
+EXIT_CODE=101

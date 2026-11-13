@@ -360,3 +360,31 @@ exit 0, 4 passed. Historical evidence preserved.
 Rebaseline is verified; full-workspace acceptance remains blocked by those two
 tests. Host simulation only; no MCU, physical, vehicle or Speeduino binary
 parity claim. H0–H9 dispositions unchanged; no fabrication approval granted.
+
+
+## RUST-TRG-002 waveform expectation reconciliation (2026-11-13)
+
+Merged t3/reconcile-simulator-golden-1 (aecebda6) from master c7102387
+in the isolated implementation branch. Decoder production behavior unchanged.
+The missing-region fixture now feeds five cycles: the first cam must leave
+Unsynced with no cycle angle, then all four original sequential/707.5 degree
+checks run after confirmed acquisition. Independent integer-degree vectors now
+feed ten revolutions and check from relative 1440 degrees, preserving six full
+revolutions of state, angle, extrapolation, zero-error and RPM checks. Candidate
+gap at 360, confirming gap at 720, eligible cam at 1410 (crank delivered first
+when coincident). No simulator-derived expected angles were introduced.
+
+Raw commands, output and exits: rust-round-4/check-15.log fmt 0;
+check-16.log strict workspace Clippy 0; check-17.log workspace tests 0,
+245 passed, zero failed; check-18.log waveform nocapture 0, 6 passed;
+check-19.log trigger nocapture 0, 30 passed. All Cargo checks run from ecu
+with PATH=/home/jlee/tools/bin:$PATH. Tool versions: check-20.log.
+Diagnostic attempts check-13/14 exited 101: the initial boundary asserted at
+the coincident crank before the first eligible cam. Diagnostic printing was
+removed; boundary moved to the following revolution. No decoder defect found.
+
+Residual scope: independent analytical host vectors only; no Speeduino binary,
+MCU, physical capture or vehicle validation. H0–H9 dispositions unchanged;
+H4 still requires external engineering review and explicit human approval,
+H5+ physical evidence. Implementation commit is the commit containing this
+section (git log -- ecu/crates/ecu-simulator/tests/trigger_waveform.rs).

@@ -1,0 +1,18 @@
+$ cd ecu; PATH=/home/jlee/tools/bin:$PATH cargo test -p ecu-simulator --test trigger_waveform --locked -- --nocapture
+   Compiling ecu-simulator v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c3fd02b-60f04128c8f4ed8c/ecu/crates/ecu-simulator)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.58s
+     Running tests/trigger_waveform.rs (target/debug/deps/trigger_waveform-c9baa663413f87ef)
+
+running 6 tests
+test cam_in_missing_region_decodes_without_a_synthetic_crank_tooth ... ok
+test independent_cam_and_split_intervals_preserve_order_and_endpoints ... ok
+test invalid_waveforms_and_unbounded_steps_are_rejected ... ok
+test decoder_matches_independent_offset_and_phase_vectors ... ok
+independent full-cycle edge comparisons: 6432; tolerance <= 1.01 us
+test full_cycles_match_independent_f64_wheel_vectors ... ok
+test general_wheels_run_through_real_simulator_and_export_bounded_seeded_inputs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.55s
+
+
+EXIT_CODE=0
