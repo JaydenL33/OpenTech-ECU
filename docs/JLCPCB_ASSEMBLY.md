@@ -17,3 +17,15 @@ DFM questions for reviewer and assembler:
 - Confirm adjacent J1/J5/J6/J8 housing end tolerances, solder access and installed fit.
 - Confirm mixed SMT/THT process, selective/manual labour, module sockets, Mega header stack, MAP mounting and complete assembly without owner soldering.
 - Select J4 keyed IDC40 header and real mating ribbon socket as a pair; verify notch and pin-1 triangle against PCB pad 1 and cable stripe using drawings and continuity. No vehicle connector or pin mapping is specified.
+
+## Converted pack and upload sequence
+
+`hardware/prototype-v1/manufacturing/jlcpcb/` now contains BOM, CPL, unresolved CSV and reconciliation README. **Not upload-ready**: every LCSC mapping remains unverified; XA1 must be decomposed into actual header placements and A1 sockets are absent from the schematic BOM. See `CONNECTOR_DECISIONS.md`. Do not upload the composite XA1 placement as an actual component.
+
+1. EE chooses connector ordering codes and approves fit; correct A1/XA1 assembly metadata under review, then regenerate and reconcile individual placements.
+2. Resolve every blank row using exact JLC library matches or assembler-confirmed sourcing/consignment. Preserve approved electrical MPNs; obtain explicit approval for substitutions.
+3. After review and human fabrication approval, select PCB assembly in JLCPCB ordering, upload existing Gerbers and drill package, enter actual 100.05 mm square dimensions and approved stack/finish. Confirm mixed THT service and complete assembly without owner soldering.
+4. Upload bom-jlcpcb.csv as BOM and cpl-jlcpcb.csv as CPL (mm). Map the named columns, resolve every library mapping and inspect every pin-1/polarity/rotation in the assembly preview against top drawing. Confirm negative page-origin Y coordinates are correctly aligned; stop if offset or mirrored.
+5. Obtain reviewable DFM and itemized quote; review labour, sourcing, freight, tax and AUD conversion before any order. No quote or DFM approval is represented here.
+
+Do not assemble: Arduino Mega, Pololu DRV8825 carrier, JP6–JP11 copper bridges, H1–H3, REF** proto pads and other board-only features. Include approved board-side sockets/headers once their metadata is resolved. No owner soldering fallback.

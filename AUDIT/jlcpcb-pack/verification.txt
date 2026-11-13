@@ -1,0 +1,1 @@
+PASS: 140 BOM = 140 CPL; 140 unresolved; 139 origins inside outline; XA1 outside (documented blocker); all PCB layers F.Cu/Top
