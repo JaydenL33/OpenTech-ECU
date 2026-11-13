@@ -22,6 +22,7 @@ export function Surface3D({ table, kind }: { table: Table; kind: "fuel" | "targe
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
+    if (!rows || !cols || !table.values.length) return;
     const values = table.values;
     const min = Math.min(...values);
     const max = Math.max(...values);
@@ -75,6 +76,8 @@ export function Surface3D({ table, kind }: { table: Table; kind: "fuel" | "targe
 
   return (
     <div className="surface-wrap">
+      <button onClick={() => { setYaw(-0.65); setPitch(0.72); }}>Reset camera</button>
+      {!table.values.length && <p>No surface data available.</p>}
       <canvas
         ref={canvas}
         className="surface"

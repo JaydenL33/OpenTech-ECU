@@ -490,3 +490,33 @@ input:focus, select:focus { outline: none; border-color: var(--yellow-dark); box
 @media (max-width: 900px) {
   .designer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
+
+:root { color-scheme:dark; --bg:#101418; --panel:#191f25; --panel-2:#202830; --line:#36414b; --text:#eef5fa; --muted:#b0bfcb; --accent:#00dcee; --yellow:#00dcee; --link:#53ddea; }
+:root[data-theme="contrast"] { --bg:#000; --panel:#080808; --panel-2:#111; --line:#a8bac8; --text:#fff; --muted:#eee; }
+body { font-size:12px; font-variant-numeric:tabular-nums; }
+.app-shell { display:grid; grid-template-columns:220px minmax(0,1fr); grid-template-rows:auto auto auto 1fr auto; }
+.command-bar,.masthead,.studio-status { grid-column:1/-1; }
+.command-bar { display:flex; gap:8px; align-items:center; padding:4px 8px; background:var(--panel); border-bottom:1px solid var(--line); }
+.command-bar details { position:relative; }
+.command-bar summary { cursor:pointer; padding:4px; }
+.command-bar details>div { position:absolute; z-index:100; background:var(--panel); border:1px solid var(--line); min-width:240px; display:grid; padding:4px; }
+button,input,select { background:var(--panel-2); color:var(--text); border:1px solid var(--line); }
+button:disabled { opacity:.55; cursor:not-allowed; }
+.nav-band { background:var(--panel); grid-column:1; grid-row:4; }
+.nav-band.hidden { display:none; }
+.nav-band.hidden + .main { grid-column:1/-1; }
+.nav-band-inner { display:flex; flex-direction:column-reverse; padding:8px; align-items:stretch; gap:8px; }
+.primary-nav { flex-direction:column; overflow:visible; }
+.nav-tab { padding:6px; text-align:left; color:var(--text); }
+.nav-tab.active,.nav-tab:hover { color:var(--accent); background:var(--panel-2); }
+.nav-search { width:100%; flex:auto; background:var(--panel-2); }
+.main { grid-column:2; grid-row:4; min-width:0; background:var(--bg); }
+.content { max-width:none; padding:12px; }
+.masthead-inner { max-width:none; min-height:48px; }
+.workspace-tabs { display:flex; overflow:auto; gap:2px; padding:4px; }
+.workspace-tabs button { white-space:nowrap; padding:5px 8px; }
+.workspace-tabs .selected { border-color:var(--accent); color:var(--accent); }
+.studio-status { overflow-wrap:anywhere; padding:5px 8px; background:var(--panel); }
+.map-cell.selected,.designer-slot.selected { outline:2px solid #00dcee; outline-offset:-2px; }
+.map-cell.active-cell { box-shadow:inset 0 0 0 3px #267dff; }
+.map-grid td,.map-grid th { padding:2px; }

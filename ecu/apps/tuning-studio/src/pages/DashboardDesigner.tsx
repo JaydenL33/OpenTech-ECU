@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useApp } from "../context";
 import { Panel, Gauge, Badge } from "../components/ui";
 import { CHANNELS, CHANNEL_BY_KEY, readChannel } from "../channels";
@@ -68,12 +68,13 @@ function safeFileName(name: string): string {
 
 export function DashboardDesignerPage() {
   const app = useApp();
-  const [layout, setLayout] = useState<DesignerLayout>(DEFAULT_LAYOUT);
+  const [layout, setLayout] = useState<DesignerLayout>(() => { try { return parseLayout(localStorage.getItem("studio-dash") || JSON.stringify(DEFAULT_LAYOUT)); } catch { return DEFAULT_LAYOUT; } });
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => { localStorage.setItem("studio-dash", JSON.stringify(layout)); }, [layout]);
   const frame = app.live.frame;
 
   const setCell = (index: number, key: string | null) => {
@@ -109,7 +110,7 @@ export function DashboardDesignerPage() {
     anchor.download = safeFileName(layout.name);
     anchor.click();
     URL.revokeObjectURL(url);
-    setStatus(`Downloaded ${safeFileName(layout.name)}. The layout stays in this browser session only.`);
+    setStatus(`Downloaded ${safeFileName(layout.name)}. The layout is persisted in this browser.`);
     setError(null);
   };
 

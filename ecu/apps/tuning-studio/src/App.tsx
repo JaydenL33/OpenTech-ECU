@@ -79,7 +79,13 @@ const PAGE_META: Record<PageId, { title: string; subtitle: string }> = {
 
 export default function App() {
   const live = useLiveTelemetry();
-  const [page, setPage] = useState<PageId>("dashboard");
+  const [page, rawSetPage] = useState<PageId>("dashboard");
+  const [history, setHistory] = useState<PageId[]>([]);
+  const [sidebar, setSidebar] = useState(true);
+  const [tabs, setTabs] = useState<PageId[]>(["dashboard"]);
+  const [theme, setTheme] = useState(() => localStorage.getItem("studio-theme") || "dark");
+  const setPage = (next: PageId) => { setHistory(h => [...h, page]); setTabs(old => old.includes(next) ? old : [...old, next]); rawSetPage(next); };
+  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem("studio-theme", theme); }, [theme]);
   const [calibration, setCalibrationState] = useState<Calibration | null>(null);
   const [preflight, setPreflight] = useState<PreflightReport | null>(null);
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
@@ -199,6 +205,12 @@ export default function App() {
   return (
     <AppContext.Provider value={context}>
       <div className="app-shell">
+        <div className="command-bar">
+          {Object.entries({File: [["Calibration / revisions", "calibration"], ["Dashboard layout files", "designer"]], Edit: [["Table undo / redo", "fuel"]], Setup: [["Engine setup", "setup"], ["I/O report", "harness"]], Logging: [["Data Log Manager", "logs"], ["Playback viewer", "logviewer"]], Help: [["Channels and availability", "channels"]]}).map(([menu, commands]) => <details key={menu}><summary>{menu}</summary><div>{commands.map(([label, target]) => <button key={label} onClick={() => setPage(target as PageId)}>{label}</button>)}</div></details>)}
+          <details><summary>Tools</summary><div>{["PDM outputs", "Oscilloscope", "Firmware upgrade", "Reboot device", "Check for updates"].map(label => <button key={label} disabled title="Not available in this build: no device API or update source">{label} — unavailable: no device API</button>)}</div></details>
+          <label>Theme <select value={theme} onChange={e => setTheme(e.target.value)}><option value="dark">Default Dark</option><option value="contrast">High Contrast</option></select></label>
+        </div>
+        <div className="command-bar"><button onClick={() => setSidebar(!sidebar)}>Navigation</button><button disabled={!history.length} onClick={() => { rawSetPage(history[history.length - 1]); setHistory(h => h.slice(0,-1)); }}>Back</button><button onClick={() => setPage("calibration")}>Revisions</button><button onClick={() => setPage("harness")}>I/O report</button><button onClick={() => setPage("logs")}>Data Log Manager</button><span>Physical outputs interlocked</span></div>
         <header className="masthead">
           <div className="masthead-inner">
             <button className="brand" onClick={() => setPage("dashboard")} aria-label="OpenTech dashboard">
@@ -221,7 +233,7 @@ export default function App() {
           </div>
         </header>
 
-        <div className="nav-band">
+        <div className={`nav-band ${sidebar ? "" : "hidden"}`}>
           <div className="nav-band-inner">
             <nav className="primary-nav" aria-label="Tuning studio sections">
               {visibleNav.map((item) => (
@@ -249,7 +261,7 @@ export default function App() {
           </div>
         </div>
 
-        <main className="main">
+        <main className="main"><div className="workspace-tabs" role="tablist" aria-label="Open pages">{tabs.map(id => <span key={id}><button role="tab" id={`tab-${id}`} aria-selected={page === id} tabIndex={page === id ? 0 : -1} onKeyDown={e => { const i = tabs.indexOf(id); let next: PageId | undefined; if (e.key === "ArrowRight") next = tabs[(i + 1) % tabs.length]; if (e.key === "ArrowLeft") next = tabs[(i + tabs.length - 1) % tabs.length]; if (e.key === "Home") next = tabs[0]; if (e.key === "End") next = tabs[tabs.length - 1]; if (next) { e.preventDefault(); setPage(next); document.getElementById(`tab-${next}`)?.focus(); } }} draggable onDragStart={e => e.dataTransfer.setData("text/plain", id)} onDragOver={e => e.preventDefault()} onDrop={e => { const source = e.dataTransfer.getData("text/plain") as PageId; if (source === id || !tabs.includes(source)) return; setTabs(old => { const next = old.filter(x => x !== source); next.splice(next.indexOf(id), 0, source); return next; }); }} className={page === id ? "selected" : ""} onClick={() => setPage(id)}>{id === "dashboard" ? "Main" : NAV.find(n => n.id === id)?.label}</button><button aria-label={`Close ${NAV.find(n => n.id === id)?.label}`} disabled={tabs.length === 1} onClick={() => { const remaining = tabs.filter(x => x !== id); setTabs(remaining); const next = page === id ? remaining[Math.min(tabs.indexOf(id), remaining.length - 1)] : page; rawSetPage(next); requestAnimationFrame(() => document.getElementById(`tab-${next}`)?.focus()); }}>×</button></span>)}</div>
           <div className="content">
             <div className="page-head">
               <div>
@@ -307,7 +319,7 @@ export default function App() {
               no vehicle or engine validation. Not engine-safe.
             </footer>
           </div>
-        </main>
+        </main><div className="studio-status">{live.connected ? "Telemetry connected" : "Telemetry reconnecting"} · {running ? "Simulation running" : "Simulation paused"} · physical outputs blocked · revision {calibration?.revision ?? "—"} · {calibration?.checksum ?? "No calibration"} · drafts indicated in table editors</div>
       </div>
     </AppContext.Provider>
   );
