@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | AUD-HW-CHK-01 |
-| Status | **H2: checks complete with documented exceptions. Independent acceptance pending. NOT a pass.** H3 not ready. Not fabrication-approved. |
+| Status | **H2: checks complete with documented exceptions. Focused independent review ACCEPT WITH FINDINGS. NOT a pass.** H3 not ready. Not fabrication-approved. |
 | Date | 2026-11-13 (HW-H2-01 run) |
 | Workstream | Hardware |
 | Design under test | `hardware/prototype-v1/` (Speeduino v0.4.4d SMD + R-01…R-10) |

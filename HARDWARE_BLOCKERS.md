@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | HW-BLOCKERS |
-| Status | Living register. H0 complete. H1 partial (BOM MPNs). H2 checks complete with documented exceptions, pending independent acceptance. H3 not ready. HW-H2-01 (R-04…R-10) closed the mechanical, library and ERC items. |
+| Status | Living register. H0 complete. H1 partial (BOM MPNs). H2 complete with documented exceptions; focused independent review returned ACCEPT WITH FINDINGS. H3 not ready. HW-H2-01 (R-04…R-10) closed the mechanical, library and ERC items. |
 | Date | 2026-11-13 |
 | Workstream | Hardware |
 | Baseline | Speeduino v0.4.4d SMD, upstream commit `ee6a9242834891877744ff2137663b6ca8d79ed6` |
@@ -21,7 +21,7 @@
 |---|---|---|
 | **H0 — Verified upstream reference** | **PASS (hardware + build)** | Exact Speeduino Hardware commit, path, licence and hash manifest selected (`AUDIT/UPSTREAM_PROVENANCE.md`). Firmware tree commit `5d217bf4…` builds for `megaatmega2560` with PlatformIO 6.2.0; artifact hashes recorded (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`). Caveat: firmware is an in-tree snapshot, not a tagged upstream release; pin a tag in the review package. |
 | **H1 — Complete PCB design package** | **PARTIAL** | Native KiCad 9 schematic + PCB. All 147 components have footprints, 0 unconnected items, closed outline. Gerbers, drill (+ report), BOM, position (141 placements), IPC-D-356 and netlist generated. **Added by HW-H2-01:** 3 M3 NPTH mounting holes, top/bottom assembly drawings, fab drawing, `FABRICATION_NOTES.md` (stack-up and assumptions), repaired library links. **Still missing:** complete BOM MPNs (HW-BOM-01). |
-| **H2 — Engineering checks completed** | **COMPLETE WITH DOCUMENTED EXCEPTIONS — pending independent acceptance (not a pass)** | ERC **49 (4 errors, 45 warnings)**, every item dispositioned line by line. The 4 errors are U6 spare clamp channels. DRC **397 reported (31 errors, 366 warnings) + 199 per-item exclusions**, 0 unconnected. The 31 errors are the intentional JP6–JP11 jumpers, not excluded. Connectivity PASS 514/514. Mounting-hole check PASS. See `AUDIT/PCB_CHECK_RESULTS.md`. Warnings still open: 223 cosmetic silk, 143 footprint-library vintage. |
+| **H2 — Engineering checks completed** | **COMPLETE WITH DOCUMENTED EXCEPTIONS; focused independent review ACCEPT WITH FINDINGS (not a pass)** | ERC **49 (4 errors, 45 warnings)**, every item dispositioned line by line. The 4 errors are U6 spare clamp channels. DRC **397 reported (31 errors, 366 warnings) + 199 per-item exclusions**, 0 unconnected. The 31 errors are the intentional JP6–JP11 jumpers, not excluded. Connectivity PASS 514/514. Mounting-hole check PASS. Independent continuation review matched 199/199 exclusions by UUID pair, verified all jumpers and rendered the drawings. **Findings:** crowded assembly annotations need human readability/orientation review; standoff detail is in the notes; header MPN, support strategy and H2 exception acceptance remain human decisions. See `AUDIT/PCB_CHECK_RESULTS.md`. Warnings still open: 223 cosmetic silk, 143 footprint-library vintage. |
 | **H3 — Independent fabrication review candidate** | **NOT READY** | The mechanical/assembly package now exists. Still open: BOM MPNs (HW-BOM-01), footprint-library audit, reviewer acceptance of the H2 exceptions, and independent review (HW-REVIEW-01). |
 | **H4 — Fabrication approved** | **BLOCKED — human only** | Requires independent engineering review and explicit human approval. AI cannot grant. |
 | **H5 — Assembled hardware** | **NOT STARTED** | No board fabricated or populated. |
@@ -75,7 +75,7 @@
 | Status | **CLOSED (format-only change; review required)** |
 | Resolved by | `219aa0855f94f0a02765e1b32e08f85d4591877a`; see `AUDIT/UPSTREAM_PROVENANCE.md` §4 and `AUDIT/PCB_CHECK_RESULTS.md` §4 |
 
-### HW-ERC-01 — 101 ERC violations remain
+### HW-ERC-01 — Original 101 ERC violations (closed by HW-H2-01)
 
 | Field | Value |
 |---|---|
@@ -345,8 +345,9 @@ blocker.
 ## Order of work
 
 1. **HW-BOM-01 / HW-BOM-02** — make the purchasing case real and costed.
-2. **HW-ERC-01/02, HW-DRC-01, HW-MECH-01/02** — done in HW-H2-01. Only
-   reviewer acceptance of the documented exceptions remains.
+2. **HW-ERC-01/02, HW-DRC-01, HW-MECH-01/02** — done in HW-H2-01. Focused
+   independent review returned ACCEPT WITH FINDINGS; human acceptance of the
+   exceptions and mechanical assumptions remains.
 3. **Footprint-library audit** (143 `lib_footprint_mismatch`) and cosmetic silk
    cleanup — needed before H3.
 4. **HW-BENCH-01** — IDC40 breakout and safe power-up package.

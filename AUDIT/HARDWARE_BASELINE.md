@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | AUD-HW-BASE-01 |
-| Status | Candidate baseline selected (H0 pass; H1 partial; H2 open); **not fabrication-approved** |
+| Status | Candidate baseline selected (H0 pass; H1 partial; H2 complete with documented exceptions, focused independent review ACCEPT WITH FINDINGS; H3 not ready); **not fabrication-approved** |
 | Date | 2026-11-13 |
 | Workstream | Hardware |
 | Decision | Adopt **Speeduino v0.4.4d SMD** as prototype-v1 electrical baseline; Option B minimal revision (format save + 3 PCB/manufacturing fixes, no net or topology change) |

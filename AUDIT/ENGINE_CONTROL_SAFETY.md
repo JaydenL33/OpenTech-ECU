@@ -43,7 +43,7 @@ The v0.1 safety concept is **containment by absence of an actuator path**, suppo
 | Studio service | Yes | No | Local HTTP/WebSocket, calibration editing, simulation control |
 | Tuning UI | Yes, host build | No | React/Vite + Electron main; Electron launch not tested; no hardware transport |
 | Firmware | Yes, no_std skeleton | No | `firmware/stm32`; no HAL, timer capture/compare, injector/ignition driver, watchdog integration, or flash image |
-| PCB / harness | Routed v0.4.4d baseline (H2 exceptions); no harness | No | Selected baseline: `hardware/prototype-v1/`; ERC 101, DRC 600 (230 errors), 0 unconnected. Legacy custom `hardware/kicad/evo8-bench-ecu/`: 499 unconnected, 14 DRC. No vehicle harness or connector definition |
+| PCB / harness | Routed v0.4.4d baseline (H2 complete with exceptions); no harness | No | Selected baseline: `hardware/prototype-v1/`; ERC 49, DRC 397 (31 errors, 366 warnings) + 199 per-item exclusions, 0 unconnected. Focused independent review ACCEPT WITH FINDINGS; H3 not ready. Legacy custom `hardware/kicad/evo8-bench-ecu/`: 499 unconnected, 14 DRC. No vehicle harness or connector definition |
 | Physical injector/coil | No | No | No code path; `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED` is true |
 
 The simulator's "injection" and "spark" events are calls in `apply_events` that update model state (`fuel_cycle_kg`, `sparks_this_cycle`). They do not call a GPIO, timer, CAN transmit API, or driver. This is confirmed by source inspection, not by a runtime sandbox.

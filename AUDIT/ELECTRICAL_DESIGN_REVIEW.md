@@ -2,12 +2,15 @@
 
 > ## STATUS: DESIGN REQUIREMENTS, NOT A VALIDATED SCHEMATIC
 >
-> **2026-11-13 update.** The hardware baseline is now an unmodified **Speeduino
+> **2026-11-13 update (HW-H2-01).** The hardware baseline is the **Speeduino
 > v0.4.4d SMD** design, not the custom STM32 draft. It has a native KiCad 9
 > review copy at `hardware/prototype-v1/` that is **fully routed** (0
-> unconnected items) with gerbers, drill, BOM and position exports. It is still
-> **not fabrication-approved**: ERC 101 violations, DRC 600 (230 errors), 11 BOM
-> rows without MPN, no assembly drawing and no independent review. The older
+> unconnected items) with gerbers, drill, BOM, position, top/bottom assembly
+> drawings and a fab drawing. It is still **not fabrication-approved**: ERC 49
+> (4 errors, 45 warnings), DRC 397 (31 errors, 366 warnings) plus 199 per-item
+> courtyard exclusions, 11 BOM rows without MPN, unaudited footprint-library
+> vintage and mechanical assumptions requiring human review. A focused
+> independent review returned ACCEPT WITH FINDINGS. The older
 > `hardware/kicad/evo8-bench-ecu/` custom STM32 package remains an unrouted
 > placement draft (14 violations, 499 unconnected). `kicad-cli` **was** available
 > in this round as a pinned Docker image, so the new baseline's ERC/DRC were
@@ -348,7 +351,7 @@ A design can pass ERC/DRC and still:
 - leave an output enabled on reset;
 - be impossible to assemble or service.
 
-The legacy custom package has an ERC JSON reporting 0 violations from the generator's KiCad 9.0.9, but it was not independently reproduced in this audit. The PCB draft has a DRC report with 14 violations (13 dangling vias + 1 clearance) and 499 unconnected items. **The selected v0.4.4d baseline is different:** its native KiCad 9 review copy was checked in a pinned container on 2026-11-13 and reports ERC 101 (44 errors), DRC 600 (230 errors, 0 unconnected) after zone re-fill and R-01…R-03; see `AUDIT/PCB_CHECK_RESULTS.md`. Any future report must state the KiCad version, rule set, exclusions, and unresolved violations; a green status alone is not evidence.
+The legacy custom package has an ERC JSON reporting 0 violations from the generator's KiCad 9.0.9, but it was not independently reproduced in this audit. The PCB draft has a DRC report with 14 violations (13 dangling vias + 1 clearance) and 499 unconnected items. **The selected v0.4.4d baseline is different:** its native KiCad 9 review copy was checked in a pinned container on 2026-11-13 and now reports ERC 49 (4 errors, 45 warnings), DRC 397 (31 errors, 366 warnings, 0 unconnected) plus 199 per-item courtyard exclusions after R-01…R-10; see `AUDIT/PCB_CHECK_RESULTS.md`. The focused independent review matched all 199 exclusions and the JP6–JP11 jumpers; human acceptance of exceptions and mechanical assumptions remains. Any future report must state the KiCad version, rule set, exclusions, and unresolved violations; a green status alone is not evidence.
 
 ## 8. Open electrical issues / blockers
 

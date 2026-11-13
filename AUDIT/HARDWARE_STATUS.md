@@ -3,27 +3,33 @@
 | Field | Value |
 |---|---|
 | Document ID | AUD-10 |
-| Status | Hardware status and requirements only; **no manufacturing-approved hardware exists**; prototype-v1 baseline selected (H0 pass, H1 partial, H2 open) |
+| Status | Hardware status and requirements only; **no manufacturing-approved hardware exists**; prototype-v1 baseline selected (H0 pass, H1 partial, H2 complete with documented exceptions, H3 not ready) |
 | Date | 2026-11-13 |
 | Evidence cut-off | 2026-11-13, working tree |
 | Source manifest | `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` |
 | Related | AUD-03, AUD-04, AUD-08, AUD-09 |
 
-> **Plain statement (updated 2026-11-13).** No manufacturing-approved PCB,
-> gerber release, assembly drawing, enclosure or harness exists. The current
-> **prototype-v1 baseline** is a Speeduino **v0.4.4d SMD** design with a
-> documented minimal PCB revision (R-01…R-03, `cc2ed0fd`)
-> (upstream commit `ee6a9242834891877744ff2137663b6ca8d79ed6`) with a native
+> **Plain statement (updated 2026-11-13, HW-H2-01).** No manufacturing-approved
+> PCB, gerber release or harness exists. The current **prototype-v1 baseline** is
+> a Speeduino **v0.4.4d SMD** design with documented revisions R-01…R-10
+> (upstream commit `ee6a9242834891877744ff2137663b6ca8d79ed6`) and a native
 > KiCad 9 review copy at `hardware/prototype-v1/`. It is **fully routed**
-> (KiCad 9 DRC: 0 unconnected items) and has fresh gerber/drill/BOM/position
-> exports, but **H2 is not passed**: ERC reports 101 violations and DRC reports
-> 600 (230 errors), with documented exceptions and open items. The older
-> `hardware/kicad/evo8-bench-ecu/` custom STM32 package remains an **unrouted
-> placement draft** (499 unconnected items, 14 violations) and is **not** the
-> baseline. Neither design is fabrication-approved or vehicle-safe.
+> (0 unconnected items), has **H2 complete with documented exceptions**, and now
+> includes 3 M3 NPTH mounting holes, top/bottom assembly drawings, a fab drawing
+> and fabrication notes. ERC is **49 (4 errors, 45 warnings)**; DRC is **397
+> reported (31 errors, 366 warnings) plus 199 per-item courtyard exclusions**.
+> A focused independent review returned **ACCEPT WITH FINDINGS**: exclusions
+> match 199/199 by UUID pair, jumpers explain all 31 DRC errors, and drawings
+> render. Remaining human decisions are header MPN/body fit, assembly-drawing
+> readability, the three-hole support/standoff strategy, fabrication assumptions
+> and independent H4 approval. The older `hardware/kicad/evo8-bench-ecu/` custom
+> STM32 package remains an **unrouted placement draft** (499 unconnected items,
+> 14 violations) and is **not** the baseline. Neither design is
+> fabrication-approved or vehicle-safe.
 >
 > New evidence: `AUDIT/UPSTREAM_PROVENANCE.md`, `AUDIT/HARDWARE_BASELINE.md`,
-> `AUDIT/PCB_CHECK_RESULTS.md`, `HARDWARE_BLOCKERS.md`.
+> `AUDIT/PCB_CHECK_RESULTS.md`, `AUDIT/HARDWARE_DIFF.md`,
+> `HARDWARE_BLOCKERS.md`, `hardware/prototype-v1/FABRICATION_NOTES.md`.
 
 ## 0. 2026-11-13 update — selected baseline vs legacy custom draft
 
@@ -32,13 +38,13 @@
 | Electrical source | Speeduino v0.4.4d SMD, upstream commit pinned | OpenTech-ECU custom STM32H743 draft |
 | KiCad format | Native KiCad 9 `.kicad_sch`/`.kicad_pcb` (converted from upstream KiCad 5) | Native KiCad 9 |
 | Routing | **Complete — 0 unconnected items** | **Unrouted — 499 unconnected items** |
-| DRC | 600 violations (230 errors, 370 warnings); 0 unconnected | 14 violations; 499 unconnected |
-| ERC | 101 violations (44 errors, 57 warnings) | 0 reported, unreviewed |
+| DRC | 397 reported (31 errors, 366 warnings) + 199 per-item courtyard exclusions; 0 unconnected | 14 violations; 499 unconnected |
+| ERC | 49 violations (4 errors, 45 warnings), all dispositioned | 0 reported, unreviewed |
 | BOM | 47 grouped rows; 11 rows lack MPN | 305 lines, unreviewed |
-| Manufacturing exports | 9 gerbers + drill + IPC-D-356 + BOM + schematic PDF; position file 141 real placements, no proto pads | None |
+| Manufacturing exports | 9 gerbers + drill + drill report + IPC-D-356 + BOM + position (141 placements) + schematic PDF + top/bottom assembly drawings + fab drawing | None |
 | Firmware compatibility | Upstream Speeduino `megaatmega2560` target; build passes (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`) | No validated firmware/HAL |
-| Review status | H2 open; not fabrication-approved | Unreviewed; not usable |
-| Gate | H0 pass; H1 partial; H2 not passed | Not a baseline |
+| Review status | H2 complete with documented exceptions; focused independent review ACCEPT WITH FINDINGS; H3 not ready; not fabrication-approved | Unreviewed; not usable |
+| Gate | H0 pass; H1 partial; H2 complete with exceptions; H3 not ready; H4 human-only | Not a baseline |
 
 The rest of this document retains the earlier audit of the custom draft. Where
 it says "the PCB", read it as the legacy custom board unless the new baseline is
@@ -49,7 +55,7 @@ explicitly named.
 | Artefact | Exists in audited repo? | Evidence / note |
 |---|---|---|
 | Hardware status README | Yes | `hardware/README.md`; explicitly states no manufacturing-ready board and bench-prototype boundaries |
-| Rust host control code | Yes | `ecu/crates/*`; 130 tests pass |
+| Rust host control code | Yes | `ecu/crates/*`; 244 workspace tests pass (2026-11-13) |
 | Virtual ECU / simulator | Yes | `ecu-simulator`; six scenarios |
 | `no_std` firmware skeleton | Yes | `ecu/firmware/stm32`; target check passes; no HAL/timer/driver |
 | Reference Speeduino firmware build | Yes — build only | `pio run -e megaatmega2560` SUCCESS; hex/ELF hashes in `AUDIT/FIRMWARE_TEST_EVIDENCE.md`; not flashed |
@@ -60,13 +66,13 @@ explicitly named.
 | Flash/calibration storage | No | No bootloader, dual-bank, or calibration flash layout |
 | CAN driver | No | No transceiver/driver; simulator `can_ok=true` |
 | KiCad schematic | Yes — selected baseline native; legacy custom **UNREVIEWED** | `hardware/prototype-v1/*.kicad_sch` (upstream v0.4.4d, native KiCad 9, 7 sheets); legacy `hardware/kicad/evo8-bench-ecu/` 7 sheets, unreviewed |
-| KiCad PCB | Selected baseline routed; legacy custom **NOT USABLE** | `hardware/prototype-v1/v0.4.4d.kicad_pcb`: 297 footprints (147 components + 150 proto pads), 0 unconnected, 600 DRC (230 errors). Legacy custom: 305 footprints, 499 unconnected, 14 DRC |
+| KiCad PCB | Selected baseline routed; legacy custom **NOT USABLE** | `hardware/prototype-v1/v0.4.4d.kicad_pcb`: 297 footprints (147 components + 150 proto pads), 0 unconnected, 397 DRC (31 errors, 366 warnings) + 199 per-item courtyard exclusions. Legacy custom: 305 footprints, 499 unconnected, 14 DRC |
 | KiCad project | Yes — selected baseline converted | `hardware/prototype-v1/v0.4.4d.kicad_pro` (KiCad 9); legacy `.kicad_pro` unreviewed |
 | BOM | Yes — baseline BOM has gaps | `prototype-v1/manufacturing/assembly/v0.4.4d-bom.csv`: 47 grouped rows, 11 without MPN. Legacy custom 305 lines, unreviewed |
-| ERC report | Yes — baseline exceptions open | `prototype-v1/verification/erc.rpt`: 101 violations (44 errors). Legacy custom `reports/erc.json` 0 violations, unreviewed |
-| Gerbers/drill | Yes — baseline review exports only | `prototype-v1/manufacturing/gerbers/` 9 layers + job; `manufacturing/drill/` Excellon + map. Not DFM-checked, not fabricated |
-| Assembly drawing | No | Not present |
-| Enclosure/mechanical | No | Not present |
+| ERC report | Yes — 49 dispositioned exceptions | `prototype-v1/verification/erc.rpt`: 49 violations (4 errors, 45 warnings), each dispositioned. Legacy custom `reports/erc.json` 0 violations, unreviewed |
+| Gerbers/drill | Yes — baseline review exports only | `prototype-v1/manufacturing/gerbers/` 9 layers + job; `manufacturing/drill/` Excellon + drill report + map. Not DFM-checked, not fabricated |
+| Assembly drawing | Yes — review drawings | `prototype-v1/manufacturing/assembly/v0.4.4d-assembly-top.pdf`, `-bottom.pdf`; fab drawing `manufacturing/drill/v0.4.4d-fab-drawing.pdf`. Human readability/orientation review still required |
+| Enclosure/mechanical | Partial | Three M3 NPTH holes; top-right support strategy, standoff height and J3 strain relief are documented assumptions requiring human measurement/review |
 | Bench harness manifest | Yes, unreviewed source | `config/harness/opentech-bench-harness.json`; 29 bench connectors, 54 test points; no OEM cavities |
 | IDC40 bench pin map | Yes — netlist-derived only | `hardware/bench-interface/idc40_pinout.csv`; 40 pads, no physical continuity/orientation check; breakout not built |
 | Harness/adapter for vehicle | No | Not present; Evo connector unverified |
@@ -75,7 +81,7 @@ explicitly named.
 | Evo ECU part number/connector/pinout | No | `vehicle.rs`: `None`/`false`; all unverified |
 | Evo trigger/injector/coil data | No | Unverified |
 
-**Not a manufacturing package.** The selected prototype-v1 baseline is a real, routed, upstream-derived design with review exports, but its ERC/DRC exceptions, BOM gaps, bench breakout and independent review are incomplete. The legacy custom schematic package remains an unreviewed hypothesis. Manufacturing readiness requires a reviewed schematic, PCB layout, DRC with a documented rule set, BOM derating/lifecycle, stack-up, assembly drawings, test coverage, and a build-house DFM review. None exists. An ERC/DRC pass is a KiCad rule result only; it does not prove electrical safety or Evo compatibility.
+**Not a manufacturing package.** The selected prototype-v1 baseline is a real, routed, upstream-derived design with review exports, assembly/fab drawings and a focused independent review (ACCEPT WITH FINDINGS). It still has dispositioned ERC/DRC exceptions, BOM gaps, an unaudited footprint-library vintage, a bench breakout not built, and no human acceptance of the mechanical assumptions. Manufacturing readiness requires a reviewed schematic, PCB layout, DRC with a documented rule set, BOM derating/lifecycle, stack-up, assembly drawings, test coverage, and a build-house DFM review. Those remain incomplete. An ERC/DRC pass is a KiCad rule result only; it does not prove electrical safety or Evo compatibility.
 
 ## 2. Candidate architecture (not a selection)
 
@@ -161,7 +167,7 @@ Until then: **requirements only, no manufacturing claim, no vehicle connection.*
 
 ## 7. Explicit non-claims
 
-- No manufacturing-approved PCB, gerber release or assembly drawing exists. The selected v0.4.4d baseline has native KiCad 9 files, review gerbers/drill and a generated BOM, but ERC 101 / DRC 600 exceptions, 11 BOM rows without MPN, no assembly drawing and no independent review remain.
+- No manufacturing-approved PCB or gerber release exists. The selected v0.4.4d baseline has native KiCad 9 files, review gerbers/drill, a generated BOM, top/bottom assembly drawings, a fab drawing and three mounting holes. ERC 49 / DRC 397+199 exceptions remain dispositioned but not human-accepted; 11 BOM rows lack MPN, the footprint-library vintage is unaudited, and fabrication/mechanical assumptions require independent human review.
 - The legacy custom `evo8-bench-ecu` schematic/BOM is unreviewed; its PCB has 499 unconnected items and 14 DRC violations and is not manufacturable.
 - No MCU/HAL/timer/driver/watchdog firmware implementation exists for the custom STM32 path. The selected v0.4.4d baseline targets upstream Speeduino on Arduino Mega 2560, and a reproducible firmware build now passes (`AUDIT/FIRMWARE_TEST_EVIDENCE.md`), but no firmware has been flashed and no hardware has been powered.
 - No electrical safety, EMC, thermal, vibration, IP or automotive qualification is claimed.

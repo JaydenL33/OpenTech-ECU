@@ -19,9 +19,9 @@ evidence are committed. Passing host checks do not promote a hardware gate.
 |---|---|---|
 | Gate 0 — host software evidence | PASS, scoped | `cargo fmt`/`clippy`/`test` exit 0; UI build; see `AUDIT/RELEASE_GATES.md` |
 | H0 — verified upstream hardware reference | PASS | `AUDIT/UPSTREAM_PROVENANCE.md`, `AUDIT/HARDWARE_BASELINE.md` |
-| H1 — complete PCB design package | PARTIAL | Routed v0.4.4d review copy; no mounting holes/assembly drawing; BOM gaps |
-| H2 — engineering checks | NOT PASSED | ERC 101, DRC 600, 0 unconnected; `AUDIT/PCB_CHECK_RESULTS.md` |
-| H3 — independent fabrication review candidate | NOT READY | Review package incomplete; no independent review |
+| H1 — complete PCB design package | PARTIAL | Routed v0.4.4d review copy; mounting holes, assembly/fab drawings and library fixes added; BOM MPNs still missing |
+| H2 — engineering checks | COMPLETE WITH DOCUMENTED EXCEPTIONS; focused independent review ACCEPT WITH FINDINGS | ERC 49, DRC 397 + 199 per-item exclusions, 0 unconnected; `AUDIT/PCB_CHECK_RESULTS.md` |
+| H3 — independent fabrication review candidate | NOT READY | BOM MPNs, footprint-library audit and human acceptance of H2/mechanical exceptions outstanding |
 | H4 — fabrication approved | BLOCKED — human only | Independent review + explicit human approval required |
 | H5–H9 | NOT STARTED / BLOCKED | No fabricated board, no power, no engine/vehicle evidence |
 
@@ -52,7 +52,7 @@ after verifying their committed changes and evidence.
 | Acceptance | Native KiCad files remain valid; 0 unconnected items; connectivity still PASS; every remaining ERC/DRC violation individually classified; manufacturing exports regenerated; Docker KiCad 9.0.9 commands and raw outputs committed |
 | Verification | `hardware/tools/check_prototype_v1.sh`; inspect `verification/erc.rpt`, `drc.rpt`, `summary.txt`; `hardware/tools/verify_upstream_baseline.sh` |
 | Safety | No fabrication, no purchase, no energising; no global rule disabling; no invented mechanical approval |
-| State | REVIEW — independent review in progress. Commit `eca1bec5`; lead rerun: ERC 49, DRC 397 + 199 per-item exclusions, 0 unconnected, connectivity PASS, upstream 32/32 OK. H2 is complete with exceptions, not a pass; H3 not ready; H4 human-only. |
+| State | **DONE (design package) — integrated `3d191045`.** Focused independent review: ACCEPT WITH FINDINGS. Lead rerun: ERC 49, DRC 397 + 199 per-item exclusions, 0 unconnected, connectivity PASS, upstream 32/32 OK. Findings: crowded assembly annotations need human readability/orientation review; standoff detail is in notes; header MPN, three-hole support strategy, fab assumptions and H4 approval remain human decisions. H2 complete with exceptions, not a pass; H3 not ready. |
 
 ### RUST-TRG-001 — Crank/cam loss handling and recovery vectors
 
@@ -91,7 +91,8 @@ after verifying their committed changes and evidence.
 | HW-BOM-01 | Hardware | Assign real MPNs to 11 BOM rows and remove placeholders | Needs sourcing research; next hardware cycle |
 | HW-BOM-02 | Hardware | Dated AUD supplier quotes and purchase-vs-build comparison | Depends on BOM; no purchases |
 | HW-BENCH-01 | Hardware | IDC40 breakout schematic/assembly + safe power-up procedure | Design-only until H4 |
-| HW-MECH-01/02 | Hardware | Assembly drawing, stack-up, mounting holes | Folded into HW-H2-01 |
+| HW-DRAW-01 | Hardware | Improve assembly-drawing annotation readability and add explicit standoff/J3 strain-relief detail | Review found crowded/pale annotations and standoff detail only in notes; human readability decision remains |
+| HW-FOOT-01 | Hardware | Audit the 143 embedded KiCad 5 footprint/library mismatches | H3 blocker identified by the hardware review |
 | RUST-TRG-002 | Rust | Pre-sync noise false first-gap lock | Re-review measured 100/136 probe cases; require a minimum baseline-tooth count or confirmed second gap before first sync |
 | RUST-TIM-001 | Rust | Discrete-event timing/causality vectors | After TRG-001; no hardware needed |
 | RUST-REF-001 | Rust | Upstream differential testing | Needs reproducible upstream reference captures |

@@ -7,7 +7,7 @@
 | Date | 2026-11-12 |
 | Evidence cut-off | 2026-11-13, working tree |
 | Source manifest | `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` |
-| Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** Prototype-v1 hardware baseline: H0 pass, H1 partial, H2 open. |
+| Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** Prototype-v1 hardware baseline: H0 pass, H1 partial, H2 complete with documented exceptions, H3 not ready. |
 | Related | AUD-01 through AUD-10 |
 
 > **No automatic promotion.** A gate changes status only when a named reviewer records a decision against an exact source hash, calibration checksum, hardware revision and evidence bundle. Code existence, a green build, a passing test suite, a demo, or an LLM summary cannot promote a gate. A regression resets the affected gate until re-reviewed.
@@ -46,7 +46,7 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 |---:|---|---|---|
 | 0.1 | Formatting clean | `cargo fmt --all -- --check` exit 0 | **PASS** |
 | 0.2 | Clippy clean with `-D warnings` | Raw log | **PASS** |
-| 0.3 | Full host test suite green | `cargo test --workspace` | **PASS**: 130/130 |
+| 0.3 | Full host test suite green | `cargo test --workspace` | **PASS**: 244/244 (2026-11-13, after RUST-TRG-001 and TUNE-AUD-01; earlier 130/130 retained as history) |
 | 0.4 | Firmware skeleton target check | `thumbv7em-none-eabihf`, no-default-features | **PASS** |
 | 0.5 | Full core `no_std` portability | Per-crate checks | **PASS**: ecu-types, ecu-fuel, ecu-ignition, ecu-scheduler, ecu-trigger, ecu-protection pass |
 | 0.6 | CLI determinism for a recorded calibration | Two runs, same log hash | **PASS** for fixed calibration |
@@ -65,7 +65,7 @@ Demonstrate that the host-side virtual ECU, calibration workflow, protocol, serv
 | 0.19 | Independent software review | Signed record | **MISSING** |
 | 0.20 | Source committed/reproducible | Commit or manifest hash | **PASS**: local branch source commit `a262e995`; Rust tree clean; tested manifest hash recorded in AUD-05 |
 
-**Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 130 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: headless Chromium only (Electron not launched), no live LLM test, and no independent review. It does **not** authorise Gate 1+.
+**Gate 0 decision: PASS for host software evidence, scoped.** Formatting, clippy, 244 tests, UI build, copilot typecheck, firmware skeleton target check, core no_std checks, CLI determinism and apply refusal all pass. The pass is conditional on the documented limitations: headless Chromium only (Electron not launched), no live LLM test, and no independent review. It does **not** authorise Gate 1+.
 
 ### 2.4 Conditions for maintaining Gate 0
 
@@ -88,14 +88,14 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 - Schematic, PCB, BOM, gerbers, drill, assembly drawing, build notes.
 - ERC/DRC report with rule set, exceptions and reviewer rationale.
 - Board revision/serial number; assembly inspection record.
-- A routed, native KiCad review copy of Speeduino v0.4.4d exists at `hardware/prototype-v1/` (0 unconnected items, gerbers/drill/BOM/position generated). ERC 101 and DRC 600 violations remain; the BOM has 11 rows without MPN and no assembly drawing. It is **not** a Gate 1 pass and no board has been assembled. The older `hardware/kicad/evo8-bench-ecu/` draft remains unrouted (499 unconnected, 14 violations) and is not the baseline.
+- A routed, native KiCad review copy of Speeduino v0.4.4d exists at `hardware/prototype-v1/` (0 unconnected items; gerbers/drill/BOM/position, top/bottom assembly drawings and a fab drawing generated). ERC is 49 (4 errors, 45 warnings) and DRC is 397 reported (31 errors, 366 warnings) plus 199 per-item courtyard exclusions, all dispositioned. A focused independent review returned ACCEPT WITH FINDINGS. The BOM still has 11 rows without MPN, the footprint-library vintage is unaudited, and mechanical assumptions need human review. It is **not** a Gate 1 pass and no board has been assembled. The older `hardware/kicad/evo8-bench-ecu/` draft remains unrouted (499 unconnected, 14 violations) and is not the baseline.
 
 ### 3.3 Exit criteria
 
 | # | Criterion | Required evidence | Current status |
 |---:|---|---|---|
-| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **PARTIAL**: native KiCad + gerbers/drill/BOM/position exist; no assembly drawing, no independent review, BOM gaps. No physical board |
-| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC 101 (44 errors), DRC 600 (230 errors, 0 unconnected); exceptions classified but not independently accepted |
+| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **PARTIAL**: native KiCad, gerbers/drill/BOM/position, assembly and fab drawings exist; BOM gaps; mechanical assumptions and H2 exceptions not human-accepted. No physical board |
+| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC 49 (4 errors, 45 warnings), DRC 397 (31 errors, 366 warnings) + 199 per-item exclusions, 0 unconnected; focused independent review ACCEPT WITH FINDINGS, but no human sign-off |
 | 1.3 | BOM derating/lifecycle review | BOM review | **BLOCKED** |
 | 1.4 | Visual inspection | Photos/checklist | **BLOCKED** |
 | 1.5 | Continuity/rails/no shorts | Measurement record | **BLOCKED** |
@@ -104,7 +104,7 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 | 1.8 | Outputs default off with no power | Schematic review; measurement | **BLOCKED** |
 | 1.9 | Independent electrical review | Signed record | **MISSING** |
 
-**Gate 1 decision: BLOCKED.** A routed upstream-derived design package exists, but ERC/DRC exceptions, BOM gaps, assembly drawings and independent review are incomplete, and no physical board has been assembled or inspected. It does not satisfy Gate 1.
+**Gate 1 decision: BLOCKED.** A routed upstream-derived design package with assembly/fab drawings and a focused independent review now exists, but ERC/DRC exceptions and mechanical assumptions lack human sign-off, the BOM has 11 rows without MPN, the footprint-library vintage is unaudited, and no physical board has been assembled or inspected. It does not satisfy Gate 1.
 
 ## 4. Gate 2 — Powered bench verification
 
@@ -235,7 +235,7 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 | Evidence | Available? | Location / note |
 |---|---|---|
-| Rust tests | Yes, green | 130 tests; AUD-05 |
+| Rust tests | Yes, green | 244 tests (2026-11-13; earlier 130 retained as history); AUD-05 |
 | Formatting | Yes | `cargo fmt --check` pass |
 | Clippy | Yes | `-D warnings` pass |
 | Firmware skeleton target check | Yes | `thumbv7em-none-eabihf` pass; skeleton only |
@@ -295,6 +295,6 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 ## 11. Current release statement
 
-> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 130 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because the selected Speeduino v0.4.4d review copy still has ERC/DRC exceptions, BOM gaps, no assembly drawing and no independent review, and no physical board has been assembled; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
+> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 244 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, durable calibration audit store, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because the selected Speeduino v0.4.4d review copy has dispositioned ERC/DRC exceptions, BOM gaps, unaudited footprint libraries and mechanical assumptions that lack human sign-off, and no physical board has been assembled; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
 
 The next step is not a vehicle test. It is: keep the Gate 0 evidence current, complete a software review, produce a reviewed hardware design and bench fixture, and only then seek Gate 3 evidence.

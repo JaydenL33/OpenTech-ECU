@@ -28,31 +28,33 @@ Status terms: **Implemented** means host-side code exists and type-checks; it is
 
 | Area | Status | Notes |
 |---|---|---|
-| Rust workspace | Implemented, host-only | `cargo fmt`, `cargo clippy`, and `cargo test --workspace` pass (130 tests); see the verification note. |
+| Rust workspace | Implemented, host-only | `cargo fmt`, `cargo clippy`, and `cargo test --workspace` pass (244 tests); see the verification note. |
 | Deterministic virtual ECU | Simulated | 1 ms physics-lite engine, trigger generation, scheduler, wideband lag/delay/faults, protection, telemetry; six built-in scenarios. |
-| Calibration and tables | Implemented, host-only | 1D–4D tables, clamped interpolation, axis resampling, validation, SHA-256 sealed revisions, table diffs, starter wizard, preflight, in-memory revision history. |
+| Calibration and tables | Implemented, host-only | 1D–4D tables, clamped interpolation, axis resampling, validation, SHA-256 sealed revisions, table diffs, starter wizard, preflight, durable local revision/audit history. |
 | Lambda fuel calibration | Implemented, host-only | Shared gates, bounded STFT, cell/bank-aware LTFT, offline Mixture Map with hard-fault abstention, confidence, proposal preview, selective apply and undo. |
 | Ignition policy | Implemented, host-only | Evidence-gated recommendations; synthetic simulation-only tables; physical export blocked. |
 | Engine protection | Implemented, host-only | 14 DTCs, latching, freeze frames, warning/derate/limp/cut reactions. |
 | Protocol | Implemented, served locally | JSON/WebSocket envelopes and a length-delimited binary frame with CRC32; the local service exposes the JSON link. |
 | `ecu-sim-cli` | Implemented, verified | Scenario runner, deterministic replay check, Mixture Map analysis and approval-gated apply. See the quick start. |
-| `studio-service` | Implemented, local-only | Axum HTTP/WebSocket service for live telemetry, calibration edits/undo, axis resampling, log replay, preflight, Mixture Map, faults, logs and a bench harness view. In-memory state; no auth/TLS. |
+| `studio-service` | Implemented, local-only | Axum HTTP/WebSocket service for live telemetry, calibration edits/undo, axis resampling, log replay, preflight, Mixture Map, faults, logs and a bench harness view. Calibration revisions and audit entries persist to a local append-only store; live simulation/session state is in memory. No auth/TLS. |
 | Tuning Studio (browser + Electron) | Implemented, verified UI | React/TypeScript/Vite app; `npm run build` and headless browser smoke tests pass. Includes the black/yellow support-style shell, maps, Mixture Map, diagnostics, logs and a Harness & I/O page. `electron/main.cjs` is a desktop shell; it was not launch-tested (no display). Tauri is not used. |
 | Harness & I/O | Implemented, unreviewed source | `config/harness/opentech-bench-harness.json` is generated from the unreviewed KiCad BOM/pin/test-point exports; `ecu-harness` validates the generated manifest. No OEM pinout, no vendor map data, no vehicle adapter. |
 | Mastra tuning copilot | Implemented, local-only | `apps/tuning-copilot`: read-only tools, structured output, `ignitionAdvice: none`, and a deterministic offline mode. LLM mode is opt-in with an API key. Per-request tool audit only; no durable audit store. |
 | Firmware / embedded target | Implemented, skeleton | `ecu/firmware/stm32`: `no_std` safety skeleton with capture-to-decoder path, protection, and fail-closed `EngineOutputs`. The `thumbv7em-none-eabihf` check passes. No HAL, timer capture, drivers, watchdog, flash, or target image. |
 | Durable audit / persistence | Implemented (host, local) | Append-only revision + audit store with hash chain and SHA-256 verification on load; tamper/corruption refused at startup (`AUDIT/TUNING_WORKSTREAM_EVIDENCE.md` round 8). Not signed, no authentication, tail truncation undetectable without an external anchor. |
 | Physical injector/coil actuation | Blocked | `PHYSICAL_OUTPUT_INTERLOCK_ENGAGED = true`; no code path energizes hardware. |
-| Bench hardware schematic | Unreviewed | `hardware/kicad/evo8-bench-ecu`: 7-sheet KiCad schematic, netlist/BOM/ERC, plus an **unrouted PCB draft** with 499 unconnected items and 14 DRC violations; no manufacturing outputs |
+| Bench hardware design | H2 complete with exceptions; H3 not ready | `hardware/prototype-v1/`: routed Speeduino v0.4.4d SMD review copy, 0 unconnected, ERC 49, DRC 397 + 199 per-item exclusions, 3 M3 mounting holes, assembly/fab drawings, manufacturing exports. Focused independent review: ACCEPT WITH FINDINGS. 11 BOM MPNs, footprint audit and human mechanical/fabrication acceptance remain. Legacy `hardware/kicad/evo8-bench-ecu` remains an unrouted draft (499 unconnected, 14 DRC) and is not the baseline. Not fabrication-approved. |
 | Vehicle use | Blocked | No bench, engine, EMC, or functional-safety validation. |
 
 ### Verification note
 
-Verified on 2026-11-12 with the native Rust toolchain:
+Verified on 2026-11-13 with the native Rust toolchain and the local GCC wrapper (`/home/jlee/tools/bin/cc`; no system compiler is installed):
 
 - `cargo fmt --all -- --check` — pass.
-- `cargo clippy --workspace --all-targets -- -D warnings` — pass.
-- `cargo test --workspace` — 130 passed, 0 failed.
+- `cargo clippy --workspace --all-targets --locked -- -D warnings` — pass.
+- `cargo test --workspace --locked` — 244 passed, 0 failed. This includes the bounded crank/cam loss vectors (RUST-TRG-001) and the durable calibration-store tests (TUNE-AUD-01).
+- `cargo test -p ecu-trigger --locked -- --nocapture` — 29 passed; 0 post-acquisition non-sequential edges at 150/250/400 rpm.
+- `cargo test -p studio-service --locked -- --nocapture` — 36 passed, including restart, tamper-refusal, SIGKILL crash-proxy and failed-write rollback tests.
 - `cargo check -p opentech-firmware-stm32 --target thumbv7em-none-eabihf --no-default-features` — pass. This is a compile check for the `no_std` skeleton, not hardware validation.
 - CLI `mixture_sweep` — determinism PASS, 2184 frames byte-identical; `analyze` produced 3–4 bounded cells; `apply --approve` produced sealed revision 2.
 - Tuning Studio — `npm run build` passes. A headless Chromium smoke test opened the black/yellow shell, Fuel map, Harness page, Mixture Map, Setup, Diagnostics, Logs and Copilot with no page errors. Screenshots are in `evidence/ui/`.
@@ -72,7 +74,7 @@ Release gates follow [`ECU_MASTER_BRIEF.md`](ECU_MASTER_BRIEF.md) exactly:
 | Gate | Scope | Current status |
 |---|---|---|
 | **0** | Software simulation | Current stage; host simulation, CLI, UI, copilot, and `no_std` skeleton checks |
-| **1** | Unpowered hardware | Unreviewed KiCad schematic and unrouted PCB draft exist; DRC fails (14) and 499 connections are unrouted; no fabrication, harness, or physical hardware |
+| **1** | Unpowered hardware | No physical board. A routed prototype-v1 review copy exists (0 unconnected; ERC 49; DRC 397 + 199 documented exclusions; assembly/fab drawings), but BOM MPNs, footprint audit and human mechanical/fabrication acceptance are incomplete. Not fabrication-approved |
 | **2** | Powered bench | Not started; no drivers, loads, or fault injection |
 | **3** | Vehicle electrical compatibility | Blocked; ECU variant and pinout unverified |
 | **4** | Controlled engine testing | Blocked; requires Gates 1–3 and independent review |
@@ -264,7 +266,7 @@ Audit documents are snapshot drafts. Where an audit file reports an older test r
 - Original Rust code in `ecu/` is declared **GPL-2.0-or-later** in the workspace `Cargo.toml`, package metadata and `NOTICE.md`, matching the Speeduino reference licence.
 - The retained Speeduino C++ tree is **GPL-2.0-or-later** per its file headers and remains under its original terms. It is not relicensed by this project.
 - A Rust rewrite does not remove GPL obligations. Any future module derived from Speeduino must retain the applicable notices and carry a recorded provenance entry. No code is copied from Speeduino or another project without provenance.
-- Speeduino-derived hardware, if used, would be subject to CERN-OHL-S-2.0. A separate, unreviewed bench schematic package is included under `hardware/kicad/evo8-bench-ecu` and is licensed CERN-OHL-S-2.0; it has an unrouted PCB draft with failing DRC and no manufacturing outputs.
+- Speeduino-derived hardware is subject to CERN-OHL-S-2.0. The selected `hardware/prototype-v1/` review copy is derived from Speeduino v0.4.4d and carries the upstream provenance and licence; it is not fabrication-approved. A separate legacy bench schematic package remains under `hardware/kicad/evo8-bench-ecu` (CERN-OHL-S-2.0) with an unrouted PCB draft and no manufacturing outputs; it is not the baseline.
 - “Speeduino” and associated marks belong to their respective owners. OpenTech-ECU does not claim endorsement by the Speeduino project.
 
 ## Contributing

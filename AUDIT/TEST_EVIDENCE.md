@@ -62,7 +62,7 @@
 | 11 | `npm run build` in `apps/tuning-studio` | 0 | Vite build; black/yellow support-style shell and Harness page included |
 | 12 | `npm run build` in `apps/tuning-copilot` (`tsc --noEmit`) | 0 | Pass |
 | 13 | Local `studio-service` smoke test | 0 | Health/preflight/status; physical outputs false |
-| 14 | KiCad schematic ERC + PCB DRC on `hardware/kicad/evo8-bench-ecu` | 0 / 5 | Legacy custom draft: 0 ERC; PCB draft 14 DRC violations + 499 unconnected; no gerbers. Selected v0.4.4d baseline evidence: `AUDIT/PCB_CHECK_RESULTS.md` (ERC 101, DRC 600, 0 unconnected) |
+| 14 | KiCad schematic ERC + PCB DRC on `hardware/kicad/evo8-bench-ecu` | 0 / 5 | Legacy custom draft: 0 ERC; PCB draft 14 DRC violations + 499 unconnected; no gerbers. Selected v0.4.4d baseline evidence: `AUDIT/PCB_CHECK_RESULTS.md` (current: ERC 49, DRC 397 + 199 per-item exclusions, 0 unconnected; earlier R-01…R-03 result was ERC 101/DRC 600) |
 
 ## 3. Rust test results
 
@@ -334,7 +334,7 @@ The workflow was **not observed running** in this audit. The local commands abov
 | Copilot tool approval boundary | Untrusted output must not write | Not tested |
 | WebSocket lag/reconnect | Operator may see stale data | Not tested |
 | Full core `no_std` | All core crates and firmware skeleton pass | Pass |
-| KiCad ERC/DRC | Legacy custom: ERC 0, DRC 14 + 499 unconnected. Selected v0.4.4d: ERC 101 (44 errors), DRC 600 (230 errors), 0 unconnected after R-01…R-03 | Not independently reviewed; H2 open |
+| KiCad ERC/DRC | Legacy custom: ERC 0, DRC 14 + 499 unconnected. Selected v0.4.4d: ERC 49 (4 errors, 45 warnings), DRC 397 (31 errors, 366 warnings) + 199 per-item exclusions, 0 unconnected after R-01…R-10 | Focused independent review ACCEPT WITH FINDINGS; human exception/mechanical acceptance pending; H2 complete with exceptions, H3 not ready |
 | Hardware/bench | Routed v0.4.4d review copy only; no assembled ECU or fixture | Not run |
 | Scope timing | No firmware/timer | Not run |
 | Evo pinout/trigger/harness | Unverified | Not run |
