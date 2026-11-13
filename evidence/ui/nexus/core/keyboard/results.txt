@@ -1,0 +1,14 @@
+Base: cafbf360b5f44d1e1232660e025b4f0a5d99623a
+npm ci: exit 0 (reports 2 high severity dependency vulnerabilities)
+npx tsc --noEmit: exit 0
+npx vite build: exit 0
+PATH=/home/jlee/tools/bin:$PATH cargo test --workspace --locked (ecu/): exit 0
+PATH=/home/jlee/tools/bin:$PATH cargo clippy --workspace --all-targets --locked -- -D warnings (ecu/): exit 0
+cargo build -p studio-service --locked: exit 0
+Playwright Chromium 1440x1000: exit 0; console errors/page errors: 0.
+Checks: scoped Fuel map navigation, Shift+Arrow 2x2 selection, collapse,
+numeric entry, copy/paste, percentage adjustment, undo, Space alignment.
+Screenshot: table.png. Script verify.mjs must run from the supplied npx node_modules directory.
+Insert/Delete and Alt+Arrow map switching remain absent. Clipboard is internal to editor.
+Linearisation runs horizontally for multi-column rectangles, vertically for single columns.
+No hardware gate changes; host UI evidence only.

@@ -1,0 +1,18 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch({executablePath:'/home/jlee/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome',headless:true,args:['--no-sandbox']});
+const page=await browser.newPage({viewport:{width:1440,height:1000}}); const errors=[];
+page.on('pageerror',e=>errors.push(String(e))); page.on('console',m=>{if(m.type()==='error') errors.push(m.text());});
+await page.goto('http://localhost:8769'); await page.locator('nav.primary-nav').getByText('Fuel map',{exact:true}).click();
+await page.locator('.map-cell').first().click(); await page.keyboard.down('Shift'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowDown'); await page.keyboard.up('Shift');
+if(await page.locator('.map-cell.selected').count()!==4) throw Error('range selection');
+await page.keyboard.press('Control+Space');
+await page.keyboard.press('4'); await page.locator('.map-editor > label input').fill('42'); await page.keyboard.press('Enter');
+if(await page.locator('.map-cell.selected').innerText() !== '42.0') throw Error('numeric entry');
+await page.keyboard.press('Control+c'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('Control+v');
+if(await page.locator('.map-cell.selected').innerText() !== '42.0') throw Error('paste');
+await page.keyboard.press('p'); await page.locator('.map-editor > label input').fill('10'); await page.keyboard.press('Enter');
+if(await page.locator('.map-cell.selected').innerText() !== '46.2') throw Error('percent');
+await page.keyboard.press('Control+z');
+if(await page.locator('.map-cell.selected').innerText() !== '42.0') throw Error('undo');
+await page.keyboard.press('Space');
+await page.screenshot({path:process.argv[2],fullPage:true}); console.log(JSON.stringify({errors})); await browser.close();
