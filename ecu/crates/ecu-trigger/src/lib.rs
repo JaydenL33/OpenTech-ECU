@@ -149,6 +149,10 @@ pub struct DecoderStatus {
 
 #[derive(Clone, Debug)]
 pub struct MissingToothDecoder {
+    loss_teeth: u16,
+    cam_loss_revolutions: u16,
+    cam_age_teeth: u32,
+    last_cam_us: Option<u64>,
     cfg: MissingToothConfig,
     cam_window_deg: Option<(f32, f32)>,
     state: SyncState,
@@ -173,6 +177,10 @@ impl MissingToothDecoder {
     pub fn new(cfg: MissingToothConfig) -> Result<Self, TriggerConfigError> {
         cfg.validate()?;
         Ok(Self {
+            loss_teeth: cfg.missing.saturating_add(3),
+            cam_loss_revolutions: 6,
+            cam_age_teeth: 0,
+            last_cam_us: None,
             cfg,
             cam_window_deg: None,
             state: SyncState::Unsynced,
@@ -192,6 +200,40 @@ impl MissingToothDecoder {
             error_count: 0,
             last_error: None,
         })
+    }
+
+    /// Configure loss bounds without changing the serialized wheel config.
+    /// Crank deadline is normal interval * teeth, capped by timeout_ms.
+    /// Must exceed the legitimate missing-tooth gap. Cam expires after the
+    /// specified revolutions of accepted edges, or timeout_ms without a cam.
+    pub fn set_loss_bounds(
+        &mut self,
+        teeth: u16,
+        cam_revolutions: u16,
+    ) -> Result<(), TriggerConfigError> {
+        if teeth <= self.cfg.missing + 1 || cam_revolutions < 2 {
+            return Err(TriggerConfigError::InvalidTimeout);
+        }
+        self.loss_teeth = teeth;
+        self.cam_loss_revolutions = cam_revolutions;
+        Ok(())
+    }
+
+    fn expire_cam(&mut self, now: u64) {
+        let limit = u32::from(self.cfg.teeth - self.cfg.missing)
+            .saturating_mul(u32::from(self.cam_loss_revolutions));
+        if self.cfg.cam_required
+            && (self.cam_age_teeth >= limit
+                || self.last_cam_us.is_some_and(|last| {
+                    now.saturating_sub(last) > u64::from(self.cfg.timeout_ms) * 1000
+                }))
+        {
+            self.cam_phase_known = false;
+            self.cam_seen_since_gap = false;
+            if self.state == SyncState::Sequential {
+                self.state = SyncState::CrankSynced;
+            }
+        }
     }
 
     pub fn config(&self) -> MissingToothConfig {
@@ -310,6 +352,16 @@ impl MissingToothDecoder {
         if dt < 1.0 {
             return self.fail(DecodeError::ZeroInterval);
         }
+        if self.expected_interval_us > 1.0 && dt < self.expected_interval_us * 0.5 {
+            // Ignore short edges without poisoning timestamp or speed history.
+            return DecodeEvent::None;
+        }
+        if matches!(self.tick(timestamp_us), DecodeEvent::SyncLost(_)) {
+            self.last_tooth_us = Some(timestamp_us);
+            return DecodeEvent::SyncLost(DecodeError::Timeout);
+        }
+        self.cam_age_teeth = self.cam_age_teeth.saturating_add(1);
+        self.expire_cam(timestamp_us);
         self.last_tooth_us = Some(timestamp_us);
 
         let had_expected = self.expected_interval_us > 1.0;
@@ -341,7 +393,7 @@ impl MissingToothDecoder {
                 }
             }
 
-            self.gap_count += 1;
+            self.gap_count = self.gap_count.saturating_add(1);
             self.tooth_index = 0;
             self.crank_angle = self.cfg.sync_offset_deg;
             self.last_interval_us = dt / (self.cfg.missing as f32 + 1.0);
@@ -428,6 +480,8 @@ impl MissingToothDecoder {
         self.cam_phase_known = valid;
         self.cam_seen_since_gap = valid;
         if valid {
+            self.cam_age_teeth = 0;
+            self.last_cam_us = Some(timestamp_us);
             self.rev_parity = 1;
             self.state = SyncState::Sequential;
         } else if synced {
@@ -438,15 +492,21 @@ impl MissingToothDecoder {
 
     /// Call from the control loop. Times out a stopped engine.
     pub fn tick(&mut self, now_us: u64) -> DecodeEvent {
+        self.expire_cam(now_us);
         let Some(last) = self.last_tooth_us else {
             return DecodeEvent::None;
         };
         let timeout_us = self.cfg.timeout_ms as u64 * 1000;
+        let timeout_us = if self.expected_interval_us > 1.0 {
+            timeout_us.min((self.expected_interval_us * f32::from(self.loss_teeth)) as u64)
+        } else {
+            timeout_us
+        };
         if now_us.saturating_sub(last) > timeout_us && self.state != SyncState::Lost {
             self.state = SyncState::Lost;
             self.rpm = 0.0;
             self.last_error = Some(DecodeError::Timeout);
-            self.error_count += 1;
+            self.error_count = self.error_count.saturating_add(1);
             self.cam_seen_since_gap = false;
             self.cam_phase_known = false;
             self.expected_interval_us = 0.0;
@@ -467,7 +527,7 @@ impl MissingToothDecoder {
 
     fn fail(&mut self, err: DecodeError) -> DecodeEvent {
         self.last_error = Some(err);
-        self.error_count += 1;
+        self.error_count = self.error_count.saturating_add(1);
         self.state = SyncState::Lost;
         self.rpm = 0.0;
         self.expected_interval_us = 0.0;

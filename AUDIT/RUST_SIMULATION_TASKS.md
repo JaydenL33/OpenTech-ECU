@@ -29,3 +29,22 @@ RUST-TRG-001 is the next independent unblocked task; RUST-TIM-001 can also proce
 | H7 — Engine-system validation candidate | Blocked pending independent review and bench evidence. |
 | H8 — Vehicle-specific integration | Blocked pending verified Evo VIII signals, pinout and interface review. |
 | H9 — Qualified vehicle-operation candidate | Blocked pending relevant independent engineering and regulatory evidence. |
+
+
+### RUST-TRG-001 implementation checkpoint (2026-11-13)
+Incomplete, unverified host-only change. Decoder adds `set_loss_bounds(teeth,
+cam_revolutions)` without changing serialized MissingToothConfig fields. Defaults:
+crank deadline four normal intervals for 36-1, capped at timeout_ms; cam phase
+expires after six revolutions of accepted edges or timeout_ms since valid cam.
+Historical cam_seen remains historical; cycle phase is revoked on expiration.
+Short edges below half the estimated normal interval are ignored without updating
+capture history. Counters saturate. Valid window cam re-establishes phase.
+These are explicit Rust policies, not Speeduino binary-equivalent behavior.
+
+Evidence: AUDIT/rust-round-3/check-{1,2,3,4}.log contains exact commands and
+exit codes. Format check 0; clippy, workspace tests, trigger nocapture each 101:
+missing cc linker prevents compilation. No passing test count measured in this
+checkout. Recovery vectors are still outstanding; baseline compatibility and
+noise/startup behavior remain unverified. No MCU or physical timing claim.
+H0–H9 hardware gate status unchanged. Task remains open; next action is supply
+a host linker, add deterministic recovery vectors, then repeat all checks.
