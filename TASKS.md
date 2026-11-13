@@ -239,7 +239,7 @@ and the owner explicitly approves H4.
 | Scope | Tri-pane shell, menu/toolbar, collapsible nav tree, page tabs, dark theme, dense tables, keyboard workflow, live engine marker, 3D surface, gauge/dash designer, logging/playback controls, explicit disabled states for absent hardware features |
 | Acceptance | `npx tsc --noEmit`, `npx vite build`, existing Rust tests, any backend change tested; no mock controls; browser smoke screenshots; host-only |
 | Safety | No physical output path, no approval bypass, no fake PDM/oscilloscope/firmware features |
-| State | **PARTIAL.** Nexus shell and open-page tabs merged (`9a73d0d4`); VE-only live marker fixed (`40cc1a5e`). Core table selection/keyboard, shared 3D live tracking, dash settings and logging shortcuts remain. Next task is narrowed to MapEditor selection/keyboard only. |
+| State | **PARTIAL — shell and core table workflow done.** Nexus shell/nav merged (`9a73d0d4`), VE marker fixed (`40cc1a5e`), rectangular selection/keyboard/range editing merged (`8f56e30e`). Verified 2x3 selection, 252 tests, zero console errors. Remaining: shared 3D live tracking/selection, dash component settings, logging/playback shortcuts. |
 
 ### COST-01 — Real AUD cost model and quote preparation
 
@@ -261,3 +261,5 @@ The 13 generated SVG/JSON report exports for the superseded legacy custom board
 were untracked; the three 97k–113k-line simulator baseline logs were gzipped and
 their references updated; STEP/gerber/drill/hex/DRC-JSON artefacts are marked
 non-diffable. The upstream Speeduino hardware/source provenance remains tracked.
+
+| UI-NEXUS-03 | Tuning UI | 3D live tracking + dash component settings + logging shortcuts | Follow-up to the verified table workflow; separate small tasks |
