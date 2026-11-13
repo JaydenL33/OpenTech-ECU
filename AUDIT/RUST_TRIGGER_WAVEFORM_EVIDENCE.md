@@ -265,8 +265,9 @@ WizardRequest::default_inline4(), 1), SimEngine with by_id("idle_warmup"),
 run_to_end(), then serializes log_file() and simulated_output_events().
 Commands from each ecu directory with PATH=/home/jlee/tools/bin:$PATH:
 cargo run -q -p ecu-simulator --example baseline_export --locked
-Both exit 0. Raw exports: baseline-old.log, baseline-new.log; exhaustive
-field differences: baseline-diff.log under AUDIT/rust-round-4/.
+Both exit 0. Raw exports: baseline-old.log.gz, baseline-new.log.gz; exhaustive
+field differences: baseline-diff.log.gz under AUDIT/rust-round-4/ (gzipped to
+keep the repository diff readable; decompress with gunzip for inspection).
 
 Both runs contain 1300 frames; 1289 differ. First divergence index 11:
 sync crank_synced -> unsynced, all other fields equal. However final frame

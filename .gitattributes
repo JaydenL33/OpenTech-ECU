@@ -23,3 +23,13 @@
 # is the integrity authority.
 hardware/upstream-speeduino/** -text
 evidence/hardware/*.hex -text
+
+# Generated or very large artefacts: keep them out of line-based diffs and
+# line-count statistics. They remain tracked byte-for-byte where provenance or
+# review evidence requires it.
+*.stp -diff
+**/gerbers/* -diff
+**/drill/* -diff
+evidence/hardware/*.hex -diff
+hardware/prototype-v1/verification/drc-for-exclusions.json -diff
+AUDIT/rust-round-4/*.log.gz -diff

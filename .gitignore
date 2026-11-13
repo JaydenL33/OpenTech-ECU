@@ -40,3 +40,7 @@ ecu/apps/tuning-studio/node_modules/
 ecu/apps/tuning-copilot/node_modules/
 ecu/apps/tuning-studio/*.tsbuildinfo
 
+
+# Generated report exports for the superseded legacy custom draft. The KiCad
+# source and audit notes remain tracked; the rendered SVG/JSON dumps do not.
+hardware/kicad/evo8-bench-ecu/reports/
