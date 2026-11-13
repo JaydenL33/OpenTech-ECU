@@ -1,0 +1,18 @@
+$ git archive 82f466a021e4b98af8931b5b3da9a3ba237a069b ecu
+EXIT=0; archive SHA256=00bf631a46d6b2c1c497a1fef650654ceef58e27cb7d19e12079703312078296
+$ cargo run --offline --locked --manifest-path /tmp/ecu-trigger-reference-g2zawxo0/ecu/Cargo.toml --target-dir /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/target/trigger-reference -q -p ecu-sim-cli -- run --scenario trigger_loss --seed 43 --out /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/runs/trigger-reference
+scenario: trigger_loss
+frames:   1144
+duration: 22.0s
+rpm mean/max: 541 / 1296
+coolant max: 89.1 C
+lambda mean: 1.671 (1144 samples)
+faults:   ["P0335", "P0133"]
+outputs:  541 emitted, 541 retained, 0 dropped (simulation only)
+wrote:    /home/jlee/OpenTech-ECU-swarm-worktrees/rust/ecu/runs/trigger-reference
+EXIT=0
+Reference log matches recorded round-1 SHA256=068ce9f8d47ed4e9f2e14dae161a989a78731935be060ceec9048a97399f359a
+Candidate log SHA256=c30708c5a05e636c702ea563815f59ac12ea8cbfd32d952de85e2fa6b19e0fdd
+Metadata, log events and all telemetry fields except cycle_angle_deg match exactly.
+Cycle angle differences: [{"time_us": 6040000, "old_cycle_deg": 32.74881, "new_cycle_deg": 392.7488}, {"time_us": 6060000, "old_cycle_deg": 134.57175, "new_cycle_deg": 494.57175}, {"time_us": 6080000, "old_cycle_deg": 236.39465, "new_cycle_deg": 596.39465}, {"time_us": 6100000, "old_cycle_deg": 338.2176, "new_cycle_deg": 698.2176}, {"time_us": 6180000, "old_cycle_deg": 25.509277, "new_cycle_deg": 385.50928}, {"time_us": 6200000, "old_cycle_deg": 127.33215, "new_cycle_deg": 487.33215}, {"time_us": 6220000, "old_cycle_deg": 229.15515, "new_cycle_deg": 589.15515}, {"time_us": 6240000, "old_cycle_deg": 330.97803, "new_cycle_deg": 690.978}]
+Output traces match byte-for-byte; PASS

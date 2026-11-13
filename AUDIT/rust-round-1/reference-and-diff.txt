@@ -1,0 +1,13 @@
+$ sha256sum speeduino/decoders.cpp speeduino/decoders.h speeduino/fuel_calcs.cpp test/test_fuel/test_pw_calcPrimaryPulseWidth.cpp test/test_fuel/test_pw_calculateRequiredFuel.cpp
+4fef968f13343af27ff1ebf3a3e090957a49700722468624950c18d6e3e78de9  speeduino/decoders.cpp
+4a22304e457e3a929b1a20e09cd8c49da37faa4a6f1e45df7be70d41a7120b40  speeduino/decoders.h
+98b6f7b37b74259af0eea3451d98f7843cc4ea1f0c52a415114087827b99f44b  speeduino/fuel_calcs.cpp
+90cc15839fae413fcb62e233221f247f87473d5758d4c95f241f74cc9299ab74  test/test_fuel/test_pw_calcPrimaryPulseWidth.cpp
+4a461abf63d4e19d9b1b0fd95f63c0a5ef2db06ed67f1864c265cbba98ca9456  test/test_fuel/test_pw_calculateRequiredFuel.cpp
+EXIT=0
+
+$ git diff --exit-code d73d5481b7b01ffc39ae176cf80e7c2fcfa1751e -- speeduino test reference
+EXIT=0
+
+$ git diff --check
+EXIT=0

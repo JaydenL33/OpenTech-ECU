@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "simulation_only": true,
+  "timing_model": "Linear plant-angle crossing within each 1 ms step, rounded to nearest microsecond. Command markers only; no pulse-end execution, capture latency, driver delay or hardware jitter model.",
+  "metadata": {
+    "schema_version": 1,
+    "software_version": "0.1.0",
+    "scenario_id": "mixture_sweep",
+    "scenario_name": "Guided lambda mixture sweep",
+    "seed": 42,
+    "calibration_id": "cal-1-556e4c0748d6",
+    "calibration_revision": 1,
+    "calibration_checksum": "fee184185181fd28e9c9ab68ae615e067c572b8f05e631adaaf0e96dc34922bf",
+    "started_unix_ms": 0,
+    "sample_hz": 50,
+    "notes": [
+      "Warm start so coolant gates pass; the point is mixture recovery, not warm-up.",
+      "WOT phase exists to show explicit exclusion rather than silent learning."
+    ]
+  },
+  "ignition_policy": {
+    "kind": "synthetic_simulation_only",
+    "warning": "Ignition table is synthetic and has no engine-specific evidence. Physical ignition output is blocked; a licensed reference and timing-light verification are required.",
+    "table_key": "ignition"
+  },
+  "captured_until_us": 42000000,
+  "events_emitted": 11628,
+  "events_dropped": 7532,
+  "first_three_retained_outputs": [
+    {
+      "sequence": 7532,
+      "time_us": 30623852,
+      "cycle": 629,
+      "cylinder": 3,
+      "kind": "injection_start",
+      "channel": 3,
+      "angle_deg": 518.77905,
+      "requested_duration_ms": 5.2294893
+    },
+    {
+      "sequence": 7533,
+      "time_us": 30623960,
+      "cycle": 629,
+      "cylinder": 2,
+      "kind": "spark",
+      "channel": 2,
+      "angle_deg": 521.708,
+      "requested_duration_ms": 0.0
+    },
+    {
+      "sequence": 7534,
+      "time_us": 30627629,
+      "cycle": 629,
+      "cylinder": 1,
+      "kind": "dwell_start",
+      "channel": 1,
+      "angle_deg": 620.708,
+      "requested_duration_ms": 2.999475
+    }
+  ]
+}

@@ -199,8 +199,9 @@ impl MissingToothDecoder {
     }
 
     /// Set an inclusive cam window in crank degrees from the last gap.
-    /// Windows must be finite, ordered, and within one revolution. `None`
-    /// disables cam phase validation. Changing the window requires revalidation.
+    /// Windows must be finite, ordered, and within one revolution. With cam
+    /// required, `None` prevents phase validation. Changing the window requires
+    /// revalidation.
     pub fn set_cam_window(
         &mut self,
         window_deg: Option<(f32, f32)>,
@@ -234,7 +235,7 @@ impl MissingToothDecoder {
                 None
             },
             cycle_angle_deg: if self.state == SyncState::Sequential {
-                Some((self.crank_angle + self.rev_parity as f32 * 360.0) % 720.0)
+                Some(self.cycle_angle_at_last_tooth())
             } else {
                 None
             },
@@ -277,8 +278,21 @@ impl MissingToothDecoder {
         if self.state != SyncState::Sequential {
             return None;
         }
-        let crank = self.crank_angle_at(now_us)?;
-        Some(wrap_angle(crank + self.rev_parity as f32 * 360.0, 720.0))
+        let last = self.last_tooth_us?;
+        let advance = self.rpm * 6e-6 * now_us.saturating_sub(last) as f32;
+        let from_gap = wrap_angle(self.crank_angle - self.cfg.sync_offset_deg, 360.0);
+        // Advance before adding cycle parity to preserve sub-degree precision.
+        let advanced = from_gap + self.cfg.sync_offset_deg + advance;
+        Some(wrap_angle(advanced + self.rev_parity as f32 * 360.0, 720.0))
+    }
+
+    fn cycle_angle_at_last_tooth(&self) -> f32 {
+        // Parity changes at tooth zero, which need not coincide with crank 0°.
+        let from_gap = wrap_angle(self.crank_angle - self.cfg.sync_offset_deg, 360.0);
+        wrap_angle(
+            from_gap + self.cfg.sync_offset_deg + self.rev_parity as f32 * 360.0,
+            720.0,
+        )
     }
 
     /// Feed one conditioned crank tooth edge. `timestamp_us` is a monotonic
@@ -402,7 +416,9 @@ impl MissingToothDecoder {
                 // the lagged speed estimate. That estimate is off by 30-60 deg
                 // while the engine accelerates, which rejected valid cam edges.
                 match self.crank_angle_at(timestamp_us) {
-                    Some(angle) => (start..=end).contains(&angle),
+                    Some(angle) => {
+                        (start..=end).contains(&wrap_angle(angle - self.cfg.sync_offset_deg, 360.0))
+                    }
                     None => false,
                 }
             }
@@ -506,6 +522,29 @@ impl fmt::Display for DecodeError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cycle_extrapolation_preserves_phase_across_gap_before_next_capture() {
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        // 1000 rpm, independent integer timestamps (500/3 us per degree).
+        for rev in 0..2_u64 {
+            for tooth in 0..35_u64 {
+                let angle = rev * 360 + tooth * 10;
+                let time = 1000 + angle * 500 / 3;
+                d.on_tooth(time);
+                if angle == 690 {
+                    d.on_cam(time);
+                }
+            }
+        }
+        assert_eq!(d.status().cycle_angle_deg, Some(700.0));
+        // Last capture is 700°. After 24° (4000 us), cycle phase is 4°,
+        // even before the delayed next gap capture is delivered.
+        let time = 1000 + 700 * 500 / 3 + 4000;
+        assert!((d.cycle_angle_at(time).unwrap() - 4.0).abs() < 0.01);
+        assert!((d.crank_angle_at(time).unwrap() - 4.0).abs() < 0.01);
+    }
 
     /// Produce tooth timestamps for a 36-1 wheel. Teeth at 0..=340 step 10,
     /// gap at 350. Cam pulse at 690 degrees (before the gap at 720/0).
