@@ -355,8 +355,15 @@ impl MissingToothDecoder {
         if dt < 1.0 {
             return self.fail(DecodeError::ZeroInterval);
         }
-        if self.expected_interval_us > 1.0 && dt < self.expected_interval_us * 0.5 {
+        if matches!(self.state, SyncState::CrankSynced | SyncState::Sequential)
+            && self.expected_interval_us > 1.0
+            && dt < self.expected_interval_us * 0.5
+        {
             // Ignore short edges without poisoning timestamp or speed history.
+            // Only once a gap has validated the tooth period: before sync the
+            // reference may be the 2x gap interval, and rejecting against it
+            // under acceleration discards every other real tooth so the gap
+            // is never observed (half-rate lock).
             return DecodeEvent::None;
         }
         if matches!(self.tick(timestamp_us), DecodeEvent::SyncLost(_)) {
@@ -1164,5 +1171,39 @@ mod tests {
         assert!(d.set_loss_bounds(1, 6).is_err());
         assert!(d.set_loss_bounds(4, 1).is_err());
         assert!(d.set_loss_bounds(6, 3).is_ok());
+    }
+
+    /// Regression: capture starting on the tooth before the gap makes the
+    /// first interval the 2x gap. Under cranking acceleration the next real
+    /// tooth is then slightly under 50% of that unvalidated reference. If
+    /// short-edge rejection applies before sync, every other real tooth is
+    /// discarded, the gap is hidden and the decoder never synchronises.
+    #[test]
+    fn short_edge_filter_cannot_half_rate_lock_before_sync() {
+        for accel in [0.0f64, 0.002, 0.005, 0.02] {
+            let mut d = decoder();
+            let mut t = 1000.0f64;
+            let mut period = 5000.0f64; // us per 10 degrees
+            let mut tooth = 33i32; // first captured edge is tooth 34
+            let mut gaps = Vec::new();
+            for _ in 0..140 {
+                tooth = (tooth + 1) % 36;
+                t += period;
+                period = (period * (1.0 - accel)).max(300.0);
+                if tooth == 35 {
+                    continue;
+                }
+                if let DecodeEvent::Synchronised { .. } = d.on_tooth(t as u64) {
+                    gaps.push(tooth);
+                }
+            }
+            assert!(
+                gaps.len() >= 2,
+                "accel={accel}: gaps={gaps:?} {:?}",
+                d.status()
+            );
+            assert!(gaps.iter().all(|&g| g == 0), "accel={accel}: gaps={gaps:?}");
+            assert_eq!(d.status().error_count, 0, "accel={accel}");
+        }
     }
 }
