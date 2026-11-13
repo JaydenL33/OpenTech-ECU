@@ -52,7 +52,7 @@ after verifying their committed changes and evidence.
 | Acceptance | Native KiCad files remain valid; 0 unconnected items; connectivity still PASS; every remaining ERC/DRC violation individually classified; manufacturing exports regenerated; Docker KiCad 9.0.9 commands and raw outputs committed |
 | Verification | `hardware/tools/check_prototype_v1.sh`; inspect `verification/erc.rpt`, `drc.rpt`, `summary.txt`; `hardware/tools/verify_upstream_baseline.sh` |
 | Safety | No fabrication, no purchase, no energising; no global rule disabling; no invented mechanical approval |
-| State | CLAIMED — delegated in this cycle |
+| State | REVIEW — independent review in progress. Commit `eca1bec5`; lead rerun: ERC 49, DRC 397 + 199 per-item exclusions, 0 unconnected, connectivity PASS, upstream 32/32 OK. H2 is complete with exceptions, not a pass; H3 not ready; H4 human-only. |
 
 ### RUST-TRG-001 — Crank/cam loss handling and recovery vectors
 
@@ -67,7 +67,7 @@ after verifying their committed changes and evidence.
 | Acceptance | No fixed-wall-clock-only latching; deterministic recovery tests for cam loss and crank loss; tests fail before and pass after; no regressions in workspace suite |
 | Verification | `cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets --locked -- -D warnings`; `cargo test --workspace --locked`; targeted `ecu-trigger` tests with `--nocapture`; raw logs committed |
 | Safety | Host simulation only; no claim of hardware timing or Speeduino binary equivalence |
-| State | CLAIMED — delegated in this cycle |
+| State | REVIEW — independent re-review in progress. Commit `bd6f1a17`; 226 workspace / 29 trigger tests; 0 post-acquisition cam drops at 150/250/400 rpm; clippy/fmt clean. Prior reviews found and this branch fixes the pre-sync half-rate lock and low-RPM cam expiry. |
 
 ### TUNE-AUD-01 — Durable calibration audit and revision persistence
 
@@ -82,7 +82,7 @@ after verifying their committed changes and evidence.
 | Acceptance | Revision survives service restart; tampered/corrupt store is refused or flagged; audit entries are append-only and include before/after checksums; no physical output path; existing HTTP behaviours unchanged |
 | Verification | `cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets --locked -- -D warnings`; `cargo test --workspace --locked`; new service persistence test with `--nocapture`; `npx tsc --noEmit` and `npx vite build` in `ecu/apps/tuning-studio` |
 | Safety | No autonomous calibration write to hardware; no vehicle path; store is local evidence, not signed certification |
-| State | CLAIMED — delegated in this cycle |
+| State | **DONE (host) — integrated `c35323f6`.** Independent review: ACCEPT WITH FINDINGS. Prior blocking durability finding resolved (fsynced temp+rename metadata, parent-directory fsync, absolute env paths, full audit paging, failed-write rollback). 235 workspace / 36 studio-service tests. LOW residual TUNE-UI-002. Host evidence only; no gate advanced. |
 
 ## 4. Queued tasks (not started)
 
@@ -96,6 +96,7 @@ after verifying their committed changes and evidence.
 | RUST-REF-001 | Rust | Upstream differential testing | Needs reproducible upstream reference captures |
 | TUNE-LAM-017 | Tuning | Unit-aware importer for percent trims, psi/bar MAP, `.msl` headers | Needs real log sample for acceptance |
 | TUNE-UI-001 | Tuning | Browser test of file-upload/import flow | Needs a browser session; do not fake |
+| TUNE-UI-002 | Tuning | Incremental audit paging and refresh cancellation | LOW review finding: UI currently fetches/retains the entire history; unbounded logs can amplify requests/memory |
 | HW-FW-02 | Firmware / hardware | Pin an official Speeduino firmware tag for the release package | Low priority; build path already works |
 | HW-REVIEW-01 | Human | Independent hardware review, then H4 decision | AI cannot grant H4 |
 | HW-VEH-01 | Human / research | Evo VIII connector, pinout and trigger verification | Vehicle evidence required |
