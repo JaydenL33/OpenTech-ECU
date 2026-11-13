@@ -1,0 +1,357 @@
+$ cargo test --workspace --locked
+   Compiling itoa v1.0.19
+   Compiling serde_core v1.0.229
+   Compiling cfg-if v1.0.5
+   Compiling zmij v1.0.23
+   Compiling memchr v2.8.3
+   Compiling typenum v1.20.1
+   Compiling libc v0.2.191
+   Compiling cpufeatures v0.2.17
+   Compiling bytes v1.12.1
+   Compiling pin-project-lite v0.2.17
+   Compiling libm v0.2.16
+   Compiling generic-array v0.14.7
+   Compiling futures-core v0.3.34
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling errno v0.3.14
+   Compiling digest v0.10.7
+   Compiling http v1.5.0
+   Compiling sha2 v0.10.9
+   Compiling log v0.4.35
+   Compiling signal-hook-registry v1.4.8
+   Compiling mio v1.2.4
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling ecu-types v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-types)
+   Compiling ecu-trigger v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-trigger)
+   Compiling ecu-protection v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-protection)
+   Compiling socket2 v0.6.5
+   Compiling once_cell v1.21.4
+   Compiling tokio v1.54.1
+   Compiling tracing-core v0.1.36
+   Compiling ecu-calibration v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-calibration)
+   Compiling ecu-fuel v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-fuel)
+   Compiling ecu-ignition v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-ignition)
+   Compiling ecu-lambda v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-lambda)
+   Compiling ecu-scheduler v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-scheduler)
+   Compiling zerocopy v0.8.63
+   Compiling getrandom v0.3.4
+   Compiling http-body v1.1.0
+   Compiling futures-sink v0.3.34
+   Compiling rand_core v0.9.5
+   Compiling tracing v0.1.44
+   Compiling httparse v1.10.1
+   Compiling utf8parse v0.2.2
+   Compiling futures-task v0.3.34
+   Compiling tower-service v0.3.3
+   Compiling slab v0.4.12
+   Compiling ecu-simulator v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-simulator)
+   Compiling futures-util v0.3.34
+   Compiling ppv-lite86 v0.2.21
+   Compiling anstyle-parse v1.0.0
+   Compiling rand_chacha v0.9.0
+   Compiling anstyle v1.0.14
+   Compiling mime v0.3.18
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling tower-layer v0.3.3
+   Compiling colorchoice v1.0.5
+   Compiling anstyle-query v1.1.5
+   Compiling httpdate v1.0.3
+   Compiling smallvec v1.16.5
+   Compiling percent-encoding v2.3.2
+   Compiling anstream v1.0.0
+   Compiling rand v0.9.5
+   Compiling thiserror v2.0.21
+   Compiling http-body-util v0.1.5
+   Compiling sha1 v0.10.7
+   Compiling atomic-waker v1.1.2
+   Compiling data-encoding v2.11.1
+   Compiling regex-syntax v0.8.11
+   Compiling sync_wrapper v1.0.2
+   Compiling strsim v0.11.1
+   Compiling clap_lex v1.1.1
+   Compiling tungstenite v0.29.0
+   Compiling clap_builder v4.6.7
+   Compiling hyper v1.12.0
+   Compiling regex-automata v0.4.18
+   Compiling form_urlencoded v1.2.2
+   Compiling ecu-diagnostics v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-diagnostics)
+   Compiling unicase v2.10.0
+   Compiling ryu v1.0.23
+   Compiling lazy_static v1.5.1
+   Compiling sharded-slab v0.1.7
+   Compiling serde_urlencoded v0.7.1
+   Compiling mime_guess v2.0.5
+   Compiling clap v4.6.7
+   Compiling hyper-util v0.1.21
+   Compiling matchers v0.2.0
+   Compiling anyhow v1.0.104
+   Compiling tokio-tungstenite v0.29.0
+   Compiling tower v0.5.3
+   Compiling axum-core v0.5.6
+   Compiling tokio-util v0.7.20
+   Compiling tracing-log v0.2.0
+   Compiling ecu-protocol v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-protocol)
+   Compiling ecu-harness v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-harness)
+   Compiling serde_path_to_error v0.1.20
+   Compiling thread_local v1.1.10
+   Compiling matchit v0.8.4
+   Compiling nu-ansi-term v0.50.3
+   Compiling http-range-header v0.4.2
+   Compiling bitflags v2.13.2
+   Compiling base64 v0.22.1
+   Compiling tracing-subscriber v0.3.23
+   Compiling axum v0.8.9
+   Compiling tower-http v0.6.11
+   Compiling opentech-firmware-stm32 v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/firmware/stm32)
+   Compiling ecu-sim-cli v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/apps/ecu-sim-cli)
+   Compiling studio-service v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/apps/studio-service)
+    Finished `test` profile [optimized + debuginfo] target(s) in 40.30s
+     Running unittests src/lib.rs (target/debug/deps/ecu_calibration-4714eeb60b20232b)
+
+running 22 tests
+test preflight::tests::corrupted_checksum_blocks_virtual_run ... ok
+test preflight::tests::every_check_has_human_readable_detail_and_id ... ok
+test table::tests::bilinear_interpolation_is_exact_on_nodes_and_center ... ok
+test table::tests::diff_reports_cells ... ok
+test table::tests::interpolation_clamps_and_never_extrapolates ... ok
+test table::tests::axis_resampling_interpolates ... ok
+test table::tests::rank4_interpolates ... ok
+test table::tests::rank_mismatch_rejected ... ok
+test table::tests::invalid_values_rejected_and_old_table_unchanged ... ok
+test table::tests::nearest_cell_is_discrete ... ok
+test preflight::tests::synthetic_calibration_is_virtual_only ... ok
+test tests::calibration_validation_flags_bad_checksum ... ok
+test tests::edit_produces_new_revision_and_preserves_parent ... ok
+test vehicle::tests::evo_profile_is_fail_closed ... ok
+test tests::starter_tables_are_marked_estimates ... ok
+test wizard::tests::invalid_engine_profile_fails_actionably ... ok
+test vehicle::tests::simulation_profile_is_explicitly_unverified ... ok
+test wizard::tests::unverified_reference_is_rejected ... ok
+test tests::checksum_detects_tampering ... ok
+test wizard::tests::generates_all_required_tables_with_expected_ranks ... ok
+test vehicle::tests::jdm_variant_notes_are_present ... ok
+test wizard::tests::ve_and_target_shapes_are_bounded ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_diagnostics-21548f8fd13cd9f9)
+
+running 4 tests
+test tests::replay_emits_every_frame_once_in_order ... ok
+test tests::replay_speed_and_seek_are_deterministic ... ok
+test tests::summary_reports_faults_and_lambda_coverage ... ok
+test tests::ring_buffer_keeps_recent_frames ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_fuel-f51629220ceb57e2)
+
+running 10 tests
+test tests::air_mass_matches_hand_calculation ... ok
+test tests::air_mass_per_cylinder_scales_with_cylinder_count ... ok
+test tests::dead_time_increases_at_low_voltage ... ok
+test tests::excessive_duty_is_reported_not_silently_clamped ... ok
+test tests::injector_pulse_matches_hand_calculation ... ok
+test tests::blended_load_is_bounded ... ok
+test tests::invalid_inputs_are_inhibited ... ok
+test tests::minimum_pulse_is_flagged_and_delivers_more_than_requested ... ok
+test tests::positive_trim_adds_fuel ... ok
+test tests::pressure_compensation_increases_flow_and_shortens_pulse ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/speeduino_parity.rs (target/debug/deps/speeduino_parity-168d4c3769862e7d)
+
+running 2 tests
+test physical_fuel_model_matches_speeduino_req_fuel_form_at_reference_conditions ... ok
+test speeduino_required_fuel_paired_rule_matches_upstream_vectors ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_harness-cead8e98230821b7)
+
+running 2 tests
+test tests::manifest_validation_flags_duplicates_and_empty_nets ... ok
+test tests::checked_in_bench_manifest_validates ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_ignition-68522aecf6698fa5)
+
+running 7 tests
+test tests::advance_is_clamped_and_corrections_bounded ... ok
+test tests::dwell_is_reduced_at_high_rpm_but_never_zero ... ok
+test tests::mismatched_engine_lowers_confidence_and_explains ... ok
+test tests::missing_reference_returns_insufficient_evidence_not_a_guess ... ok
+test tests::rev_limiter_has_hysteresis ... ok
+test tests::synthetic_or_unknown_reference_is_rejected ... ok
+test tests::verified_reference_produces_bounded_offline_recommendation ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_lambda-6fee2825ff43b157)
+
+running 51 tests
+test closed_loop::tests::independent_banks_do_not_share_integrator ... ok
+test closed_loop::tests::integrator_never_winds_beyond_limit ... ok
+test closed_loop::tests::deadband_prevents_chatter ... ok
+test closed_loop::tests::lean_error_adds_fuel_and_converges_with_delayed_sensor ... ok
+test closed_loop::tests::rich_error_removes_fuel ... ok
+test closed_loop::tests::missing_lambda_gate_freezes_then_decays_to_zero ... ok
+test gate::tests::clean_steady_sample_is_allowed ... ok
+test gate::tests::every_invalidity_is_explained ... ok
+test gate::tests::high_load_is_excluded_by_default_and_opt_in ... ok
+test gate::tests::nan_lambda_rejected ... ok
+test gate::tests::transient_checks_only_apply_for_learning ... ok
+test log_import::tests::afr_columns_are_converted_with_the_stated_stoich ... ok
+test log_import::tests::closed_loop_rows_without_trim_columns_are_refused ... ok
+test log_import::tests::calibration_identity_must_be_checked_or_confirmed ... ok
+test log_import::tests::logged_accel_enrichment_reaches_the_analyser_and_blocks_samples ... ok
+test log_import::tests::lean_open_loop_log_imports_and_proposes_a_ve_increase ... ok
+test log_import::tests::missing_gate_inputs_without_explicit_assumptions_reject_rows_not_pass_them ... ok
+test log_import::tests::missing_loop_state_is_refused_unless_open_loop_is_asserted ... ok
+test long_term::tests::bank_two_is_independent_and_optional ... ok
+test long_term::tests::does_not_learn_without_dwell_or_gate ... ok
+test long_term::tests::merge_is_selective_bounded_and_preserves_source ... ok
+test long_term::tests::learns_toward_positive_stft_with_bounds ... ok
+test log_import::tests::time_going_backwards_and_missing_coolant_are_refused ... ok
+test log_import::tests::units_rows_and_comments_are_skipped_and_counted ... ok
+test long_term::tests::serialization_round_trip_preserves_learning ... ok
+test mixture_map::tests::apply_is_sealed_revisioned_and_diffable ... ok
+test mixture_map::tests::fuel_cut_inside_window_is_rejected_even_when_current_frame_is_clean ... ok
+test log_import::tests::stuck_wideband_in_an_imported_log_is_still_caught ... ok
+test mixture_map::tests::deterministic_for_same_log ... ok
+test mixture_map::tests::cell_visited_in_both_loop_states_is_not_flagged_for_the_trim_itself ... ok
+test mixture_map::tests::cold_engine_and_stale_sensor_are_explained ... ok
+test mixture_map::tests::fuel_cut_misfire_and_overrun_are_excluded ... ok
+test mixture_map::tests::invalid_trim_swing_option_is_refused ... ok
+test mixture_map::tests::lean_steady_cell_proposes_ve_increase ... ok
+test mixture_map::tests::inconsistent_loop_states_are_still_flagged ... ok
+test mixture_map::tests::active_trims_are_included_in_pre_trim_equivalent ... ok
+test mixture_map::tests::moving_trim_and_loop_state_change_are_rejected ... ok
+test mixture_map::tests::misfire_inside_latency_window_rejects_following_samples ... ok
+test mixture_map::tests::noisy_samples_are_rejected ... ok
+test mixture_map::tests::open_and_closed_loop_samples_are_counted_separately ... ok
+test mixture_map::tests::options_json_without_new_fields_still_deserializes ... ok
+test mixture_map::tests::rich_cell_proposes_ve_decrease ... ok
+test mixture_map::tests::selection_only_applies_chosen_cells ... ok
+test mixture_map::tests::stale_proposal_is_refused ... ok
+test mixture_map::tests::too_few_samples_abstains ... ok
+test mixture_map::tests::throttle_blip_invalidates_later_steady_looking_samples ... ok
+test mixture_map::tests::window_factor_is_bounded_and_neutral_without_rejections ... ok
+test mixture_map::tests::wot_cells_require_explicit_opt_in ... ok
+test mixture_map::tests::window_rejections_are_counted_per_cell_and_lower_confidence ... ok
+test mixture_map::tests::logged_accel_enrichment_inside_window_rejects_following_samples ... ok
+test mixture_map::tests::report_json_without_window_rejected_field_still_deserializes ... ok
+
+test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_protection-990d45d2a4bbbd84)
+
+running 14 tests
+test tests::calibration_crc_failure_latches_a_cut ... ok
+test tests::clearing_before_n_samples_resets_confirmation ... ok
+test tests::fault_free_recovery_after_hold ... ok
+test tests::crc_mismatch_latches_on_first_evaluation ... ok
+test tests::knock_produces_bounded_retard_not_fuel_learning ... ok
+test tests::lean_under_load_is_a_protection_fault_but_not_an_ignition_signal ... ok
+test tests::low_oil_pressure_cuts_and_latches ... ok
+test tests::n_consecutive_samples_latch ... ok
+test tests::nominal_state_has_no_faults ... ok
+test tests::overboost_derates_then_cuts_with_hysteresis ... ok
+test tests::overtemp_latches_and_requires_explicit_clear ... ok
+test tests::single_sample_overtemp_does_not_latch ... ok
+test tests::sync_loss_cuts_fuel_and_spark_then_recovers ... ok
+test tests::wideband_not_ready_warns_without_cutting_engine ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_protocol-5154910c8e2333f3)
+
+running 7 tests
+test tests::corrupted_payload_fails_crc ... ok
+test tests::crc32_known_vector ... ok
+test tests::json_telemetry_envelope_has_protocol_and_crc_covered_binary_equivalent ... ok
+test tests::frame_round_trip ... ok
+test tests::version_mismatch_is_rejected_explicitly ... ok
+test tests::handshake_rejects_wrong_version ... ok
+test tests::truncated_and_bad_magic_are_rejected ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_scheduler-30b394157a4794c5)
+
+running 12 tests
+test tests::each_cylinder_has_one_injection_dwell_and_spark ... ok
+test tests::events_carry_output_channel_of_their_cylinder ... ok
+test tests::dwell_starts_before_spark_by_angle ... ok
+test tests::firing_intervals_are_even_for_one_to_eight_cylinders ... ok
+test tests::four_cylinder_schedule_has_three_events_per_cylinder_sorted ... ok
+test tests::injection_and_spark_can_be_cut_independently ... ok
+test tests::invalid_firing_order_rejected ... ok
+test tests::invalid_slots_rejected ... ok
+test tests::sequential_schedule_matches_build_schedule_for_inline4 ... ok
+test tests::twelve_cylinders_fit_event_buffer ... ok
+test tests::wrap_crossing_is_detected_once ... ok
+test tests::wrapped_traversal_is_chronological_and_half_open ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/ecu_sim_cli-56d77cce53bb871c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/ecu_simulator-cd78de9472824112)
+
+running 17 tests
+test scenario::tests::faults_are_windowed ... ok
+test scenario::tests::builtins_have_unique_ids_and_sorted_phases ... ok
+test scenario::tests::phase_lookup_is_last_started_phase ... ok
+test scenario::tests::prng_is_repeatable_and_bounded ... ok
+test tests::cold_start_reaches_running_state ... ok
+test tests::starts_with_valid_preflight_and_emits_telemetry ... ok
+test tests::mixture_map_recovers_deliberate_ve_bias_and_applies ... ok
+test tests::mixture_sweep_produces_running_engine_and_lambda ... ok
+test timing_tests::constant_rpm_outputs_match_independent_f64_time_reference ... ok
+test timing_tests::cuts_and_lost_sync_suppress_command_markers ... ok
+test tests::exported_csv_round_trips_through_external_import_to_the_same_proposal ... ok
+test timing_tests::wrap_events_have_crossing_timestamps_and_correct_cycles ... ok
+test tests::trigger_loss_causes_cut_then_resync ... ok
+test tests::stuck_wideband_is_detected_and_no_proposal_issued ... ok
+test tests::mixture_dwell_yields_both_loop_states_and_resimulation_reduces_open_loop_error ... ok
+test timing_tests::seeded_runs_export_repeatable_bounded_traces_with_loss_accounting ... ok
+test tests::repeated_review_apply_resimulate_passes_converge_on_the_biased_ve ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 30.41s
+
+     Running tests/cylinder_counts.rs (target/debug/deps/cylinder_counts-3320fde99ab1150d)
+
+running 4 tests
+test layout_tdc_matches_scheduler_spark_angles ... ok
+test cylinder_to_tooth_mapping_matches_decision_table ... ok
+test inline4_outputs_match_pre_change_baseline ... FAILED
+test every_cylinder_count_runs_sequential_with_even_intervals ... ok
+
+failures:
+
+---- inline4_outputs_match_pre_change_baseline stdout ----
+
+thread 'inline4_outputs_match_pre_change_baseline' (124900) panicked at crates/ecu-simulator/tests/cylinder_counts.rs:214:5:
+assertion `left == right` failed
+  left: "9bc9b970cb5558432f692cd3615920bd11050260072b389b937453661a09f418"
+ right: "ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    inline4_outputs_match_pre_change_baseline
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 27.30s
+
+error: test failed, to rerun pass `-p ecu-simulator --test cylinder_counts`
+
+exit_code=101

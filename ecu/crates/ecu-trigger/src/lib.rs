@@ -417,6 +417,15 @@ impl MissingToothDecoder {
             }
             self.last_gap_us = Some(timestamp_us);
 
+            // First plausible gap is only a candidate. Publish angles after a
+            // second gap passes the intervening tooth-count check above.
+            if self.gap_count == 1 {
+                self.state = SyncState::Unsynced;
+                self.cam_phase_known = false;
+                self.cam_seen_since_gap = false;
+                return DecodeEvent::None;
+            }
+
             if self.cam_seen_since_gap {
                 self.rev_parity = 0;
             } else {
@@ -646,12 +655,12 @@ mod tests {
         let mut d = decoder();
         d.set_cam_window(Some((320.0, 340.0))).unwrap();
         // 1000 rpm, independent integer timestamps (500/3 us per degree).
-        for rev in 0..2_u64 {
+        for rev in 0..4_u64 {
             for tooth in 0..35_u64 {
                 let angle = rev * 360 + tooth * 10;
                 let time = 1000 + angle * 500 / 3;
                 d.on_tooth(time);
-                if angle == 690 {
+                if angle == 1410 {
                     d.on_cam(time);
                 }
             }
@@ -659,7 +668,7 @@ mod tests {
         assert_eq!(d.status().cycle_angle_deg, Some(700.0));
         // Last capture is 700°. After 24° (4000 us), cycle phase is 4°,
         // even before the delayed next gap capture is delivered.
-        let time = 1000 + 700 * 500 / 3 + 4000;
+        let time = 1000 + 1420 * 500 / 3 + 4000;
         assert!((d.cycle_angle_at(time).unwrap() - 4.0).abs() < 0.01);
         assert!((d.crank_angle_at(time).unwrap() - 4.0).abs() < 0.01);
     }
@@ -749,6 +758,10 @@ mod tests {
         for (cam, ts) in generate(3000.0, 2, true) {
             if cam {
                 d.on_cam(ts);
+                if d.state() == SyncState::Unsynced {
+                    assert!(d.status().crank_angle_deg.is_none());
+                    continue;
+                }
                 assert_eq!(d.state(), SyncState::Sequential);
                 assert!(!d.status().cam_phase_rejected);
             } else {
@@ -765,6 +778,10 @@ mod tests {
         for (cam, ts) in generate(3000.0, 2, true) {
             if cam {
                 d.on_cam(ts);
+                if d.state() == SyncState::Unsynced {
+                    assert!(d.status().crank_angle_deg.is_none());
+                    continue;
+                }
                 assert_eq!(d.state(), SyncState::CrankSynced);
                 assert!(d.status().cam_phase_rejected);
             } else {
@@ -781,6 +798,10 @@ mod tests {
         for (cam, ts) in generate(3000.0, 2, true) {
             if cam {
                 d.on_cam(ts);
+                if d.state() == SyncState::Unsynced {
+                    assert!(d.status().crank_angle_deg.is_none());
+                    continue;
+                }
                 assert_eq!(d.state(), SyncState::CrankSynced);
                 assert!(d.status().cam_phase_rejected);
             } else {
@@ -797,6 +818,10 @@ mod tests {
         for (cam, ts) in generate(3000.0, 2, true) {
             if cam {
                 d.on_cam(ts);
+                if d.state() == SyncState::Unsynced {
+                    assert!(d.status().crank_angle_deg.is_none());
+                    continue;
+                }
                 assert_eq!(d.state(), SyncState::Sequential);
                 d.on_cam(ts + 1_000);
                 assert_eq!(d.state(), SyncState::CrankSynced);
@@ -1241,6 +1266,28 @@ mod tests {
             );
             assert!(gaps.iter().all(|&g| g == 0), "accel={accel}: gaps={gaps:?}");
             assert_eq!(d.status().error_count, 0, "accel={accel}");
+        }
+    }
+    #[test]
+    fn startup_noise_does_not_publish_false_angle() {
+        for fraction in [0.2, 0.25, 0.3, 0.35, 0.4] {
+            for rpm in [100.0, 300.0, 1000.0, 6000.0] {
+                let mut d = decoder();
+                let events = generate(rpm, 3, false);
+                let first = events[0].1;
+                let period = events[1].1 - first;
+                d.on_tooth(first);
+                d.on_tooth(first + (period as f64 * fraction) as u64);
+                for &(_, ts) in &events[1..] {
+                    let event = d.on_tooth(ts);
+                    if matches!(event, DecodeEvent::Synchronised { .. }) {
+                        // Only the real tooth zero may establish sync.
+                        let index = events.iter().position(|e| e.1 == ts).unwrap();
+                        assert_eq!(index % 35, 0, "fraction={fraction} rpm={rpm}");
+                    }
+                }
+                assert_eq!(d.state(), SyncState::CrankSynced);
+            }
         }
     }
 }
