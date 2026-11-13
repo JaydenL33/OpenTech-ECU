@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api";
 import { useApp } from "../context";
 import { Badge, Panel } from "../components/ui";
+import { AuditTrail } from "../components/AuditTrail";
 
 export function CalibrationPage() {
   const app = useApp();
@@ -107,6 +108,7 @@ export function CalibrationPage() {
         </div>
         <p className="hint">Rollback requires the engine to be paused. The current snapshot is discarded from the active history, not silently merged.</p>
       </Panel>
+      <AuditTrail refreshKey={cal.checksum} />
       <Panel title="Safety notes recorded with this calibration">
         <ul className="notes">
           {cal.notes.map((n, i) => <li key={i}>{n}</li>)}

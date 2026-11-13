@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+mod store;
+
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
@@ -8,7 +10,7 @@ use std::time::Duration;
 use anyhow::Context;
 use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
 use axum::extract::{DefaultBodyLimit, Query, State};
-use axum::http::{header, StatusCode};
+use axum::http::{header, HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
@@ -36,6 +38,7 @@ use ecu_types::{
     default_firing_order, Aspiration, EngineConfig, FuelConfig, InjectorConfig, LogFile,
     MAX_SEQUENTIAL_CYLINDERS,
 };
+use store::{ActorInfo, Approval, CalibrationStore, NewAudit};
 
 #[derive(Parser, Debug)]
 #[command(
@@ -56,6 +59,14 @@ struct Args {
     /// Do not auto-loop scenarios when they reach their scripted end.
     #[arg(long)]
     no_loop: bool,
+    /// Directory for the local append-only calibration revision/audit store.
+    /// Default: $OPENTECH_ECU_DATA_DIR, else the per-user data dir
+    /// (e.g. ~/.local/share/opentech-ecu/studio). Never the current directory.
+    #[arg(long)]
+    data_dir: Option<PathBuf>,
+    /// Keep calibration revisions in memory only (nothing is written to disk).
+    #[arg(long)]
+    no_persist: bool,
 }
 
 #[derive(Clone)]
@@ -77,6 +88,8 @@ struct Session {
     running: bool,
     auto_loop: bool,
     history: Vec<Calibration>,
+    /// Local append-only revision/audit store; `None` when `--no-persist`.
+    store: Option<CalibrationStore>,
     frame_cursor: usize,
     seq: u64,
     last_report: Option<MixtureMapReport>,
@@ -118,6 +131,7 @@ impl IntoResponse for ApiError {
         let status = match self.code.as_str() {
             "bad_request" => StatusCode::BAD_REQUEST,
             "conflict" => StatusCode::CONFLICT,
+            "not_found" => StatusCode::NOT_FOUND,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
         (status, Json(self)).into_response()
@@ -149,7 +163,27 @@ async fn main() -> anyhow::Result<()> {
     };
     let scenario = by_id(&args.scenario)
         .ok_or_else(|| anyhow::anyhow!("unknown scenario '{}'", args.scenario))?;
-    let state = new_state(calibration, scenario, !args.no_loop)?;
+    let store = if args.no_persist {
+        tracing::warn!("--no-persist: calibration revisions are NOT being saved to disk");
+        None
+    } else {
+        let dir =
+            store::resolve_data_dir(args.data_dir.clone()).map_err(|e| anyhow::anyhow!("{e}"))?;
+        // A corrupt or tampered store aborts startup; its files are left as-is.
+        let opened = CalibrationStore::open(&dir).map_err(|e| anyhow::anyhow!("{e}"))?;
+        for w in opened.warnings() {
+            tracing::warn!("calibration store: {w}");
+        }
+        tracing::info!("calibration store: {}", dir.display());
+        Some(opened)
+    };
+    let state = bootstrap_state(
+        calibration,
+        args.cal.is_some(),
+        scenario,
+        !args.no_loop,
+        store,
+    )?;
 
     let bg_state = state.clone();
     tokio::spawn(async move {
@@ -253,19 +287,128 @@ fn new_state(
     scenario: Scenario,
     auto_loop: bool,
 ) -> anyhow::Result<AppState> {
-    let engine = SimEngine::new(calibration.clone(), scenario.clone())
+    build_state(
+        calibration.clone(),
+        calibration.clone(),
+        vec![calibration],
+        scenario,
+        auto_loop,
+        None,
+    )
+}
+
+/// Start from the persisted store when it has content, else seed it with the
+/// baseline. With an explicit `--cal`, a non-empty store must already contain
+/// that calibration, otherwise startup is refused rather than silently
+/// switching lineage.
+fn bootstrap_state(
+    baseline: Calibration,
+    baseline_explicit: bool,
+    scenario: Scenario,
+    auto_loop: bool,
+    store: Option<CalibrationStore>,
+) -> anyhow::Result<AppState> {
+    let Some(mut store) = store else {
+        return new_state(baseline, scenario, auto_loop);
+    };
+    let actor = ActorInfo::from_supplied(None);
+    let no_approval = |why: &str| Approval {
+        required: false,
+        granted: false,
+        mechanism: why.to_string(),
+    };
+    if store.is_empty() {
+        store
+            .append_revision(
+                &baseline,
+                None,
+                "baseline",
+                &actor,
+                "baseline at service start",
+            )
+            .map_err(|e| anyhow::anyhow!("{e}"))?;
+        store
+            .append_audit(NewAudit {
+                action: "baseline".into(),
+                outcome: "info".into(),
+                actor,
+                approval: no_approval("none: service start; no calibration change"),
+                reason: "baseline calibration recorded at first start".into(),
+                before_checksum: None,
+                after_checksum: Some(baseline.checksum.clone()),
+                new_revision_checksum: Some(baseline.checksum.clone()),
+                detail: format!("revision {} id {}", baseline.revision, baseline.id),
+            })
+            .map_err(|e| anyhow::anyhow!("{e}"))?;
+        return build_state(
+            baseline.clone(),
+            baseline.clone(),
+            vec![baseline],
+            scenario,
+            auto_loop,
+            Some(store),
+        );
+    }
+    if baseline_explicit && store.revision_by_checksum(&baseline.checksum).is_none() {
+        anyhow::bail!(
+            "the calibration store in {} does not contain the --cal calibration (checksum {}); \
+             refusing to switch lineage. Use a different --data-dir or --no-persist.",
+            store.dir().display(),
+            baseline.checksum
+        );
+    }
+    let chain = store.active_chain().map_err(|e| anyhow::anyhow!("{e}"))?;
+    let head = chain
+        .last()
+        .cloned()
+        .ok_or_else(|| anyhow::anyhow!("calibration store has no head revision"))?;
+    let truth = chain[0].clone();
+    store
+        .append_audit(NewAudit {
+            action: "store_loaded".into(),
+            outcome: "info".into(),
+            actor,
+            approval: no_approval("none: service restart; no calibration change"),
+            reason: "verified store loaded at service start; latest revision restored".into(),
+            before_checksum: Some(head.checksum.clone()),
+            after_checksum: Some(head.checksum.clone()),
+            new_revision_checksum: None,
+            detail: format!(
+                "{} revisions, {} prior audit entries, active lineage depth {}",
+                store.revisions().len(),
+                store.audit().len(),
+                chain.len()
+            ),
+        })
         .map_err(|e| anyhow::anyhow!("{e}"))?;
-    let history = vec![calibration.clone()];
+    build_state(head, truth, chain, scenario, auto_loop, Some(store))
+}
+
+fn build_state(
+    calibration: Calibration,
+    truth: Calibration,
+    history: Vec<Calibration>,
+    scenario: Scenario,
+    auto_loop: bool,
+    store: Option<CalibrationStore>,
+) -> anyhow::Result<AppState> {
+    let engine = if history.len() > 1 {
+        engine_for(&truth, calibration.clone(), scenario.clone())
+    } else {
+        SimEngine::new(calibration.clone(), scenario.clone())
+    }
+    .map_err(|e| anyhow::anyhow!("{e}"))?;
     let (tx, _) = broadcast::channel(512);
     Ok(AppState {
         inner: Arc::new(Mutex::new(Session {
-            truth: calibration.clone(),
+            truth,
             calibration,
             scenario,
             engine,
             running: true,
             auto_loop,
             history,
+            store,
             frame_cursor: 0,
             seq: 0,
             last_report: None,
@@ -286,6 +429,10 @@ fn build_router(state: AppState, static_dir: &std::path::Path) -> Router {
         .route("/api/calibration/resample", post(resample_axis))
         .route("/api/calibration/history", get(calibration_history))
         .route("/api/calibration/undo", post(undo_calibration))
+        .route("/api/calibration/revisions", get(list_revisions))
+        .route("/api/calibration/revisions/{checksum}", get(get_revision))
+        .route("/api/calibration/audit", get(list_audit))
+        .route("/api/calibration/store/verify", get(verify_store))
         .route("/api/preflight", get(get_preflight))
         .route("/api/setup/form", get(setup_form))
         .route("/api/setup/generate", post(setup_generate))
@@ -403,19 +550,304 @@ async fn calibration_history(
 }
 
 #[derive(Deserialize)]
+struct PageQuery {
+    offset: Option<usize>,
+    limit: Option<usize>,
+}
+
+fn store_summary(session: &Session) -> serde_json::Value {
+    match &session.store {
+        None => json!({
+            "persistent": false,
+            "note": "Started with --no-persist: revisions and audit entries are not saved to disk.",
+        }),
+        Some(s) => json!({
+            "persistent": true,
+            "format": store::STORE_FORMAT,
+            "directory": s.dir().display().to_string(),
+            "revisions": s.revisions().len(),
+            "audit_entries": s.audit().len(),
+            "head_checksum": s.head_checksum(),
+            "revisions_tail_hash": s.revisions_tail_hash(),
+            "audit_tail_hash": s.audit_tail_hash(),
+            "warnings": s.warnings(),
+            "notice": store::STORE_NOTICE,
+            "identity_note": "Actor labels are unauthenticated; absent a supplied label the value is 'local-operator'.",
+        }),
+    }
+}
+
+fn revision_meta(
+    r: &store::RevisionRecord,
+    current: Option<&str>,
+    active: &[String],
+) -> serde_json::Value {
+    json!({
+        "seq": r.seq,
+        "revision_id": r.revision_id,
+        "revision": r.revision,
+        "checksum": r.checksum,
+        "parent_id": r.parent_id,
+        "parent_checksum": r.parent_checksum,
+        "created_unix_ms": r.calibration.created_unix_ms,
+        "stored_unix_ms": r.stored_unix_ms,
+        "source": r.source,
+        "actor": r.actor,
+        "reason": r.reason,
+        "record_hash": r.record_hash,
+        "prev_hash": r.prev_hash,
+        "current": current == Some(r.checksum.as_str()),
+        "in_active_lineage": active.contains(&r.checksum),
+    })
+}
+
+async fn list_revisions(
+    State(state): State<AppState>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let session = state
+        .inner
+        .lock()
+        .map_err(|_| ApiError::internal("state poisoned"))?;
+    let revisions: Vec<serde_json::Value> = match &session.store {
+        None => Vec::new(),
+        Some(s) => {
+            let active: Vec<String> = s
+                .active_chain()
+                .map(|c| c.into_iter().map(|c| c.checksum).collect())
+                .unwrap_or_default();
+            let head = s.head_checksum();
+            s.revisions()
+                .iter()
+                .map(|r| revision_meta(r, head.as_deref(), &active))
+                .collect()
+        }
+    };
+    Ok(Json(
+        json!({ "store": store_summary(&session), "revisions": revisions }),
+    ))
+}
+
+#[derive(Deserialize)]
+struct RevisionQuery {
+    /// `payload=true` also returns the stored calibration document.
+    #[serde(default)]
+    payload: bool,
+}
+
+async fn get_revision(
+    State(state): State<AppState>,
+    axum::extract::Path(checksum): axum::extract::Path<String>,
+    Query(q): Query<RevisionQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let session = state
+        .inner
+        .lock()
+        .map_err(|_| ApiError::internal("state poisoned"))?;
+    let s = session
+        .store
+        .as_ref()
+        .ok_or_else(|| ApiError::conflict("persistence is disabled (--no-persist)"))?;
+    let r = s
+        .revision_by_checksum(&checksum)
+        .ok_or_else(|| ApiError::new("not_found", format!("no stored revision {checksum}")))?;
+    let active: Vec<String> = s
+        .active_chain()
+        .map(|c| c.into_iter().map(|c| c.checksum).collect())
+        .unwrap_or_default();
+    let mut v = revision_meta(r, s.head_checksum().as_deref(), &active);
+    if q.payload {
+        v["calibration"] = json!(r.calibration);
+    }
+    Ok(Json(v))
+}
+
+async fn list_audit(
+    State(state): State<AppState>,
+    Query(q): Query<PageQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let session = state
+        .inner
+        .lock()
+        .map_err(|_| ApiError::internal("state poisoned"))?;
+    let (total, entries) = match &session.store {
+        None => (0, Vec::<&store::AuditEntry>::new()),
+        Some(s) => {
+            let all = s.audit();
+            let offset = q.offset.unwrap_or(0).min(all.len());
+            let limit = q.limit.unwrap_or(1000).min(1000);
+            (all.len(), all[offset..].iter().take(limit).collect())
+        }
+    };
+    Ok(Json(json!({
+        "store": store_summary(&session),
+        "total": total,
+        "entries": entries,
+    })))
+}
+
+/// Re-verify the files currently on disk (read-only; never repairs).
+async fn verify_store(State(state): State<AppState>) -> Result<Json<serde_json::Value>, ApiError> {
+    let session = state
+        .inner
+        .lock()
+        .map_err(|_| ApiError::internal("state poisoned"))?;
+    let s = session
+        .store
+        .as_ref()
+        .ok_or_else(|| ApiError::conflict("persistence is disabled (--no-persist)"))?;
+    Ok(Json(match CalibrationStore::verify_on_disk(s.dir()) {
+        Ok(report) => json!({ "ok": true, "report": report }),
+        Err(e) => json!({ "ok": false, "error": e.to_string() }),
+    }))
+}
+
+/// Operator context for the audit trail. The label is unauthenticated: it is
+/// whatever the caller supplied (body `actor` or `X-Operator-Label` header),
+/// else the explicit default `local-operator`.
+struct OpCtx {
+    actor: ActorInfo,
+    reason: Option<String>,
+}
+
+impl OpCtx {
+    fn new(headers: &HeaderMap, actor: Option<&str>, reason: Option<&str>) -> Self {
+        let header = headers
+            .get("x-operator-label")
+            .and_then(|v| v.to_str().ok());
+        Self {
+            actor: ActorInfo::from_supplied(actor.or(header)),
+            reason: reason
+                .map(|r| {
+                    r.chars()
+                        .filter(|c| !c.is_control())
+                        .take(500)
+                        .collect::<String>()
+                })
+                .filter(|r| !r.trim().is_empty()),
+        }
+    }
+    fn reason_or(&self, default: &str) -> String {
+        self.reason.clone().unwrap_or_else(|| default.to_string())
+    }
+}
+
+fn no_approval_step() -> Approval {
+    Approval {
+        required: false,
+        granted: false,
+        mechanism: "operator action on a paused engine; no separate approval step".into(),
+    }
+}
+
+impl Session {
+    /// Persist a new sealed revision and its applied-audit entry. Called
+    /// *before* the in-memory state changes so a failed write leaves the
+    /// session untouched.
+    fn persist_revision(
+        &mut self,
+        next: &Calibration,
+        action: &str,
+        ctx: &OpCtx,
+        approval: Approval,
+        default_reason: &str,
+        detail: String,
+    ) -> Result<(), ApiError> {
+        let before = self.calibration.checksum.clone();
+        let Some(store) = self.store.as_mut() else {
+            return Ok(());
+        };
+        let reason = ctx.reason_or(default_reason);
+        let werr = |e: store::StoreError| {
+            ApiError::internal(format!("{e}; the calibration change was NOT applied"))
+        };
+        store
+            .append_revision(next, Some(&before), action, &ctx.actor, &reason)
+            .map_err(werr)?;
+        store
+            .append_audit(NewAudit {
+                action: action.into(),
+                outcome: "applied".into(),
+                actor: ctx.actor.clone(),
+                approval,
+                reason,
+                before_checksum: Some(before),
+                after_checksum: Some(next.checksum.clone()),
+                new_revision_checksum: Some(next.checksum.clone()),
+                detail,
+            })
+            .map_err(werr)
+    }
+
+    /// Best-effort record of a refused/failed attempt. Never masks the
+    /// original error.
+    fn audit_rejected(&mut self, action: &str, ctx: &OpCtx, approval: Approval, err: &ApiError) {
+        let before = self.calibration.checksum.clone();
+        let Some(store) = self.store.as_mut() else {
+            return;
+        };
+        let result = store.append_audit(NewAudit {
+            action: action.into(),
+            outcome: "rejected".into(),
+            actor: ctx.actor.clone(),
+            approval,
+            reason: ctx.reason_or("(none supplied)"),
+            before_checksum: Some(before.clone()),
+            after_checksum: Some(before),
+            new_revision_checksum: None,
+            detail: format!("{}: {}", err.code, err.message),
+        });
+        if let Err(e) = result {
+            tracing::warn!("could not record rejected {action} attempt: {e}");
+        }
+    }
+}
+
+fn finish(
+    session: &mut Session,
+    action: &str,
+    ctx: &OpCtx,
+    approval: Approval,
+    result: Result<serde_json::Value, ApiError>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    match result {
+        Ok(v) => Ok(Json(v)),
+        Err(e) => {
+            session.audit_rejected(action, ctx, approval, &e);
+            Err(e)
+        }
+    }
+}
+
+#[derive(Deserialize)]
 struct TableEdit {
     table_id: String,
     values: Vec<f32>,
+    /// Optional unauthenticated operator label recorded in the audit trail.
+    #[serde(default)]
+    actor: Option<String>,
+    #[serde(default)]
+    reason: Option<String>,
 }
 
 async fn edit_table(
     State(state): State<AppState>,
+    headers: HeaderMap,
     Json(body): Json<TableEdit>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    let ctx = OpCtx::new(&headers, body.actor.as_deref(), body.reason.as_deref());
     let mut session = state
         .inner
         .lock()
         .map_err(|_| ApiError::internal("state poisoned"))?;
+    let result = edit_table_locked(&mut session, &body, &ctx);
+    finish(&mut session, "table_edit", &ctx, no_approval_step(), result)
+}
+
+fn edit_table_locked(
+    session: &mut Session,
+    body: &TableEdit,
+    ctx: &OpCtx,
+) -> Result<serde_json::Value, ApiError> {
     if session.running {
         return Err(ApiError::conflict(
             "pause the virtual engine before editing maps so changes are auditable",
@@ -423,7 +855,7 @@ async fn edit_table(
     }
     let next = session
         .calibration
-        .with_table_values(&body.table_id, body.values, now_unix_ms())
+        .with_table_values(&body.table_id, body.values.clone(), now_unix_ms())
         .map_err(|e| ApiError::bad(e.to_string()))?;
     let pre = preflight(&next);
     if !pre.virtual_run_allowed {
@@ -433,16 +865,28 @@ async fn edit_table(
     // actually uses the newly sealed map instead of stale table data.
     let new_engine = engine_for(&session.truth, next.clone(), session.scenario.clone())
         .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.persist_revision(
+        &next,
+        "table_edit",
+        ctx,
+        no_approval_step(),
+        &format!("edit of table {}", body.table_id),
+        format!(
+            "table {} replaced ({} values)",
+            body.table_id,
+            body.values.len()
+        ),
+    )?;
     session.calibration = next;
     session.engine = new_engine;
     session.frame_cursor = 0;
     let snapshot = session.calibration.clone();
     session.history.push(snapshot);
-    Ok(Json(json!({
+    Ok(json!({
         "calibration": session.calibration,
         "preflight": pre,
         "revision": session.calibration.revision,
-    })))
+    }))
 }
 
 #[derive(Deserialize)]
@@ -450,16 +894,37 @@ struct ResampleRequest {
     table_id: String,
     axis_index: usize,
     points: usize,
+    #[serde(default)]
+    actor: Option<String>,
+    #[serde(default)]
+    reason: Option<String>,
 }
 
 async fn resample_axis(
     State(state): State<AppState>,
+    headers: HeaderMap,
     Json(body): Json<ResampleRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    let ctx = OpCtx::new(&headers, body.actor.as_deref(), body.reason.as_deref());
     let mut session = state
         .inner
         .lock()
         .map_err(|_| ApiError::internal("state poisoned"))?;
+    let result = resample_axis_locked(&mut session, &body, &ctx);
+    finish(
+        &mut session,
+        "axis_resample",
+        &ctx,
+        no_approval_step(),
+        result,
+    )
+}
+
+fn resample_axis_locked(
+    session: &mut Session,
+    body: &ResampleRequest,
+    ctx: &OpCtx,
+) -> Result<serde_json::Value, ApiError> {
     if session.running {
         return Err(ApiError::conflict("pause before resampling an axis"));
     }
@@ -525,53 +990,98 @@ async fn resample_axis(
     if !pre.virtual_run_allowed {
         return Err(ApiError::bad(pre.summary));
     }
+    let new_engine = engine_for(&session.truth, next.clone(), session.scenario.clone())
+        .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.persist_revision(
+        &next,
+        "axis_resample",
+        ctx,
+        no_approval_step(),
+        &format!(
+            "axis {} of table {} resampled",
+            body.axis_index, body.table_id
+        ),
+        format!(
+            "table {} axis {} resampled to {} points",
+            body.table_id, body.axis_index, body.points
+        ),
+    )?;
     session.calibration = next;
     let snapshot = session.calibration.clone();
     session.history.push(snapshot);
-    session.engine = engine_for(
-        &session.truth,
-        session.calibration.clone(),
-        session.scenario.clone(),
-    )
-    .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = new_engine;
     session.frame_cursor = 0;
-    Ok(Json(json!({
+    Ok(json!({
         "calibration": session.calibration,
         "preflight": pre,
-    })))
+    }))
+}
+
+/// Optional body for undo; the endpoint also works with no body at all.
+#[derive(Deserialize, Default)]
+struct UndoRequest {
+    #[serde(default)]
+    actor: Option<String>,
+    #[serde(default)]
+    reason: Option<String>,
 }
 
 async fn undo_calibration(
     State(state): State<AppState>,
+    headers: HeaderMap,
+    body: Option<Json<UndoRequest>>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    let body = body.map(|Json(b)| b).unwrap_or_default();
+    let ctx = OpCtx::new(&headers, body.actor.as_deref(), body.reason.as_deref());
     let mut session = state
         .inner
         .lock()
         .map_err(|_| ApiError::internal("state poisoned"))?;
+    let result = undo_locked(&mut session, &ctx);
+    finish(&mut session, "undo", &ctx, no_approval_step(), result)
+}
+
+fn undo_locked(session: &mut Session, ctx: &OpCtx) -> Result<serde_json::Value, ApiError> {
     if session.running {
         return Err(ApiError::conflict("pause before rolling back calibration"));
     }
     if session.history.len() < 2 {
         return Err(ApiError::bad("no earlier calibration revision to restore"));
     }
+    let restored = session.history[session.history.len() - 2].clone();
+    let new_engine = engine_for(&session.truth, restored.clone(), session.scenario.clone())
+        .map_err(|e| ApiError::internal(e.to_string()))?;
+    // Rollback never deletes stored revisions: it appends an audit entry that
+    // moves the active head back to the parent revision.
+    if let Some(store) = session.store.as_mut() {
+        let before = session.calibration.checksum.clone();
+        store
+            .append_audit(NewAudit {
+                action: "undo".into(),
+                outcome: "applied".into(),
+                actor: ctx.actor.clone(),
+                approval: no_approval_step(),
+                reason: ctx.reason_or("rollback to previous revision"),
+                before_checksum: Some(before.clone()),
+                after_checksum: Some(restored.checksum.clone()),
+                new_revision_checksum: None,
+                detail: format!(
+                    "rolled back from {} to {} (revision {})",
+                    before, restored.checksum, restored.revision
+                ),
+            })
+            .map_err(|e| {
+                ApiError::internal(format!("{e}; the calibration change was NOT applied"))
+            })?;
+    }
     session.history.pop();
-    let restored = session
-        .history
-        .last()
-        .cloned()
-        .ok_or_else(|| ApiError::internal("history empty"))?;
     session.calibration = restored;
-    session.engine = engine_for(
-        &session.truth,
-        session.calibration.clone(),
-        session.scenario.clone(),
-    )
-    .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = new_engine;
     session.frame_cursor = 0;
-    Ok(Json(json!({
+    Ok(json!({
         "calibration": session.calibration,
         "preflight": preflight(&session.calibration),
-    })))
+    }))
 }
 
 #[derive(Deserialize)]
@@ -1107,21 +1617,44 @@ struct ApplyRequest {
     selected: Option<Vec<[usize; 2]>>,
     #[serde(default)]
     approve: bool,
+    /// Optional unauthenticated operator label recorded with the approval.
+    #[serde(default)]
+    actor: Option<String>,
+    #[serde(default)]
+    reason: Option<String>,
 }
 
 async fn mixture_apply(
     State(state): State<AppState>,
+    headers: HeaderMap,
     Json(body): Json<ApplyRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    let ctx = OpCtx::new(&headers, body.actor.as_deref(), body.reason.as_deref());
+    let approval = Approval {
+        required: true,
+        granted: body.approve,
+        mechanism: "explicit approve=true in the apply request body (unauthenticated local API)"
+            .into(),
+    };
+    let mut session = state
+        .inner
+        .lock()
+        .map_err(|_| ApiError::internal("state poisoned"))?;
+    let result = mixture_apply_locked(&mut session, &body, &ctx, approval.clone());
+    finish(&mut session, "mixture_apply", &ctx, approval, result)
+}
+
+fn mixture_apply_locked(
+    session: &mut Session,
+    body: &ApplyRequest,
+    ctx: &OpCtx,
+    approval: Approval,
+) -> Result<serde_json::Value, ApiError> {
     if !body.approve {
         return Err(ApiError::bad(
             "explicit approve=true is required; proposals are never applied automatically",
         ));
     }
-    let mut session = state
-        .inner
-        .lock()
-        .map_err(|_| ApiError::internal("state poisoned"))?;
     if session.running {
         return Err(ApiError::conflict(
             "pause before applying a calibration revision",
@@ -1129,7 +1662,8 @@ async fn mixture_apply(
     }
     let selected: Option<Vec<(usize, usize)>> = body
         .selected
-        .map(|v| v.into_iter().map(|a| (a[0], a[1])).collect());
+        .as_ref()
+        .map(|v| v.iter().map(|a| (a[0], a[1])).collect());
     let result: ApplyResult = apply_proposal(
         &session.calibration,
         &body.proposal,
@@ -1139,22 +1673,35 @@ async fn mixture_apply(
     .map_err(|e| ApiError::bad(e.to_string()))?;
     let next = result.calibration.clone();
     let pre = preflight(&next);
+    let new_engine = engine_for(&session.truth, next.clone(), session.scenario.clone())
+        .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.persist_revision(
+        &next,
+        "mixture_apply",
+        ctx,
+        approval,
+        &format!("Mixture Map proposal {} applied", body.proposal.proposal_id),
+        format!(
+            "proposal {} (base {}, source scenario {}, log {}): {} cells applied to table {}",
+            body.proposal.proposal_id,
+            body.proposal.base_checksum,
+            body.proposal.source_scenario,
+            body.proposal.source_log_checksum,
+            result.applied_cells,
+            body.proposal.table_key
+        ),
+    )?;
     session.history.push(next.clone());
     session.calibration = next;
-    session.engine = engine_for(
-        &session.truth,
-        session.calibration.clone(),
-        session.scenario.clone(),
-    )
-    .map_err(|e| ApiError::internal(e.to_string()))?;
+    session.engine = new_engine;
     session.frame_cursor = 0;
-    Ok(Json(json!({
+    Ok(json!({
         "applied_cells": result.applied_cells,
         "diff": result.diff,
         "undo_revision": result.undo_revision,
         "calibration": session.calibration,
         "preflight": pre,
-    })))
+    }))
 }
 
 async fn get_faults(State(state): State<AppState>) -> Result<Json<serde_json::Value>, ApiError> {
@@ -2306,5 +2853,531 @@ mod http_tests {
         assert_eq!(body["writes_calibration"], false);
         assert_eq!(body["recommendation"]["status"], "insufficient_evidence");
         assert_eq!(checksum(&app).await, base);
+    }
+}
+
+/// TUNE-AUD-01: durable revision/audit persistence driven through the real
+/// router. Every test uses an isolated temp directory; nothing is written to
+/// the repository.
+#[cfg(test)]
+mod persistence_tests {
+    use super::*;
+    use crate::store::testutil::TempDir;
+    use axum::body::Body;
+    use axum::http::Request;
+    use tower::ServiceExt;
+
+    fn starter() -> Calibration {
+        generate_starter(&WizardRequest::default_inline4(), 1).unwrap()
+    }
+
+    /// A "service instance": fresh session bootstrapped from `dir` exactly as
+    /// `main` does it. Dropping it and calling this again is a restart.
+    fn service(dir: &TempDir) -> (Router, AppState) {
+        let store = CalibrationStore::open(dir.path()).expect("store opens");
+        let state = bootstrap_state(
+            starter(),
+            false,
+            by_id("idle_warmup").unwrap(),
+            false,
+            Some(store),
+        )
+        .expect("bootstrap");
+        let app = build_router(state.clone(), std::path::Path::new("/nonexistent-ui-dir"));
+        (app, state)
+    }
+
+    async fn call(
+        app: &Router,
+        method: &str,
+        uri: &str,
+        body: Option<serde_json::Value>,
+    ) -> (StatusCode, serde_json::Value) {
+        let mut builder = Request::builder().method(method).uri(uri);
+        let body = match body {
+            Some(v) => {
+                builder = builder.header(header::CONTENT_TYPE, "application/json");
+                Body::from(v.to_string())
+            }
+            None => Body::empty(),
+        };
+        let response = app
+            .clone()
+            .oneshot(builder.body(body).unwrap())
+            .await
+            .unwrap();
+        let status = response.status();
+        let bytes = axum::body::to_bytes(response.into_body(), 64 * 1024 * 1024)
+            .await
+            .unwrap();
+        (
+            status,
+            serde_json::from_slice(&bytes).unwrap_or(serde_json::Value::Null),
+        )
+    }
+
+    async fn head(app: &Router) -> String {
+        let (s, v) = call(app, "GET", "/api/calibration", None).await;
+        assert_eq!(s, StatusCode::OK);
+        v["checksum"].as_str().unwrap().to_string()
+    }
+
+    async fn audit(app: &Router) -> Vec<serde_json::Value> {
+        let (s, v) = call(app, "GET", "/api/calibration/audit", None).await;
+        assert_eq!(s, StatusCode::OK, "{v}");
+        v["entries"].as_array().unwrap().clone()
+    }
+
+    fn actions(entries: &[serde_json::Value]) -> Vec<String> {
+        entries
+            .iter()
+            .map(|e| {
+                format!(
+                    "{}:{}",
+                    e["action"].as_str().unwrap(),
+                    e["outcome"].as_str().unwrap()
+                )
+            })
+            .collect()
+    }
+
+    #[tokio::test]
+    async fn restart_recovery_append_only_audit_and_undo_persistence_over_http() {
+        let dir = TempDir::new("http-restart");
+        let (app, state) = service(&dir);
+        let base = head(&app).await;
+
+        // --- baseline recorded on first start
+        let entries = audit(&app).await;
+        assert_eq!(actions(&entries), vec!["baseline:info"]);
+        assert_eq!(entries[0]["actor"]["label"], "local-operator");
+        assert_eq!(entries[0]["actor"]["supplied"], false);
+        assert_eq!(entries[0]["after_checksum"], base.as_str());
+
+        // --- produce a real proposal from the virtual ECU (no invented data)
+        let (st, _) = call(
+            &app,
+            "POST",
+            "/api/sim/start",
+            Some(json!({ "scenario_id": "mixture_sweep" })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::OK);
+        state.inner.lock().unwrap().engine.run_to_end();
+        let (st, analysis) = call(
+            &app,
+            "POST",
+            "/api/mixture/analyze-current",
+            Some(json!({ "min_samples": 12 })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::OK, "{analysis}");
+        let proposal = analysis["report"]["proposal"].clone();
+        assert!(proposal.is_object());
+
+        // --- rejected attempts are audited and change nothing
+        let (st, _) = call(
+            &app,
+            "POST",
+            "/api/mixture/apply",
+            Some(json!({ "proposal": proposal, "approve": true, "actor": "bench-op" })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::CONFLICT, "engine still running");
+        let (st, _) = call(&app, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        let (st, _) = call(
+            &app,
+            "POST",
+            "/api/mixture/apply",
+            Some(json!({ "proposal": proposal })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::BAD_REQUEST, "missing approval");
+        assert_eq!(head(&app).await, base);
+
+        // --- approved apply -> revision 1, with supplied actor + reason
+        let (st, applied) = call(
+            &app,
+            "POST",
+            "/api/mixture/apply",
+            Some(json!({
+                "proposal": proposal, "approve": true,
+                "actor": "bench-op", "reason": "round-trip test of persisted apply"
+            })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::OK, "{applied}");
+        let c1 = head(&app).await;
+        assert_ne!(c1, base);
+
+        // --- table edit with no label (header absent) -> local-operator
+        let (_, cal) = call(&app, "GET", "/api/calibration", None).await;
+        let mut values = cal["calibration"]["tables"]["ve"]["values"]
+            .as_array()
+            .unwrap()
+            .clone();
+        let v0 = values[0].as_f64().unwrap();
+        values[0] = json!(v0 + 0.5);
+        let (st, edited) = call(
+            &app,
+            "POST",
+            "/api/calibration/table",
+            Some(json!({ "table_id": "ve", "values": values })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::OK, "{edited}");
+        let c2 = head(&app).await;
+
+        // --- axis resample -> revision 3 (to be undone)
+        let (st, rs) = call(
+            &app,
+            "POST",
+            "/api/calibration/resample",
+            Some(json!({ "table_id": "ve", "axis_index": 0, "points": 12, "actor": "bench-op" })),
+        )
+        .await;
+        assert_eq!(st, StatusCode::OK, "{rs}");
+        let c3 = head(&app).await;
+        assert_ne!(c3, c2);
+
+        // --- undo persists
+        let (st, _) = call(&app, "POST", "/api/calibration/undo", None).await;
+        assert_eq!(st, StatusCode::OK);
+        assert_eq!(head(&app).await, c2);
+
+        let entries = audit(&app).await;
+        assert_eq!(
+            actions(&entries),
+            vec![
+                "baseline:info",
+                "mixture_apply:rejected",
+                "mixture_apply:rejected",
+                "mixture_apply:applied",
+                "table_edit:applied",
+                "axis_resample:applied",
+                "undo:applied",
+            ]
+        );
+        // Before/after checksums + approval + actor on every entry.
+        let by = |i: usize, k: &str| entries[i][k].as_str().map(str::to_string);
+        assert_eq!(by(1, "before_checksum"), Some(base.clone()));
+        assert_eq!(
+            by(1, "after_checksum"),
+            Some(base.clone()),
+            "rejected: unchanged"
+        );
+        assert_eq!(entries[1]["actor"]["label"], "bench-op");
+        assert_eq!(entries[1]["approval"]["granted"], true);
+        assert_eq!(entries[2]["approval"]["granted"], false);
+        assert_eq!(entries[2]["approval"]["required"], true);
+        assert_eq!(
+            (by(3, "before_checksum"), by(3, "after_checksum")),
+            (Some(base.clone()), Some(c1.clone()))
+        );
+        assert_eq!(entries[3]["reason"], "round-trip test of persisted apply");
+        assert_eq!(
+            (by(4, "before_checksum"), by(4, "after_checksum")),
+            (Some(c1.clone()), Some(c2.clone()))
+        );
+        assert_eq!(entries[4]["actor"]["label"], "local-operator");
+        assert_eq!(entries[4]["actor"]["supplied"], false);
+        assert_eq!(
+            (by(5, "before_checksum"), by(5, "after_checksum")),
+            (Some(c2.clone()), Some(c3.clone()))
+        );
+        assert_eq!(
+            (by(6, "before_checksum"), by(6, "after_checksum")),
+            (Some(c3.clone()), Some(c2.clone()))
+        );
+        assert_eq!(entries[6]["new_revision_checksum"], serde_json::Value::Null);
+
+        // Pre-restart snapshot of the on-disk files (for the append-only check).
+        let rfile = dir.path().join("revisions.jsonl");
+        let afile = dir.path().join("audit.jsonl");
+        let (r_bytes, a_bytes) = (
+            std::fs::read(&rfile).unwrap(),
+            std::fs::read(&afile).unwrap(),
+        );
+        drop(app);
+        drop(state);
+
+        // ======================= RESTART =======================
+        let (app2, state2) = service(&dir);
+        assert_eq!(
+            head(&app2).await,
+            c2,
+            "latest (post-undo) revision restored"
+        );
+        {
+            let s = state2.inner.lock().unwrap();
+            assert!(s.calibration.verify());
+            assert_eq!(
+                s.history.len(),
+                3,
+                "undo stack = base, apply, edit (the undone resample is excluded)"
+            );
+            assert_eq!(s.history[0].checksum, base);
+            assert_eq!(
+                s.truth.checksum, base,
+                "simulated-physics baseline is the lineage root"
+            );
+        }
+        // The undone revision is still stored (append-only) but not active.
+        let (_, revs) = call(&app2, "GET", "/api/calibration/revisions", None).await;
+        let list = revs["revisions"].as_array().unwrap();
+        assert_eq!(list.len(), 4);
+        let r3 = list.iter().find(|r| r["checksum"] == c3.as_str()).unwrap();
+        assert_eq!(r3["in_active_lineage"], false);
+        assert_eq!(r3["source"], "axis_resample");
+        assert_eq!(list.iter().filter(|r| r["current"] == true).count(), 1);
+        assert_eq!(revs["store"]["persistent"], true);
+
+        // Revision metadata endpoint (+ optional payload).
+        let (st, meta) = call(
+            &app2,
+            "GET",
+            &format!("/api/calibration/revisions/{c1}"),
+            None,
+        )
+        .await;
+        assert_eq!(st, StatusCode::OK);
+        assert_eq!(meta["actor"]["label"], "bench-op");
+        assert_eq!(meta["parent_checksum"], base.as_str());
+        assert!(meta.get("calibration").is_none());
+        let (_, with_payload) = call(
+            &app2,
+            "GET",
+            &format!("/api/calibration/revisions/{c1}?payload=true"),
+            None,
+        )
+        .await;
+        assert_eq!(with_payload["calibration"]["checksum"], c1.as_str());
+        let (st, _) = call(&app2, "GET", "/api/calibration/revisions/nope", None).await;
+        assert_eq!(st, StatusCode::NOT_FOUND);
+
+        // Old bytes are an exact prefix of the files after restart + new entry.
+        assert!(std::fs::read(&rfile).unwrap().starts_with(&r_bytes));
+        assert!(std::fs::read(&afile).unwrap().starts_with(&a_bytes));
+        let entries2 = audit(&app2).await;
+        assert_eq!(entries2.len(), entries.len() + 1);
+        assert_eq!(entries2.last().unwrap()["action"], "store_loaded");
+        assert_eq!(entries2.last().unwrap()["after_checksum"], c2.as_str());
+        for (a, b) in entries.iter().zip(entries2.iter()) {
+            assert_eq!(a, b, "earlier audit entries are never rewritten");
+        }
+
+        // Undo continues to work across the restart, down to the baseline.
+        let (st, _) = call(&app2, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        for expect in [&c1, &base] {
+            let (st, body) = call(&app2, "POST", "/api/calibration/undo", None).await;
+            assert_eq!(st, StatusCode::OK, "{body}");
+            assert_eq!(&head(&app2).await, expect);
+        }
+        let (st, _) = call(&app2, "POST", "/api/calibration/undo", None).await;
+        assert_eq!(
+            st,
+            StatusCode::BAD_REQUEST,
+            "nothing earlier than the baseline"
+        );
+        let last = audit(&app2).await.pop().unwrap();
+        assert_eq!(
+            (last["action"].as_str(), last["outcome"].as_str()),
+            (Some("undo"), Some("rejected"))
+        );
+
+        // Second restart lands on the baseline: undo itself was persisted.
+        drop(app2);
+        drop(state2);
+        let (app3, _s3) = service(&dir);
+        assert_eq!(head(&app3).await, base);
+        let (_, revs3) = call(&app3, "GET", "/api/calibration/revisions", None).await;
+        assert_eq!(
+            revs3["revisions"].as_array().unwrap().len(),
+            4,
+            "no revision was ever deleted"
+        );
+        let (_, v) = call(&app3, "GET", "/api/calibration/store/verify", None).await;
+        assert_eq!(v["ok"], true, "{v}");
+        eprintln!(
+            "persistence-e2e: restart#1 head==post-undo {c2:.12}; restart#2 head==baseline {base:.12}; \
+             revisions={} audit_entries={} verify={}",
+            revs3["revisions"].as_array().unwrap().len(),
+            audit(&app3).await.len(),
+            v["ok"]
+        );
+    }
+
+    /// A store write failure must surface as HTTP 500, leave the in-memory
+    /// calibration untouched, and (store now poisoned) refuse every later write
+    /// until restart, after which the on-disk baseline is what loads.
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn store_write_failure_returns_500_and_leaves_calibration_unchanged() {
+        let dir = TempDir::new("http-write-fail");
+        let (app, state) = service(&dir);
+        let base = head(&app).await;
+        let (st, _) = call(&app, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        let (_, cal) = call(&app, "GET", "/api/calibration", None).await;
+        let mut values = cal["calibration"]["tables"]["ve"]["values"]
+            .as_array()
+            .unwrap()
+            .clone();
+        let v0 = values[0].as_f64().unwrap();
+        values[0] = json!(v0 + 0.5);
+        let audit_before = audit(&app).await.len();
+
+        // Force the next append to fail: put a directory where revisions.jsonl is.
+        let rfile = dir.path().join("revisions.jsonl");
+        let saved = std::fs::read(&rfile).unwrap();
+        std::fs::remove_file(&rfile).unwrap();
+        std::fs::create_dir(&rfile).unwrap();
+
+        let edit = || Some(json!({ "table_id": "ve", "values": values, "actor": "bench-op" }));
+        let (st, body) = call(&app, "POST", "/api/calibration/table", edit()).await;
+        assert_eq!(st, StatusCode::INTERNAL_SERVER_ERROR, "{body}");
+        assert_eq!(body["code"], "internal");
+        assert!(
+            body["message"].as_str().unwrap().contains("NOT applied"),
+            "{body}"
+        );
+        // In-memory calibration is unchanged: same checksum, same table values.
+        assert_eq!(head(&app).await, base);
+        {
+            let session = state.inner.lock().unwrap();
+            assert_eq!(session.calibration.checksum, base);
+            assert!(session.calibration.verify());
+            assert_eq!(
+                session.store.as_ref().unwrap().revisions().len(),
+                1,
+                "no revision may be recorded for the failed write"
+            );
+        }
+        let (_, cal_after) = call(&app, "GET", "/api/calibration", None).await;
+        assert_eq!(
+            cal_after["calibration"]["tables"]["ve"]["values"][0].as_f64(),
+            Some(v0),
+            "table value must be unchanged after the failed write"
+        );
+
+        // The store is now poisoned: even with the file restored, further
+        // writes are refused (500) until restart. State still unchanged.
+        std::fs::remove_dir(&rfile).unwrap();
+        std::fs::write(&rfile, &saved).unwrap();
+        let (st, body) = call(&app, "POST", "/api/calibration/table", edit()).await;
+        assert_eq!(st, StatusCode::INTERNAL_SERVER_ERROR, "{body}");
+        assert_eq!(head(&app).await, base);
+        assert_eq!(
+            audit(&app).await.len(),
+            audit_before,
+            "no audit entry is acknowledged for a write that failed"
+        );
+        drop(app);
+        drop(state);
+
+        // Restart: the intact on-disk store loads at the baseline and works.
+        let (app2, _s2) = service(&dir);
+        assert_eq!(head(&app2).await, base);
+        let (st, _) = call(&app2, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        let (st, body) = call(&app2, "POST", "/api/calibration/table", edit()).await;
+        assert_eq!(st, StatusCode::OK, "{body}");
+        assert_ne!(head(&app2).await, base);
+        eprintln!(
+            "write-failure test: HTTP 500 x2, head unchanged {base:.12}, restart OK and edit applies"
+        );
+    }
+
+    #[tokio::test]
+    async fn tampered_store_is_refused_at_startup_and_flagged_while_running() {
+        let dir = TempDir::new("http-tamper");
+        let (app, _state) = service(&dir);
+        let (_, v) = call(&app, "GET", "/api/calibration/store/verify", None).await;
+        assert_eq!(v["ok"], true, "{v}");
+
+        // Tamper on disk while the service is up: the verify endpoint says so.
+        let rfile = dir.path().join("revisions.jsonl");
+        let text = std::fs::read_to_string(&rfile).unwrap();
+        let tampered = text.replacen("\"source\":\"baseline\"", "\"source\":\"forged\"", 1);
+        assert_ne!(text, tampered);
+        std::fs::write(&rfile, &tampered).unwrap();
+        let (st, v) = call(&app, "GET", "/api/calibration/store/verify", None).await;
+        assert_eq!(st, StatusCode::OK);
+        assert_eq!(v["ok"], false);
+        let msg = v["error"].as_str().unwrap();
+        assert!(msg.contains("corrupt or tampered"), "{msg}");
+        drop(app);
+
+        // A new service instance refuses to start from the bad store.
+        let err = match CalibrationStore::open(dir.path()) {
+            Ok(_) => panic!("must refuse"),
+            Err(e) => e.to_string(),
+        };
+        eprintln!("startup-refusal: {err}");
+        assert!(err.contains("revisions.jsonl") && err.contains("left untouched"));
+        assert_eq!(
+            std::fs::read_to_string(&rfile).unwrap(),
+            tampered,
+            "bad file preserved"
+        );
+    }
+
+    #[tokio::test]
+    async fn explicit_cal_from_another_lineage_is_refused_not_silently_switched() {
+        let dir = TempDir::new("http-lineage");
+        drop(service(&dir));
+        let other = starter().fork(99, 12345);
+        let err = match bootstrap_state(
+            other,
+            true,
+            by_id("idle_warmup").unwrap(),
+            false,
+            Some(CalibrationStore::open(dir.path()).unwrap()),
+        ) {
+            Ok(_) => panic!("must refuse a foreign --cal"),
+            Err(e) => e.to_string(),
+        };
+        assert!(err.contains("refusing to switch lineage"), "{err}");
+    }
+
+    #[tokio::test]
+    async fn operator_label_header_and_no_persist_mode() {
+        let dir = TempDir::new("http-header");
+        let (app, _s) = service(&dir);
+        let (st, _) = call(&app, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        // Undo with no earlier revision is rejected; the header label is recorded.
+        let response = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/api/calibration/undo")
+                    .header("x-operator-label", "header-op")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+        let last = audit(&app).await.pop().unwrap();
+        assert_eq!(last["actor"]["label"], "header-op");
+        assert_eq!(last["actor"]["supplied"], true);
+
+        // --no-persist: same API shape, explicit "not persistent", no disk use.
+        let state = new_state(starter(), by_id("idle_warmup").unwrap(), false).unwrap();
+        let app = build_router(state, std::path::Path::new("/nonexistent-ui-dir"));
+        let (st, v) = call(&app, "GET", "/api/calibration/revisions", None).await;
+        assert_eq!(st, StatusCode::OK);
+        assert_eq!(v["store"]["persistent"], false);
+        assert_eq!(v["revisions"].as_array().unwrap().len(), 0);
+        let (st, _) = call(&app, "GET", "/api/calibration/revisions/abc", None).await;
+        assert_eq!(st, StatusCode::CONFLICT);
+        // The pre-existing history endpoint keeps its shape.
+        let (st, h) = call(&app, "GET", "/api/calibration/history", None).await;
+        assert_eq!(st, StatusCode::OK);
+        assert_eq!(h["revisions"].as_array().unwrap().len(), 1);
     }
 }
