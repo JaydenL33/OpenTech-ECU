@@ -360,6 +360,17 @@ impl MissingToothDecoder {
             self.last_tooth_us = Some(timestamp_us);
             return DecodeEvent::SyncLost(DecodeError::Timeout);
         }
+        if self.state == SyncState::Lost {
+            // The first edge after a stall/too-long gap is a fresh capture
+            // baseline, not a tooth interval. Consume it and let the next
+            // edge establish the tooth period so the long gap cannot poison
+            // `expected_interval_us` and starve short-edge rejection.
+            self.last_tooth_us = Some(timestamp_us);
+            self.tooth_index = 0;
+            self.expected_interval_us = 0.0;
+            self.state = SyncState::Unsynced;
+            return DecodeEvent::None;
+        }
         self.cam_age_teeth = self.cam_age_teeth.saturating_add(1);
         self.expire_cam(timestamp_us);
         self.last_tooth_us = Some(timestamp_us);
@@ -619,8 +630,18 @@ mod tests {
                 }
                 events.push((false, (angle * us_per_deg) as u64 + 1000));
             }
-            if cam && rev == 1 {
-                events.push((true, (690.0 * us_per_deg) as u64 + 1000));
+            // A real cam pulse repeats once per 720-degree cycle. The old
+            // fixture emitted it only in the first cycle, which the new
+            // bounded cam-expiry policy correctly rejects after six
+            // revolutions without a valid edge.
+            if cam && rev % 2 == 1 {
+                // Cam at 690 degrees of each 720-degree cycle (i.e. within
+                // odd-numbered crank revolutions).
+                let cycle = rev / 2;
+                events.push((
+                    true,
+                    ((cycle as f32 * 720.0 + 690.0) * us_per_deg) as u64 + 1000,
+                ));
             }
         }
         events.sort_by_key(|e| e.1);
@@ -996,5 +1017,131 @@ mod tests {
             MissingToothConfig { teeth: 0, ..cfg }.tooth_reference(0.0),
             None
         );
+    }
+
+    fn feed(d: &mut MissingToothDecoder, events: &[(bool, u64)], offset: u64) -> u64 {
+        let mut last = 0;
+        for &(cam, ts) in events {
+            let ts = ts + offset;
+            if cam {
+                d.on_cam(ts);
+            } else {
+                d.on_tooth(ts);
+            }
+            last = ts;
+        }
+        last
+    }
+
+    #[test]
+    fn cam_loss_expires_sequential_phase_and_reacquires() {
+        let rpm = 1000.0;
+        let us_per_deg = 60_000_000.0 / (rpm * 360.0);
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        let mut last = feed(&mut d, &generate(rpm, 3, true), 0);
+        assert_eq!(d.state(), SyncState::Sequential);
+
+        // More than the six-revolution cam-expiry bound without a cam edge.
+        // generate() ends on the 340-degree tooth; the next 0-degree edge is
+        // one missing-tooth gap (20 degrees) later, not one normal 10-degree
+        // tooth spacing.
+        let offset = last + (20.0 * us_per_deg) as u64 - 1000;
+        last = feed(&mut d, &generate(rpm, 8, false), offset);
+        let s = d.status();
+        assert_eq!(s.state, SyncState::CrankSynced, "{s:?}");
+        assert!(s.cycle_angle_deg.is_none(), "{s:?}");
+        assert!(s.cam_seen, "the earlier valid cam must remain in history");
+
+        // A valid cam in the configured window re-establishes phase.
+        // generate() ends on the 340-degree tooth; the next 0-degree edge is
+        // one missing-tooth gap (20 degrees) later, not one normal 10-degree
+        // tooth spacing.
+        let offset = last + (20.0 * us_per_deg) as u64 - 1000;
+        feed(&mut d, &generate(rpm, 2, true), offset);
+        let s = d.status();
+        assert_eq!(s.state, SyncState::Sequential, "{s:?}");
+        assert!(s.cycle_angle_deg.is_some(), "{s:?}");
+    }
+
+    #[test]
+    fn crank_loss_times_out_and_recovers() {
+        let rpm = 1000.0;
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        let last = feed(&mut d, &generate(rpm, 2, true), 0);
+        assert_eq!(d.state(), SyncState::Sequential);
+
+        let event = d.tick(last + 300_000);
+        assert!(
+            matches!(event, DecodeEvent::SyncLost(DecodeError::Timeout)),
+            "{event:?}"
+        );
+        assert_eq!(d.state(), SyncState::Lost);
+
+        // Resume at the next gap tooth after the stall.
+        let offset = last + 300_000 - 1000;
+        feed(&mut d, &generate(rpm, 4, true), offset);
+        let s = d.status();
+        assert_eq!(s.state, SyncState::Sequential, "{s:?}");
+    }
+
+    #[test]
+    fn short_edge_is_ignored_without_poisoning_sync() {
+        let rpm = 1000.0;
+        let us_per_deg = 60_000_000.0 / (rpm * 360.0);
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        let last = feed(&mut d, &generate(rpm, 2, true), 0);
+        assert_eq!(d.state(), SyncState::Sequential);
+        let before = d.status();
+
+        let short = (before.expected_interval_us * 0.1) as u64;
+        let event = d.on_tooth(last + 1.max(short));
+        assert!(matches!(event, DecodeEvent::None), "{event:?}");
+        let after = d.status();
+        assert_eq!(after.state, before.state);
+        assert_eq!(after.error_count, before.error_count);
+        assert_eq!(after.crank_angle_deg, before.crank_angle_deg);
+
+        // The next real gap edge is still accepted and the engine stays synced.
+        // generate() ends on the 340-degree tooth; the next 0-degree edge is
+        // one missing-tooth gap (20 degrees) later, not one normal 10-degree
+        // tooth spacing.
+        let offset = last + (20.0 * us_per_deg) as u64 - 1000;
+        feed(&mut d, &generate(rpm, 2, true), offset);
+        assert_eq!(d.state(), SyncState::Sequential);
+    }
+
+    #[test]
+    fn cam_outside_window_drops_sequential_but_recovers() {
+        let rpm = 1000.0;
+        let us_per_deg = 60_000_000.0 / (rpm * 360.0);
+        let mut d = decoder();
+        d.set_cam_window(Some((320.0, 340.0))).unwrap();
+        let last = feed(&mut d, &generate(rpm, 2, true), 0);
+        assert_eq!(d.state(), SyncState::Sequential);
+
+        // Just past the configured 320..=340 window.
+        d.on_cam(last + 1);
+        let s = d.status();
+        assert!(s.cam_phase_rejected, "{s:?}");
+        assert_eq!(s.state, SyncState::CrankSynced, "{s:?}");
+        assert!(s.cycle_angle_deg.is_none(), "{s:?}");
+
+        // generate() ends on the 340-degree tooth; the next 0-degree edge is
+        // one missing-tooth gap (20 degrees) later, not one normal 10-degree
+        // tooth spacing.
+        let offset = last + (20.0 * us_per_deg) as u64 - 1000;
+        feed(&mut d, &generate(rpm, 2, true), offset);
+        assert_eq!(d.state(), SyncState::Sequential);
+    }
+
+    #[test]
+    fn loss_bounds_reject_impossible_values() {
+        let mut d = decoder();
+        assert!(d.set_loss_bounds(1, 6).is_err());
+        assert!(d.set_loss_bounds(4, 1).is_err());
+        assert!(d.set_loss_bounds(6, 3).is_ok());
     }
 }

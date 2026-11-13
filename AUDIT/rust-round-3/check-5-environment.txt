@@ -1,0 +1,19 @@
+# Check environment for RUST-TRG-001 verification
+date_utc: 2026-11-13
+host: Linux x86_64
+rustc: 1.99.1 (5f94df478 2026-08-27)
+cargo: 1.99.1 (5f94df478 2026-08-27)
+cc_wrapper: /home/jlee/tools/bin/cc
+cc_version: gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+cc_wrapper_body:
+  #!/bin/sh
+  exec /home/jlee/tools/sysroot/usr/bin/gcc-13 -B/home/jlee/tools/sysroot/usr/lib/gcc/x86_64-linux-gnu/13/ "$@"
+
+The worktree has no prebuilt target cache, so the host needs a C linker for
+Rust build scripts and test binaries. The wrapper is a locally extracted GCC
+toolchain; the system compiler is not installed or modified. All commands below
+were run from <worktree>/ecu with PATH=/home/jlee/tools/bin:$PATH.
+
+This supersedes check-2/3/4, which failed before compilation with
+"linker `cc` not found" because that PATH entry was absent. The failed logs are
+retained as historical evidence.
