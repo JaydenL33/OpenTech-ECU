@@ -5,7 +5,7 @@
 | Document ID | PROG-TASKS |
 | Status | Living ledger; states are evidence-based |
 | Date | 2026-11-13 Australia/Sydney |
-| Baseline | `master` at `f88bb772c8b7b84f0772e199ee38c7b9dd0dee9c` |
+| Baseline | `master` at `71763bbd` (cycle close; see git log for later ledger commits) |
 | Orchestration | T3 Code native delegation; no shell-launched agents |
 | Recovery record | `AUDIT/PREVIOUS_SWARM_RECOVERY.md` |
 
@@ -112,6 +112,10 @@ after verifying their committed changes and evidence.
 | Firmware Mega 2560 build evidence | `AUDIT/FIRMWARE_TEST_EVIDENCE.md` |
 | Rust trigger waveform/timing evidence rounds 1–2 | `AUDIT/rust-round-1/`, `AUDIT/rust-round-2/` |
 | Tuning rounds 1–7, including HTTP e2e and CSV import | `AUDIT/TUNING_WORKSTREAM_EVIDENCE.md` |
+| HW-H2-01 mechanical/ERC/DRC-exception package | `3d191045`; focused review ACCEPT WITH FINDINGS; H2 complete with exceptions, H3 not ready |
+| RUST-TRG-001 bounded crank/cam loss handling | `b710d2b9`; re-review ACCEPT WITH FINDINGS; 226 workspace / 29 trigger tests; RUST-TRG-002 queued |
+| TUNE-AUD-01 durable calibration audit store | `c35323f6`; review ACCEPT WITH FINDINGS; 235 workspace / 36 studio-service tests; TUNE-UI-002 queued |
+| Status reconciliation | `71763bbd`; README, RELEASE_GATES, HARDWARE_STATUS, traceability and blockers updated |
 
 ## 6. Ledger rules
 
@@ -122,3 +126,23 @@ after verifying their committed changes and evidence.
    hashes to `AUDIT/`; summaries alone are insufficient.
 4. Never delete a historical failure. Supersede it with a later evidence file.
 5. No task may self-promote H4 or any physical/vehicle gate.
+
+## 7. Cycle 2026-11-13 close
+
+| Check | Result |
+|---|---|
+| `cargo fmt --all -- --check` | exit 0 |
+| `cargo clippy --workspace --all-targets --locked -- -D warnings` | exit 0 |
+| `cargo test --workspace --locked` | **244 passed, 0 failed** |
+| `cargo test -p ecu-trigger --locked -- --nocapture` | 29 passed; 0 post-acquisition cam drops at 150/250/400 rpm |
+| `cargo test -p studio-service --locked -- --nocapture` | 36 passed; restart, tamper, SIGKILL crash proxy and failed-write rollback |
+| Tuning Studio `npx tsc --noEmit` / `npx vite build` | exit 0 / built |
+| `hardware/tools/check_prototype_v1.sh` | exit 0; ERC 49, DRC 397 + 199 per-item exclusions, 0 unconnected |
+| `hardware/tools/verify_upstream_baseline.sh` | exit 0; 32/32 upstream hashes |
+| Independent hardware review | ACCEPT WITH FINDINGS; 199/199 exclusions matched, jumpers verified, drawings rendered |
+| Independent Rust re-review | ACCEPT WITH FINDINGS; mutation tests prove the two blocking fixes |
+| Independent tuning review | ACCEPT WITH FINDINGS; prior blocking durability finding resolved |
+
+Gate disposition: Gate 0 host evidence remains PASS, scoped. H0 PASS, H1 PARTIAL,
+H2 COMPLETE WITH DOCUMENTED EXCEPTIONS, H3 NOT READY, H4 human-only. No physical,
+engine, vehicle or fabrication gate advanced. No purchase or fabrication occurred.
