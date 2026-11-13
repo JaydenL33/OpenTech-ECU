@@ -1,0 +1,28 @@
+$ cargo test -p ecu-simulator --test cylinder_counts --locked -- --nocapture
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling memchr v2.8.3
+   Compiling ecu-types v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-types)
+   Compiling ecu-trigger v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-trigger)
+   Compiling ecu-scheduler v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-scheduler)
+   Compiling ecu-protection v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-protection)
+   Compiling ecu-calibration v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-calibration)
+   Compiling ecu-ignition v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-ignition)
+   Compiling ecu-fuel v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-fuel)
+   Compiling ecu-lambda v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-lambda)
+   Compiling ecu-simulator v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-9c562032-cf05cc241c55917a/ecu/crates/ecu-simulator)
+    Finished `test` profile [optimized + debuginfo] target(s) in 8.50s
+     Running tests/cylinder_counts.rs (target/debug/deps/cylinder_counts-7ac81eb46efbbd14)
+
+running 4 tests
+test cylinder_to_tooth_mapping_matches_decision_table ... ok
+test layout_tdc_matches_scheduler_spark_angles ... ok
+idle_warmup: first sequential frame 28, 540 ms; post-sync dropouts 0; repeat hash identical
+test inline4_matches_post_rust_trg_002_baseline_with_stable_sync ... ok
+test every_cylinder_count_runs_sequential_with_even_intervals ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 19.67s
+
+
+EXIT_CODE=0

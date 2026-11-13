@@ -322,3 +322,41 @@ passing suite counts claimed. One-revolution confirmation reduces false-lock
 risk at the cost of startup latency, but persistent downstream differences
 require investigation before baseline acceptance. Host evidence only;
 H0–H9 dispositions unchanged.
+
+
+## RUST-TRG-002 accepted closed-loop rebaseline (2026-11-13)
+Merged t3/reconcile-simulator-golden e0d3406a into isolated master c7102387.
+Old normalized transcript SHA-256:
+ff6d5a675d321f073cea847aa9c16683e7a48364c65198c4db6c9851d98a2c9a.
+New post-RUST-TRG-002 SHA-256:
+9bc9b970cb5558432f692cd3615920bd11050260072b389b937453661a09f418.
+Lead analysis of preserved baseline-old/new/diff evidence: first Sequential
+frame 17 / 340 ms old, frame 28 / 540 ms new; zero post-sync dropouts both.
+Old states: 1283 sequential, 11 unsynced, 6 crank_synced; new: 1272, 17, 11.
+Accepted trade-off: confirming acquisition takes one additional revolution.
+Fuel cut while non-sequential changes torque, idle PI, warm-up and throttle in
+the closed-loop plant. Final throttle 20.17% vs 1.04%, RPM 832.81 vs 940.01,
+pulse 2.497 vs 1.876 ms are supplied lead measurements, not sync loss or
+evidence of a fuel/ignition/protection regression.
+Focused test locally confirms 540 ms acquisition (bound <=600 ms), zero
+post-sync dropouts, non-empty frames, identical repeat full-log hashes and
+the full normalized transcript hash; calibration hash remains pinned.
+
+Raw verification: rust-round-4/check-7..12.log, PATH=/home/jlee/tools/bin:$PATH,
+Cargo commands from ecu. check-7 records compiler/tool versions.
+check-8 cargo fmt --all -- --check: exit 0.
+check-9 cargo clippy --workspace --all-targets --locked -- -D warnings: exit 0.
+check-10 cargo test --workspace --locked: exit 101, 156 passed / 2 failed
+before Cargo stopped; NOT a green 245-test workspace.
+Failures: trigger_waveform::cam_in_missing_region_decodes_without_a_synthetic_crank_tooth
+and decoder_matches_independent_offset_and_phase_vectors assume earlier acquisition.
+Actionable acceptance blocker: owning worker must reconcile these independent
+vector acquisition expectations with confirmed-gap semantics, retaining their
+post-acquisition angle checks, then rerun the full workspace. These files are
+outside this task's explicit edit ownership; no production behavior was changed.
+check-11 cargo test -p ecu-trigger --locked -- --nocapture: exit 0, 30 passed.
+check-12 cargo test -p ecu-simulator --test cylinder_counts --locked -- --nocapture:
+exit 0, 4 passed. Historical evidence preserved.
+Rebaseline is verified; full-workspace acceptance remains blocked by those two
+tests. Host simulation only; no MCU, physical, vehicle or Speeduino binary
+parity claim. H0–H9 dispositions unchanged; no fabrication approval granted.
