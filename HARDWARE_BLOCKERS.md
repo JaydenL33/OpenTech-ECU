@@ -218,7 +218,7 @@
 | Affected files | `hardware/prototype-v1/manufacturing/assembly/v0.4.4d-bom.csv` |
 | Problem | The original 11 blank-MPN rows are now classified: JP6–JP11 are bare copper features (no part), A1/XA1 are the documented hand-solder split, and nine machine connector/socket references still need an EE ordering code. Separately, the JLCPCB catalogue has zero stock for MPX4250AP (discontinued), LH R974-LP-1 (discontinued), CL21B224KOCNNNC, SSM3K357R and AYZ0202AGRLC; LM2940S-5.0/NOPB has one unit and several others are under 500. A turnkey order cannot be placed as-is. |
 | Evidence | Assembly pack: 139 machine placements, 9 unresolved connector/socket rows, 2 hand-solder items, 6 bare jumpers. `docs/HARDWARE_COST.md` / `AUDIT/COST_ESTIMATE.md` (2026-11-13) give an expected A$160.79/board assembled estimate; stock/EOL facts are in §8. No manufacturer quote. Detail in `AUDIT/BOM_REVIEW.md`. |
-| Required action | EE selects the nine connector/socket codes; resolve or consign the five zero-stock/EOL lines and the fuse; map alternatives without pin-compatibility-only substitution. Then upload for a real quote. |
+| Required action | EE selects the nine connector/socket codes; resolve or consign the five zero-stock/EOL lines and the fuse; map alternatives without pin-compatibility-only substitution. MPX4250AP options: owner-supply a genuine part, DNP U5 and use an external MAP on J4.21, or approve a footprint/transfer-function-compatible substitute. Then upload for a real quote. |
 | Owner | Hardware/BOM workstream |
 | Autonomous | Yes (research), purchases prohibited |
 | Verification | BOM audit: no blank MPN in release BOM; supplier links resolve |
@@ -298,6 +298,54 @@ blocker.
 | Owner | Firmware workstream |
 | Autonomous | Yes (build only) |
 | Verification | `git describe --tags` + `pio run -e megaatmega2560` + hex hash |
+| Status | **OPEN** |
+
+### HW-SAFE-01 — No 12 V fuse or reverse-polarity protection
+
+| Field | Value |
+|---|---|
+| Severity | S1 for bench safety |
+| Affected files | `hardware/prototype-v1/power.kicad_sch`, `connector.kicad_sch`, bench procedure |
+| Problem | F1/F2 are 5 V-side polyfuses; D14/D15 protect only the regulator input. `12V-SW` goes directly to J3.2, A1 VMOT, JP1.3, LED strings and J8, with no fuse or reverse-polarity protection. Reverse polarity has a low-impedance path through body/freewheel diodes. |
+| Evidence | `AUDIT/HARDWARE_NEXT_STEPS_REVIEW.md` F-5; netlist trace of `12V-SW`, F1/F2, D14/D15 |
+| Required action | Bench: external inline fuse, keyed/polarised lead and current-limited supply are mandatory. v2: add on-board fuse, reverse-polarity protection and a proper power connector. |
+| Verification | Bench procedure and v2 schematic/ERC/DRC review; no v1 copper change proposed here |
+| Status | **OPEN — external workaround mandatory; v2 design input** |
+
+### HW-IGN-01 — Ignition outputs are gate-drive only; no on-board coil drivers
+
+| Field | Value |
+|---|---|
+| Severity | S2 (feature/safety limitation) |
+| Affected files | `hardware/prototype-v1/Fuel_Ignition.kicad_sch`, `docs/COIL_INJECTOR_OPTIONS.md` |
+| Problem | IGN-1..4 are IXDN602 gate-driver outputs with only a 10 Ω series resistor. There are no IGBTs, coil clamps or coil-primary paths. A short or coil primary can dissipate ~2.5 W at 5 V or ~14 W at 12 V in the resistor; a coil input pull-up above 5 V can back-drive the 5 V rail. JP1 must be fitted; 2–3 gives ~12 V and can overstress a 5 V-only coil input. |
+| Evidence | `AUDIT/HARDWARE_NEXT_STEPS_REVIEW.md` F-3/F-4 and §2; netlist trace of `IGN-x-OUT` |
+| Required action | Verify each smart coil by exact part number, input current, pull-up and dwell before connecting. Never connect a dumb coil primary to v1. Design a daughter board/v2 with IGBTs/clamps for dumb coils. |
+| Verification | Coil datasheet/OEM manual, dummy 1 kΩ scope test, one-channel coil test with grounded spark gap; EE review |
+| Status | **OPEN — v1 is not a coil driver** |
+
+### HW-IDC-01 — IDC40 current, returns and pinout traps
+
+| Field | Value |
+|---|---|
+| Severity | S2 |
+| Affected files | `hardware/prototype-v1/connector.kicad_sch`, `hardware/bench-interface/idc40_pinout.csv` |
+| Problem | Injector current and four shared GND returns go through the IDC40/ribbon; no keyed header/mating cable is selected. IGN-3 is pin 16 and IGN-4 pin 15; injectors are interleaved with aux outputs; J4 has no +12 V; J4.21 is hard-wired to U5 through JP11. |
+| Evidence | `AUDIT/HARDWARE_NEXT_STEPS_REVIEW.md` §1.4; netlist and PCB J4 pad trace |
+| Required action | Select a keyed 2x20 header plus mating ribbon socket; review current/returns; document pin-number mapping; cut JP11 A–C and bridge B–C (or omit U5) for an external MAP. |
+| Verification | Header/cable datasheets; continuity and current review; EE sign-off |
+| Status | **OPEN** |
+
+### HW-FOOT-01 — 143 footprint-library mismatches not audited
+
+| Field | Value |
+|---|---|
+| Severity | S3 (H3 package) |
+| Affected files | `hardware/prototype-v1/verification/drc.rpt`, PCB footprints |
+| Problem | DRC reports 143 `lib_footprint_mismatch` warnings: embedded KiCad 5 footprints differ from the KiCad 9 library copies. The board geometry is embedded, but the footprint-library audit is not done. |
+| Evidence | `AUDIT/PCB_CHECK_RESULTS.md`; independent review §3 |
+| Required action | Spot-check the key power, connector, polarity and driver footprints against datasheets/library; document accepted vintage differences or update. |
+| Verification | Footprint-by-footprint review for critical parts; DRC re-run |
 | Status | **OPEN** |
 
 ### HW-REVIEW-01 — No independent hardware review

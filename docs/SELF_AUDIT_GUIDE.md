@@ -1,9 +1,10 @@
 # Self-audit guide — OpenTech-ECU prototype-v1
 
 You do not need to be a PCB designer to audit this board. You need to be
-systematic, keep the schematic and PCB cross-checked, and write down what you
-actually verified. This guide is for the selected board in
-`hardware/prototype-v1/`, not the legacy `hardware/kicad/evo8-bench-ecu/` draft.
+systematic, cross-check the schematic and PCB, and record what you actually
+verified. This guide is for `hardware/prototype-v1/`, not the legacy
+`hardware/kicad/evo8-bench-ecu/` draft. It has been corrected against
+`AUDIT/HARDWARE_NEXT_STEPS_REVIEW.md`.
 
 ## 0. What “audit” means here
 
@@ -16,10 +17,10 @@ An audit is not “the DRC passed.” It is a recorded check that:
 5. the board can be powered and tested without an obvious hazard;
 6. a human reviewer has seen the evidence and signed a decision.
 
-Record the date, the Git commit, the KiCad/Docker version, the file hashes, and
-what you checked. “Looks fine” is not evidence.
+Record the date, Git commit, KiCad/Docker version, file hashes, and what you
+checked. “Looks fine” is not evidence.
 
-## 1. Get the tools and the exact revision
+## 1. Tools and exact revision
 
 From the repository root:
 
@@ -27,10 +28,15 @@ From the repository root:
 git rev-parse HEAD
 hardware/tools/check_prototype_v1.sh
 hardware/tools/verify_upstream_baseline.sh
+git status --short
 ```
 
-The check script uses the pinned KiCad 9.0.9 Docker image and writes reports to
-`hardware/prototype-v1/verification/`. Read:
+The check script uses the pinned KiCad 9.0.9 Docker image and **rewrites tracked
+files** in `verification/` and `manufacturing/`. After it runs, inspect
+`git status` / `git diff --stat`; any non-timestamp change in Gerbers, drill,
+BOM or position files is a finding. Docker and the ~2 GB image are required.
+
+Read:
 
 - `verification/summary.txt` — counts, unconnected items, manufacturing files
 - `verification/erc.rpt` — schematic electrical rules
@@ -40,63 +46,65 @@ The check script uses the pinned KiCad 9.0.9 Docker image and writes reports to
 - `verification/connectivity.txt` — schematic vs PCB node comparison
 - `verification/mounting-holes.txt` — hole clearance check
 
-Then read `AUDIT/PCB_CHECK_RESULTS.md` and `AUDIT/HARDWARE_DIFF.md`. The reports
-are only useful with the written dispositions.
+Then read `AUDIT/PCB_CHECK_RESULTS.md` and `AUDIT/HARDWARE_DIFF.md`.
 
 ## 2. Open the right KiCad project
 
-Open:
+Open `hardware/prototype-v1/v0.4.4d.kicad_pro`. The root schematic is
+`v0.4.4d.kicad_sch`; the PCB is `v0.4.4d.kicad_pcb`.
 
-```text
-hardware/prototype-v1/v0.4.4d.kicad_pro
-```
-
-The root schematic is `v0.4.4d.kicad_sch`; it has six hierarchical sheets. The
-PCB is `v0.4.4d.kicad_pcb`.
-
-If you see “DO NOT FABRICATE: UNROUTED”, you have opened
-`hardware/kicad/evo8-bench-ecu/`. Close it.
+If you see “DO NOT FABRICATE: UNROUTED”, you opened the legacy
+`hardware/kicad/evo8-bench-ecu/` project. Close it.
 
 ## 3. Schematic audit, sheet by sheet
 
-Use `Ctrl+F` to find a reference or net. Click a wire and use **Highlight Net**
-(right-click) to follow it. Use the cross-probe tool to select a component in
-the schematic and see it highlighted on the PCB. Press `E` on a selected symbol
-or footprint to inspect its properties and footprint assignment.
-
-Check each block:
+Use `Ctrl+F` to find a reference or net. Click a wire and press the backtick
+(`` ` ``) hotkey to highlight the net (menu location varies by KiCad version).
+Use the cross-probe tool to select a component in the schematic and see it on
+the PCB. Press `E` to inspect a symbol/footprint.
 
 ### Power and protection (power sheet)
-- 12 V input path, fuse F1/F2, reverse-polarity diode D14, TVS D15.
+- 12 V input path J3: **there is no fuse and no reverse-polarity protection on
+  `12V-SW`**. F1/F2 are 5 V-side polyfuses; D14/D15 protect only the regulator
+  input. Use an external inline fuse, a keyed/polarised lead and a
+  current-limited supply on the bench.
 - 5 V regulator U8 (LM2940), decoupling, regulator input/output nets.
 - `Vdrive` selection JP1: pin 1 = 5 V, pin 3 = 12 V-SW, pin 2 = Vdrive.
-  Confirm which position your build uses and why.
+  **JP1 must be fitted**; open leaves the gate drivers unpowered.
 - GND/PGND partition and the single connection point; do not assume all ground
-  symbols are one net without checking.
+  symbols are one net.
 
 ### Inputs
 - Crank/cam conditioning, VR/Hall jumpers JP2/JP3, pull-up jumpers JP4/JP5.
 - MAP sensor U5, TPS, CLT, IAT, wideband input.
-- ADC clamp/protection U6; check the four spare channels are unused.
+- ADC clamp/protection U6; the four spare channels are U6 pins 7, 12, 13, 15.
 - Every input has a ground reference and a defined range.
 
 ### Fuel and ignition
-- Four injector channels: U1/U3/U7/U9 VNLD5090 low-side drivers, D5/D6/D11/D12
-  flyback diodes, outputs INJ-1..4 to J4.
-- Four ignition outputs: U2/U4 IXDN602 gate drivers, 10 Ω series resistors
-  R13/R14/R27/R28, outputs IGN-1..4 to J4.
-- **There are no IGBTs or coil primary drivers on this board.** The ignition
-  outputs are gate-driver / logic-level outputs for an external igniter or a
-  smart coil. Read `COIL_INJECTOR_OPTIONS.md`.
-- Dwell is set by the Mega/Speeduino firmware, not by this PCB.
+- **Injectors:** U1 and U3 (two dual-channel VNLD5090) drive INJ-1..4. U7/U9
+  drive BOOST/IDLE/HC-1/HC-2, **not injectors**.
+- **Injector clamp:** D5/D6/D11/D12 are indicator-LED series diodes, not
+  flyback diodes. Turn-off energy is absorbed by the VNLD5090 internal clamp.
+  The aux outputs have external freewheel diodes D16–D19.
+- **Ignition:** U2/U4 IXDN602 gate drivers, 10 Ω series resistors
+  R13/R14/R27/R28, outputs IGN-1..4. **No IGBTs, no coil primary path, no coil
+  clamp.** The 10 Ω resistor is the only current limit; never connect a coil
+  primary. Read `COIL_INJECTOR_OPTIONS.md`.
+- Dwell is set by the Mega/Speeduino firmware, not the PCB.
+- Low-impedance injectors should not be connected directly; see the coil/
+  injector note.
 
 ### Outputs and connector
-- J4 IDC40 pinout: check every pin against
-  `hardware/bench-interface/idc40_pinout.csv` and the netlist.
-- J3 12 V input, J1/J5/J6/J8 auxiliary headers.
-- JP6–JP11 solder jumpers: default bridges; JP11 must be cut before external
-  MAP is connected to IDC40 pin 21.
-- Check connector pin 1/orientation against the assembly drawing.
+- J4 IDC40: **IGN-3 = pin 16, IGN-4 = pin 15**. Injectors are interleaved with
+  aux outputs (INJ-3 = 5/7, INJ-4 = 9/11; pin 6 HC-2, 8 IDLE, 10 HC-1).
+- The schematic symbol is counter-clockwise; the footprint is normal odd/even
+  IDC. **Audit by pin number, not drawing position.**
+- **J4 has no +12 V pin.** Only four GND pins (17/19/23/36), shared with sensor
+  returns; do not put high-current returns through the ribbon.
+- **J4.21 MAP-EXT is hard-wired to U5** through JP11 (default bridged). For an
+  external MAP, cut JP11 A–C and bridge B–C, **or do not fit U5**. Otherwise
+  the two outputs fight.
+- JP6–JP11 default bridges; JP11 must be changed before external MAP.
 
 ### Mechanical
 - H1–H3 3.2 mm NPTH mounting holes; no top-right hole.
@@ -105,21 +113,19 @@ Check each block:
 
 ## 4. PCB audit
 
-- Inspect board outline, four copper layers? No: exactly **2 layers** F.Cu/B.Cu.
-- Check the GND/PGND pours and the return paths for the injector/ignition
-  drivers; high-current returns should not share a thin signal return.
+- Confirm the board is **2-layer** (F.Cu/B.Cu).
+- Check the GND/PGND pours and return paths. The injector/aux currents and the
+  four shared IDC GND pins are a real review item.
 - Inspect the 0.25/0.3/0.4/0.5/0.75/1.0 mm tracks; the 1.0 mm tracks carry
-  higher current. Confirm the expected current and temperature rise with the
-  board house or an EE; the project has not done a thermal calculation.
-- Check the 0.05 mm minimum via annular ring against the chosen fab. It is tight
+  higher current. The project has not done a thermal calculation.
+- Check the 0.05 mm minimum via annular ring against the chosen fab; it is tight
   for low-cost processes.
-- Inspect the 199 DRC exclusions in `drc_exclusions.csv`; they are all
-  courtyard overlaps. The three header-to-header pairs depend on the chosen
-  header MPN. Do not accept them without that MPN.
-- Check the 31 remaining DRC errors: they are the JP6–JP11 solder jumpers. Verify
-  each is intentional and matches the netlist.
-- Check the four ERC errors: U6 spare SP720 channels. Confirm they are unused,
-  not engine I/O.
+- Inspect the 199 courtyard exclusions in `drc_exclusions.csv`. The three
+  header-to-header pairs depend on the chosen header MPN.
+- Check the 31 remaining DRC errors (JP6–JP11 jumpers) and the 4 ERC errors
+  (U6 spare channels). Confirm they are unused/aux, not engine I/O.
+- **143 `lib_footprint_mismatch` warnings remain**: the footprint-library audit
+  is not done. This is an H3 item.
 - Check test points, connector orientation, and mounting-hole clearance.
 
 ## 5. BOM and assembly audit
@@ -135,23 +141,29 @@ Check each block:
 
 Do not upload the assembly BOM until the nine connector/socket MPNs are chosen
 and the EOL/zero-stock parts (especially MPX4250AP) are resolved or consigned.
-The J3 CSV quoting defect is fixed; re-run `generate.py` after any BOM change.
+Re-run `generate.py` after any BOM change.
 
 ## 6. Bench audit
 
 Before power:
 
-1. Inspect the bare board under magnification for bridges, missing pads, and
+1. Inspect the bare board under magnification for bridges, missing pads and
    damaged silkscreen.
-2. Continuity: 12 V to GND, 5 V to GND, each injector output to GND (no short),
-   each ignition output to GND (no short).
-3. Confirm no jumper is fitted in the wrong position; JP1 must match the
-   intended 5 V/12 V drive.
-4. Power from a current-limited supply, initially at low current, with fuses.
-5. Measure 5 V, 3.3 V (if present), and the regulator temperatures.
-6. Use dummy injector/ignition loads, not real coils/injectors, for the first
-   output tests. Scope the outputs; verify dwell/pulse width and polarity.
-7. Only then consider a known smart coil/test injector, one channel at a time.
+2. Continuity in diode mode: each VNLD output can read a diode drop from
+   GND→OUT (body diode) and open from OUT→GND — **that is normal, not a short**.
+   `12V-SW`→GND will not read open because of LED strings/DRV8825; record the
+   values rather than expecting infinity.
+3. Confirm no jumper is fitted incorrectly; JP1 must be fitted and set to the
+   intended 5 V/12 V position.
+4. Power from a **current-limited supply with an external fuse and a keyed
+   lead**, initially at low current. Reverse polarity is not protected on v1.
+5. Measure **VDD (5 V), VDDA (after F1), Vdrive (JP1.2)**. The shield has no
+   3.3 V rail; the Mega's 3.3 V is the Mega's.
+6. Dummy loads first: injector dummy = resistor matching the injector
+   resistance and power rating to an external +12 V (or a real high-Z injector
+   with no fuel); IGN dummy = 1 kΩ to GND. **Never a coil primary.**
+7. Scope the outputs; verify polarity, idle-low at boot/Mega reset, pulse width
+   and dwell. Then one known smart coil/test injector, one channel at a time.
 
 Stop conditions: any smell, smoke, hot component, supply current limit, or
 unexpected output. Disconnect power and record the fault.
@@ -163,22 +175,35 @@ project’s H4 gate is not satisfied. Options:
 
 - a freelance automotive/electronics engineer with PCB review experience;
 - a local makerspace or university electronics lab;
-- an online PCB review service (ask for a written findings list, not a chat);
+- an online PCB review service (ask for a written findings list);
 - a motorsport wiring/ECU shop with an electronics engineer.
 
-Give them `docs/START_HERE_HARDWARE.md`, this guide, the KiCad project, the
-verification reports, `HARDWARE_BLOCKERS.md`, `FABRICATION_NOTES.md` and the
-assembly pack. Ask for a written pass/fail with findings, not a verbal “looks
-fine.”
+Give them `docs/START_HERE_HARDWARE.md`, this guide, `COIL_INJECTOR_OPTIONS.md`,
+the KiCad project, verification reports, `HARDWARE_BLOCKERS.md`,
+`FABRICATION_NOTES.md` and the assembly pack. Ask for a written pass/fail with
+findings.
+
+Questions a human EE must answer include:
+
+1. Is the VNLD5090 internal clamp energy adequate for the chosen injectors at
+   maximum RPM?
+2. Is the IDC40/ribbon acceptable for injector current and the four shared GND
+   returns, and which header/cable part numbers?
+3. Is the 10 Ω gate-driver output within the chosen smart coil's input ratings,
+   with no back-drive risk?
+4. Is an external fuse acceptable instead of on-board 12 V fusing, at what
+   rating?
+5. Do they accept the ERC exceptions and 199 courtyard exclusions, including
+   the three header pairs once the header is chosen?
+6. Are the 1.0 mm tracks adequate at 1 oz copper for the bench currents?
+7. Is the 0.05 mm via annular ring acceptable to the fab?
+8. Which MAP sensor option is approved?
+9. Do the key power/connector/polarity footprints match the chosen datasheets?
+10. A signed pass/fail for H4.
 
 ## 8. Minimum self-audit record
 
-Write down:
-
-- commit hash and file hashes;
-- check-script exit codes and counts;
-- each ERC/DRC exception you accept and why;
-- BOM/connector choices and EOL alternatives;
-- mechanical/standoff decisions;
-- bench measurements (supply current, rail voltages, output waveforms);
-- anything you could not verify, and who must verify it.
+Write down the commit/file hashes, check-script exit codes and counts, each
+accepted ERC/DRC exception, BOM/connector choices and EOL alternatives,
+mechanical/standoff decisions, bench measurements (supply current, rail
+voltages, output waveforms), and anything you could not verify.

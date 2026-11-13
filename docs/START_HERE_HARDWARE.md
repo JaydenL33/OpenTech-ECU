@@ -15,7 +15,11 @@ given a documented minimal OpenTech revision. It is:
 
 - fully routed: **0 unconnected items**
 - 100.05 × 100.05 mm, 2-layer, Arduino Mega 2560 shield
-- 4 injector channels, 4 ignition outputs, IDC40 bench connector
+- 4 injector channels (U1/U3), 4 ignition gate-driver outputs (U2/U4),
+  4 auxiliary low-side outputs (U7/U9: boost/idle/HC-1/HC-2), IDC40 bench
+  connector
+- **no on-board IGBTs/coil primary drivers and no 12 V fuse/reverse-polarity
+  protection**; use an external fuse/keyed/current-limited bench supply
 - H2 complete with documented exceptions; **not fabrication-approved**
 - still electrically the upstream Speeduino design, deliberately
 

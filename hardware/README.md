@@ -24,10 +24,19 @@ documented minimal PCB revision (R-01…R-03; no net or topology change):
 | `tools/verify_upstream_baseline.sh` | SHA-256 verification of the preserved upstream tree |
 
 The v0.4.4d board is a 100 × 100 mm, 2-layer Arduino Mega 2560 shield with four
-injector and four ignition channels, an IDC40 interface and screw terminals. It
-is fully routed (KiCad DRC: 0 unconnected items). It is **not** fabrication
-approved: ERC/DRC exceptions, missing BOM MPNs and the bench breakout package
-remain open. See:
+injector channels (U1/U3), four ignition gate-driver outputs (U2/U4), four
+auxiliary low-side outputs (U7/U9: boost/idle/HC-1/HC-2), an IDC40 interface
+and screw terminals. It is fully routed (KiCad DRC: 0 unconnected items).
+
+**Output-stage limits:** the ignition outputs are 10 Ω gate-driver/logic-level
+outputs — there are **no on-board IGBTs or coil primary drivers**. There is also
+**no fuse or reverse-polarity protection on `12V-SW`**; use an external inline
+fuse, keyed lead and current-limited supply on the bench. Read
+[`docs/COIL_INJECTOR_OPTIONS.md`](../docs/COIL_INJECTOR_OPTIONS.md) before
+connecting any coil or injector.
+
+It is **not** fabrication approved: ERC/DRC exceptions, missing BOM MPNs and the
+bench breakout package remain open. See:
 
 - [`AUDIT/UPSTREAM_PROVENANCE.md`](../AUDIT/UPSTREAM_PROVENANCE.md)
 - [`AUDIT/HARDWARE_BASELINE.md`](../AUDIT/HARDWARE_BASELINE.md)
