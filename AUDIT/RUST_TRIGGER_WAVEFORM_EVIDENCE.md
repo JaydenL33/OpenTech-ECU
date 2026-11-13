@@ -208,3 +208,48 @@ provenance record supplies its immutable hash.
 Final remediation verification: fmt, Clippy, workspace tests and trigger tests all exit 0. Workspace: 226 passed, zero failed; trigger: 29 passed, zero failed. At 150/250/400 rpm: zero post-acquisition non-Sequential edges across 24 revolutions each. Implementation is ready for independent re-review; no independent acceptance is claimed.
 
 Immutable remediation implementation commit: 84c38b6f35f4a4426e9e17eab413649569e62da1 (review fix 0cff4eaa; adoption merge 6b2a33f43887a5a25d39f8a190c7ae08e842f96a).
+
+## RUST-TRG-002 implementation candidate (2026-11-13)
+
+Policy: first plausible gap establishes a private candidate reference only; state
+remains Unsynced and angle accessors remain unavailable. The next gap must pass
+the existing exact intervening tooth-count check before publishing crank sync.
+No public API/config serialization changes, heap allocation or std dependency.
+Clean acquisition adds exactly one crank revolution. Required cam input is
+validated only after crank confirmation, so sequential acquisition can wait for
+the next valid cam window (up to a further 720 degrees depending on phase).
+Crank timeout remains edge-relative and unchanged; 100 rpm noise vectors pass,
+but the existing absolute timeout cap still limits extremely slow captures.
+
+Noise regression covers five injection fractions (0.2, 0.25, 0.3, 0.35, 0.4)
+at four speeds (100, 300, 1000, 6000 rpm); every published sync must occur at
+real tooth zero and final crank acquisition is required. Disabling the candidate
+guard reproduces a false lock at 0.3p/100 rpm (mutation.log, exit 101).
+Existing cam assertions now explicitly allow the initial unconfirmed revolution;
+the phase extrapolation fixture runs two extra revolutions to establish phase.
+All original 29 tests remain, plus one parameterized noise regression.
+
+A minimum-four-baseline attempt failed at 0.2p/300 rpm; retained in
+initial-trigger.log. second-trigger.log retains old acquisition-assumption test
+failures before fixture updates. check-* captures the initial verification run;
+a mutation experiment overlapped that run, so final-* is authoritative and was
+started after source restoration. Commands run from ecu using
+PATH=/home/jlee/tools/bin:$PATH. Tool versions: check-0 through check-2.
+
+Residual limits: structured/repeated noise that reproduces both plausible gap
+ratios and the expected intervening count can still false-sync. A dropped edge
+can delay acquisition; this policy is not a general electrical noise filter.
+No claim of exhaustive reproduction of the reviewer's 136 probes. No upstream
+Speeduino parity, MCU, physical capture, engine or vehicle validation. H0–H9
+status unchanged. Implementation commit is the commit containing this section;
+resolve with git log on ecu/crates/ecu-trigger/src/lib.rs. Lead integration and
+independent review remain pending; task ledger state is unchanged by delegate.
+
+Final verification: fmt exit 0; strict workspace Clippy exit 0; trigger
+nocapture exit 0 (30 passed). Workspace exit 101 (151 passed before halt,
+1 failed): ecu-simulator/tests/cylinder_counts.rs
+inline4_outputs_match_pre_change_baseline retains a pre-change telemetry hash
+that changes with the intentional acquisition delay. This is an integration
+blocker outside assigned file ownership; no golden hash was replaced. All-exit-0
+acceptance is NOT achieved. Authoritative raw logs: rust-round-4/final-0.log
+through final-3.log. Earlier workspace failure also occurs in check-5.log.
