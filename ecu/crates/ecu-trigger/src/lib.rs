@@ -152,7 +152,6 @@ pub struct MissingToothDecoder {
     loss_teeth: u16,
     cam_loss_revolutions: u16,
     cam_age_teeth: u32,
-    last_cam_us: Option<u64>,
     cfg: MissingToothConfig,
     cam_window_deg: Option<(f32, f32)>,
     state: SyncState,
@@ -180,7 +179,6 @@ impl MissingToothDecoder {
             loss_teeth: cfg.missing.saturating_add(3),
             cam_loss_revolutions: 6,
             cam_age_teeth: 0,
-            last_cam_us: None,
             cfg,
             cam_window_deg: None,
             state: SyncState::Unsynced,
@@ -205,13 +203,13 @@ impl MissingToothDecoder {
     /// Configure loss bounds without changing the serialized wheel config.
     /// Crank deadline is normal interval * teeth, capped by timeout_ms.
     /// Must exceed the legitimate missing-tooth gap. Cam expires after the
-    /// specified revolutions of accepted edges, or timeout_ms without a cam.
+    /// specified revolutions of accepted edges. Minimum cam bound is three.
     pub fn set_loss_bounds(
         &mut self,
         teeth: u16,
         cam_revolutions: u16,
     ) -> Result<(), TriggerConfigError> {
-        if teeth <= self.cfg.missing + 1 || cam_revolutions < 2 {
+        if teeth <= self.cfg.missing + 1 || cam_revolutions < 3 {
             return Err(TriggerConfigError::InvalidTimeout);
         }
         self.loss_teeth = teeth;
@@ -219,15 +217,10 @@ impl MissingToothDecoder {
         Ok(())
     }
 
-    fn expire_cam(&mut self, now: u64) {
+    fn expire_cam(&mut self) {
         let limit = u32::from(self.cfg.teeth - self.cfg.missing)
             .saturating_mul(u32::from(self.cam_loss_revolutions));
-        if self.cfg.cam_required
-            && (self.cam_age_teeth >= limit
-                || self.last_cam_us.is_some_and(|last| {
-                    now.saturating_sub(last) > u64::from(self.cfg.timeout_ms) * 1000
-                }))
-        {
+        if self.cfg.cam_required && self.cam_age_teeth >= limit {
             self.cam_phase_known = false;
             self.cam_seen_since_gap = false;
             if self.state == SyncState::Sequential {
@@ -371,19 +364,8 @@ impl MissingToothDecoder {
             self.state = SyncState::Unsynced;
             return DecodeEvent::SyncLost(DecodeError::Timeout);
         }
-        if self.state == SyncState::Lost {
-            // The first edge after a stall/too-long gap is a fresh capture
-            // baseline, not a tooth interval. Consume it and let the next
-            // edge establish the tooth period so the long gap cannot poison
-            // `expected_interval_us` and starve short-edge rejection.
-            self.last_tooth_us = Some(timestamp_us);
-            self.tooth_index = 0;
-            self.expected_interval_us = 0.0;
-            self.state = SyncState::Unsynced;
-            return DecodeEvent::None;
-        }
         self.cam_age_teeth = self.cam_age_teeth.saturating_add(1);
-        self.expire_cam(timestamp_us);
+        self.expire_cam();
         self.last_tooth_us = Some(timestamp_us);
 
         let had_expected = self.expected_interval_us > 1.0;
@@ -503,7 +485,6 @@ impl MissingToothDecoder {
         self.cam_seen_since_gap = valid;
         if valid {
             self.cam_age_teeth = 0;
-            self.last_cam_us = Some(timestamp_us);
             self.rev_parity = 1;
             self.state = SyncState::Sequential;
         } else if synced {
@@ -514,7 +495,7 @@ impl MissingToothDecoder {
 
     /// Call from the control loop. Times out a stopped engine.
     pub fn tick(&mut self, now_us: u64) -> DecodeEvent {
-        self.expire_cam(now_us);
+        self.expire_cam();
         let Some(last) = self.last_tooth_us else {
             return DecodeEvent::None;
         };
@@ -604,6 +585,61 @@ impl fmt::Display for DecodeError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cranking_cam_retention_and_count_expiry() {
+        for rpm in [150.0, 250.0, 400.0] {
+            let mut d = decoder();
+            d.set_cam_window(Some((320.0, 340.0))).unwrap();
+            let mut acquired = false;
+            let mut drops = 0;
+            for (cam, ts) in generate(rpm, 12, true) {
+                if cam {
+                    d.on_cam(ts);
+                } else {
+                    d.on_tooth(ts);
+                }
+                if acquired && d.state() != SyncState::Sequential {
+                    drops += 1;
+                }
+                acquired |= d.state() == SyncState::Sequential;
+            }
+            println!("rpm={rpm} post-acquisition non-sequential edges={drops}");
+            assert!(acquired);
+            assert_eq!(drops, 0);
+            // Continue the real crank stream without cam through the exact bound.
+            let last = d.last_tooth_us.unwrap();
+            let offset = last + (20.0 * 60_000_000.0 / (rpm * 360.0)) as u64 - 1000;
+            let limit = u32::from(d.cfg.teeth - d.cfg.missing) * 6;
+            for (cam, ts) in generate(rpm, 8, false) {
+                assert!(!cam);
+                let age = d.cam_age_teeth + 1;
+                d.on_tooth(ts + offset);
+                assert_eq!(
+                    d.state(),
+                    if age < limit {
+                        SyncState::Sequential
+                    } else {
+                        SyncState::CrankSynced
+                    },
+                    "rpm={rpm} age={age} limit={limit}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn oversized_normal_interval_characterization() {
+        for ratio in [3.3, 3.5, 3.9] {
+            let mut d = decoder();
+            feed(&mut d, &generate(1000.0, 2, false), 0);
+            let last = d.last_tooth_us.unwrap();
+            let errors = d.error_count;
+            d.on_tooth(last + (d.expected_interval_us * ratio) as u64);
+            assert_eq!(d.error_count, errors);
+            assert_eq!(d.state(), SyncState::CrankSynced);
+        }
+    }
 
     #[test]
     fn cycle_extrapolation_preserves_phase_across_gap_before_next_capture() {
@@ -1170,6 +1206,7 @@ mod tests {
         let mut d = decoder();
         assert!(d.set_loss_bounds(1, 6).is_err());
         assert!(d.set_loss_bounds(4, 1).is_err());
+        assert!(d.set_loss_bounds(4, 2).is_err());
         assert!(d.set_loss_bounds(6, 3).is_ok());
     }
 

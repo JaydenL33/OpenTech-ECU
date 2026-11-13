@@ -156,3 +156,52 @@ no upstream binary differential comparison was performed. Host simulation only,
 no MCU/capture/engine/vehicle evidence; H0–H9 dispositions unchanged.
 
 Independent final verification: check-10 compiler GCC 13.3.0; check-11 fmt exit 0; check-12 strict workspace Clippy exit 0; check-13 workspace tests exit 0 (223 passed, 0 failed); check-14 trigger nocapture exit 0 (26 passed, 0 failed). All Cargo commands ran from ecu with PATH=/home/jlee/tools/bin:$PATH. Historical check-2..4 retained. Corrected implementation accepted for host simulation.
+
+
+## RUST-TRG-001 independent review remediation (2026-11-13)
+
+Independent Claude review rejected completion for two blocking regressions:
+pre-sync short-edge rejection could half-rate lock; fixed 250 ms cam expiry
+lost phase during cranking. Review fix 0cff4eaa was adopted by merge
+6b2a33f43887a5a25d39f8a190c7ae08e842f96a. Its acceleration regression remains.
+
+Policy: cam age advances on accepted crank edges only; expiry occurs at
+age >= (teeth - missing) * cam_loss_revolutions, including the exact bound
+and all subsequent edges. No wall-clock cam deadline remains; last_cam_us
+was removed. Continuing crank without cam is count-bounded; a stopped
+engine is handled by crank timeout, which clears phase. A once-per-720°
+cam cannot use an RPM-independent 250 ms deadline.
+
+Minimum cam bound is now three revolutions; two is rejected using the
+existing InvalidTimeout variant (retained API limitation). Default six
+is exercised over 24 revolutions at 150/250/400 rpm, with cam each 720°,
+then continued without cam through and beyond the exact expiry bound.
+Review-reported before measurements: 12 Sequential losses at each of
+150/250/400 rpm versus two for base; 600 rpm equal. These are supplied
+review evidence, not a locally reproduced comparative run. Local after
+measurements and assertions are in check-19.log.
+
+Removed the second Lost branch in on_tooth: fail and tick clear
+last_tooth_us; the initial no-timestamp branch handles prior loss, and
+the inline tick-loss branch returns immediately. Existing restart and
+recovery vectors remain.
+
+Remaining limits: pre-sync noise is unfiltered, matching base behavior;
+the synchronized 50% short-edge threshold is heuristic. Ratios 3.3,
+3.5 and 3.9 are characterized as accepted normal edges (known 3.2x–4x
+interval limitation; next task: independently justify rejection policy).
+No Speeduino binary parity, MCU compatibility, physical capture, engine
+or vehicle validation is claimed. H0–H9 dispositions are unchanged.
+
+Verification commands, tool versions, raw outputs and exit codes:
+AUDIT/rust-round-3/check-15.log through check-19.log. Commands run from
+ecu with PATH=/home/jlee/tools/bin:$PATH: cc/rustc/cargo --version;
+cargo fmt --all -- --check;
+cargo clippy --workspace --all-targets --locked -- -D warnings;
+cargo test --workspace --locked;
+cargo test -p ecu-trigger --locked -- --nocapture.
+Implementation fix commit is the commit containing this appended section
+(resolve with git log -- ecu/crates/ecu-trigger/src/lib.rs); a follow-up
+provenance record supplies its immutable hash.
+
+Final remediation verification: fmt, Clippy, workspace tests and trigger tests all exit 0. Workspace: 226 passed, zero failed; trigger: 29 passed, zero failed. At 150/250/400 rpm: zero post-acquisition non-Sequential edges across 24 revolutions each. Implementation is ready for independent re-review; no independent acceptance is claimed.
