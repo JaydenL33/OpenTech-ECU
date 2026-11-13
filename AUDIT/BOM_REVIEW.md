@@ -123,7 +123,7 @@ not approval of any part. Full table: `AUDIT/COST_ESTIMATE.md` §3.
 | Basic library | Of the 35 machine MPNs, 33 are extended catalogue parts, one is **basic** (`CC0805KRX7R9BB104`, C49678) and one (the fuse) is absent from the library. |
 | Connector representatives | `Phoenix 1729018` C3820334 USD 0.5612, stock 81; `HTSW-105-07-G-S` C3337223 USD 0.6332, stock 16; `SSQ-108-01-F-S` C7019014 USD 1.4643, stock 3. These are cost representatives; the nine MPNs remain unapproved. |
 | Distributor cross-check | Not possible this round: Digi-Key, Mouser, Element14 and Octopart returned 403/access-denied; LCSC pages are client-rendered. |
-| File-format defect | The `J3` row has an unquoted comma in its footprint field, so a naive CSV parser shifts columns and reads `5-2-5.0-H_1x02_P5.00mm_Horizontal` as the MPN. Quote the field before any assembler upload. The row is still correctly an unresolved connector. |
+| File-format defect | The original J3 row had an unquoted comma in its footprint field, so a naive CSV parser shifted columns and read `5-2-5.0-H_1x02_P5.00mm_Horizontal` as the MPN. Fixed in `a5896b6d`: all pack CSV files now use a proper CSV writer, and `bare-copper-jumpers.csv` is separate. The row remains an unresolved connector decision. |
 
 Consequence for `HW-BOM-01`: the BOM is still not releasable. A turnkey order
 cannot be placed as-is because five lines have zero stock and one line (the fuse)

@@ -22,9 +22,11 @@ is not in the BOM; two 1x8 board-side sockets are the hand-solder item.
 
 - `bom-jlcpcb.csv` — Comment, Designator, Footprint, MPN, LCSC Part #.
 - `cpl-jlcpcb.csv` — Designator, Mid X, Mid Y, Layer, Rotation.
-- `bom-hand-solder.csv` — XA1/A1-SOCKET hand-solder items and the bare jumpers.
+- `bom-hand-solder.csv` — XA1/A1-SOCKET hand-solder items only.
+- `bare-copper-jumpers.csv` — JP6-JP11 board features; no parts.
 - `bom-unresolved.csv` — connector rows with no verified MPN; EE decision.
-- `generate.py` — reproducible generator; no network access.
+- `generate.py` — reproducible generator; no network access. All CSV output is
+  quoted with Python's csv writer so footprints containing commas stay aligned.
 
 ## Limits
 
