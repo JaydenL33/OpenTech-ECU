@@ -186,12 +186,20 @@ last_tooth_us; the initial no-timestamp branch handles prior loss, and
 the inline tick-loss branch returns immediately. Existing restart and
 recovery vectors remain.
 
-Remaining limits: pre-sync noise is unfiltered, matching base behavior;
-the synchronized 50% short-edge threshold is heuristic. Ratios 3.3,
-3.5 and 3.9 are characterized as accepted normal edges (known 3.2x–4x
-interval limitation; next task: independently justify rejection policy).
-No Speeduino binary parity, MCU compatibility, physical capture, engine
-or vehicle validation is claimed. H0–H9 dispositions are unchanged.
+Remaining limits: pre-sync noise is unfiltered. It is not equivalent to base
+behavior in all cases: a single noise edge in the first interval can produce a
+false plausible gap and a wrong crank angle for up to one revolution before the
+next gap's tooth-count check rejects it. The re-review measured 100/136 probe
+cases on this branch and 100/136 on pre-review 172c7498, versus 132/136 on base;
+pre-existing, not introduced here. Follow-up RUST-TRG-002 will require a minimum
+baseline-tooth count or a confirmed second gap before first sync. The
+synchronized 50% short-edge threshold is heuristic. Ratios 3.3, 3.5 and 3.9 are
+characterized as accepted normal edges (known 3.2x–4x interval limitation; next
+task: independently justify rejection policy). `cam_age_teeth` is not reset by
+fail/tick/set_cam_window; harmless today because phase is cleared with it, but
+the invariant should be explicit. No Speeduino binary parity, MCU compatibility,
+physical capture, engine or vehicle validation is claimed. H0–H9 dispositions
+are unchanged.
 
 Verification commands, tool versions, raw outputs and exit codes:
 AUDIT/rust-round-3/check-15.log through check-19.log. Commands run from
@@ -207,3 +215,30 @@ provenance record supplies its immutable hash.
 Final remediation verification: fmt, Clippy, workspace tests and trigger tests all exit 0. Workspace: 226 passed, zero failed; trigger: 29 passed, zero failed. At 150/250/400 rpm: zero post-acquisition non-Sequential edges across 24 revolutions each. Implementation is ready for independent re-review; no independent acceptance is claimed.
 
 Immutable remediation implementation commit: 84c38b6f35f4a4426e9e17eab413649569e62da1 (review fix 0cff4eaa; adoption merge 6b2a33f43887a5a25d39f8a190c7ae08e842f96a).
+
+### RUST-TRG-001 final re-review disposition (2026-11-13)
+
+Independent Claude re-review of `t3/low-rpm-cam-expiry-fix` @ `bd6f1a17`
+returned **ACCEPT WITH FINDINGS**. The reviewer reproduced all four commands
+(fmt, strict Clippy, 226 workspace tests, 29 trigger tests), then used mutation
+runs to show that restoring the wall-clock cam expiry, the always-on pre-sync
+short-edge filter, or the two-revolution minimum each made exactly the matching
+test fail. Both prior blocking findings are resolved.
+
+New findings recorded rather than hidden:
+
+- **RUST-TRG-002 (medium, pre-existing):** a single pre-sync noise edge can make
+  a false first gap look plausible, causing a wrong crank angle for up to one
+  revolution until the next gap's tooth-count check rejects it. Measured
+  100/136 probe cases on this branch and on `172c7498`, versus 132/136 on base.
+  Not a regression; follow-up is a minimum baseline-tooth count or confirmed
+  second gap before first sync.
+- **Low:** `cam_age_teeth` is not reset by `fail`, `tick` or `set_cam_window`.
+  Harmless today because phase is cleared at the same time; the invariant should
+  be made explicit.
+- **Info:** the 150/250/400 rpm before/after comparison numbers are reviewer
+  measurements, not a locally reproduced comparative run. The mutation tests are
+  the independent proof that the new regression test catches the old behaviour.
+
+Integrated on `master` by merge `b710d2b9`. Host simulation only; no MCU,
+physical capture, engine, vehicle or gate claim.

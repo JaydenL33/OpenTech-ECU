@@ -176,12 +176,23 @@ last_tooth_us; the initial no-timestamp branch handles prior loss, and
 the inline tick-loss branch returns immediately. Existing restart and
 recovery vectors remain.
 
-Remaining limits: pre-sync noise is unfiltered, matching base behavior;
-the synchronized 50% short-edge threshold is heuristic. Ratios 3.3,
-3.5 and 3.9 are characterized as accepted normal edges (known 3.2x–4x
-interval limitation; next task: independently justify rejection policy).
-No Speeduino binary parity, MCU compatibility, physical capture, engine
-or vehicle validation is claimed. H0–H9 dispositions are unchanged.
+Remaining limits: pre-sync noise is unfiltered. This is **not** equivalent to
+base behavior in all cases: an independent re-review found that a single noise
+edge in the first interval can make a false gap look plausible, after which the
+decoder may report a wrong crank angle for up to one revolution until the next
+gap's tooth-count check rejects it. The reviewer measured 100/136 probe cases
+locking at the wrong tooth on this branch and on pre-review 172c7498, versus
+132/136 on base; it is pre-existing, not introduced by this change, but the
+earlier "matching base behavior" wording understated it. Follow-up RUST-TRG-002
+will require a minimum number of baseline teeth (or a confirmed second gap)
+before declaring first sync. The synchronized 50% short-edge threshold is
+heuristic. Ratios 3.3, 3.5 and 3.9 are characterized as accepted normal edges
+(known 3.2x–4x interval limitation; next task: independently justify rejection
+policy). `cam_age_teeth` is not reset by `fail`, `tick` or `set_cam_window`;
+this is currently harmless because phase is cleared at the same time and a
+valid cam resets the counter, but the invariant should be made explicit.
+No Speeduino binary parity, MCU compatibility, physical capture, engine or
+vehicle validation is claimed. H0–H9 dispositions are unchanged.
 
 Verification commands, tool versions, raw outputs and exit codes:
 AUDIT/rust-round-3/check-15.log through check-19.log. Commands run from
