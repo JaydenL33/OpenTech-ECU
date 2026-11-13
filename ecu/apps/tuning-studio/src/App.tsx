@@ -8,6 +8,7 @@ import { DashboardDesignerPage } from "./pages/DashboardDesigner";
 import { CylindersPage } from "./pages/Cylinders";
 import { MapPage } from "./pages/MapPage";
 import { MixturePage } from "./pages/Mixture";
+import { IgnitionAdvisory } from "./components/IgnitionAdvisory";
 import { SetupPage } from "./pages/Setup";
 import { DiagnosticsPage } from "./pages/Diagnostics";
 import { CalibrationPage } from "./pages/Calibration";
@@ -283,7 +284,12 @@ export default function App() {
             {page === "cylinders" && <CylindersPage />}
             {page === "fuel" && <MapPage tableId="ve" kind="fuel" title="Volumetric efficiency" subtitle="Load × RPM fuel table. Edit locally, then seal an auditable revision." />}
             {page === "target" && <MapPage tableId="target_lambda" kind="target" title="Target lambda" subtitle="Desired mixture by load and RPM. Fuel-specific only through explicit stoichiometric AFR." />}
-            {page === "ignition" && <MapPage tableId="ignition" kind="ignition" title="Ignition timing" subtitle="Simulation-only surface. Lambda provides no evidence of safe spark advance." />}
+            {page === "ignition" && (
+              <>
+                <MapPage tableId="ignition" kind="ignition" title="Ignition timing" subtitle="Simulation-only surface. Lambda provides no evidence of safe spark advance." />
+                <IgnitionAdvisory />
+              </>
+            )}
             {page === "mixture" && <MixturePage />}
             {page === "setup" && <SetupPage />}
             {page === "harness" && <HarnessPage />}

@@ -83,6 +83,12 @@ pub struct TelemetryFrame {
     pub dyno_load_nm: f32,
     pub scenario_time_ms: u64,
     pub log_note: String,
+    /// Extra fuel being added by accel/transient enrichment, in percent of the
+    /// steady-state pulse (0 = none). The simulator does not model enrichment
+    /// and always reports 0; imported logs may carry a real value. Absent in
+    /// older stored logs, hence the serde default.
+    #[serde(default)]
+    pub accel_enrich_pct: f32,
 }
 
 impl Default for TelemetryFrame {
@@ -133,6 +139,7 @@ impl Default for TelemetryFrame {
             dyno_load_nm: 0.0,
             scenario_time_ms: 0,
             log_note: String::new(),
+            accel_enrich_pct: 0.0,
         }
     }
 }
