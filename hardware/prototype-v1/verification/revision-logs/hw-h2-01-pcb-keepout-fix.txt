@@ -1,0 +1,18 @@
+R-05 XA1: lib/Shields/Shields.pretty/Arduino_Mega2560_Shield_IO_Only.kicad_mod already present
+R-05 U5: lib/Misc/Misc.pretty/MPX4250.kicad_mod already present
+R-05 S1: lib/Misc/Misc.pretty/AYZ0202AGRLC.kicad_mod already present
+R-05 C19: lib/Speeduino_Legacy/Speeduino_Legacy.pretty/C_0805_2012Metric_Pad1.15x1.40mm_HandSolder.kicad_mod already present
+R-05 C19: already relinked
+R-04 H1: already present
+R-04 H2: already present
+R-04 H3: already present
+R-10: fab drawing annotations already present
+board sha256 05daa61acded5cd2061f4ec317a69a6001d93e649bcf974028653f2a36252452 -> b2f6cd3e8bf44d63df47ff939e55dda88539b447ba9a5766304d9f74facb82b8
+changes applied: 6
+  - R-04 H1_keepout: replaced inscribed polygon with circumscribed one
+  - R-04 H1_keepout: rule area, min radius 3.8 mm (32-gon), F.Cu+B.Cu (no tracks, vias or copper pour)
+  - R-04 H2_keepout: replaced inscribed polygon with circumscribed one
+  - R-04 H2_keepout: rule area, min radius 3.8 mm (32-gon), F.Cu+B.Cu (no tracks, vias or copper pour)
+  - R-04 H3_keepout: replaced inscribed polygon with circumscribed one
+  - R-04 H3_keepout: rule area, min radius 3.8 mm (32-gon), F.Cu+B.Cu (no tracks, vias or copper pour)
+exit=0

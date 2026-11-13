@@ -1,0 +1,2 @@
+courtyard exclusions written: 199 {'C': 3, 'H': 22, 'P': 174}
+exit=0

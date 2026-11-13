@@ -1,0 +1,4 @@
+# KiCad per-user/local state written when the project is opened or plotted
+*.kicad_prl
+fp-info-cache
+*-backups/

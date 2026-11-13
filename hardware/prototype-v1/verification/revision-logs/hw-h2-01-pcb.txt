@@ -1,0 +1,19 @@
+board sha256 dffe03373ba22ccf0af018537865f41b2a9810fec2555946ffd766c3e92d2f2f -> 05daa61acded5cd2061f4ec317a69a6001d93e649bcf974028653f2a36252452
+changes applied: 16
+  - R-05 exported XA1 -> lib/Shields/Shields.pretty/Arduino_Mega2560_Shield_IO_Only.kicad_mod
+  - R-05 exported U5 -> lib/Misc/Misc.pretty/MPX4250.kicad_mod
+  - R-05 exported S1 -> lib/Misc/Misc.pretty/AYZ0202AGRLC.kicad_mod
+  - R-05 exported C19 -> lib/Speeduino_Legacy/Speeduino_Legacy.pretty/C_0805_2012Metric_Pad1.15x1.40mm_HandSolder.kicad_mod
+  - R-05 C19 FPID -> Speeduino_Legacy:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder
+  - R-04 H1: MountingHole_3.2mm_M3 NPTH at (113.975, 40.475) mm
+  - R-04 H1_keepout: rule area r=3.8 mm on F.Cu+B.Cu (no tracks, vias or copper pour)
+  - R-04 H2: MountingHole_3.2mm_M3 NPTH at (113.975, 133.525) mm
+  - R-04 H2_keepout: rule area r=3.8 mm on F.Cu+B.Cu (no tracks, vias or copper pour)
+  - R-04 H3: MountingHole_3.2mm_M3 NPTH at (207.025, 133.525) mm
+  - R-04 H3_keepout: rule area r=3.8 mm on F.Cu+B.Cu (no tracks, vias or copper pour)
+  - R-10 dimension board width on User.Drawings
+  - R-10 dimension board height on User.Drawings
+  - R-10 dimension H2-H3 pitch on User.Drawings
+  - R-10 dimension H1-H2 pitch on User.Drawings
+  - R-10 fabrication note text on User.Drawings
+exit=0

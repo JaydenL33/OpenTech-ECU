@@ -1,0 +1,41 @@
+Mounting-hole clearance check (edge-to-centre distances in mm)
+board outline bbox: (110.475, 36.975) - (210.525, 137.025)
+keep-out radius required: 3.8 (numeric tolerance 0.005)
+
+H1: centre (113.975, 40.475) drill 3.2 plated=False net=none
+  BOM-excluded=True pos-excluded=True board-only=True
+  keep-out rule area present: True
+  centre to board edge: 3.500 (hole wall to edge 1.900)
+  nearest discrete copper (track/via/pad/hole): 6.5103 [NPTH U5]
+  nearest zone fill: 3.8000 [GND F.Cu]
+  nearest courtyard: 17.3818 [A1 F.Courtyard]
+  nearest silk: 6.2422 [PCB_TEXT board graphic]
+  RESULT: PASS
+
+H2: centre (113.975, 133.525) drill 3.2 plated=False net=none
+  BOM-excluded=True pos-excluded=True board-only=True
+  keep-out rule area present: True
+  centre to board edge: 3.500 (hole wall to edge 1.900)
+  nearest discrete copper (track/via/pad/hole): 12.0923 [pad J7.5 PROTO-5]
+  nearest zone fill: 3.8000 [GND F.Cu]
+  nearest courtyard: 10.4567 [J7 F.Courtyard]
+  nearest silk: 9.1241 [PCB_TEXT board graphic]
+  RESULT: PASS
+
+H3: centre (207.025, 133.525) drill 3.2 plated=False net=none
+  BOM-excluded=True pos-excluded=True board-only=True
+  keep-out rule area present: True
+  centre to board edge: 3.500 (hole wall to edge 1.900)
+  nearest discrete copper (track/via/pad/hole): 5.1124 [PCB_VIA GND F.Cu]
+  nearest zone fill: 3.8000 [GND F.Cu]
+  nearest courtyard: 9.7591 [IC3 F.Courtyard]
+  nearest silk: 1.6592 [PCB_SHAPE board graphic]
+  RESULT: PASS
+
+Top-right corner site search (HW-MECH-02): grid x 190.0-207.0, y 39.5-52.0 mm, 0.5 mm step
+criterion: >= 3.8 mm to tracks/vias/pads/NPTH on F.Cu/B.Cu and >= 3.45 mm to courtyards
+feasible sites: 0
+least-bad site: (199.5, 42.0) -> copper 1.300 [PCB_TRACK VDD], courtyard 0.987 [courtyard D14]
+
+holes found: 3
+RESULT: PASS
