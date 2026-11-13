@@ -205,3 +205,5 @@ Implementation fix commit is the commit containing this appended section
 provenance record supplies its immutable hash.
 
 Final remediation verification: fmt, Clippy, workspace tests and trigger tests all exit 0. Workspace: 226 passed, zero failed; trigger: 29 passed, zero failed. At 150/250/400 rpm: zero post-acquisition non-Sequential edges across 24 revolutions each. Implementation is ready for independent re-review; no independent acceptance is claimed.
+
+Immutable remediation implementation commit: 84c38b6f35f4a4426e9e17eab413649569e62da1 (review fix 0cff4eaa; adoption merge 6b2a33f43887a5a25d39f8a190c7ae08e842f96a).
