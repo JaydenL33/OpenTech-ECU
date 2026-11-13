@@ -150,6 +150,8 @@ export interface TelemetryFrame {
   fuel_cut: boolean;
   spark_cut: boolean;
   knock_level: number;
+  /** Extra fuel from accel enrichment (%); 0 from the simulator, real from imported logs. */
+  accel_enrich_pct?: number;
   boost_kpa: number;
   speed_kph: number;
   gear: number;
@@ -214,6 +216,8 @@ export interface MixtureCellReport {
   mean_lambda: number | null;
   mean_target_lambda: number | null;
   lambda_stddev: number;
+  /** Spread of lambda*(1+trim); drives the variance gate (absent in older reports). */
+  corrected_lambda_stddev?: number;
   mean_stft: number;
   mean_ltft: number;
   mean_total_trim: number | null;
@@ -230,6 +234,8 @@ export interface MixtureCellReport {
     | "wot_excluded"
     | "no_samples";
   exclusion_reasons: Record<string, number>;
+  /** Gate-clean samples dropped by the latency window (optional: older reports lack it). */
+  window_rejected_samples?: number;
 }
 
 export interface ProposedVeCell {
@@ -262,6 +268,109 @@ export interface VeProposal {
   created_unix_ms: number;
 }
 
+/** Response of POST /api/mixture/preview — a read-only diff; nothing is stored. */
+export interface MixturePreview {
+  preview_only: true;
+  applied: false;
+  proposal_id: string;
+  applied_cells: number;
+  diff: {
+    table_id: string;
+    changes: { indices: number[]; old: number; new: number; delta: number }[];
+    max_abs_delta: number;
+    mean_abs_delta: number;
+  };
+  base_revision: number;
+  base_checksum: string;
+  would_be_revision: number;
+  requires_approval: boolean;
+  notice: string;
+}
+
+export type IgnitionEvidenceStatus =
+  | "insufficient_evidence"
+  | "simulation_only"
+  | "verified_reference";
+
+export interface TimingReferenceProvenance {
+  source: "verified_reference" | "manufacturer_published" | "engineering_estimate" | "synthetic_simulation_only" | "unknown";
+  citation: string;
+  licence: string;
+  verified_by: string;
+  verification_date: string;
+  engine_specific_verified: boolean;
+  notes: string;
+}
+
+export interface TimingReferenceInput {
+  provenance: TimingReferenceProvenance;
+  advance_deg: number;
+  rpm: number;
+  map_kpa: number;
+  compression_ratio: number;
+  fuel: string;
+  aspiration: string;
+}
+
+/** Response of POST /api/ignition/recommend. Advisory only; never written to a table. */
+export interface IgnitionRecommendationResponse {
+  recommendation: {
+    status: IgnitionEvidenceStatus;
+    proposed_advance_deg: number | null;
+    lower_bound_deg: number | null;
+    upper_bound_deg: number | null;
+    confidence: number;
+    reasons: string[];
+    required_validation: string[];
+  };
+  attestation_notes: string[];
+  reference_provenance: TimingReferenceProvenance | null;
+  engine: { compression_ratio: number; aspiration: string; fuel_stated_by_caller: string };
+  calibration_ignition_policy: string | null;
+  lambda_used: false;
+  fuel_trim_used: false;
+  writes_calibration: false;
+  advisory_only: true;
+  notice: string;
+}
+
+export interface ImportOptions {
+  source_name?: string;
+  stoich_afr?: number;
+  exhaust_delay_ms?: number;
+  bank?: number;
+  assume_open_loop?: boolean;
+  assume_sequential_sync?: boolean;
+  assume_pressures_ok?: boolean;
+  confirm_recorded_with_loaded_calibration?: boolean;
+  max_ve_mismatch?: number;
+}
+
+export interface VeIdentityCheck {
+  compared_rows: number;
+  median_abs_rel_diff: number;
+  p75_abs_rel_diff: number;
+  max_abs_rel_diff: number;
+  tolerance: number;
+}
+
+/** What the CSV importer assumed or could not verify. Shown before any proposal is trusted. */
+export interface ImportReport {
+  source_name: string;
+  delimiter: string;
+  rows_read: number;
+  rows_imported: number;
+  rows_skipped: number;
+  skipped_examples: string[];
+  median_sample_interval_ms: number;
+  columns_mapped: Record<string, string>;
+  columns_ignored: string[];
+  assumptions: string[];
+  warnings: string[];
+  ve_identity: VeIdentityCheck | null;
+  content_sha256: string;
+}
+
 export interface MixtureMapReport {
   source_scenario: string;
   source_seed: number;
@@ -275,6 +384,9 @@ export interface MixtureMapReport {
   samples_used: number;
   samples_rejected: number;
   gate_reason_counts: Record<string, number>;
+  /** Absent in reports produced before the latency-window gate was added. */
+  closed_loop_samples_used?: number;
+  open_loop_samples_used?: number;
   cells: MixtureCellReport[];
   proposal: VeProposal | null;
   hard_faults: string[];

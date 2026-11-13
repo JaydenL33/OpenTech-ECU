@@ -190,8 +190,29 @@ fn inline4_outputs_match_pre_change_baseline() {
     );
     let mut engine = SimEngine::new(cal, by_id("idle_warmup").unwrap()).unwrap();
     engine.run_to_end();
+    // `accel_enrich_pct` was added to the frame after this baseline was taken.
+    // The simulator never models enrichment, so it must be exactly 0.0 on every
+    // frame; the line is then removed (with the comma it leaves behind on the
+    // preceding field) so the *original* pre-change hash still has to match.
+    let pretty = String::from_utf8(serde_json::to_vec_pretty(&engine.log_file()).unwrap()).unwrap();
+    let mut kept: Vec<&str> = Vec::new();
+    let mut removed = 0usize;
+    for line in pretty.lines() {
+        if line.trim_start().starts_with("\"accel_enrich_pct\"") {
+            assert_eq!(line.trim(), "\"accel_enrich_pct\": 0.0");
+            let prev = kept.pop().expect("field is never first");
+            kept.push(prev.strip_suffix(',').expect("field follows another field"));
+            removed += 1;
+        } else {
+            kept.push(line);
+        }
+    }
+    assert!(
+        removed > 100,
+        "expected one field per frame, removed {removed}"
+    );
     assert_eq!(
-        hex_sha256(&serde_json::to_vec_pretty(&engine.log_file()).unwrap()),
+        hex_sha256(kept.join("\n").as_bytes()),
         BASELINE_IDLE_WARMUP_LOG_SHA256
     );
 }

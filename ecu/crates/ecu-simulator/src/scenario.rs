@@ -38,6 +38,15 @@ pub struct FaultWindow {
     pub end_ms: u64,
 }
 
+/// Time window during which the simulated ECU runs fuel **open loop** (no
+/// short-term trim), as an operator or calibration would when mapping VE.
+/// This is a scenario control of the host simulator only.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct OpenLoopWindow {
+    pub start_ms: u64,
+    pub end_ms: u64,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Scenario {
     pub id: String,
@@ -62,9 +71,18 @@ pub struct Scenario {
     pub phases: Vec<Phase>,
     pub faults: Vec<FaultWindow>,
     pub notes: Vec<String>,
+    /// Windows in which closed-loop trim is forced off (open-loop fuelling).
+    #[serde(default)]
+    pub open_loop_windows: Vec<OpenLoopWindow>,
 }
 
 impl Scenario {
+    pub fn open_loop_forced(&self, ms: u64) -> bool {
+        self.open_loop_windows
+            .iter()
+            .any(|w| ms >= w.start_ms && ms < w.end_ms)
+    }
+
     pub fn phase_at(&self, ms: u64) -> &Phase {
         let mut chosen = &self.phases[0];
         for p in &self.phases {
@@ -129,6 +147,7 @@ pub fn builtin_scenarios() -> Vec<Scenario> {
             wideband_tau_ms: 80,
             phases: vec![idle_phase(0)],
             faults: Vec::new(),
+            open_loop_windows: Vec::new(),
             notes: vec![
                 "Starter torque is applied until the engine catches.".into(),
                 "Wideband heater readiness is delayed to exercise the learning gate.".into(),
@@ -163,9 +182,46 @@ pub fn builtin_scenarios() -> Vec<Scenario> {
                 sweep_phase(34_000, 3200.0, 95.0, "WOT boundary (excluded by default)"),
             ],
             faults: Vec::new(),
+            open_loop_windows: Vec::new(),
             notes: vec![
                 "Warm start so coolant gates pass; the point is mixture recovery, not warm-up.".into(),
                 "WOT phase exists to show explicit exclusion rather than silent learning.".into(),
+            ],
+        },
+        Scenario {
+            id: "mixture_dwell".into(),
+            name: "Long-dwell VE mapping (closed then open loop)".into(),
+            description: "Dyno-held points with 7 s dwells so the exhaust-transport window of the offline lambda analyser can be satisfied. First half closed-loop, second half forced open-loop. Biased true VE as in mixture_sweep. Simulation only."
+                .into(),
+            seed: 0xD7E11,
+            duration_ms: 56_000,
+            sample_hz: 50,
+            initial_rpm: 900.0,
+            start_coolant_c: 88.0,
+            ambient_c: 24.0,
+            cranking: false,
+            dyno_mode: true,
+            true_ve_error_pct: 8.0,
+            ve_error_load_gradient_pct: -2.0,
+            ve_error_rpm_gradient_pct: 1.5,
+            sensor_noise: 0.004,
+            exhaust_delay_ms: 60,
+            wideband_tau_ms: 80,
+            phases: vec![
+                sweep_phase(0, 900.0, 0.0, "warm idle"),
+                sweep_phase(4_000, 2200.0, 22.0, "dwell A (closed loop)"),
+                sweep_phase(11_000, 3000.0, 40.0, "dwell B (closed loop)"),
+                sweep_phase(18_000, 3500.0, 60.0, "dwell C (closed loop)"),
+                sweep_phase(25_000, 2200.0, 22.0, "dwell A (open loop)"),
+                sweep_phase(32_000, 3000.0, 40.0, "dwell B (open loop)"),
+                sweep_phase(39_000, 3500.0, 60.0, "dwell C (open loop)"),
+                sweep_phase(46_000, 4200.0, 50.0, "dwell D (open loop)"),
+            ],
+            faults: Vec::new(),
+            open_loop_windows: vec![OpenLoopWindow { start_ms: 25_000, end_ms: 56_000 }],
+            notes: vec![
+                "Exists to exercise open-loop sample accounting and a higher sample yield than mixture_sweep.".into(),
+                "Dwell lengths were chosen to exceed the analyser's exhaust-transport window; analyser thresholds are unchanged.".into(),
             ],
         },
         Scenario {
@@ -196,6 +252,7 @@ pub fn builtin_scenarios() -> Vec<Scenario> {
                 Phase { start_ms: 22_000, throttle_pct: 45.0, target_rpm: None, load_nm: 45.0, note: "settle".into() },
             ],
             faults: Vec::new(),
+            open_loop_windows: Vec::new(),
             notes: vec!["Transients are excluded from offline learning by rate gates.".into()],
         },
         Scenario {
@@ -225,6 +282,7 @@ pub fn builtin_scenarios() -> Vec<Scenario> {
                 FaultWindow { fault: SimFault::TriggerDropout, start_ms: 27_000, end_ms: 27_500 },
                 FaultWindow { fault: SimFault::KnockHigh, start_ms: 29_000, end_ms: 31_000 },
             ],
+            open_loop_windows: Vec::new(),
             notes: vec![
                 "Latched faults require explicit clearing through the diagnostics API.".into(),
                 "Trigger dropout is short; the decoder times out only if configured timeout is exceeded.".into(),
@@ -261,6 +319,7 @@ pub fn builtin_scenarios() -> Vec<Scenario> {
                 start_ms: 3_000,
                 end_ms: 30_000,
             }],
+            open_loop_windows: Vec::new(),
             notes: vec!["No ignition estimates are produced by this scenario.".into()],
         },
         Scenario {
@@ -287,6 +346,7 @@ pub fn builtin_scenarios() -> Vec<Scenario> {
                 FaultWindow { fault: SimFault::TriggerDropout, start_ms: 6_000, end_ms: 7_000 },
                 FaultWindow { fault: SimFault::TriggerDropout, start_ms: 12_000, end_ms: 13_000 },
             ],
+            open_loop_windows: Vec::new(),
             notes: Vec::new(),
         },
     ]
