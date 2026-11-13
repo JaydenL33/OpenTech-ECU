@@ -1,0 +1,85 @@
+   Compiling ecu-trigger v0.1.0 (/home/jlee/.t3/worktrees/OpenTech-ECU/t3-757576cd-eb7ce2c76fd93a6b/ecu/crates/ecu-trigger)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.54s
+     Running unittests src/lib.rs (target/debug/deps/ecu_trigger-c67c4c8c66420bf7)
+
+running 30 tests
+test tests::acceleration_tracks_rpm_without_false_gap ... ok
+test tests::cam_inside_window_gives_sequential ... FAILED
+test tests::cam_not_required_keeps_sequential_without_window ... ok
+test tests::cam_outside_window_drops_sequential_but_recovers ... ok
+test tests::cam_loss_expires_sequential_phase_and_reacquires ... ok
+test tests::cam_rejection_revokes_validated_phase ... FAILED
+test tests::cam_outside_window_is_rejected ... FAILED
+test tests::cam_without_window_is_rejected ... FAILED
+test tests::config_rejects_impossible_wheels ... ok
+test tests::crank_loss_times_out_and_recovers ... ok
+test tests::cycle_angle_wraps_0_to_720 ... ok
+test tests::dropped_tooth_is_not_guessed ... ok
+test tests::cycle_extrapolation_preserves_phase_across_gap_before_next_capture ... FAILED
+test tests::extra_missing_tooth_causes_sync_loss ... ok
+test tests::invalid_cam_windows_are_rejected ... ok
+test tests::cranking_cam_retention_and_count_expiry ... ok
+test tests::loss_bounds_reject_impossible_values ... ok
+test tests::extra_tooth_between_gaps_is_rejected ... ok
+test tests::oversized_normal_interval_characterization ... ok
+test tests::resyncs_after_a_one_second_dropout ... ok
+test tests::restart_uses_exactly_one_baseline_with_or_without_tick ... ok
+test tests::short_edge_filter_cannot_half_rate_lock_before_sync ... ok
+test tests::short_edge_is_ignored_without_poisoning_sync ... ok
+test tests::tooth_reference_on_tooth_edges ... ok
+test tests::syncs_and_measures_constant_speed ... ok
+test tests::tooth_reference_skips_missing_positions ... ok
+test tests::startup_noise_does_not_publish_false_angle ... ok
+test tests::timeout_declares_lost_sync ... ok
+test tests::without_cam_it_stays_crank_synced ... ok
+test tests::tooth_reference_rejects_out_of_range ... ok
+
+failures:
+
+---- tests::cam_inside_window_gives_sequential stdout ----
+
+thread 'tests::cam_inside_window_gives_sequential' (117523) panicked at crates/ecu-trigger/src/lib.rs:761:17:
+assertion `left == right` failed
+  left: Unsynced
+ right: Sequential
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tests::cam_rejection_revokes_validated_phase stdout ----
+
+thread 'tests::cam_rejection_revokes_validated_phase' (117528) panicked at crates/ecu-trigger/src/lib.rs:809:17:
+assertion `left == right` failed
+  left: Unsynced
+ right: Sequential
+
+---- tests::cam_outside_window_is_rejected stdout ----
+
+thread 'tests::cam_outside_window_is_rejected' (117527) panicked at crates/ecu-trigger/src/lib.rs:777:17:
+assertion `left == right` failed
+  left: Unsynced
+ right: CrankSynced
+
+---- tests::cam_without_window_is_rejected stdout ----
+
+thread 'tests::cam_without_window_is_rejected' (117529) panicked at crates/ecu-trigger/src/lib.rs:793:17:
+assertion `left == right` failed
+  left: Unsynced
+ right: CrankSynced
+
+---- tests::cycle_extrapolation_preserves_phase_across_gap_before_next_capture stdout ----
+
+thread 'tests::cycle_extrapolation_preserves_phase_across_gap_before_next_capture' (117534) panicked at crates/ecu-trigger/src/lib.rs:668:9:
+assertion `left == right` failed
+  left: None
+ right: Some(700.0)
+
+
+failures:
+    tests::cam_inside_window_gives_sequential
+    tests::cam_outside_window_is_rejected
+    tests::cam_rejection_revokes_validated_phase
+    tests::cam_without_window_is_rejected
+    tests::cycle_extrapolation_preserves_phase_across_gap_before_next_capture
+
+test result: FAILED. 25 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ecu-trigger --lib`
