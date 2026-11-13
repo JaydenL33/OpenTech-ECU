@@ -90,6 +90,8 @@ after verifying their committed changes and evidence.
 |---|---|---|---|
 | HW-BOM-01 | Hardware | Assign real MPNs to 11 BOM rows and remove placeholders | Needs sourcing research; next hardware cycle |
 | HW-BOM-02 | Hardware | Dated AUD supplier quotes and purchase-vs-build comparison | Depends on BOM; no purchases |
+| HW-JLC-01 | Hardware / human | JLCPCB upload package: LCSC part mapping, CPL in JLCPCB format, panel/outline review, bare-PCB vs SMT+THT quote, DFM questions | After HW-BOM-01/02; no order without H4 |
+| HW-REVIEW-02 | Human | Brother (electronic engineer) review packet and signed findings | Independent human review; AI cannot grant H4 |
 | HW-BENCH-01 | Hardware | IDC40 breakout schematic/assembly + safe power-up procedure | Design-only until H4 |
 | HW-DRAW-01 | Hardware | Improve assembly-drawing annotation readability and add explicit standoff/J3 strain-relief detail | Review found crowded/pale annotations and standoff detail only in notes; human readability decision remains |
 | HW-FOOT-01 | Hardware | Audit the 143 embedded KiCad 5 footprint/library mismatches | H3 blocker identified by the hardware review |
@@ -148,6 +150,13 @@ H2 COMPLETE WITH DOCUMENTED EXCEPTIONS, H3 NOT READY, H4 human-only. No physical
 engine, vehicle or fabrication gate advanced. No purchase or fabrication occurred.
 
 ## 8. Next cycle tasks — 2026-11-13
+
+**Human owner constraints (recorded 2026-11-13):** the owner intends to upload
+the fabricated design to JLCPCB and targets **below A$250 per board**. The
+owner has no electronics background; their brother is an electronic engineer
+and is the intended human reviewer. This is a design/costing target, not H4
+approval. No fabrication may be ordered until independent review is documented
+and the owner explicitly approves H4.
 
 ### HW-BOM-01 — Real MPNs, supplier data and AUD cost comparison
 
