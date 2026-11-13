@@ -146,3 +146,65 @@ after verifying their committed changes and evidence.
 Gate disposition: Gate 0 host evidence remains PASS, scoped. H0 PASS, H1 PARTIAL,
 H2 COMPLETE WITH DOCUMENTED EXCEPTIONS, H3 NOT READY, H4 human-only. No physical,
 engine, vehicle or fabrication gate advanced. No purchase or fabrication occurred.
+
+## 8. Next cycle tasks — 2026-11-13
+
+### HW-BOM-01 — Real MPNs, supplier data and AUD cost comparison
+
+| Field | Value |
+|---|---|
+| Workstream | Hardware |
+| Owner | `@hardware-engineer` |
+| Priority | P0 (H3 blocker) |
+| Depends on | HW-H2-01 design package; header housing decision from the focused review |
+| Owned files | `hardware/prototype-v1/**` (MPN fields and regenerated BOM only), `AUDIT/BOM_REVIEW.md`, `docs/HARDWARE_COST.md`, hardware BOM evidence |
+| Expected output | Real, purchasable MPNs for the 11 grouped rows / 17 placements lacking them; supplier, alternates, availability, dated AUD price; assembled-vs-build comparison; header MPN with housing ≤ 2.54 mm per position; explicit substitution restrictions |
+| Acceptance | Release BOM has no blank MPN or placeholder; every price has a dated source URL; arithmetic checked; no safety-critical substitution justified by pin compatibility alone; no purchase made; BOM still matches the schematic/netlist |
+| Verification | Regenerate BOM via the pinned KiCad image; audit rows against `AUDIT/BOM_REVIEW.md`; cross-check quantities and references |
+| Safety | Read-only web research; no purchases, fabrication or energising |
+| State | CLAIMED — delegated in this cycle |
+
+### RUST-TRG-002 — Pre-sync noise false first-gap lock
+
+| Field | Value |
+|---|---|
+| Workstream | Rust / simulation |
+| Owner | `@rust-engineer` |
+| Priority | P1 |
+| Depends on | RUST-TRG-001 integration (`b710d2b9`) |
+| Owned files | `ecu/crates/ecu-trigger/**`, `AUDIT/RUST_SIMULATION_TASKS.md`, `AUDIT/RUST_TRIGGER_WAVEFORM_EVIDENCE.md`, `AUDIT/rust-round-4/**` |
+| Expected output | Require a minimum baseline-tooth count or a confirmed second gap before first sync; synthetic pre-sync noise vectors at several injection ratios; documented sync-latency trade-off |
+| Acceptance | False first-gap lock no longer occurs in the reviewer's probe class; existing 29 trigger tests still pass; new tests fail on the old behavior; no hardware claim |
+| Verification | fmt, strict clippy, full workspace tests, trigger tests with `--nocapture`; raw logs committed |
+| Safety | Host simulation only |
+| State | CLAIMED — delegated in this cycle |
+
+### TUNE-STORE-02 — Single-writer store lock
+
+| Field | Value |
+|---|---|
+| Workstream | Tuning |
+| Owner | `@tuning-engineer` |
+| Priority | P1 |
+| Depends on | TUNE-AUD-01 integration (`c35323f6`) |
+| Owned files | `ecu/apps/studio-service/**`, `AUDIT/TUNING_WORKSTREAM_EVIDENCE.md` |
+| Expected output | Refuse a second service instance on the same data directory; safe stale-lock behaviour after a crash; test with two processes/instances |
+| Acceptance | Two concurrent writers cannot corrupt the store; stale lock is recovered deliberately, not silently; no physical output path or approval change |
+| Verification | fmt, strict clippy, full tests, targeted store tests with `--nocapture` |
+| Safety | Local evidence store only; no hardware path |
+| State | CLAIMED — delegated in this cycle |
+
+### TUNE-UI-002 — Incremental audit paging and cancellation
+
+| Field | Value |
+|---|---|
+| Workstream | Tuning |
+| Owner | `@tuning-engineer` |
+| Priority | P2 (LOW review finding) |
+| Depends on | TUNE-AUD-01 UI |
+| Owned files | `ecu/apps/tuning-studio/**`, `AUDIT/TUNING_WORKSTREAM_EVIDENCE.md` |
+| Expected output | Incremental "load more" paging or bounded fetch with cancellation; no silent 1,000-entry truncation; stale responses cannot overwrite newer state |
+| Acceptance | Typecheck/build pass; read-only panel; browser rendering is explicitly not claimed unless actually tested |
+| Verification | `npx tsc --noEmit`, `npx vite build` |
+| Safety | Read-only UI; no writes or hardware |
+| State | CLAIMED — delegated in this cycle |
