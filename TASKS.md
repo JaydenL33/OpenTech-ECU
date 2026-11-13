@@ -263,3 +263,43 @@ their references updated; STEP/gerber/drill/hex/DRC-JSON artefacts are marked
 non-diffable. The upstream Speeduino hardware/source provenance remains tracked.
 
 | UI-NEXUS-03 | Tuning UI | 3D live tracking + dash component settings + logging shortcuts | Follow-up to the verified table workflow; separate small tasks |
+
+## 10. Hardware next-steps review — 2026-11-13
+
+Independent netlist review: `AUDIT/HARDWARE_NEXT_STEPS_REVIEW.md` (AI review,
+not a human H4 approval). It confirmed the ERC/DRC counts and corrected the
+output-stage description: U1/U3 drive injectors; U7/U9 are boost/idle/aux;
+IGN-1..4 are 10 Ω gate-driver outputs with no IGBTs; D5/D6/D11/D12 are indicator
+diodes; the injector clamp is inside the VNLD5090; there is no 12 V fuse or
+reverse-polarity protection.
+
+### Must do before ordering
+
+| ID | Task | Owner |
+|---|---|---|
+| HW-REVIEW-01 | Independent human EE review with a written pass/fail (brother declined) | Human |
+| HW-BOM-01 | Choose MAP path: owner-supplied genuine, DNP U5 + external MAP on J4.21, or approved substitute | Human/EE |
+| HW-BOM-01 | Choose nine connector/socket MPNs plus XA1/A1 hand-solder parts | Human/EE |
+| HW-BOM-01 | Resolve/consign zero/low-stock lines and the polyfuse | Hardware |
+| HW-BOM-02 | Regenerate pack and obtain a real JLCPCB/PCBWay quote with DFM | Hardware |
+| HW-DRAW-01 | Confirm 0.05 mm annular ring and 100.05 mm outline with the fab | Hardware/EE |
+| HW-MECH-02 | Measure Mega/header/standoff stack and J3 strain relief | Human |
+| HW-FOOT-01 | Spot-check key footprints and accept/document the 143 mismatches | Hardware/EE |
+| — | Human acceptance of ERC exceptions and 199 courtyard exclusions | Human/EE |
+
+### Can wait until after the first bench board
+
+- Bench test procedure execution and thermal measurements.
+- One-channel verified smart-coil trial.
+- Full 143-footprint audit.
+- Coil daughter board / v2.
+- v2 main-board items: 12 V fuse and reverse protection, VNLD STATUS feedback,
+  proper power connector, low-Z injector peak-and-hold if required.
+
+### Human EE questions
+
+The ten questions are listed in `docs/SELF_AUDIT_GUIDE.md` §7 and
+`AUDIT/HARDWARE_NEXT_STEPS_REVIEW.md` §5. The critical ones are injector clamp
+energy, IDC/ribbon current and returns, 10 Ω ignition output vs the chosen smart
+coil, 12 V fusing, track current, via annular ring, MAP choice, footprint
+matches and the H4 pass/fail.
