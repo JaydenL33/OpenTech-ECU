@@ -20,8 +20,14 @@ not as a claim of endorsement by the Speeduino project.
 
 - Speeduino hardware is published under **CERN-OHL-S-2.0**. Any derived
   hardware design must carry the applicable CERN-OHL-S-2.0 obligations and
-  notices. There is currently no manufacturing-ready OpenTech-ECU PCB in this
-  repository; see AUDIT/HARDWARE_STATUS.md.
+  notices.
+- The selected upstream baseline is Speeduino **v0.4.4d SMD**, commit
+  `ee6a9242834891877744ff2137663b6ca8d79ed6`; it is preserved byte-for-byte at
+  `hardware/upstream-speeduino/v0.4.4d/` with a SHA-256 manifest.
+- The native KiCad 9 review copy at `hardware/prototype-v1/` is a format
+  conversion with a KiCad 9 zone re-fill, not a new circuit design. It is **not**
+  fabrication-approved. See `AUDIT/UPSTREAM_PROVENANCE.md`,
+  `AUDIT/HARDWARE_DIFF.md` and `HARDWARE_BLOCKERS.md`.
 
 ## Names and trademarks
 

@@ -7,7 +7,7 @@
 | Date | 2026-11-12 |
 | Evidence cut-off | 2026-11-13, working tree |
 | Source manifest | `93dc046e3a28ff4ebc30559192d16a889e40b135820f86a96fbbe14e8b35434a` |
-| Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** |
+| Current status | **Gate 0 host software evidence: PASS, scoped. Gate 1-5: BLOCKED.** Prototype-v1 hardware baseline: H0 pass, H1 partial, H2 open. |
 | Related | AUD-01 through AUD-10 |
 
 > **No automatic promotion.** A gate changes status only when a named reviewer records a decision against an exact source hash, calibration checksum, hardware revision and evidence bundle. Code existence, a green build, a passing test suite, a demo, or an LLM summary cannot promote a gate. A regression resets the affected gate until re-reviewed.
@@ -88,14 +88,14 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 - Schematic, PCB, BOM, gerbers, drill, assembly drawing, build notes.
 - ERC/DRC report with rule set, exceptions and reviewer rationale.
 - Board revision/serial number; assembly inspection record.
-- An unreviewed bench-prototype schematic package exists at `hardware/kicad/evo8-bench-ecu/`; it has an unrouted PCB draft with 14 DRC violations (13 dangling vias + 1 clearance) and 499 unconnected items; it cannot be used as Gate 1 evidence until reviewed and completed.
+- A routed, native KiCad review copy of Speeduino v0.4.4d exists at `hardware/prototype-v1/` (0 unconnected items, gerbers/drill/BOM/position generated). ERC 101 and DRC 600 violations remain; the BOM has 11 rows without MPN and no assembly drawing. It is **not** a Gate 1 pass and no board has been assembled. The older `hardware/kicad/evo8-bench-ecu/` draft remains unrouted (499 unconnected, 14 violations) and is not the baseline.
 
 ### 3.3 Exit criteria
 
 | # | Criterion | Required evidence | Current status |
 |---:|---|---|---|
-| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **BLOCKED**: unreviewed schematic/BOM; PCB draft has 14 DRC violations (13 dangling vias + 1 clearance) and 499 unconnected items; no gerbers |
-| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC JSON exists (0 violations from generator) but not independently reviewed; no DRC |
+| 1.1 | Schematic/PCB/BOM/gerbers exist and match reviewed revision | Design package with hashes | **PARTIAL**: native KiCad + gerbers/drill/BOM/position exist; no assembly drawing, no independent review, BOM gaps. No physical board |
+| 1.2 | ERC/DRC completed; violations resolved/accepted | Tool report; reviewer sign-off | **BLOCKED**: ERC 101 (44 errors), DRC 600 (230 errors, 0 unconnected); exceptions classified but not independently accepted |
 | 1.3 | BOM derating/lifecycle review | BOM review | **BLOCKED** |
 | 1.4 | Visual inspection | Photos/checklist | **BLOCKED** |
 | 1.5 | Continuity/rails/no shorts | Measurement record | **BLOCKED** |
@@ -104,7 +104,7 @@ Prove a physical ECU board exists, is assembled correctly, has no obvious electr
 | 1.8 | Outputs default off with no power | Schematic review; measurement | **BLOCKED** |
 | 1.9 | Independent electrical review | Signed record | **MISSING** |
 
-**Gate 1 decision: BLOCKED.** An unreviewed bench schematic/BOM and an unrouted PCB draft exist, but DRC fails (14 violations (13 dangling vias + 1 clearance), 499 unconnected), there are no gerbers/assembly, and there is no independent review. It does not satisfy Gate 1.
+**Gate 1 decision: BLOCKED.** A routed upstream-derived design package exists, but ERC/DRC exceptions, BOM gaps, assembly drawings and independent review are incomplete, and no physical board has been assembled or inspected. It does not satisfy Gate 1.
 
 ## 4. Gate 2 — Powered bench verification
 
@@ -295,6 +295,6 @@ Operate the vehicle on road/track with a validated, legal, insured configuration
 
 ## 11. Current release statement
 
-> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 130 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because only an unreviewed bench schematic/BOM and failing PCB draft exist, with no gerbers; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
+> **OpenTech-ECU v0.1 Gate 0 host software evidence passes for the implemented behaviour: formatting, clippy, 130 tests, firmware skeleton target check, CLI determinism, Mixture Map approval/apply refusal, UI build and copilot typecheck. This is not a certification and does not authorise Gate 1+. Gate 1 is blocked because the selected Speeduino v0.4.4d review copy still has ERC/DRC exceptions, BOM gaps, no assembly drawing and no independent review, and no physical board has been assembled; Gate 2 is blocked because the firmware is a no_std skeleton with no HAL/timing/drivers/watchdog; Gate 3 is blocked because all Evo pinout/connector/trigger/harness evidence is unverified; Gates 4-5 are blocked because no engine or vehicle validation exists. Do not connect this software or any prototype to a vehicle. Do not treat any map as engine-safe.**
 
 The next step is not a vehicle test. It is: keep the Gate 0 evidence current, complete a software review, produce a reviewed hardware design and bench fixture, and only then seek Gate 3 evidence.

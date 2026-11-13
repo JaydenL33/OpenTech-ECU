@@ -1,0 +1,315 @@
+Processing megaatmega2560 (platform: atmelavr; board: megaatmega2560; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/atmelavr/megaatmega2560.html
+PLATFORM: Atmel AVR (5.3.0) > Arduino Mega or Mega 2560 ATmega2560 (Mega 2560)
+HARDWARE: ATMEGA2560 16MHz, 8KB RAM, 248KB Flash
+DEBUG: Current (avr-stub) External (avr-stub, simavr)
+PACKAGES: 
+ - framework-arduino-avr @ 5.4.0 
+ - toolchain-atmelavr @ 1.70300.191015 (7.3.0)
+Converting speeduino.ino
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain+, Compatibility ~ soft
+Found 14 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- EEPROM @ 2.0
+|-- Time @ 1.6.1
+|-- SimplyAtomic @ 1.0.0
+|-- avr-fast-shift @ 1.1.0
+|-- libdivide @ 5.4.0
+|-- FastCRC @ 1.41.0
+|-- avr-fast-div @ 1.4.0
+|-- fp64lib @ 1.1.33
+|-- SPI @ 1.0
+Building in release mode
+Compiling .pio/build/megaatmega2560/src/SD_logger.cpp.o
+Compiling .pio/build/megaatmega2560/src/acc_mc33810.cpp.o
+Compiling .pio/build/megaatmega2560/src/board_avr2560.cpp.o
+Compiling .pio/build/megaatmega2560/src/board_native.cpp.o
+Compiling .pio/build/megaatmega2560/src/board_stm32_official.cpp.o
+Compiling .pio/build/megaatmega2560/src/board_teensy35.cpp.o
+Compiling .pio/build/megaatmega2560/src/board_teensy41.cpp.o
+Compiling .pio/build/megaatmega2560/src/board_template.cpp.o
+Compiling .pio/build/megaatmega2560/src/comms.cpp.o
+Compiling .pio/build/megaatmega2560/src/comms_CAN.cpp.o
+Compiling .pio/build/megaatmega2560/src/comms_legacy.cpp.o
+Compiling .pio/build/megaatmega2560/src/comms_secondary.cpp.o
+Compiling .pio/build/megaatmega2560/src/corrections.cpp.o
+Compiling .pio/build/megaatmega2560/src/crankMaths.cpp.o
+Compiling .pio/build/megaatmega2560/src/decoder_builder.cpp.o
+Compiling .pio/build/megaatmega2560/src/decoder_init.cpp.o
+Compiling .pio/build/megaatmega2560/src/decoder_t.cpp.o
+Compiling .pio/build/megaatmega2560/src/decoders.cpp.o
+Compiling .pio/build/megaatmega2560/src/dwell.cpp.o
+Compiling .pio/build/megaatmega2560/src/engineProtection.cpp.o
+Compiling .pio/build/megaatmega2560/src/fuel_calcs.cpp.o
+Compiling .pio/build/megaatmega2560/src/globals.cpp.o
+Compiling .pio/build/megaatmega2560/src/init.cpp.o
+Compiling .pio/build/megaatmega2560/src/logger.cpp.o
+Compiling .pio/build/megaatmega2560/src/maths.cpp.o
+Compiling .pio/build/megaatmega2560/src/page_crc.cpp.o
+Compiling .pio/build/megaatmega2560/src/pages.cpp.o
+Compiling .pio/build/megaatmega2560/src/resetControl.cpp.o
+Compiling .pio/build/megaatmega2560/src/rtc_common.cpp.o
+Compiling .pio/build/megaatmega2560/src/schedule_state_machine.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduledIO_direct_ign.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduledIO_direct_inj.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduledIO_ign.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduledIO_inj.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduler.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduler_fuel_controller.cpp.o
+Compiling .pio/build/megaatmega2560/src/scheduler_ignition_controller.cpp.o
+Compiling .pio/build/megaatmega2560/src/secondaryTables.cpp.o
+Compiling .pio/build/megaatmega2560/src/sensors.cpp.o
+Compiling .pio/build/megaatmega2560/src/speeduino.ino.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/BackupSram/BackupSramAsEEPROM.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/FRAM/Fram.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/PID/PID.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/PID/PidCore.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/PID/integerPID.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/PID/integerPID_ideal.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/DMASAM.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/SPIAsEEPROM.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/SPIFlash.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/SPIFlashIO.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/SPIFlashSFDP.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/SPIMemory.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/diagnostics.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/SPIAsEEPROM/winbondflash.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/STM32_CAN/STM32_CAN.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/aircon/airconController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/aircon/airconController_details.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/auxChannels/auxChannelController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/boost/boostController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/fan/fanController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/fuelPump/fuelPumpController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/idle/idle.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/idle/idleController_state.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/idle/stepper.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/ignBypass/ignBypassControl.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/launch/launchController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/nitrous/nitrousController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/progammableIO/programmableIOControl.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/progammableIO/programmableIOControl_details.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/tacho/tachoController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/tsCommand/tsCommandController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/controllers/vvt/vvtController.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/36minus21.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/36minus222.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/420a.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/4g63.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/audi135.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/basicDistributor.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/daihatsu.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/drz400.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/dualWheel.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/fordtfi.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/gm24x.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/gm7x.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/harley.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/hondad17.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/hondaj32.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/jeep2000.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/k6a.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/mazdaAU.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/miata9905.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/missingTooth.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/ngc.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/nissan360.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/non360.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/renix.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/rovermems.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/shared/crank_angle_calculator.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/shared/decoder_state.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/shared/perToothIgnition.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/shared/rev_time_calcs.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/st170.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/subaru6_7.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/vmax.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/decoders/webber.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/pins/digitalPin.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/pins/pinMapping.cpp.o
+Compiling .pio/build/megaatmega2560/src/src/pins/port_pin.cpp.o
+Compiling .pio/build/megaatmega2560/src/statuses.cpp.o
+Compiling .pio/build/megaatmega2560/src/storage.cpp.o
+Compiling .pio/build/megaatmega2560/src/storage_api.cpp.o
+Compiling .pio/build/megaatmega2560/src/table2d.cpp.o
+Compiling .pio/build/megaatmega2560/src/table3d_interpolate.cpp.o
+Compiling .pio/build/megaatmega2560/src/timers.cpp.o
+Compiling .pio/build/megaatmega2560/src/updates.cpp.o
+Compiling .pio/build/megaatmega2560/libb7d/Time/DateStrings.cpp.o
+Compiling .pio/build/megaatmega2560/libb7d/Time/Time.cpp.o
+Compiling .pio/build/megaatmega2560/lib943/FastCRC/FastCRChw.cpp.o
+Compiling .pio/build/megaatmega2560/lib943/FastCRC/FastCRCsw.cpp.o
+Archiving .pio/build/megaatmega2560/libb7d/libTime.a
+Compiling .pio/build/megaatmega2560/libc9c/avr-fast-div/avr-fast-div.cpp.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_10pown.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_abs.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_acosh.S.o
+Archiving .pio/build/megaatmega2560/libc9c/libavr-fast-div.a
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_addsf3x.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_addsubAB.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_asinx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_atan2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_atanh.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_atanx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cbrt.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ceil.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_classify.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cmp.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cmpA.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cmp_1.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cmpsd2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_copysign.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cosh.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_cotan.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_debug.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_disd.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_divsf3x.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ds.S.o
+Archiving .pio/build/megaatmega2560/lib943/libFastCRC.a
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_etoa.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_exp10.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_exp2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_expx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fdim.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fixxdfsi.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_floor.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fma.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fmax.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fmod.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fmodx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_frexp.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_fsplit3.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ftoa1.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_gesd2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_getexp10.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_hypot.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ilogb.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_inf.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_inverse.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_isBzero.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_isfinite.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_isinf.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_isnan.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ldb_1.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ldb_log2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ldb_pi2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_ldexp.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_log10.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_log2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_logx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_lrint.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_lround.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_lshift64.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_min.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_minMag.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_minNumMag.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_minNumber.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_modf.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_movAB.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_movAC.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_movBA.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_movBC.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_movCA.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_mul64AB.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_mulsd3x.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_nan.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_negdf2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_nextUp.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_norm2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_pi2.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_pow.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_powserx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_powsoddx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_pretA.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_pscA.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_pscB.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_round.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_scalbln.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_sd.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_shift.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_sidf.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_signbit.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_sinx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_sqrt.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_square.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_sssd.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_stackA.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_stackB.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_stackC.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_strtod.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_swapAB.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_tanh.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_tanx.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_tostring.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_trunc.S.o
+Compiling .pio/build/megaatmega2560/lib199/fp64lib/fp64_zero.S.o
+Compiling .pio/build/megaatmega2560/lib214/SPI/SPI.cpp.o
+Archiving .pio/build/megaatmega2560/libFrameworkArduinoVariant.a
+Compiling .pio/build/megaatmega2560/FrameworkArduino/CDC.cpp.o
+Archiving .pio/build/megaatmega2560/lib199/libfp64lib.a
+Compiling .pio/build/megaatmega2560/FrameworkArduino/HardwareSerial.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/HardwareSerial0.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/HardwareSerial1.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/HardwareSerial2.cpp.o
+Archiving .pio/build/megaatmega2560/lib214/libSPI.a
+Compiling .pio/build/megaatmega2560/FrameworkArduino/HardwareSerial3.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/IPAddress.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/PluggableUSB.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/Print.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/Stream.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/Tone.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/USBCore.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/WInterrupts.c.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/WMath.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/WString.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/abi.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/hooks.c.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/main.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/new.cpp.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/wiring.c.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/wiring_analog.c.o
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp: In function 'void* operator new(std::size_t, std::nothrow_t)':
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp:59:60: warning: unused parameter 'tag' [-Wunused-parameter]
+ void * operator new(std::size_t size, const std::nothrow_t tag) noexcept {
+                                                            ^~~
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp: In function 'void* operator new [](std::size_t, const std::nothrow_t&)':
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp:68:63: warning: unused parameter 'tag' [-Wunused-parameter]
+ void * operator new[](std::size_t size, const std::nothrow_t& tag) noexcept {
+                                                               ^~~
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp: In function 'void operator delete(void*, std::size_t)':
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp:95:45: warning: unused parameter 'size' [-Wunused-parameter]
+ void operator delete(void* ptr, std::size_t size) noexcept {
+                                             ^~~~
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp: In function 'void operator delete [](void*, std::size_t)':
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp:98:48: warning: unused parameter 'size' [-Wunused-parameter]
+ void operator delete[](void * ptr, std::size_t size) noexcept {
+                                                ^~~~
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp: In function 'void operator delete(void*, const std::nothrow_t&)':
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp:103:55: warning: unused parameter 'tag' [-Wunused-parameter]
+ void operator delete(void* ptr, const std::nothrow_t& tag) noexcept {
+                                                       ^~~
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp: In function 'void operator delete [](void*, const std::nothrow_t&)':
+/home/jlee/.platformio/packages/framework-arduino-avr/cores/arduino/new.cpp:106:57: warning: unused parameter 'tag' [-Wunused-parameter]
+ void operator delete[](void* ptr, const std::nothrow_t& tag) noexcept {
+                                                         ^~~
+Compiling .pio/build/megaatmega2560/FrameworkArduino/wiring_digital.c.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/wiring_pulse.S.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/wiring_pulse.c.o
+Compiling .pio/build/megaatmega2560/FrameworkArduino/wiring_shift.c.o
+Archiving .pio/build/megaatmega2560/libFrameworkArduino.a
+Linking .pio/build/megaatmega2560/firmware.elf
+Checking size .pio/build/megaatmega2560/firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [========  ]  77.6% (used 6357 bytes from 8192 bytes)
+Flash: [========  ]  76.4% (used 193960 bytes from 253952 bytes)
+Building .pio/build/megaatmega2560/firmware.hex
+========================= [SUCCESS] Took 9.85 seconds =========================
+
+Environment     Status    Duration
+--------------  --------  ------------
+megaatmega2560  SUCCESS   00:00:09.847
+========================= 1 succeeded in 00:00:09.847 =========================
