@@ -251,7 +251,7 @@ export function MapEditor({
                 {table.axes[1].breakpoints.map((rpm, col) => {
                   const idx = row * cols + col;
                   const value = values[idx] ?? 0;
-                  const active = app.live.frame?.ve_row === row && app.live.frame?.ve_col === col;
+                  const active = table.id === "ve" && app.live.frame?.ve_row === row && app.live.frame?.ve_col === col;
                   return (
                     <td key={rpm}>
                       <button
@@ -275,7 +275,7 @@ export function MapEditor({
       </div>
       <p className="hint">
         Arrow keys move · +/− adjusts · Shift accelerates · Ctrl/Cmd+C/V copies · Ctrl/Cmd+Z undoes.
-        The outlined cell is the live operating cell from decoded RPM/MAP. Applying pauses the virtual engine
+        The blue live marker is available for the VE table only; other tables have no table-specific live indices. Applying pauses the virtual engine
         and seals a new checksummed revision.
       </p>
     </div>
