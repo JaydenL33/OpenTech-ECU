@@ -64,6 +64,29 @@ assembler can quote a header-kitting service once you choose the strips.
   [`FABRICATION_NOTES.md`](../hardware/prototype-v1/FABRICATION_NOTES.md).
 - Confirm JP11 must be cut before external MAP is connected to IDC40 pin 21.
 
+## 3A. Sourcing blockers found by the cost model (2026-11-13)
+
+The 5-board assembly estimate is **A$160.79/board expected** (range
+A$127.70–196.57), or **A$220.56/board** with the Mega and DRV8825 plug-ins.
+That is under the A$250 target, but it is an estimate, not a quote. A turnkey
+order cannot be placed as-is:
+
+- **MPX4250AP MAP sensor:** discontinued and zero JLCPCB stock. It is also the
+  largest single part cost (~A$33.89/board). Please approve a footprint- and
+  transfer-function-compatible alternative, or a consignment/owner-supplied
+  route. Do not substitute on pin compatibility alone.
+- **Also zero stock:** LH R974-LP-1 LED, CL21B224KOCNNNC 0.22 µF,
+  SSM3K357R MOSFET, AYZ0202AGRLC switch. LM2940S-5.0/NOPB has one unit.
+- **No stocked JLCPCB match:** 0ZCC0050FF2C fuse, J4 keyed IDC40, IC3 DIP-8
+  socket. These need an approved alternative or consignment.
+- **Nine machine connector/socket MPNs** remain your decision; see
+  `CONNECTOR_DECISIONS.md`.
+- The J3 CSV comma/quoting defect is fixed; all pack CSVs are properly quoted.
+
+The cost and stock evidence is in `docs/HARDWARE_COST.md` and
+`AUDIT/COST_ESTIMATE.md`. The estimate is ±25%; a real quote needs the chosen
+parts and an upload.
+
 ## 4. Files to review
 
 - [`hardware/prototype-v1/`](../hardware/prototype-v1/) — KiCad project, schematic, PCB.
