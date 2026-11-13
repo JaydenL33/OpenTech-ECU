@@ -222,3 +222,5 @@ and the owner explicitly approves H4.
 | Verification | `npx tsc --noEmit`, `npx vite build` |
 | Safety | Read-only UI; no writes or hardware |
 | State | CLAIMED — delegated in this cycle |
+
+- 2026-11-13 hardware assembly metadata: generated 140-reference JLC BOM/CPL and unresolved list; verification in AUDIT/jlcpcb-pack/. Upload blocked on exact sourcing and A1/XA1 metadata decisions; connector fit questions in docs/CONNECTOR_DECISIONS.md.
