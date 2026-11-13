@@ -1,0 +1,41 @@
+pin,net,bench_note
+1,INJ-1-OUT,Injector 1 low-side output — dummy load only
+2,INJ-1-OUT,Injector 1 low-side output — same net as pin 1
+3,INJ-2-OUT,Injector 2 low-side output — dummy load only
+4,INJ-2-OUT,Injector 2 low-side output — same net as pin 3
+5,INJ-3-OUT,Injector 3 low-side output — dummy load only
+6,HC-2-OUT,High-current auxiliary output 2 — dummy load only
+7,INJ-3-OUT,Injector 3 low-side output — same net as pin 5
+8,IDLE-OUT,Idle valve output — verify valve type before connection
+9,INJ-4-OUT,Injector 4 low-side output — dummy load only
+10,HC-1-OUT,High-current auxiliary output 1 — dummy load only
+11,INJ-4-OUT,Injector 4 low-side output — same net as pin 9
+12,BOOST-OUT,Boost control output — do not connect a solenoid for first power-up
+13,IGN-1-OUT,Logic-level ignition 1 — external verified igniter only
+14,IGN-2-OUT,Logic-level ignition 2 — external verified igniter only
+15,IGN-4-OUT,Logic-level ignition 4 — external verified igniter only
+16,IGN-3-OUT,Logic-level ignition 3 — external verified igniter only
+17,GND,Ground
+18,STEP-A2,Stepper driver control — idle stepper module
+19,GND,Ground
+20,STEP-A1,Stepper driver control — idle stepper module
+21,MAP-EXT,External MAP sensor signal — verify 0–5 V range
+22,STEP-B1,Stepper driver control — idle stepper module
+23,GND,Ground
+24,STEP-B2,Stepper driver control — idle stepper module
+25,VDDA,Analog supply — measure before connecting any sensor
+26,VDDA,Analog supply — same net as pin 25
+27,PROTO-1,Spare/prototype net — do not assume a function
+28,VR1-,VR conditioner channel 1 negative input — verify wiring before use
+29,PROTO-2,Spare/prototype net — do not assume a function
+30,VR2-,VR conditioner channel 2 negative input — verify wiring before use
+31,PROTO-3,Spare/prototype net — do not assume a function
+32,CRANK-IN,Crank signal after the VR/Hall selection — verify source
+33,PROTO-4,Spare/prototype net — do not assume a function
+34,CAM-IN,Cam signal after the VR/Hall selection — verify source
+35,PROTO-5,Spare/prototype net — do not assume a function
+36,GND,Ground
+37,CLT_Sensor,Coolant temperature sensor signal input
+38,TPS_Sensor,Throttle position sensor signal input
+39,IAT_Sensor,Intake air temperature sensor signal input
+40,O2_Sensor,Oxygen sensor signal input — verify narrowband/wideband type

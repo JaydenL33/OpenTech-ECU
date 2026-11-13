@@ -16,3 +16,10 @@
 
 
 *.pdf -text
+
+# Preserve the byte-exact upstream Speeduino hardware baseline. Some upstream
+# files (BOM CSV, PDF, zip) contain CRLF or binary bytes and must not be
+# normalised; the SHA-256 manifest in hardware/upstream-speeduino/SHA256SUMS
+# is the integrity authority.
+hardware/upstream-speeduino/** -text
+evidence/hardware/*.hex -text

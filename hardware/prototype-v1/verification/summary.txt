@@ -1,0 +1,43 @@
+Connectivity comparison exit code: 0
+
+ERC category counts:
+     37 [global_label_dangling]
+     26 [pin_not_connected]
+     11 [multiple_net_names]
+      9 [power_pin_not_driven]
+      9 [pin_not_driven]
+      4 [footprint_link_issues]
+      2 [unconnected_wire_endpoint]
+      2 [lib_symbol_issues]
+      1 [no_connect_dangling]
+
+DRC category counts:
+    199 [silk_overlap]
+    199 [courtyards_overlap]
+    143 [lib_footprint_mismatch]
+     19 [solder_mask_bridge]
+     19 [silk_over_copper]
+     12 [shorting_items]
+      5 [silk_edge_clearance]
+      4 [lib_footprint_issues]
+
+Found 0 unconnected items
+
+Manufacturing files:
+assembly/v0.4.4d-bom.csv
+assembly/v0.4.4d-ipc-d-356.net
+assembly/v0.4.4d.net
+assembly/v0.4.4d-pos.csv
+assembly/v0.4.4d-schematic.pdf
+drill/v0.4.4d.drl
+drill/v0.4.4d-drl_map.pdf
+gerbers/v0.4.4d-B_Cu.gbl
+gerbers/v0.4.4d-B_Mask.gbs
+gerbers/v0.4.4d-B_Paste.gbp
+gerbers/v0.4.4d-B_Silkscreen.gbo
+gerbers/v0.4.4d-Edge_Cuts.gm1
+gerbers/v0.4.4d-F_Cu.gtl
+gerbers/v0.4.4d-F_Mask.gts
+gerbers/v0.4.4d-F_Paste.gtp
+gerbers/v0.4.4d-F_Silkscreen.gto
+gerbers/v0.4.4d-job.gbrjob
