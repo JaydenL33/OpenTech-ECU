@@ -2,7 +2,7 @@ Designator,Comment,Footprint,MPN,Decision
 IC3,Trig Cond Socket,Package_DIP:DIP-8_W7.62mm_Socket,,EE choose exact ordering code; verify body/fit against datasheet and PCB
 J1,Conn_01x05,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,,EE choose exact ordering code; verify body/fit against datasheet and PCB
 J2,Conn_01x06,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical,,EE choose exact ordering code; verify body/fit against datasheet and PCB
-J3,Conn_01x02,TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal,,EE choose exact ordering code; verify body/fit against datasheet and PCB
+J3,Conn_01x02,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal",,EE choose exact ordering code; verify body/fit against datasheet and PCB
 J4,Conn_02x20_Counter_Clockwise,Connector_IDC:IDC-Header_2x20_P2.54mm_Vertical,,EE choose exact ordering code; verify body/fit against datasheet and PCB
 J5,Conn_01x04,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,,EE choose exact ordering code; verify body/fit against datasheet and PCB
 J6,Conn_01x05,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,,EE choose exact ordering code; verify body/fit against datasheet and PCB

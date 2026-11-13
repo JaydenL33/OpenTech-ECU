@@ -21,7 +21,7 @@ another assembler.
 - **XA1 shield headers**: one 24-pad row, one 28-pad row and one 2x17 column.
   The composite footprint has no single physical placement and its origin was
   outside the outline. These are a small hand-solder kit; see
-  `bom-hand-solder.csv` and `docs/CONNECTOR_DECISIONS.md`.
+  `bom-hand-solder.csv`, `bare-copper-jumpers.csv` and `docs/CONNECTOR_DECISIONS.md`.
 - **A1 carrier sockets**: two 1x8 sockets for the Pololu DRV8825 carrier; the
   carrier itself is customer-supplied and plugs in.
 - **Arduino Mega 2560**: customer-supplied plug-in; not a BOM item.
@@ -73,6 +73,7 @@ Ask both manufacturers to confirm:
 - `hardware/prototype-v1/manufacturing/jlcpcb/bom-jlcpcb.csv`
 - `hardware/prototype-v1/manufacturing/jlcpcb/cpl-jlcpcb.csv`
 - `hardware/prototype-v1/manufacturing/jlcpcb/bom-hand-solder.csv`
+- `hardware/prototype-v1/manufacturing/jlcpcb/bare-copper-jumpers.csv`
 - `hardware/prototype-v1/manufacturing/jlcpcb/bom-unresolved.csv`
 - `hardware/prototype-v1/manufacturing/assembly/v0.4.4d-assembly-top.pdf`
 - `hardware/prototype-v1/FABRICATION_NOTES.md`

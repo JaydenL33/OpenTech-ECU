@@ -1,0 +1,3 @@
+Item,Footprint,Qty,Note
+JP6-JP10,SolderJumper_2_Bridged,5,"bare copper, bridged by default, no part"
+JP11,Jumper_3_Bridged12,1,"bare copper, 1-2 bridged by default; cut before external MAP"

@@ -109,9 +109,11 @@ is not in the BOM; two 1x8 board-side sockets are the hand-solder item.
 
 - `bom-jlcpcb.csv` — Comment, Designator, Footprint, MPN, LCSC Part #.
 - `cpl-jlcpcb.csv` — Designator, Mid X, Mid Y, Layer, Rotation.
-- `bom-hand-solder.csv` — XA1/A1-SOCKET hand-solder items and the bare jumpers.
+- `bom-hand-solder.csv` — XA1/A1-SOCKET hand-solder items only.
+- `bare-copper-jumpers.csv` — JP6-JP11 board features; no parts.
 - `bom-unresolved.csv` — connector rows with no verified MPN; EE decision.
-- `generate.py` — reproducible generator; no network access.
+- `generate.py` — reproducible generator; no network access. All CSV output is
+  quoted with Python's csv writer so footprints containing commas stay aligned.
 
 ## Limits
 
@@ -119,28 +121,40 @@ This is not a quote, DFM approval, H3 or H4 sign-off. LCSC mappings, stock,
 prices, rotations and pin-1 polarity must be confirmed by the assembler and
 the EE. The board remains a bench prototype.
 """
-(OUT / "bom-jlcpcb.csv").write_text(
-    "Comment,Designator,Footprint,MPN,LCSC Part #\n"
-    + "\n".join(",".join(row) for row in machine_bom)
-    + "\n"
+def write_csv(name: str, header: list[str], rows: list[list[str]]) -> None:
+    """Write a properly quoted CSV. Do not hand-join fields: footprints and
+    notes contain commas (for example the Phoenix PT-1,5 terminal block)."""
+    import csv as _csv
+    with (OUT / name).open("w", newline="", encoding="utf-8") as f:
+        writer = _csv.writer(f)
+        writer.writerow(header)
+        writer.writerows(rows)
+
+
+write_csv(
+    "bom-jlcpcb.csv",
+    ["Comment", "Designator", "Footprint", "MPN", "LCSC Part #"],
+    machine_bom,
 )
-(OUT / "cpl-jlcpcb.csv").write_text(
-    "Designator,Mid X,Mid Y,Layer,Rotation\n"
-    + "\n".join(",".join(row) for row in cpl)
-    + "\n"
+write_csv(
+    "cpl-jlcpcb.csv",
+    ["Designator", "Mid X", "Mid Y", "Layer", "Rotation"],
+    cpl,
 )
-(OUT / "bom-hand-solder.csv").write_text(
-    "Item,Description,Footprint,Quantity/Core,Candidate,Decision\n"
-    + "\n".join(",".join(row) for row in hand)
-    + "\n\n"
-    + "Bare copper jumpers (no part)\n"
-    + "\n".join(",".join(row) for row in bare_jumpers)
-    + "\n"
+write_csv(
+    "bom-hand-solder.csv",
+    ["Item", "Description", "Footprint", "Quantity/Core", "Candidate", "Decision"],
+    hand,
 )
-(OUT / "bom-unresolved.csv").write_text(
-    "Designator,Comment,Footprint,MPN,Decision\n"
-    + "\n".join(",".join(row) for row in unresolved)
-    + "\n"
+write_csv(
+    "bom-unresolved.csv",
+    ["Designator", "Comment", "Footprint", "MPN", "Decision"],
+    unresolved,
+)
+write_csv(
+    "bare-copper-jumpers.csv",
+    ["Item", "Footprint", "Qty", "Note"],
+    bare_jumpers,
 )
 (OUT / "README.md").write_text(readme)
 print(f"machine_bom={len(machine_bom)} cpl={len(cpl)} unresolved={len(unresolved)} hand={len(hand)}")
