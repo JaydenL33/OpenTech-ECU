@@ -67,6 +67,11 @@ struct Args {
     /// Keep calibration revisions in memory only (nothing is written to disk).
     #[arg(long)]
     no_persist: bool,
+    /// Deliberately reopen a store whose previous holder exited or was killed
+    /// without releasing it (see `store.lock`). Off by default: a stale marker
+    /// makes startup refuse. The hash chain is still fully re-verified.
+    #[arg(long)]
+    recover_stale_lock: bool,
 }
 
 #[derive(Clone)]
@@ -170,7 +175,15 @@ async fn main() -> anyhow::Result<()> {
         let dir =
             store::resolve_data_dir(args.data_dir.clone()).map_err(|e| anyhow::anyhow!("{e}"))?;
         // A corrupt or tampered store aborts startup; its files are left as-is.
-        let opened = CalibrationStore::open(&dir).map_err(|e| anyhow::anyhow!("{e}"))?;
+        let policy = if args.recover_stale_lock {
+            store::LockPolicy::RecoverStale
+        } else {
+            store::LockPolicy::RefuseStale
+        };
+        // A second instance on the same directory, or an unreleased lock
+        // without --recover-stale-lock, also aborts startup here.
+        let opened =
+            CalibrationStore::open_with(&dir, policy).map_err(|e| anyhow::anyhow!("{e}"))?;
         for w in opened.warnings() {
             tracing::warn!("calibration store: {w}");
         }
@@ -259,6 +272,7 @@ async fn main() -> anyhow::Result<()> {
     let static_dir = args.static_dir.unwrap_or_else(|| {
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../apps/tuning-studio/dist")
     });
+    let shutdown_state = state.clone();
     let app = build_router(state, &static_dir);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
@@ -267,8 +281,43 @@ async fn main() -> anyhow::Result<()> {
         static_dir.display()
     );
     let listener = tokio::net::TcpListener::bind(addr).await?;
-    axum::serve(listener, app).await?;
-    Ok(())
+    let result = tokio::select! {
+        r = axum::serve(listener, app) => r.map_err(anyhow::Error::from),
+        () = shutdown_signal() => {
+            tracing::info!("shutdown signal received; releasing the calibration store");
+            Ok(())
+        }
+    };
+    // Release the single-writer store lock deterministically (marks store.lock
+    // `released`). Lingering websocket/background clones of the state must not
+    // keep it alive. Taking the session lock waits for any in-flight write.
+    // A SIGKILL/power loss skips this, which is exactly the stale-lock case.
+    let mut session = match shutdown_state.inner.lock() {
+        Ok(g) => g,
+        Err(poisoned) => poisoned.into_inner(),
+    };
+    drop(session.store.take());
+    drop(session);
+    result
+}
+
+/// Resolves on Ctrl-C (SIGINT) or, on Unix, SIGTERM.
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        let _ = tokio::signal::ctrl_c().await;
+    };
+    #[cfg(unix)]
+    let term = async {
+        match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
+            Ok(mut s) => {
+                s.recv().await;
+            }
+            Err(_) => std::future::pending::<()>().await,
+        }
+    };
+    #[cfg(not(unix))]
+    let term = std::future::pending::<()>();
+    tokio::select! { () = ctrl_c => {}, () = term => {} }
 }
 
 /// Build a virtual engine whose physical VE is `truth`'s, with `cal` as the ECU map.
@@ -571,6 +620,12 @@ fn store_summary(session: &Session) -> serde_json::Value {
             "revisions_tail_hash": s.revisions_tail_hash(),
             "audit_tail_hash": s.audit_tail_hash(),
             "warnings": s.warnings(),
+            "single_writer_lock": {
+                "mechanism": "OS advisory lock (flock/LockFileEx) on store.lock; one writer per data directory",
+                "holder_pid": s.lock_holder_pid(),
+                "stale_lock_recovered": s.lock_recovery().is_some(),
+                "stale_lock_recovery": s.lock_recovery(),
+            },
             "notice": store::STORE_NOTICE,
             "identity_note": "Actor labels are unauthenticated; absent a supplied label the value is 'local-operator'.",
         }),
@@ -3290,10 +3345,46 @@ mod persistence_tests {
         );
     }
 
+    /// TUNE-UI-002 server contract the incremental UI relies on: `limit=0` is a
+    /// count-only probe, windows are addressed by absolute `offset`, and a window
+    /// past the end is empty rather than an error.
+    #[tokio::test]
+    async fn audit_paging_supports_count_probe_and_bounded_windows_over_http() {
+        let dir = TempDir::new("http-paging");
+        // The first start records `baseline`; each later start appends one
+        // `store_loaded` entry: 1 + 5 = 6 entries after the loop.
+        for _ in 0..6 {
+            let (app, state) = service(&dir);
+            drop(app);
+            drop(state); // releases the single-writer lock for the next start
+        }
+        let (app, _state) = service(&dir); // +1 => 7 entries
+        let page = |q: &'static str| {
+            let app = app.clone();
+            async move {
+                let (st, v) = call(&app, "GET", &format!("/api/calibration/audit?{q}"), None).await;
+                assert_eq!(st, StatusCode::OK, "{v}");
+                let seqs: Vec<u64> = v["entries"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|e| e["seq"].as_u64().unwrap())
+                    .collect();
+                (v["total"].as_u64().unwrap(), seqs)
+            }
+        };
+        assert_eq!(page("offset=0&limit=0").await, (7, vec![]));
+        assert_eq!(page("offset=4&limit=100").await, (7, vec![4, 5, 6]));
+        assert_eq!(page("offset=2&limit=3").await, (7, vec![2, 3, 4]));
+        assert_eq!(page("offset=0&limit=2").await, (7, vec![0, 1]));
+        assert_eq!(page("offset=99&limit=10").await, (7, vec![]));
+        eprintln!("audit paging test: count probe, newest window, older window, past-end all OK");
+    }
+
     #[tokio::test]
     async fn tampered_store_is_refused_at_startup_and_flagged_while_running() {
         let dir = TempDir::new("http-tamper");
-        let (app, _state) = service(&dir);
+        let (app, state) = service(&dir);
         let (_, v) = call(&app, "GET", "/api/calibration/store/verify", None).await;
         assert_eq!(v["ok"], true, "{v}");
 
@@ -3309,6 +3400,9 @@ mod persistence_tests {
         let msg = v["error"].as_str().unwrap();
         assert!(msg.contains("corrupt or tampered"), "{msg}");
         drop(app);
+        // The first instance must release the single-writer lock (TUNE-STORE-02)
+        // before a new instance can even look at the store.
+        drop(state);
 
         // A new service instance refuses to start from the bad store.
         let err = match CalibrationStore::open(dir.path()) {

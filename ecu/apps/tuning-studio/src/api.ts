@@ -93,25 +93,20 @@ export const api = {
     }>("/api/calibration/history"),
 
   /** Durable, read-only revision + audit trail (TUNE-AUD-01). */
-  revisions: () =>
-    request<{ store: StoreSummary; revisions: StoredRevision[] }>("/api/calibration/revisions"),
-  /** One page of audit entries (the service caps a page at 1000). */
-  auditPage: (offset: number) =>
+  revisions: (signal?: AbortSignal) =>
+    request<{ store: StoreSummary; revisions: StoredRevision[] }>("/api/calibration/revisions", {
+      signal,
+    }),
+  /**
+   * One bounded page of audit entries, oldest-first by `seq` (the service caps
+   * a page at 1000). `limit = 0` returns only `total`. There is deliberately no
+   * fetch-everything helper: callers page explicitly (TUNE-UI-002).
+   */
+  auditPage: (offset: number, limit: number, signal?: AbortSignal) =>
     request<{ store: StoreSummary; total: number; entries: AuditEntry[] }>(
-      `/api/calibration/audit?offset=${offset}&limit=1000`,
+      `/api/calibration/audit?offset=${offset}&limit=${limit}`,
+      { signal },
     ),
-  /** Every audit entry: pages are fetched until `total` is reached. Read-only. */
-  audit: async (): Promise<{ store: StoreSummary; total: number; entries: AuditEntry[] }> => {
-    const first = await api.auditPage(0);
-    const entries = [...first.entries];
-    // Stop on an empty page too, so a misbehaving server cannot loop forever.
-    while (entries.length < first.total) {
-      const page = await api.auditPage(entries.length);
-      if (page.entries.length === 0) break;
-      entries.push(...page.entries);
-    }
-    return { store: first.store, total: first.total, entries };
-  },
   verifyStore: () =>
     request<{ ok: boolean; error?: string; report?: { revisions: number; audit_entries: number } }>(
       "/api/calibration/store/verify",

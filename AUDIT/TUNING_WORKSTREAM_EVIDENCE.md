@@ -864,9 +864,98 @@ Output captured under the session scratchpad only (`ws.out`, `ss.out`); not comm
 ### Remaining limits (unchanged unless stated)
 1. Local evidence, not certification: no signatures; tail removal at a record boundary is undetectable without an external anchor (`audit_tail_hash`).
 2. Actor labels unauthenticated; `approve=true` is a flag; API has no auth/TLS.
-3. Single-writer assumption, no lock file.
+3. Single-writer assumption, no lock file. **(Superseded by Round 10 / TUNE-STORE-02.)**
 4. Durability is the standard POSIX fsync recipe, validated by code-path + SIGKILL tests only. Disk write-cache, filesystem and hardware behaviour under real power loss are **untested**. Directory fsync is a no-op on non-Unix targets.
 5. Symlinks in the data dir are followed (no `O_NOFOLLOW`). An explicit relative `--data-dir` is still honoured as given.
 6. Crash between revision write and audit write still leaves a revision without an audit entry (load warns).
 7. A stale `store.json.tmp` from a crash before rename is overwritten on next create; it is never read.
 8. UI audit paging type-checked and built only.
+
+---
+
+## Round 10 (2026-11-13, tasks TUNE-STORE-02 + TUNE-UI-002) — single-writer store lock; incremental audit paging with cancellation
+
+Base: `master` @ 3b4d6b1c. Host-only, local evidence store, no physical-output path, no vehicle connection.
+Approval, paused-engine and tamper semantics are unchanged (no edits to those code paths; existing tests pass untouched
+except as noted under "Existing test changed").
+
+### A. TUNE-STORE-02 — single-writer lock
+
+**Mechanism.** `CalibrationStore::open_with(dir, LockPolicy)` creates the directory if needed and takes an exclusive,
+non-blocking OS advisory lock on `<data-dir>/store.lock` using `std::fs::File::try_lock` (flock(2) on Unix, `LockFileEx`
+on Windows) **before** reading or creating any store file. No new crate and no `unsafe` (`studio-service` keeps
+`#![forbid(unsafe_code)]`). `std` file locking is stable from Rust 1.89, so `apps/studio-service/Cargo.toml` now declares
+`rust-version = "1.89"` (workspace default remains 1.80; toolchain here is rustc 1.99.1). The lock is held for the life
+of the `CalibrationStore` and released on drop (marker rewritten to `released`, then unlock).
+
+**Refusal.** A second opener — another process or another store value in the same process — gets `StoreError::Locked`
+naming the holder (pid, start time) and writes nothing. `--recover-stale-lock` does **not** override a live lock.
+
+**Stale-lock policy.** The OS drops the lock when the holder dies for any reason, so the lock cannot be permanently stuck.
+`store.lock` also holds a JSON marker `{state, pid, started_unix_ms}`. If the lock is free but the marker still says `held`
+(or is unparseable), the previous holder exited without releasing (SIGKILL, panic-abort, power loss), possibly mid-append:
+
+* default: refuse with `StoreError::StaleLock` naming the previous holder; marker and data files untouched; refusal is repeatable;
+* operator opts in with `--recover-stale-lock` (`LockPolicy::RecoverStale`): the full hash chain is re-verified as always
+  (a torn tail or tampering is still `Corrupt` and the files are left untouched), then recovery is made visible: `tracing`
+  warning via store warnings, an entry in `GET /api/calibration/revisions` → `store.warnings` and
+  `store.single_writer_lock.stale_lock_recovery`, and one appended line in `<data-dir>/lock-recovery.jsonl`.
+  The audit chain itself is **not** modified by recovery (that file is a sidecar, not hash-chained evidence).
+* empty `store.lock` (crash between create and first marker write) is treated as fresh; garbage is treated as stale.
+
+**Graceful shutdown (found by the binary smoke run).** The service previously had no shutdown handling, so Ctrl-C would
+have left a `held` marker and forced `--recover-stale-lock` on every restart. `main` now waits for SIGINT/SIGTERM, then
+takes the session mutex (waiting for any in-flight write) and drops the store so the marker becomes `released`.
+SIGKILL/power loss still produce the stale case above.
+
+**Tests added (studio-service, all passing):**
+`second_opener_in_same_process_is_refused_and_writes_nothing`, `concurrent_openers_race_exactly_one_wins` (8 threads, 1 winner, 7 `Locked`),
+`two_processes_cannot_both_hold_the_directory_and_kill_leaves_visible_stale_lock` (child process holds the dir; parent refused with the
+child's pid; child SIGKILLed; default open → `StaleLock`; repeat refusal changes nothing; `RecoverStale` succeeds, recovery logged once;
+next normal open clean), `lock_marker_edge_cases_empty_is_fresh_garbage_is_stale`,
+`stale_recovery_does_not_bypass_tamper_or_torn_tail_checks`.
+
+**Existing tests changed (disclosed):**
+* `process_crash_sigkill_after_ack_store_reloads_verified` now expects `StaleLock` from the plain open after SIGKILL and reloads via `RecoverStale`
+  (the data-integrity assertions are unchanged).
+* HTTP `tampered_store_is_refused_at_startup_and_flagged_while_running` previously opened a second store while the first service was still alive
+  (`_state` kept it open); it now drops the first instance first. That was exactly the double-open the lock now forbids; assertions are unchanged.
+
+**Real-binary smoke:** `AUDIT/tuning-round-10/binary-smoke.txt` (second instance refused, SIGKILL → stale refused, `--recover-stale-lock` recovers and records, SIGINT/SIGTERM release cleanly).
+
+### B. TUNE-UI-002 — incremental audit paging and cancellation
+
+* `api.audit()` (fetch-everything) is **removed**. `api.auditPage(offset, limit, signal?)` and `api.revisions(signal?)` accept an `AbortSignal`.
+* `AuditTrail` loads **100 entries per request** (`AUDIT_PAGE_SIZE`). Refresh does a count-only probe (`limit=0`) then fetches only the newest page
+  (plus revisions); a **"Load N older entries (M remaining)"** button prepends the next older page. A status line always shows
+  `showing X of TOTAL entries (newest first) — M older not loaded` (or "all loaded"). Nothing is silently truncated.
+* Cancellation: one `AbortController` ref; starting any refresh/load-more aborts the previous request; every completion re-checks `signal.aborted`
+  and that it is still the latest before touching state, `AbortError` is swallowed, and unmount aborts. Load-more is disabled while a request is in flight.
+  A manual Refresh or a `refreshKey` (calibration checksum) change discards an in-flight older-page load and resets the window to the newest page.
+* Panel remains read-only (no write endpoints referenced).
+* Server contract test added: `audit_paging_supports_count_probe_and_bounded_windows_over_http` (limit=0 probe, absolute-offset windows, past-end empty).
+* **Not tested:** no browser rendering, no component/unit test (the package has no test runner), no run against a store with >100 or >1,000 entries in the UI.
+  Verification is `tsc` + `vite build` only. The cancellation logic is reviewed by reading, not exercised.
+
+### Raw commands (cwd `ecu/`; PATH includes /home/jlee/tools/bin; raw output in `AUDIT/tuning-round-10/`)
+| Command | Exit | Result | Log |
+|---|---|---|---|
+| `cargo fmt --all -- --check` | 0 | clean | `fmt.out` |
+| `cargo clippy --workspace --all-targets --locked -- -D warnings` | 0 | no warnings | `clippy.out` |
+| `cargo test --workspace --locked` | 0 | 250 passed, 0 failed (summed from `test result:` lines) | `workspace-test.out` |
+| `cargo test -p studio-service --locked -- --nocapture` | 0 | 42 passed, 0 failed (was 36 at Round 9) | `studio-service-test.out` |
+| `cd apps/tuning-studio && npx tsc --noEmit` | 0 | clean | `tsc.out` |
+| `npx vite build` | 0 | built, `index-Ct5-g3Zf.js` 354.06 kB | `vite.out` |
+
+`npm ci` was run (node_modules absent); npm audit warnings not addressed.
+
+### Remaining limits / residual risks
+1. Advisory locks stop only cooperating openers of this store code; a human or other program can still edit the files. Not a security boundary.
+2. `flock` on network filesystems (NFS etc.) may not exclude other hosts; keep the data dir on a local filesystem. Only tested on Linux ext4/tmpfs-class local FS; Windows `LockFileEx` path compiles by `std` but was **not run**.
+3. Stale-lock detection relies on the marker; a crash during the marker's first write leaves an empty file that is treated as fresh. Marker-release failure on drop fails safe (looks stale).
+4. A `held` marker after a kill may mean a torn append; recovery re-verifies the chain, and a torn tail is refused as corrupt (test above). Revision-without-audit-entry crash window (Round 9 limit 6) is unchanged.
+5. `lock-recovery.jsonl` is an unauthenticated sidecar, not hash-chained evidence.
+6. `rust-version` for `studio-service` is now 1.89 (workspace crates remain 1.80).
+7. `GET /api/calibration/revisions` is still unpaginated (revision metadata only, no payloads); only the audit log is paged. Out of TUNE-UI-002 scope.
+8. UI paging/cancellation not run in a browser (see B).
+9. No gate advanced; no hardware, vehicle, or production-readiness claim.
