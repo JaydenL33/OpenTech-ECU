@@ -3209,6 +3209,87 @@ mod persistence_tests {
         );
     }
 
+    /// A store write failure must surface as HTTP 500, leave the in-memory
+    /// calibration untouched, and (store now poisoned) refuse every later write
+    /// until restart, after which the on-disk baseline is what loads.
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn store_write_failure_returns_500_and_leaves_calibration_unchanged() {
+        let dir = TempDir::new("http-write-fail");
+        let (app, state) = service(&dir);
+        let base = head(&app).await;
+        let (st, _) = call(&app, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        let (_, cal) = call(&app, "GET", "/api/calibration", None).await;
+        let mut values = cal["calibration"]["tables"]["ve"]["values"]
+            .as_array()
+            .unwrap()
+            .clone();
+        let v0 = values[0].as_f64().unwrap();
+        values[0] = json!(v0 + 0.5);
+        let audit_before = audit(&app).await.len();
+
+        // Force the next append to fail: put a directory where revisions.jsonl is.
+        let rfile = dir.path().join("revisions.jsonl");
+        let saved = std::fs::read(&rfile).unwrap();
+        std::fs::remove_file(&rfile).unwrap();
+        std::fs::create_dir(&rfile).unwrap();
+
+        let edit = || Some(json!({ "table_id": "ve", "values": values, "actor": "bench-op" }));
+        let (st, body) = call(&app, "POST", "/api/calibration/table", edit()).await;
+        assert_eq!(st, StatusCode::INTERNAL_SERVER_ERROR, "{body}");
+        assert_eq!(body["code"], "internal");
+        assert!(
+            body["message"].as_str().unwrap().contains("NOT applied"),
+            "{body}"
+        );
+        // In-memory calibration is unchanged: same checksum, same table values.
+        assert_eq!(head(&app).await, base);
+        {
+            let session = state.inner.lock().unwrap();
+            assert_eq!(session.calibration.checksum, base);
+            assert!(session.calibration.verify());
+            assert_eq!(
+                session.store.as_ref().unwrap().revisions().len(),
+                1,
+                "no revision may be recorded for the failed write"
+            );
+        }
+        let (_, cal_after) = call(&app, "GET", "/api/calibration", None).await;
+        assert_eq!(
+            cal_after["calibration"]["tables"]["ve"]["values"][0].as_f64(),
+            Some(v0),
+            "table value must be unchanged after the failed write"
+        );
+
+        // The store is now poisoned: even with the file restored, further
+        // writes are refused (500) until restart. State still unchanged.
+        std::fs::remove_dir(&rfile).unwrap();
+        std::fs::write(&rfile, &saved).unwrap();
+        let (st, body) = call(&app, "POST", "/api/calibration/table", edit()).await;
+        assert_eq!(st, StatusCode::INTERNAL_SERVER_ERROR, "{body}");
+        assert_eq!(head(&app).await, base);
+        assert_eq!(
+            audit(&app).await.len(),
+            audit_before,
+            "no audit entry is acknowledged for a write that failed"
+        );
+        drop(app);
+        drop(state);
+
+        // Restart: the intact on-disk store loads at the baseline and works.
+        let (app2, _s2) = service(&dir);
+        assert_eq!(head(&app2).await, base);
+        let (st, _) = call(&app2, "POST", "/api/sim/pause", None).await;
+        assert_eq!(st, StatusCode::OK);
+        let (st, body) = call(&app2, "POST", "/api/calibration/table", edit()).await;
+        assert_eq!(st, StatusCode::OK, "{body}");
+        assert_ne!(head(&app2).await, base);
+        eprintln!(
+            "write-failure test: HTTP 500 x2, head unchanged {base:.12}, restart OK and edit applies"
+        );
+    }
+
     #[tokio::test]
     async fn tampered_store_is_refused_at_startup_and_flagged_while_running() {
         let dir = TempDir::new("http-tamper");

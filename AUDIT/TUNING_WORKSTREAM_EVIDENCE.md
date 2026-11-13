@@ -834,3 +834,39 @@ the binary exited 1 with the corruption error and `cmp` showed the bad file byte
    fresh starter calibration (use `--no-persist` or another `--data-dir` for a clean session).
 8. UI panel type-checked and built only; never rendered in a browser (same gap as round 7 item 4).
 9. This task is audit persistence only; it makes no claim about calibration validity.
+
+## Round 9 (2026-11-13, task TUNE-AUD-01 review-fix) — durable creation, absolute env paths, full audit paging, write-failure test
+
+Independent review (Codex) of ed44b77e: **REJECT pending durable store creation**. Findings retained verbatim
+below; resolutions follow. Base: `t3/calibration-audit-persistence` @ ed44b77e merged into this branch
+(merge `feef762d`). Tools: `cc` = gcc-13 local wrapper (`PATH=/home/jlee/tools/bin:$PATH`), cargo from `ecu/`.
+
+| # | Reviewer finding | Resolution |
+|---|---|---|
+| 1 BLOCKING | store.rs:341/:303 — `store.json` via unsynced `fs::write`; new record files fsynced but parent dir not; no crash test | `store.json` now temp-file → `sync_all` → `rename` → fsync parent dir (`write_file_durable`). Data-dir creation fsyncs each created dir and its parent (`create_dir_all_durable`). `append_line` creates with `create_new`; when it created the file it fsyncs the parent dir (revisions.jsonl / audit.jsonl first append). Tests: `creation_fsyncs_metadata_and_parent_directories` (records every dir fsync via a test-only hook and asserts the created chain, meta rename, and first-append syncs, and that plain appends do not re-sync), `meta_write_leaves_no_partial_file_and_stale_temp_is_overwritten`, `process_crash_sigkill_after_ack_store_reloads_verified` (child process acknowledges writes, parent SIGKILLs it, reloads verified store). **The SIGKILL test is a process-crash test only, not power-loss evidence.** |
+| 2 NON-BLOCKING | store.rs:666 — relative `OPENTECH_ECU_DATA_DIR`/`XDG_DATA_HOME` resolve against cwd; symlinks followed | Env-provided `OPENTECH_ECU_DATA_DIR`, `XDG_DATA_HOME`, `HOME`, `APPDATA` must be absolute else `StoreError::Invalid` (clear message, startup aborts). Explicit `--data-dir` is used as given. Test `relative_env_data_dirs_are_refused_not_resolved_against_cwd`. **No `O_NOFOLLOW`**: symlink following is documented in the module docs as a limitation. |
+| 3 NON-BLOCKING | api.ts:98 — UI fetched only first 1,000 audit entries | `api.audit()` now pages (`offset`/`limit=1000`) until `total` is reached (stops on an empty page). UI stays read-only. Type-check/build only; **not exercised in a browser and not tested against >1,000 entries.** |
+| 4 NON-BLOCKING | main.rs:746 — no regression test for failed write / 500 | `store_write_failure_returns_500_and_leaves_calibration_unchanged`: replaces `revisions.jsonl` with a directory, POSTs a paused table edit → HTTP 500 (`code:"internal"`, "NOT applied"); asserts in-memory checksum + table value + stored revision count unchanged; store is poisoned so a second attempt (file restored) also 500s with no audit entry; restart loads the baseline and a fresh edit applies. |
+
+### Raw commands (cwd `ecu/` unless noted; PATH includes /home/jlee/tools/bin)
+| Command | Exit | Result |
+|---|---|---|
+| `cargo fmt --all -- --check` | 0 | clean |
+| `cargo clippy --workspace --all-targets --locked -- -D warnings` | 0 | no warnings |
+| `cargo test --workspace --locked` | 0 | 235 passed, 0 failed (summed from all `test result:` lines) |
+| `cargo test -p studio-service --locked -- --nocapture` | 0 | 36 passed, 0 failed |
+| `cd apps/tuning-studio && npm ci` | 0 | node_modules was absent in this worktree (lockfile install; npm audit warnings not addressed) |
+| `npx tsc --noEmit` | 0 | clean |
+| `npx vite build` | 0 | built, `index-TN8CdnYI.js` 352.80 kB |
+
+Output captured under the session scratchpad only (`ws.out`, `ss.out`); not committed.
+
+### Remaining limits (unchanged unless stated)
+1. Local evidence, not certification: no signatures; tail removal at a record boundary is undetectable without an external anchor (`audit_tail_hash`).
+2. Actor labels unauthenticated; `approve=true` is a flag; API has no auth/TLS.
+3. Single-writer assumption, no lock file.
+4. Durability is the standard POSIX fsync recipe, validated by code-path + SIGKILL tests only. Disk write-cache, filesystem and hardware behaviour under real power loss are **untested**. Directory fsync is a no-op on non-Unix targets.
+5. Symlinks in the data dir are followed (no `O_NOFOLLOW`). An explicit relative `--data-dir` is still honoured as given.
+6. Crash between revision write and audit write still leaves a revision without an audit entry (load warns).
+7. A stale `store.json.tmp` from a crash before rename is overwritten on next create; it is never read.
+8. UI audit paging type-checked and built only.

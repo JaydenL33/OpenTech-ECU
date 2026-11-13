@@ -22,6 +22,27 @@
 //! supplied it is the explicit value `local-operator`. No human identity is
 //! ever inferred.
 //!
+//! # Durability
+//!
+//! Every acknowledged append is `fsync`ed. Newly created files are made
+//! durable by also `fsync`ing their parent directory; `store.json` is written
+//! to a temp file, fsynced, renamed into place and the directory fsynced; newly
+//! created data directories are fsynced up the created chain. This is the
+//! standard POSIX recipe, **verified only by code-path tests and a SIGKILL
+//! process-crash test** — it is not proof against physical power loss (disk
+//! write caches and filesystem behaviour are outside what these tests can
+//! exercise). On non-Unix targets directory fsync is a no-op.
+//!
+//! # Path handling limits
+//!
+//! Environment-provided data directories (`OPENTECH_ECU_DATA_DIR`,
+//! `XDG_DATA_HOME`, `HOME`) must be absolute; relative values are refused so the
+//! current directory is never used implicitly. An explicit `--data-dir` is
+//! taken as given. Files are opened **without** `O_NOFOLLOW`: if the data
+//! directory or a file in it is a symlink it is followed. Anyone able to plant
+//! symlinks in the data directory can already rewrite the store, which this
+//! design does not defend against.
+//!
 //! The store has no physical-output path and never writes to hardware.
 
 use std::fs::{self, File, OpenOptions};
@@ -292,16 +313,94 @@ fn last_hash<T: Hashed>(v: &[T]) -> String {
         .unwrap_or_else(|| GENESIS_HASH.to_string())
 }
 
+// Test-only record of every directory fsync, so tests can prove the
+// durable-creation code path runs (a real power-loss cannot be simulated
+// in-process).
+#[cfg(test)]
+thread_local! {
+    pub(crate) static DIR_SYNCS: std::cell::RefCell<Vec<PathBuf>> =
+        const { std::cell::RefCell::new(Vec::new()) };
+}
+
+/// fsync a directory so that entries created/renamed inside it survive power
+/// loss. On Windows directories cannot be opened for fsync this way; there
+/// this is a documented no-op (the store is only exercised on Unix).
+fn sync_dir(dir: &Path) -> std::io::Result<()> {
+    #[cfg(test)]
+    DIR_SYNCS.with(|v| v.borrow_mut().push(dir.to_path_buf()));
+    #[cfg(unix)]
+    {
+        File::open(dir)?.sync_all()
+    }
+    #[cfg(not(unix))]
+    {
+        Ok(())
+    }
+}
+
+/// The directory that holds `path`'s directory entry.
+fn parent_dir(path: &Path) -> &Path {
+    match path.parent() {
+        Some(p) if !p.as_os_str().is_empty() => p,
+        _ => Path::new("."),
+    }
+}
+
+/// Durably create `path` with `bytes`: write a sibling temp file, fsync it,
+/// rename it into place, then fsync the parent directory. A crash leaves
+/// either no `path` or the complete file, never a partial one.
+fn write_file_durable(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
+    let tmp = path.with_extension("json.tmp");
+    {
+        let mut f = File::create(&tmp)?;
+        f.write_all(bytes)?;
+        f.sync_all()?;
+    }
+    fs::rename(&tmp, path)?;
+    sync_dir(parent_dir(path))
+}
+
+/// `create_dir_all` that also fsyncs every directory it created and the parent
+/// that holds each new entry, so the directory chain itself is durable.
+fn create_dir_all_durable(dir: &Path) -> std::io::Result<()> {
+    let mut missing: Vec<&Path> = Vec::new();
+    for a in dir.ancestors() {
+        if a.as_os_str().is_empty() || a.exists() {
+            break;
+        }
+        missing.push(a);
+    }
+    fs::create_dir_all(dir)?;
+    // Deepest-first: sync the new directory, then the parent holding its entry.
+    for d in missing {
+        sync_dir(d)?;
+        sync_dir(parent_dir(d))?;
+    }
+    Ok(())
+}
+
+/// Append one line and fsync. When the call creates the file, the parent
+/// directory is fsynced too so the directory entry is durable before the
+/// write is acknowledged.
 fn append_line(path: &Path, line: &str) -> Result<(), StoreError> {
-    let mut f: File = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(path)
-        .map_err(|e| StoreError::Io(format!("{}: {e}", path.display())))?;
+    let ioerr = |e: std::io::Error| StoreError::Io(format!("{}: {e}", path.display()));
+    let (mut f, created): (File, bool) =
+        match OpenOptions::new().create_new(true).append(true).open(path) {
+            Ok(f) => (f, true),
+            Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => (
+                OpenOptions::new().append(true).open(path).map_err(ioerr)?,
+                false,
+            ),
+            Err(e) => return Err(ioerr(e)),
+        };
     f.write_all(line.as_bytes())
         .and_then(|_| f.write_all(b"\n"))
         .and_then(|_| f.sync_all())
-        .map_err(|e| StoreError::Io(format!("{}: {e}", path.display())))
+        .map_err(ioerr)?;
+    if created {
+        sync_dir(parent_dir(path)).map_err(ioerr)?;
+    }
+    Ok(())
 }
 
 /// Result of a full verification pass.
@@ -330,7 +429,7 @@ impl CalibrationStore {
                     reason: "store.json is missing but record files exist".into(),
                 });
             }
-            fs::create_dir_all(dir)
+            create_dir_all_durable(dir)
                 .map_err(|e| StoreError::Io(format!("{}: {e}", dir.display())))?;
             let meta = Meta {
                 format: STORE_FORMAT.into(),
@@ -338,7 +437,7 @@ impl CalibrationStore {
                 notice: STORE_NOTICE.into(),
             };
             let text = serde_json::to_string_pretty(&meta).expect("meta serialisation");
-            fs::write(dir.join(META_FILE), text + "\n")
+            write_file_durable(&dir.join(META_FILE), (text + "\n").as_bytes())
                 .map_err(|e| StoreError::Io(format!("{}: {e}", dir.display())))?;
             (Vec::new(), Vec::new(), Vec::new())
         };
@@ -658,22 +757,52 @@ fn head_of(audit: &[AuditEntry]) -> Option<String> {
 /// per-user data dir. Never falls back to the current directory, so a stray
 /// run cannot write into the repository checkout.
 pub fn resolve_data_dir(flag: Option<PathBuf>) -> Result<PathBuf, StoreError> {
+    resolve_data_dir_from(flag, |k| std::env::var_os(k))
+}
+
+/// An environment-provided location must be absolute: a relative value would
+/// silently resolve against the current directory.
+fn absolute_env(name: &str, value: std::ffi::OsString) -> Result<PathBuf, StoreError> {
+    let p = PathBuf::from(value);
+    if p.is_absolute() {
+        Ok(p)
+    } else {
+        Err(StoreError::Invalid(format!(
+            "{name} must be an absolute path (got {:?}); relative paths would resolve against the \
+             current directory. Fix or unset it, or pass --data-dir",
+            p
+        )))
+    }
+}
+
+fn resolve_data_dir_from(
+    flag: Option<PathBuf>,
+    env: impl Fn(&str) -> Option<std::ffi::OsString>,
+) -> Result<PathBuf, StoreError> {
     if let Some(p) = flag {
         return Ok(p);
     }
-    if let Some(p) = std::env::var_os("OPENTECH_ECU_DATA_DIR").filter(|v| !v.is_empty()) {
-        return Ok(PathBuf::from(p));
+    if let Some(v) = env("OPENTECH_ECU_DATA_DIR").filter(|v| !v.is_empty()) {
+        return absolute_env("OPENTECH_ECU_DATA_DIR", v);
     }
-    let home = |rel: &str| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(rel));
-    let base = if cfg!(target_os = "windows") {
-        std::env::var_os("APPDATA").map(PathBuf::from)
-    } else if cfg!(target_os = "macos") {
-        home("Library/Application Support")
-    } else {
-        std::env::var_os("XDG_DATA_HOME")
+    let home = |rel: &str| -> Result<Option<PathBuf>, StoreError> {
+        env("HOME")
             .filter(|v| !v.is_empty())
-            .map(PathBuf::from)
-            .or_else(|| home(".local/share"))
+            .map(|h| absolute_env("HOME", h).map(|h| h.join(rel)))
+            .transpose()
+    };
+    let base = if cfg!(target_os = "windows") {
+        env("APPDATA")
+            .filter(|v| !v.is_empty())
+            .map(|v| absolute_env("APPDATA", v))
+            .transpose()?
+    } else if cfg!(target_os = "macos") {
+        home("Library/Application Support")?
+    } else {
+        match env("XDG_DATA_HOME").filter(|v| !v.is_empty()) {
+            Some(v) => Some(absolute_env("XDG_DATA_HOME", v)?),
+            None => home(".local/share")?,
+        }
     };
     base.map(|b| b.join("opentech-ecu").join("studio"))
         .ok_or_else(|| {
@@ -1015,5 +1144,193 @@ mod tests {
         if let Ok(p) = resolve_data_dir(None) {
             assert!(p.is_absolute(), "{p:?}");
         }
+    }
+
+    #[test]
+    fn creation_fsyncs_metadata_and_parent_directories() {
+        let root = TempDir::new("durable-create");
+        let dir = root.path().join("a").join("b").join("store");
+        DIR_SYNCS.with(|v| v.borrow_mut().clear());
+        let mut s = CalibrationStore::open(&dir).unwrap();
+        let syncs = || DIR_SYNCS.with(|v| v.borrow().clone());
+        // created chain a, a/b, a/b/store plus their parents, plus the meta rename
+        for d in [
+            root.path(),
+            &root.path().join("a"),
+            &root.path().join("a/b"),
+            &dir,
+        ] {
+            assert!(
+                syncs().iter().any(|x| x == d),
+                "dir {d:?} not fsynced: {:?}",
+                syncs()
+            );
+        }
+        assert!(dir.join(META_FILE).exists());
+        assert!(
+            !dir.join("store.json.tmp").exists(),
+            "temp file must be renamed away"
+        );
+        let after_open = syncs().len();
+        let c0 = base();
+        s.append_revision(&c0, None, "baseline", &actor(), "start")
+            .unwrap();
+        assert_eq!(
+            syncs().len(),
+            after_open + 1,
+            "creating revisions.jsonl fsyncs the dir"
+        );
+        s.append_audit(audit("baseline", None, &c0, true)).unwrap();
+        assert_eq!(
+            syncs().len(),
+            after_open + 2,
+            "creating audit.jsonl fsyncs the dir"
+        );
+        let c1 = c0.fork(c0.revision + 1, 1_000);
+        s.append_revision(&c1, Some(&c0.checksum), "table_edit", &actor(), "e")
+            .unwrap();
+        s.append_audit(audit("table_edit", Some(&c0), &c1, true))
+            .unwrap();
+        assert_eq!(
+            syncs().len(),
+            after_open + 2,
+            "plain appends do not re-sync the dir"
+        );
+        assert!(syncs().iter().filter(|x| **x == dir).count() >= 3);
+    }
+
+    #[test]
+    fn meta_write_leaves_no_partial_file_and_stale_temp_is_overwritten() {
+        let dir = TempDir::new("meta-tmp");
+        // A crash between temp write and rename leaves only the temp file.
+        fs::write(dir.path().join("store.json.tmp"), b"{ partial").unwrap();
+        let s = CalibrationStore::open(dir.path()).unwrap();
+        assert!(s.is_empty());
+        assert!(!dir.path().join("store.json.tmp").exists());
+        let text = fs::read_to_string(dir.path().join(META_FILE)).unwrap();
+        assert!(text.contains(STORE_FORMAT), "{text}");
+        drop(s);
+        assert!(
+            CalibrationStore::open(dir.path()).is_ok(),
+            "reopens cleanly"
+        );
+    }
+
+    /// Process-crash test (NOT a power-loss test): a child process acknowledges
+    /// a durable write and is then SIGKILLed with no chance to flush or run
+    /// destructors; the parent must reload a verified store containing it.
+    /// This proves nothing about physical power loss.
+    #[cfg(unix)]
+    #[test]
+    fn process_crash_sigkill_after_ack_store_reloads_verified() {
+        use std::io::{BufRead, BufReader};
+        use std::process::{Command, Stdio};
+        const ENV: &str = "OPENTECH_STORE_CRASH_CHILD_DIR";
+        if let Some(d) = std::env::var_os(ENV) {
+            // ---- child mode ----
+            let mut s = CalibrationStore::open(Path::new(&d)).unwrap();
+            let c0 = base();
+            s.append_revision(&c0, None, "baseline", &actor(), "start")
+                .unwrap();
+            s.append_audit(audit("baseline", None, &c0, true)).unwrap();
+            let c1 = c0.fork(c0.revision + 1, 1_000);
+            s.append_revision(&c1, Some(&c0.checksum), "table_edit", &actor(), "e")
+                .unwrap();
+            s.append_audit(audit("table_edit", Some(&c0), &c1, true))
+                .unwrap();
+            println!("ACKED {}", c1.checksum);
+            std::thread::sleep(std::time::Duration::from_secs(120));
+            return;
+        }
+        let dir = TempDir::new("sigkill");
+        let target = dir.path().join("fresh-store");
+        let mut child = Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "store::tests::process_crash_sigkill_after_ack_store_reloads_verified",
+                "--nocapture",
+                "--test-threads=1",
+            ])
+            .env(ENV, &target)
+            .stdout(Stdio::piped())
+            .spawn()
+            .unwrap();
+        let mut acked = None;
+        for line in BufReader::new(child.stdout.take().unwrap()).lines() {
+            let line = line.unwrap();
+            // libtest prefixes the line with "test <name> ... "
+            if let Some(i) = line.find("ACKED ") {
+                acked = Some(line[i + 6..].trim().to_string());
+                break;
+            }
+        }
+        let head = acked.expect("child never acknowledged its writes");
+        child.kill().unwrap(); // SIGKILL
+        let status = child.wait().unwrap();
+        assert!(!status.success(), "child must have been killed: {status:?}");
+        let s = CalibrationStore::open(&target).expect("store reloads after SIGKILL");
+        assert_eq!(s.revisions().len(), 2);
+        assert_eq!(s.audit().len(), 2);
+        assert_eq!(s.head_checksum().as_deref(), Some(head.as_str()));
+        assert!(s.warnings().is_empty(), "{:?}", s.warnings());
+        eprintln!("process-crash(SIGKILL) test: reloaded head {head:.12}; NOT a power-loss test");
+    }
+
+    #[test]
+    fn relative_env_data_dirs_are_refused_not_resolved_against_cwd() {
+        let env = |pairs: &'static [(&'static str, &'static str)]| {
+            move |k: &str| {
+                pairs
+                    .iter()
+                    .find(|(n, _)| *n == k)
+                    .map(|(_, v)| std::ffi::OsString::from(*v))
+            }
+        };
+        let e =
+            resolve_data_dir_from(None, env(&[("OPENTECH_ECU_DATA_DIR", "rel/dir")])).unwrap_err();
+        assert!(
+            e.to_string()
+                .contains("OPENTECH_ECU_DATA_DIR must be an absolute path"),
+            "{e}"
+        );
+        if cfg!(not(any(target_os = "windows", target_os = "macos"))) {
+            let e = resolve_data_dir_from(
+                None,
+                env(&[("XDG_DATA_HOME", "./data"), ("HOME", "/home/u")]),
+            )
+            .unwrap_err();
+            assert!(
+                e.to_string()
+                    .contains("XDG_DATA_HOME must be an absolute path"),
+                "{e}"
+            );
+            let e = resolve_data_dir_from(None, env(&[("HOME", "relhome")])).unwrap_err();
+            assert!(
+                e.to_string().contains("HOME must be an absolute path"),
+                "{e}"
+            );
+            // absolute values are accepted
+            assert_eq!(
+                resolve_data_dir_from(None, env(&[("XDG_DATA_HOME", "/x/data")])).unwrap(),
+                PathBuf::from("/x/data/opentech-ecu/studio")
+            );
+            assert_eq!(
+                resolve_data_dir_from(None, env(&[("HOME", "/home/u")])).unwrap(),
+                PathBuf::from("/home/u/.local/share/opentech-ecu/studio")
+            );
+        }
+        assert_eq!(
+            resolve_data_dir_from(None, env(&[("OPENTECH_ECU_DATA_DIR", "/abs/d")])).unwrap(),
+            PathBuf::from("/abs/d")
+        );
+        // flag still wins over a bad env value
+        assert_eq!(
+            resolve_data_dir_from(
+                Some("/flag".into()),
+                env(&[("OPENTECH_ECU_DATA_DIR", "rel")])
+            )
+            .unwrap(),
+            PathBuf::from("/flag")
+        );
     }
 }
