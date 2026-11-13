@@ -151,10 +151,15 @@ engine, vehicle or fabrication gate advanced. No purchase or fabrication occurre
 
 ## 8. Next cycle tasks — 2026-11-13
 
-**Human owner constraints (recorded 2026-11-13):** the owner intends to upload
-the fabricated design to JLCPCB and targets **below A$250 per board**. The
-owner has no electronics background; their brother is an electronic engineer
-and is the intended human reviewer. This is a design/costing target, not H4
+**Human owner constraints (recorded 2026-11-13):** the owner intends to have the
+design fabricated and assembled, targets **below A$250 per board**, and is open
+to **JLCPCB, PCBWay or another manufacturer**. The owner has no electronics
+background; their brother is an electronic engineer and is the intended human
+reviewer. Preferred assembly split: manufacturer places SMT and through-hole
+parts; the **Arduino Mega and Pololu DRV8825 remain plug-in modules** and are
+not soldered directly to the board. Small hand-soldering by the owner is
+acceptable only if it saves meaningful cost without compromising the bench
+prototype; it is not the default plan. This is a design/costing target, not H4
 approval. No fabrication may be ordered until independent review is documented
 and the owner explicitly approves H4.
 
