@@ -63,6 +63,86 @@ Initial development findings: the buffer test's original 5 s idle fixture emitte
 
 Project directive §3/§8: independent crank/cam generation, host trigger decoding, timing vectors, deterministic regression and client telemetry. Requirement links: TRG-001/002/005 (synthetic missing-tooth/cam/config evidence), SIM-002 (generalized generator), SIM-006/007/012 (seeded logs, client records, repeatability). Existing ignition remains `SyntheticSimulationOnly`; no on-engine timing advance or calibration writes are added.
 
-RUST-TRG-001 remains autonomous: implement/test cam-loss expiration, speed-aware crank loss, short-edge rejection and recovery. RUST-TIM-001 remains autonomous: discrete-event schedule replacement/fault causality, pulse-end execution and dwell cancellation. RUST-REF-001 still requires a selected, reproducibly built upstream Speeduino firmware and captured reference outputs. RUST-HIL-001 requires approved physical fixtures and measured captures. Arbitrary wheel/cam electrical compatibility and the actual Evo pattern remain unverified.
+RUST-TRG-001 is complete for the host decoder (cam-loss expiration, speed-aware crank loss, short-edge rejection and recovery vectors); see the completion section below. RUST-TIM-001 remains autonomous: discrete-event schedule replacement/fault causality, pulse-end execution and dwell cancellation. RUST-REF-001 still requires a selected, reproducibly built upstream Speeduino firmware and captured reference outputs. RUST-HIL-001 requires approved physical fixtures and measured captures. Arbitrary wheel/cam electrical compatibility and the actual Evo pattern remain unverified.
 
 H0–H9 dispositions are retained in `RUST_SIMULATION_TASKS.md`: software evidence only, no hardware gate advanced. Speeduino source remains the known upstream reference; this round does not port Rust to Arduino Mega or replace that firmware path. H4 needs independent engineering review and explicit human approval; H5+ need physical evidence.
+
+
+### RUST-TRG-001 initial checkpoint (superseded)
+
+> Retained as historical evidence: the worktree initially had no C linker, so
+> compilation exited 101 before any test ran. The lead supplied the local GCC
+> wrapper, fixed two real recovery defects, and added the missing vectors.
+
+Incomplete, unverified host-only change. Decoder adds `set_loss_bounds(teeth,
+cam_revolutions)` without changing serialized MissingToothConfig fields. Defaults:
+crank deadline four normal intervals for 36-1, capped at timeout_ms; cam phase
+expires after six revolutions of accepted edges or timeout_ms since valid cam.
+Historical cam_seen remains historical; cycle phase is revoked on expiration.
+Short edges below half the estimated normal interval are ignored without updating
+capture history. Counters saturate. Valid window cam re-establishes phase.
+These are explicit Rust policies, not Speeduino binary-equivalent behavior.
+
+Evidence: AUDIT/rust-round-3/check-{1,2,3,4}.log contains exact commands and
+exit codes. Format check 0; clippy, workspace tests, trigger nocapture each 101:
+missing cc linker prevents compilation. No passing test count measured in this
+checkout. Recovery vectors are still outstanding; baseline compatibility and
+noise/startup behavior remain unverified. No MCU or physical timing claim.
+H0–H9 hardware gate status unchanged. Task remains open; next action is supply
+a host linker, add deterministic recovery vectors, then repeat all checks.
+
+### RUST-TRG-001 completion (2026-11-13)
+
+Host-only completion; independent review pending. Full details, commands and
+residual limits are in `RUST_SIMULATION_TASKS.md` §RUST-TRG-001 completion
+verification and `AUDIT/rust-round-3/check-5` … `check-9`.
+
+- `cargo fmt --all -- --check` exit 0; `cargo clippy --workspace --all-targets
+  --locked -- -D warnings` exit 0; `cargo test --workspace --locked` exit 0
+  with **222 passed, 0 failed**; `cargo test -p ecu-trigger --locked -- --nocapture`
+  exit 0 with **25 passed, 0 failed**.
+- New vectors: cam loss expiry and re-acquisition, crank stall timeout and
+  recovery, short-edge rejection without poisoning sync, cam-outside-window
+  rejection and recovery, and loss-bound validation.
+- Two real defects were found during verification: an eight-revolution
+  single-cam test fixture (now one cam per 720° cycle), and post-stall recovery
+  using the stall gap as a tooth interval (now a fresh baseline edge).
+- Bounds (50 % short-edge threshold, six-revolution/250 ms cam expiry) are
+  engineering choices, not values validated on an engine or Speeduino capture.
+  No MCU, hardware capture or physical timing claim; no gate advanced.
+
+
+### RUST-TRG-001 independent ownership review (2026-11-13)
+
+Candidate 14a14b0b/b2c7ac33 reviewed in the isolated rust-engineer checkout.
+Decision: reject unchanged candidate; accept the corrected host implementation
+subject to the verification recorded in check-10 through check-14.
+
+Found a real state-transition defect: after external tick() timeout cleared the
+timestamp, the first restart edge set a baseline but left state Lost; the second
+edge was consumed again by the Lost branch. Inline on_tooth timeout likewise
+left Lost after recording the baseline. Both paths now enter Unsynced on the
+first restart capture. The new restart_uses_exactly_one_baseline_with_or_without_tick
+test checks state, next measured interval and tooth index for both paths.
+
+Independently reviewed all five candidate vectors and existing extra/missing
+tooth tests. Runtime defaults are missing+3 crank intervals and six cam
+revolutions without a setter call. Deadline is capped by timeout_ms; comparison
+is strictly greater than the deadline. Cam age counts accepted captures, not
+nominal missing slots; expiry runs before gap parity/state selection. Wall time
+is also checked by tick/on_tooth, so missing cam cannot remain valid merely
+because edges stop (provided the caller services tick). Valid window cam resets
+age and parity; subsequent gap resets parity to zero. Crank loss clears phase
+and gap history. Counters saturate; serialized MissingToothConfig fields and
+derives are unchanged.
+
+Residual limits: six revolutions means accepted-edge count under a valid wheel,
+not a wall-time revolution measurement during faults. Callers must service tick
+for idle expiry; angle getters alone do not expire state. The 50% filter can
+reject legitimate abrupt acceleration/uneven cranking and needs measured input
+validation. Existing gradual acceleration does not establish that limit.
+These deadlines/filter/recovery policies differ explicitly from Speeduino;
+no upstream binary differential comparison was performed. Host simulation only,
+no MCU/capture/engine/vehicle evidence; H0–H9 dispositions unchanged.
+
+Independent final verification: check-10 compiler GCC 13.3.0; check-11 fmt exit 0; check-12 strict workspace Clippy exit 0; check-13 workspace tests exit 0 (223 passed, 0 failed); check-14 trigger nocapture exit 0 (26 passed, 0 failed). All Cargo commands ran from ecu with PATH=/home/jlee/tools/bin:$PATH. Historical check-2..4 retained. Corrected implementation accepted for host simulation.

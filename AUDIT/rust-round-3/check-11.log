@@ -1,0 +1,3 @@
+$ PATH=/home/jlee/tools/bin:$PATH cargo fmt --all -- --check
+
+EXIT_CODE=0
